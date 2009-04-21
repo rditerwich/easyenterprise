@@ -1,0 +1,100 @@
+root /packages:Considium/packages:Domain/packages:UI/components
+
+import Metaphor.PIM.UI.Component
+import Metaphor.PIM.UI.DockPanel
+import Metaphor.PIM.UI.HorizontalMenu
+import Metaphor.PIM.UI.HorizontalPanel
+import Metaphor.PIM.UI.Hyperlink
+import Metaphor.PIM.UI.Image
+import Metaphor.PIM.UI.Label
+import Metaphor.PIM.UI.MenuItem
+import Metaphor.PIM.UI.Page
+import Metaphor.PIM.UI.PageStub
+import Metaphor.PIM.UI.Panel
+import Metaphor.PIM.UI.VerticalPanel
+
+path style = /packages:Considium/packages:Domain/packages:UI/styles
+path domain = /packages:Considium/packages:Domain/types
+
+Page {
+    name = WebSite
+    content = {
+        DockPanel {
+            name = headerFooterPanel
+            style = style:header-footer-panel
+            north = {
+                DockPanel {
+                    name = headerPanel
+                    style = style:header-panel
+                    west = {
+                        Image {
+                            name = logo
+                            image = images/logo.png
+                            style = style:logo
+                        }
+                    }
+                    center = {
+                        DockPanel {
+                            name = headerTopPanel
+                            style = style:header-top-panel
+                            center = {
+                                Panel {
+                                    name = titlePanel
+                                    horizontalAlignment = Center
+                                    children = {
+                                        Label {
+                                            name = SubsidiePlatformName
+                                            style = style:title-label
+                                            text = "Considium SubsidiePlatform"
+                                        }
+                                    }
+                                }
+                            }
+                            east = {
+                                HorizontalPanel {
+                                    name = logonMenu
+                                    style = style:logon-menu
+                                    verticalAlignment = Center
+                                    children = {
+                                        Label {
+                                            name = welcome
+                                            text = "welcome"
+                                        }
+                                        Hyperlink {
+                                            name = logout
+                                            text = "logout"
+                                        }
+                                        Hyperlink {
+                                            name = home
+                                            text = "home"
+                                        }
+                                    }
+                                }                                                
+                            }
+                        }
+                    }
+                    east = {
+                        VerticalPanel {
+                            name = overallStatus
+                            children = {
+                                Component {
+                                    name = activityPanel
+                                }
+                            }
+                        }
+                    }
+                    south = {
+                        HorizontalMenu {
+                            name = mainMenu
+                            style = style:main-menu
+                            items = {
+                            }
+                        }
+                    }
+                }
+            }
+            center = {
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+root /packages:Considium/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+
+path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
+
+Package {
+    name = Domain
+    types = {
+        Class {
+            name = User
+            attributes = {
+                Attribute {
+                    name = firstName
+                    type = primitive:String
+                }
+                Attribute {
+                    name = lastName
+                    type = primitive:String
+                }
+                Attribute {
+                    name = email
+                    type = primitive:String
+                }
+                Attribute {
+                    name = password
+                    type = primitive:String
+                }
+                Attribute {
+                    name = image
+                    type = primitive:String
+                }
+            }
+        }
+    }
+}

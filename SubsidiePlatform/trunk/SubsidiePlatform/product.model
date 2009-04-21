@@ -1,0 +1,22 @@
+root /products
+
+import Metaphor.Core.Product
+import Metaphor.Core.Version
+import Metaphor.PSM.J2ee.J2eeProduct
+
+J2eeProduct {
+    id = considium.SubsidiePlatform
+    name = SubsidiePlatform
+    provider = Considium
+    version = Version { major = 1 minor = 0 micro = 0 }
+    modules = {
+        considium.subsidieplatform
+        considium.subsidieplatform.common
+        considium.subsidieplatform.persistence
+        considium.subsidieplatform.businesslogic
+        considium.subsidieplatform.presentation
+        considium.subsidieplatform.domain
+    }
+    domain = /packages:Considium/packages:Domain
+    architecture = /architecture:SubsidiePlatformArchitecture
+}

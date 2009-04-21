@@ -1,0 +1,7 @@
+root /packages:Considium/packages
+
+import Metaphor.Core.ModelPackage
+
+ModelPackage {
+    name = SubsidiePlatform
+}

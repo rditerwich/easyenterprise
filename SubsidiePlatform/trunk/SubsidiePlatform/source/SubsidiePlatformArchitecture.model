@@ -1,0 +1,15 @@
+root /architecture
+
+import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
+
+J2eeArchitectureJpaEjbGwt {
+    name = SubsidiePlatformArchitecture
+    providerPackage = /packages:Considium
+    productPackage = /packages:Considium/packages:SubsidiePlatform
+    commonModule = /modules:considium.subsidieplatform.common
+    persistenceModule = /modules:considium.subsidieplatform.persistence
+    businessLogicModule = /modules:considium.subsidieplatform.businesslogic
+    presentationModule = /modules:considium.subsidieplatform.presentation
+    jpaVendor = EclipseLink
+    databaseVendor = postgresql
+}
