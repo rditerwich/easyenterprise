@@ -1,38 +1,47 @@
 package considium.subsidieplatform.presentation.client;
 
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import considium.subsidieplatform.presentation.client.labels.Labels;
 
 public class UserProfilePanel extends VerticalPanel {
 
-	User user;
-	TextBox userBox = new TextBox(); 
-	PasswordTextBox passwordBox = new  PasswordTextBox(); 
-	
-	@Override
-	protected void onAttach() {
-		add(new Label(Labels.instance.login()));
-		FlexTable table = new FlexTable();
-		
-		if (user != null) {
-			String image = user.getImage();
-			if (!image.startsWith("http://")) {
-				image = "/images/" + image;
+	public UserProfilePanel(final User user) {
+		setStyleName("Panel");
+		setVisible(false);
+
+		add(new Label(Labels.instance.profile()) {{
+			setStyleName("PanelHeader");
+		}});
+
+		add(new VerticalPanel() {{
+			setStyleName("PanelBody");
+			if (user != null) {
+				String image = user.getImage();
+				if (!image.startsWith("http://")) {
+					image = "/images/" + image;
+				}
+				final String finalImage = image;
+				add(new HorizontalPanel() {{
+					add(new VerticalPanel() {{
+						add(new FlowPanel() {{
+							setStyleName("Title");
+							add(new Label(user.getFirstName() + " " + user.getLastName()));
+						}});
+						add(new Label(user.getJob() + " at " + user.getOrganization()));
+						add(new Label(user.getAddress()));
+						add(new Label(user.getPostalcode() + " " + user.getCity()));
+						add(new Label(user.getEmail()));
+					}});
+					add(new Image(finalImage));
+				}});
 			}
-			table.setWidget(0, 0, new Image(image));
-			table.setWidget(0, 1, new Label(user.getFirstName() + " " + user.getLastName()));
-			table.setWidget(1, 0, new Label(user.getEmail()));
-			table.getFlexCellFormatter().setRowSpan(0, 0, 3);
-			table.setBorderWidth(1);
-		}
-		
-		add(table);
-		super.onAttach();
+			add(new Hyperlink("profiel aanpassen", "edit"));
+		}});
 	}
 }

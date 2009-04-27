@@ -1,0 +1,123 @@
+* {
+    font-family: Arial, Verdana, Tahoma, Helvetica, Arial;
+    font-size: 9pt;
+}
+
+table {
+    border-spacing:0px;
+}
+
+.gwt-MenuBar {
+    margin-left: 20px;
+    padding-top:30px;
+}
+
+td.gwt-MenuItem {
+    padding-top: 4px;
+    border-spacing:0px; 
+    border-bottom-style:solid;
+    border-bottom-width:5pt;
+    width:100px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 10pt;
+}
+
+td.gwt-MenuItem:hover {
+}
+
+#gwt-uid-1 {
+    border-bottom-color:#41368E;
+    color: #41368E;
+}
+
+#gwt-uid-1:hover, #gwt-uid-1.gwt-MenuItem-selected {
+    background:#41368E;
+    color: white;
+}
+
+#gwt-uid-2 {
+    border-bottom-color:#9C0016;
+    color:#9C0016;
+}
+
+#gwt-uid-2:hover, #gwt-uid-2.gwt-MenuItem-selected {
+    background:#9C0016;
+    color: white;
+}
+
+
+#gwt-uid-3 {
+    border-bottom-color:#DF9330;
+    color:#DF9330;
+}
+
+#gwt-uid-3:hover, #gwt-uid-3.gwt-MenuItem-selected {
+    background:#DF9330;
+    color: white;
+}
+
+
+#gwt-uid-4 {
+    border-bottom-color:#2186B2;
+    color:#2186B2;
+}
+
+#gwt-uid-4:hover, #gwt-uid-4.gwt-MenuItem-selected {
+    background:#2186B2;
+    color: white;
+}
+
+
+#gwt-uid-5 {
+    border-bottom-color:#83B54E;
+    color:#83B54E;
+}
+
+#gwt-uid-5:hover, #gwt-uid-5.gwt-MenuItem-selected {
+    background:#83B54E;
+    color: white;
+}
+
+.Panel {
+    margin: 8px;
+}
+
+.PanelHeader {
+    background:#EAEAEA;
+    padding: 2px;
+    font-weight: bold;
+    color: #505050;
+    border-bottom: 1px dashed
+}
+
+.PanelBody {
+    background:#F5F5F5;
+    font-size: 7pt;
+}
+
+.PageTitle {
+    font-weight: bold;
+    font-size: 14pt;
+    position: right;
+    color: #41368E;
+    margin-left:120px;
+}
+
+.PageTitle .gwt-Label {
+    font-weight: bold;
+    font-size: 18pt;
+    font-style: italic;
+    text-align: right;
+}
+
+.Title {
+    font-weight: bold;
+    font-size: 12pt;
+    font-style: italic;
+    margin-bottom: 9px;
+}
+
+.PageBody {
+    margin-top: 8px;
+}

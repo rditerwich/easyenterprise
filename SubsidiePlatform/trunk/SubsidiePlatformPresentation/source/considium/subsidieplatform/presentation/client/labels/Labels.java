@@ -9,4 +9,5 @@ public interface Labels extends PresentationLabels {
 	Labels instance = (Labels) GWT.create(Labels.class);
 
 	String login();
+	String profile();
 }

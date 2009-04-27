@@ -31,6 +31,26 @@ Package {
                     type = primitive:String
                 }
                 Attribute {
+                    name = job
+                    type = primitive:String
+                }
+                Attribute {
+                    name = organization
+                    type = primitive:String
+                }
+                Attribute {
+                    name = address
+                    type = primitive:String
+                }
+                Attribute {
+                    name = postalcode
+                    type = primitive:String
+                }
+                Attribute {
+                    name = city
+                    type = primitive:String
+                }
+                Attribute {
                     name = image
                     type = primitive:String
                 }

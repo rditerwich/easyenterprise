@@ -21,17 +21,21 @@ public class HomePage extends Page {
 	private void createContent() {
 		
 		DockPanel rootPanel = new DockPanel();
-		rootPanel.add(new LoginPanel(), DockPanel.NORTH);
 		
 		User user = new User();
 		user.setFirstName("Ruud");
 		user.setLastName("Diterwich");
 		user.setEmail("ruud@diterwich.com");
 		user.setImage("http://media.linkedin.com/mpr/mpr/shrink_80_80/p/2/000/000/203/0bb766d.jpg");
-		UserProfilePanel profilePanel = new UserProfilePanel();
-		profilePanel.user = user;
+		user.setOrganization("WillemVanOranjeSchool");
+		user.setJob("Docent");
+		user.setAddress("Spoorlaan 24");
+		user.setPostalcode("3533 AA");
+		user.setCity("Utrecht");
+		UserProfilePanel profilePanel = new UserProfilePanel(user);
 		
-		rootPanel.add(profilePanel, DockPanel.SOUTH);
+		rootPanel.add(profilePanel, DockPanel.NORTH);
+		rootPanel.add(new LoginPanel(entryPoint, profilePanel), DockPanel.SOUTH);
 		
 		((Panel)getWidget()).add(rootPanel);
 	}
