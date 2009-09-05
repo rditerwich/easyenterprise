@@ -1,0 +1,8 @@
+root /domainDiagrams
+
+import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
+
+DomainDiagram {
+    name = AgileXS
+    package = /packages:AgileXS/packages:Domain
+}

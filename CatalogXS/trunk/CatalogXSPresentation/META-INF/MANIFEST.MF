@@ -1,0 +1,19 @@
+Bundle-Comment: This file was generated.  To prevent this, remove this line
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CatalogXSPresentation
+Bundle-SymbolicName: agilexs.catalogxs.presentation; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: AgileXS
+Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: 
+ agilexs.catalogxs.businesslogic,
+ agilexs.catalogxs.persistence,
+ metaphor.core,
+ metaphor.eclipse.core,
+ metaphor.models,
+ metaphor.tpl,
+ metaphor2.core,
+ org.eclipse.core.runtime
+
