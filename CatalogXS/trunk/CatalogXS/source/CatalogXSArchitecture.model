@@ -1,15 +1,19 @@
 root /architecture
 
+import Metaphor.PSM.DomainToRdbms.ColumnTemplates
+import Metaphor.PSM.DomainToRdbms.DomainToRdbms
 import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
+import Metaphor.PSM.Rdbms.Column
 
 J2eeArchitectureJpaEjbGwt {
     name = CatalogXSArchitecture
+    commonModule = /modules:agilexs.catalogxs.common
     providerPackage = /packages:AgileXS
     productPackage = /packages:AgileXS/packages:CatalogXS
-    commonModule = /modules:agilexs.catalogxs.common
     persistenceModule = /modules:agilexs.catalogxs.persistence
     businessLogicModule = /modules:agilexs.catalogxs.businesslogic
     presentationModule = /modules:agilexs.catalogxs.presentation
-    jpaVendor = EclipseLink
     databaseVendor = postgresql
+    jpaVendor = EclipseLink
+    generateBaseClasses = true
 }
