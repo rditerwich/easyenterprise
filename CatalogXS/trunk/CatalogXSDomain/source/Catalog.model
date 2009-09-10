@@ -1,0 +1,170 @@
+root /packages:AgileXS/packages:Domain/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+
+path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
+path catalog=/packages:AgileXS/packages:Domain/packages:Catalog/types
+
+Package {
+    name = Catalog
+    types = {
+        Class {
+            name = Catalog
+            attributes = {
+                Attribute {
+                    name = products
+                    type = catalog:Product
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Product/attributes:catalog
+                }
+                Attribute {
+                    name = taxonomies
+                    type = catalog:Taxonomy
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Taxonomy/attributes:catalog
+                }
+                Attribute {
+                    name = productRelations
+                    type = catalog:ProductRelation
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                }
+            }
+        }
+        Class {
+            name = Product
+            attributes = {
+                Attribute {
+                    name = catalog
+                    type = catalog:Catalog
+                    opposite = catalog:Catalog/attributes:products
+                }
+                Attribute {
+                    name = properties
+                    type = catalog:ProductProperty
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:ProductProperty/attributes:product
+                }
+                Attribute {
+                    name = relatedProducts
+                    type = catalog:RelatedProduct
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                }
+            }
+        }
+        Class {
+            name = RelatedProduct
+            attributes = {
+                Attribute {
+                    name = product
+                    type = catalog:Product
+                    lower = 0
+                    upper = {}
+                }
+                Attribute {
+                    name = relation
+                    type = catalog:ProductRelation
+                    lower = 1
+                }
+            }
+        }
+        
+        /** 
+         * Used to qualify a relation between two related products, e.g. Supply, SparePart
+         */
+        Class {
+            name = ProductRelation
+            attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                }
+            }
+        }
+        
+        Class {
+            name = ProductProperty
+            attributes = {
+                Attribute {
+                    name = product
+                    type = catalog:Product
+                    opposite = catalog:Product/attributes:properties
+                }
+            }
+        }
+        Class {
+            name = Taxonomy            
+            attributes = {
+                Attribute {
+                    name = catalog
+                    type = catalog:Catalog
+                    opposite = catalog:Catalog/attributes:taxonomies
+                }
+                Attribute {
+                    name = productGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:ProductGroup/attributes:taxonomy
+                }
+            }
+        }
+        Class {
+            name = ProductGroup
+            attributes = {
+                Attribute {
+                    name = taxonomy
+                    type = catalog:Taxonomy
+                    opposite = catalog:Taxonomy/attributes:productGroups
+                }
+                Attribute {
+                    name = subGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:ProductGroup/attributes:parentGroup
+                }
+                Attribute {
+                    name = parentGroup
+                    type = catalog:ProductGroup
+                    lower = 0
+                    opposite = catalog:ProductGroup/attributes:subGroups
+                }
+                Attribute {
+                    name = products
+                    type = catalog:Product
+                    lower = 0
+                    upper = {}
+                }
+            }
+        }
+        /**
+         * Represents an entity (e.g. Distributor) where a catalog can be 
+         * published to.
+         */
+        Class {
+            name = Channel
+            attributes = {
+                Attribute {
+                    name = defaultTaxonomy
+                    type = catalog:Taxonomy
+                }
+            }
+        }
+    }
+}

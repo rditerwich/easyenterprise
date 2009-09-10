@@ -1,8 +1,107 @@
 root /domainDiagrams
 
+import Metaphor.Eclipse.Diagrams.Rectangle
+import Metaphor.Eclipse.DomainDiagrams.DiagramClass
 import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
+import Metaphor.Eclipse.DomainDiagrams.Reference
 
 DomainDiagram {
     name = AgileXS
     package = /packages:AgileXS/packages:Domain
+    classes = {
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 8
+                    y = 10
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/types:ExampleClass
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 109
+                    y = 10
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 105
+                    y = 72
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 134
+                    y = 191
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductProperty
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 320
+                    y = 82
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 365
+                    y = 204
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 210
+                    y = 10
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Channel
+        }
+    }
+    references = {
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:products
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:taxonomies
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:properties
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy/attributes:productGroups
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Channel/attributes:defaultTaxonomy
+        }
+    }
 }

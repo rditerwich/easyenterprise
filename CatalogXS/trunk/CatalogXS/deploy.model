@@ -41,7 +41,7 @@ DeploymentConfiguration {
     name = "CatalogXS Deployment Local Ruud"
     productConfigurations = {
         Glassfish2Configuration {
-            installDir = "d:/glassfish"
+            installDir = "c:/glassfish"
             domain = domain1
 
             webConfiguration = GwtWebConfiguration {
