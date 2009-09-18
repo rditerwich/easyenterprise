@@ -145,12 +145,35 @@ Package {
                 }
                 Attribute {
                     name = enumValues
-                    type = primitive:String
+                    type = catalog:EnumValue
+                    isComposite = true
                     lower = 1
                     upper = {}
                 }
             }
         }
+        
+        Class {
+            name = EnumValue
+            attributes = {
+                Attribute {
+                    name = value
+                    type = primitive:String
+                }
+                /**
+                 * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
+                 */
+                Attribute {
+                    name = language
+                    type = primitive:String
+                }
+                Attribute {
+                    name = label
+                    type = primitive:String
+                }
+            }
+        }
+        
         Class {
             name = Taxonomy            
             attributes = {
@@ -250,14 +273,14 @@ Package {
                     type = primitive:String
                 }
                 /**
-                 * Used when property.type == String or property.type == Enum
+                 * Used when property.type == String
                  */
                 Attribute {
                     name = stringValue
                     type = primitive:String
                 }
                 /**
-                 * Used when property.type == Integer
+                 * Used when property.type == Integer or property.type == Enum
                  */
                 Attribute {
                     name = integerValue
@@ -278,6 +301,14 @@ Package {
                     type = primitive:Boolean
                 }
                 /**
+                 * Used when property.type == FormattedText.
+                 * Html subset.
+                 */
+                Attribute {
+                    name = formattedTextValue
+                    type = primitive:String
+                }
+                /**
                  * Used when property.type == Money
                  */
                 Attribute {
@@ -293,6 +324,24 @@ Package {
                     name = moneyCurrency
                     type = primitive:String
                 }
+                
+                /**
+                 * Used when property.type == Media
+                 */
+                Attribute {
+                    name = mediaValue
+                    type = primitive:Blob
+                }
+                /**
+                 * Used when property.type == Media.
+                 * Stored as ISO 4217 currency code.
+                 * See http://en.wikipedia.org/wiki/Mime_type.
+                 */
+                Attribute {
+                    name = mimeType
+                    type = primitive:String
+                }
+                
                 Attribute {
                     name = product
                     type = catalog:Product
@@ -338,12 +387,26 @@ Package {
                     name = Money
                 }
                 /**
-                 * Stored in field PropertyValue.stringValue.
+                 * Stored in field PropertyValue.integerValue.
                  */
                 Literal {
                     name = Enum
                 }
                 /**
+                 * Stored in field PropertyValue.mediaValue.
+                 */
+                Literal {
+                    name = Media
+                }
+                /**
+                 * Stored in field PropertyValue.stringValue.
+                 */
+                Literal {
+                    name = FormattedText
+                }
+                
+                /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in metres.
                  */
@@ -351,6 +414,7 @@ Package {
                     name = Length
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in kilograms.
                  */
@@ -358,6 +422,7 @@ Package {
                     name = Mass
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in seconds.
                  */
@@ -365,6 +430,7 @@ Package {
                     name = Time
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in amperes.
                  */
@@ -372,6 +438,7 @@ Package {
                     name = ElectricCurrent
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in kelvin.
                  */
@@ -379,6 +446,7 @@ Package {
                     name = Temperature
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in candela.
                  */
@@ -386,6 +454,7 @@ Package {
                     name = LuminousIntensity
                 }
                 /**
+                 * SI base unit.
                  * Stored in field PropertyValue.realValue. 
                  * Units stored in mole.
                  */
@@ -394,6 +463,7 @@ Package {
                 }
                 
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in hertz.
                  */
@@ -401,6 +471,7 @@ Package {
                     name = Frequency
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in rad.
                  */
@@ -408,6 +479,7 @@ Package {
                     name = Angle
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in joule.
                  */
@@ -415,6 +487,7 @@ Package {
                     name = Energy
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in watts.
                  */
@@ -422,6 +495,7 @@ Package {
                     name = Power
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in volt.
                  */
@@ -429,6 +503,7 @@ Package {
                     name = Voltage
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in metre per second.
                  */
@@ -437,6 +512,7 @@ Package {
                 }
                 
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in square metre.
                  */
@@ -444,6 +520,7 @@ Package {
                     name = Area
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in cubic metre.
                  */
@@ -451,6 +528,7 @@ Package {
                     name = Volume
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in metre per second.
                  */
@@ -458,6 +536,7 @@ Package {
                     name = Velocity
                 }
                 /**
+                 * SI derived unit.
                  * Stored in field PropertyValue.realValue.
                  * Units stored in metre per square second.
                  */
