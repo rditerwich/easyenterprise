@@ -18,6 +18,10 @@ Package {
             name = Catalog
             attributes = {
                 Attribute {
+                    name = name
+                    type = primitive:String
+                }
+                Attribute {
                     name = products
                     type = catalog:Product
                     lower = 0
@@ -173,6 +177,10 @@ Package {
         Class {
             name = Taxonomy            
             attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                }
                 Attribute {
                     name = catalog
                     type = catalog:Catalog

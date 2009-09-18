@@ -25,9 +25,9 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 527
-                    y = 225
-                    width = 131
+                    x = 541
+                    y = 220
+                    width = 120
                     height = 96
                 }
             }
@@ -58,8 +58,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 761
-                    y = 231
+                    x = 786
+                    y = 233
                     width = 136
                     height = 71
                 }
@@ -69,8 +69,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 768
-                    y = 31
+                    x = 787
+                    y = 30
                     width = 112
                     height = 74
                 }
@@ -157,8 +157,8 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 651
-                    y = 249
+                    x = 725
+                    y = 245
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:relatedProducts
@@ -166,8 +166,8 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 652
-                    y = 290
+                    x = 721
+                    y = 272
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelatedProduct/attributes:product
@@ -214,8 +214,8 @@ DomainDiagram {
                     y = 40
                 }
                 Point {
-                    x = 13
-                    y = 554
+                    x = 12
+                    y = 553
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:properties
@@ -227,8 +227,8 @@ DomainDiagram {
                     y = 124
                 }
                 Point {
-                    x = 44
-                    y = 523
+                    x = 43
+                    y = 524
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy/attributes:excludedProperties
