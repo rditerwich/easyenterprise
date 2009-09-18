@@ -3,6 +3,8 @@ root /packages:AgileXS/packages:Domain/packages
 import Metaphor.PIM.Archetypes.CrmArchetype
 import Metaphor.PIM.Domain.Attribute
 import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Enumeration
+import Metaphor.PIM.Domain.Literal
 import Metaphor.PIM.Domain.Operation
 import Metaphor.PIM.Domain.Package
 
@@ -22,6 +24,22 @@ Package {
                     upper = {}
                     isComposite = true
                     opposite = catalog:Product/attributes:catalog
+                }
+                Attribute {
+                    name = productGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:ProductGroup/attributes:catalog
+                }
+                Attribute {
+                    name = properties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Property/attributes:catalog
                 }
                 Attribute {
                     name = taxonomies
@@ -49,12 +67,19 @@ Package {
                     opposite = catalog:Catalog/attributes:products
                 }
                 Attribute {
-                    name = properties
-                    type = catalog:ProductProperty
+                    name = propertyValues
+                    type = catalog:PropertyValue
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:ProductProperty/attributes:product
+                    opposite = catalog:PropertyValue/attributes:product
+                }
+                Attribute {
+                    name = productGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:ProductGroup/attributes:products
                 }
                 Attribute {
                     name = relatedProducts
@@ -96,12 +121,33 @@ Package {
         }
         
         Class {
-            name = ProductProperty
+            name = Property
             attributes = {
+                 Attribute {
+                    name = catalog
+                    type = catalog:Catalog
+                    opposite = catalog:Catalog/attributes:properties
+                }
                 Attribute {
-                    name = product
-                    type = catalog:Product
-                    opposite = catalog:Product/attributes:properties
+                    name = name
+                    type = primitive:String
+                }
+                Attribute {
+                    name = productGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:ProductGroup/attributes:properties
+                }
+                Attribute {
+                    name = type
+                    type = catalog:PropertyType
+                }
+                Attribute {
+                    name = enumValues
+                    type = primitive:String
+                    lower = 1
+                    upper = {}
                 }
             }
         }
@@ -118,8 +164,19 @@ Package {
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    isComposite = true
                     opposite = catalog:ProductGroup/attributes:taxonomy
+                }
+                Attribute {
+                    name = excludedProperties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                }
+                Attribute {
+                    name = excludedProductGroups
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
                 }
             }
         }
@@ -127,27 +184,48 @@ Package {
             name = ProductGroup
             attributes = {
                 Attribute {
+                    name = catalog
+                    type = catalog:Catalog
+                    opposite = catalog:Catalog/attributes:productGroups
+                }
+                Attribute {
                     name = taxonomy
                     type = catalog:Taxonomy
+                    lower = 0
+                    upper = {}
                     opposite = catalog:Taxonomy/attributes:productGroups
                 }
                 Attribute {
-                    name = subGroups
+                    name = children
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    isComposite = true
-                    opposite = catalog:ProductGroup/attributes:parentGroup
+                    opposite = catalog:ProductGroup/attributes:parent
                 }
                 Attribute {
-                    name = parentGroup
+                    name = parent
                     type = catalog:ProductGroup
                     lower = 0
-                    opposite = catalog:ProductGroup/attributes:subGroups
+                    upper = {}
+                    opposite = catalog:ProductGroup/attributes:children
                 }
                 Attribute {
                     name = products
                     type = catalog:Product
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:Product/attributes:productGroups
+                }
+                Attribute {
+                    name = properties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:Property/attributes:productGroups
+                }
+                Attribute {
+                    name = excludedProperties
+                    type = catalog:Property
                     lower = 0
                     upper = {}
                 }
@@ -158,11 +236,233 @@ Package {
          * published to.
          */
         Class {
-            name = Channel
+            name = PropertyValue
             attributes = {
                 Attribute {
-                    name = defaultTaxonomy
-                    type = catalog:Taxonomy
+                    name = property
+                    type = catalog:Property
+                }
+                /**
+                 * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
+                 */
+                Attribute {
+                    name = language
+                    type = primitive:String
+                }
+                /**
+                 * Used when property.type == String or property.type == Enum
+                 */
+                Attribute {
+                    name = stringValue
+                    type = primitive:String
+                }
+                /**
+                 * Used when property.type == Integer
+                 */
+                Attribute {
+                    name = integerValue
+                    type = primitive:Integer
+                }
+                /**
+                 * Used when property.type == Real or any SI unit 
+                 */
+                Attribute {
+                    name = realValue
+                    type = primitive:Real
+                }
+                /**
+                 * Used when property.type == Boolean
+                 */
+                Attribute {
+                    name = booleanValue
+                    type = primitive:Boolean
+                }
+                /**
+                 * Used when property.type == Money
+                 */
+                Attribute {
+                    name = moneyValue
+                    type = primitive:Money
+                }
+                /**
+                 * Used when property.type == Money.
+                 * Stored as ISO 4217 currency code.
+                 * See http://en.wikipedia.org/wiki/ISO_4217.
+                 */
+                Attribute {
+                    name = moneyCurrency
+                    type = primitive:String
+                }
+                Attribute {
+                    name = product
+                    type = catalog:Product
+                    opposite = catalog:Product/attributes:propertyValues
+                }
+            }
+        }
+         /**
+         * See http://en.wikipedia.org/wiki/International_System_of_Units
+         * and http://en.wikipedia.org/wiki/SI_derived_unit
+         */
+        Enumeration {
+            name = PropertyType
+            literals = {
+                /**
+                 * Stored in field PropertyValue.stringValue.
+                 */
+                Literal {
+                    name = String
+                }
+                /**
+                 * Stored in field PropertyValue.integerValue.
+                 */
+                Literal {
+                    name = Integer
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 */
+                Literal {
+                    name = Real
+                }
+                /**
+                 * Stored in field PropertyValue.booleanValue.
+                 */
+                Literal {
+                    name = Boolean
+                }
+                /**
+                 * Stored in field PropertyValue.moneyValue.
+                 */
+                Literal {
+                    name = Money
+                }
+                /**
+                 * Stored in field PropertyValue.stringValue.
+                 */
+                Literal {
+                    name = Enum
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in metres.
+                 */
+                Literal {
+                    name = Length
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in kilograms.
+                 */
+                Literal {
+                    name = Mass
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in seconds.
+                 */
+                Literal {
+                    name = Time
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in amperes.
+                 */
+                Literal {
+                    name = ElectricCurrent
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in kelvin.
+                 */
+                Literal {
+                    name = Temperature
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in candela.
+                 */
+                Literal {
+                    name = LuminousIntensity
+                }
+                /**
+                 * Stored in field PropertyValue.realValue. 
+                 * Units stored in mole.
+                 */
+                Literal {
+                    name = AmountOfSubstance
+                }
+                
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in hertz.
+                 */
+                Literal {
+                    name = Frequency
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in rad.
+                 */
+                Literal {
+                    name = Angle
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in joule.
+                 */
+                Literal {
+                    name = Energy
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in watts.
+                 */
+                Literal {
+                    name = Power
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in volt.
+                 */
+                Literal {
+                    name = Voltage
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in metre per second.
+                 */
+                Literal {
+                    name = Velocity
+                }
+                
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in square metre.
+                 */
+                Literal {
+                    name = Area
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in cubic metre.
+                 */
+                Literal {
+                    name = Volume
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in metre per second.
+                 */
+                Literal {
+                    name = Velocity
+                }
+                /**
+                 * Stored in field PropertyValue.realValue.
+                 * Units stored in metre per square second.
+                 */
+                Literal {
+                    name = Acceleration
                 }
             }
         }

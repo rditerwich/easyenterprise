@@ -2,6 +2,7 @@ root /domainDiagrams
 
 import Metaphor.Eclipse.Diagrams.Rectangle
 import Metaphor.Eclipse.DomainDiagrams.DiagramClass
+import Metaphor.Eclipse.DomainDiagrams.DiagramEnum
 import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
 import Metaphor.Eclipse.DomainDiagrams.Reference
 
@@ -12,7 +13,7 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 8
+                    x = 90
                     y = 10
                     width = -1
                     height = -1
@@ -23,7 +24,7 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 109
+                    x = 272
                     y = 10
                     width = -1
                     height = -1
@@ -34,8 +35,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 105
-                    y = 72
+                    x = 147
+                    y = 453
                     width = -1
                     height = -1
                 }
@@ -45,19 +46,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 134
-                    y = 191
-                    width = -1
-                    height = -1
-                }
-            }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductProperty
-        }
-        DiagramClass {
-            bounds = {
-                Rectangle {
-                    x = 320
-                    y = 82
+                    x = 394
+                    y = 509
                     width = -1
                     height = -1
                 }
@@ -67,8 +57,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 365
-                    y = 204
+                    x = 330
+                    y = 621
                     width = -1
                     height = -1
                 }
@@ -78,13 +68,59 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 210
-                    y = 10
+                    x = 74
+                    y = 509
                     width = -1
                     height = -1
                 }
             }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Channel
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelatedProduct
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 8
+                    y = 565
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 331
+                    y = 565
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 206
+                    y = 509
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyValue
+        }
+    }
+    enumerations = {
+        DiagramEnum {
+            bounds = {
+                Rectangle {
+                    x = 727
+                    y = 205
+                    width = -1
+                    height = -1
+                }
+            }
+            domainEnum = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyType
         }
     }
     references = {
@@ -95,13 +131,52 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:taxonomies
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:properties
-        }
-        Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy/attributes:productGroups
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Channel/attributes:defaultTaxonomy
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:productGroups
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:properties
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:productRelations
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:propertyValues
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:relatedProducts
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelatedProduct/attributes:product
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:products
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy/attributes:excludedProperties
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Taxonomy/attributes:excludedProductGroups
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:children
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:excludedProperties
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelatedProduct/attributes:relation
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyValue/attributes:property
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:productGroups
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:productGroups
         }
     }
 }
