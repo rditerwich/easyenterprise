@@ -158,18 +158,14 @@ Package {
             attributes = {
                 Attribute {
                     name = value
-                    type = primitive:String
-                }
-                /**
-                 * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
-                 */
-                Attribute {
-                    name = language
-                    type = primitive:String
+                    type = primitive:Integer
                 }
                 Attribute {
                     name = label
-                    type = primitive:String
+                    type = catalog:Label
+                    isComposite = true
+                    lower = 0
+                    upper = {}
                 }
             }
         }
@@ -219,6 +215,13 @@ Package {
                     opposite = catalog:Taxonomy/attributes:productGroups
                 }
                 Attribute {
+                    name = label
+                    type = catalog:Label
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                }
+                Attribute {
                     name = children
                     type = catalog:ProductGroup
                     lower = 0
@@ -254,6 +257,25 @@ Package {
                 }
             }
         }
+        Class {
+            name = Label
+            attributes = {
+                /**
+                 * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
+                 * When not specified (null), denotes a default value applicable for all languages.
+                 */
+                Attribute {
+                    name = language
+                    lower = 0
+                    type = primitive:String
+                }
+                Attribute {
+                    name = label
+                    type = primitive:String
+                }
+            }
+        }
+        
         /**
          * Represents an entity (e.g. Distributor) where a catalog can be 
          * published to.
@@ -267,23 +289,32 @@ Package {
                 }
                 /**
                  * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
+                 * When not specified (null), denotes a default value applicable for all languages.
                  */
                 Attribute {
                     name = language
+                    lower = 0
                     type = primitive:String
                 }
                 /**
-                 * Used when property.type == String
+                 * Used when property.type == String or property.type == FormattedText  
                  */
                 Attribute {
                     name = stringValue
                     type = primitive:String
                 }
                 /**
-                 * Used when property.type == Integer or property.type == Enum
+                 * Used when property.type == Integer
                  */
                 Attribute {
                     name = integerValue
+                    type = primitive:Integer
+                }
+                /**
+                 * Used when property.type == Enum
+                 */
+                Attribute {
+                    name = enumValue
                     type = primitive:Integer
                 }
                 /**
@@ -299,14 +330,6 @@ Package {
                 Attribute {
                     name = booleanValue
                     type = primitive:Boolean
-                }
-                /**
-                 * Used when property.type == FormattedText.
-                 * Html subset.
-                 */
-                Attribute {
-                    name = formattedTextValue
-                    type = primitive:String
                 }
                 /**
                  * Used when property.type == Money
@@ -387,7 +410,7 @@ Package {
                     name = Money
                 }
                 /**
-                 * Stored in field PropertyValue.integerValue.
+                 * Stored in field PropertyValue.enumValue.
                  */
                 Literal {
                     name = Enum
@@ -400,6 +423,7 @@ Package {
                 }
                 /**
                  * Stored in field PropertyValue.stringValue.
+                 * Html subset.
                  */
                 Literal {
                     name = FormattedText

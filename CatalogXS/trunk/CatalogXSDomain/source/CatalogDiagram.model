@@ -14,7 +14,7 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 429
+                    x = 510
                     y = 16
                     width = 153
                     height = 105
@@ -25,8 +25,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 456
-                    y = 218
+                    x = 527
+                    y = 225
                     width = 131
                     height = 96
                 }
@@ -58,8 +58,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 714
-                    y = 235
+                    x = 761
+                    y = 231
                     width = 136
                     height = 71
                 }
@@ -69,8 +69,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 719
-                    y = 35
+                    x = 768
+                    y = 31
                     width = 112
                     height = 74
                 }
@@ -83,7 +83,7 @@ DomainDiagram {
                     x = 162
                     y = 431
                     width = 131
-                    height = 140
+                    height = 174
                 }
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property
@@ -91,8 +91,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 460
-                    y = 417
+                    x = 535
+                    y = 467
                     width = -1
                     height = -1
                 }
@@ -102,13 +102,24 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 318
-                    y = 592
+                    x = 369
+                    y = 490
                     width = -1
                     height = -1
                 }
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:EnumValue
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 398
+                    y = 347
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Label
         }
     }
     enumerations = {
@@ -252,16 +263,40 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:productGroups
         }
         Reference {
+            bendPoints = {
+                Point {
+                    x = 418
+                    y = 241
+                }
+            }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:productGroups
         }
         Reference {
             bendPoints = {
                 Point {
-                    x = 252
-                    y = 611
+                    x = 323
+                    y = 517
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:enumValues
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 424
+                    y = 453
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:EnumValue/attributes:label
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 427
+                    y = 271
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:label
         }
     }
 }
