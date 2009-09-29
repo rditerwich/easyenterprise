@@ -534,14 +534,6 @@ Package {
                 Literal {
                     name = Voltage
                 }
-                /**
-                 * SI derived unit.
-                 * Stored in field PropertyValue.realValue.
-                 * Units stored in metre per second.
-                 */
-                Literal {
-                    name = Velocity
-                }
                 
                 /**
                  * SI derived unit.
