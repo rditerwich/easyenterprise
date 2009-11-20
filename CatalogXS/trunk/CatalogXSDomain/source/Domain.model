@@ -4,8 +4,10 @@ import Metaphor.PIM.Archetypes.CrmArchetype
 import Metaphor.PIM.Domain.Class
 import Metaphor.PIM.Domain.Operation
 import Metaphor.PIM.Domain.Package
+import Metaphor.PIM.Domain.Parameter
 
 path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
+path catalog=/packages:AgileXS/packages:Domain/packages:Catalog/types
 
 Package {
     name = Domain
@@ -16,7 +18,32 @@ Package {
     }
     operations = {
         Operation {
-            name = exampleOperation
+            name = find
+            parameters = {
+                Parameter {
+                    name = channel
+                    type = primitive:Date
+                }
+            }
+        }
+        Operation {
+            name = findProducts
+            type = catalog:Product
+            lower = 0
+            upper = {}
+            parameters = {
+                Parameter {
+                    name = channel
+                    type = primitive:Long
+                }
+            }
+        }
+        Operation {
+            name = getProductRelations
+            type = catalog:ProductRelation
+            lower = 0
+            upper = {}
+            
         }
     }
 }
