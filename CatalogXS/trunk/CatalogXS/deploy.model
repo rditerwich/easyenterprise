@@ -11,8 +11,9 @@ DeploymentConfiguration {
     name = "CatalogXS Deployment Local Marteijn"
     productConfigurations = {
         Glassfish2Configuration {
-            installDir = "e:/glassfish"
+            installDir = "E:/Glassfish"
             domain = domain1
+            skipAutoConfig = true
 
             webConfiguration = GwtWebConfiguration {
                 userAgent = All
@@ -26,7 +27,7 @@ DeploymentConfiguration {
                 databaseName = CatalogXSDatabase
                 username = postgres
                 password = postgres
-                schemaUpdateKind = upgrade
+                schemaUpdateKind = none
                 jdbcDriverClasspath = "C:/Program Files (x86)/DbVisualizer-6.0.13/jdbc/postgresql/postgresql.jar"
             }
 
