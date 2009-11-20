@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>agilexs.presentation</groupId>
+	<artifactId>catalog-presentation</artifactId>
+	<packaging>jar</packaging>
+	<name>Catalog war</name>
+	<version>1.0</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.cobogw</groupId>
+			<artifactId>cobogw-gwt</artifactId>
+			<version>1.3</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>eu.future.earth</groupId>
+			<artifactId>ftr-common</artifactId>
+			<version>1.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.future.earth.gwt</groupId>
+			<artifactId>ftr-gwt-library-date</artifactId>
+			<version>1.1.0</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>eu.easyenterprise.gwt</groupId>
+			<artifactId>ee-finacial</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.future.earth.gwt</groupId>
+			<artifactId>ftr-gwt-library-file</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.easyenterprise.gwt</groupId>
+			<artifactId>ee-gwt-framework</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency> 
+			<groupId>com.allen.sauer</groupId>
+			<artifactId>gwt-dnd</artifactId>
+			<version>2.6.5</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.future.earth.gwt</groupId>
+			<artifactId>ftr-gwt-library-extras</artifactId>
+			<version>0.9.6</version>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>glassfish-repository</id>
+			<name>Java.net Repository for Glassfish</name>
+			<url>http://download.java.net/maven/glassfish</url>
+		</repository>
+		<repository>
+			<id>download.java.net</id>
+			<name>Java.net Maven Repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+	</repositories>
+</project>
