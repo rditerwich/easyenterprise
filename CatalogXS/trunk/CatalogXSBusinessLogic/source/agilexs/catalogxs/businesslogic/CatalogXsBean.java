@@ -1,5 +1,6 @@
 package agilexs.catalogxs.businesslogic;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -11,19 +12,11 @@ import javax.persistence.NamedQuery;
 import agilexs.catalogxs.jpa.catalog.Product;
 
 @Stateless
-@NamedQueries( {
-	
-		@NamedQuery(name = "Product.FindById", query = "SELECT a FROM Product a WHERE a.id = :id"),
-
-		@NamedQuery(name = "Product.DeleteById", query = "DELETE FROM Product a WHERE a.id = :id")
-
-})
-public class CatalogXsBean extends CatalogXsBeanBase {
+public class CatalogXsBean extends CatalogXsBeanBase implements CatalogXs {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Collection<Product> findProducts(Long channel) {
-
-		return null;
+		return new ArrayList<Product>();
 	}
 
 }
