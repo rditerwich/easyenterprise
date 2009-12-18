@@ -11,13 +11,19 @@ J2eeModule {
     version = Version { major = 1 minor = 0 micro = 0 }
     dependencies = {
         Dependency {
+            module = metaphor
+        }
+        Dependency {
+            module = metaphor.modeling
+        }
+        Dependency {
+            module = metaphor.models
+        }
+        Dependency {
             module = agilexs.catalogxs.common
         }
         Dependency {
             module = agilexs.catalogxs.persistence
-        }
-        Dependency {
-            module = metaphor.models
         }
     }
 }

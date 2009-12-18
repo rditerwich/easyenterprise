@@ -66,3 +66,32 @@ DeploymentConfiguration {
         }
     }
 }
+DeploymentConfiguration {
+    id = agilexs.catalogxs.deployment.local.hilbrand
+    name = "CatalogXS Deployment Local Hilbrand"
+    productConfigurations = {
+        Glassfish2Configuration {
+            installDir = "E:/tools/glassfish"
+            domain = domain1
+
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = false
+            }
+
+            dbConfiguration = PostgreSQLConfiguration {
+                installDir = "C:/Program Files/PostgreSQL/8.3"
+                server = localhost
+                port = 5432
+                databaseName = CatalogXSDatabase
+                username = postgres
+                password = postgres
+                schemaUpdateKind = full
+                jdbcDriverClasspath = "E:/libraries/psqlJDBC/postgresql-8.3-603.jdbc4.jar"
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}

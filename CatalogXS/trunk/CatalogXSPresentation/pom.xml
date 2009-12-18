@@ -1,64 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>agilexs.presentation</groupId>
-	<artifactId>catalog-presentation</artifactId>
-	<packaging>jar</packaging>
-	<name>Catalog war</name>
-	<version>1.0</version>
-	<dependencies>
-		<dependency>
-			<groupId>org.cobogw</groupId>
-			<artifactId>cobogw-gwt</artifactId>
-			<version>1.3</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>agilexs.catalogxs.presentation</groupId>
+  <artifactId>catalogxs</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>catalogxs</name>
+  <inceptionYear>2007</inceptionYear>
+  <properties>
+    <scala.version>2.7.3</scala.version>
+  </properties>
 
-		</dependency>
-		<dependency>
-			<groupId>eu.future.earth</groupId>
-			<artifactId>ftr-common</artifactId>
-			<version>1.9</version> 
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.future.earth.gwt</groupId>
-			<artifactId>ftr-gwt-library-date</artifactId>
-			<version>1.1.0</version>
-
-		</dependency>
-		<dependency>
-			<groupId>eu.easyenterprise.gwt</groupId>
-			<artifactId>ee-gwt-framework-interface</artifactId>
-			<version>0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.easyenterprise.gwt</groupId>
-			<artifactId>ee-finacial</artifactId>
-			<version>0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.future.earth.gwt</groupId>
-			<artifactId>ftr-gwt-library-file</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.easyenterprise.gwt</groupId>
-			<artifactId>ee-gwt-framework</artifactId>
-			<version>0.9.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.allen.sauer</groupId>
-			<artifactId>gwt-dnd</artifactId>
-			<version>2.6.5</version>
-
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>2.9.0</version>
-		</dependency>
-	</dependencies>
-	<repositories>
+  <repositories>
+    <repository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </repository>
 		<repository>
 			<id>glassfish-repository</id>
 			<name>Java.net Repository for Glassfish</name>
@@ -69,5 +27,167 @@
 			<name>Java.net Maven Repository</name>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
-	</repositories>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+    <dependency>
+      <groupId>agilexs.catalogxs</groupId>
+      <artifactId>catalogxs-businesslogic</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>E:/workspace-ee-mda/CatalogXSBusinessLogic/deploy/agilexs.catalogxs.businesslogic_20091217-2053-ide.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>agilexs.catalogxs</groupId>
+      <artifactId>catalogxs-persistence</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>E:/workspace-ee-mda/CatalogXSPersistence/deploy/agilexs.catalogxs.persistence_20091217-2053-ide.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.glasshfish</groupId>
+      <artifactId>glasshfish</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>e:/tools/glassfish/lib/javaee.jar</systemPath>
+    </dependency>
+    
+	<dependency>
+	 <groupId>postgresql</groupId>
+	 <artifactId>postgresql</artifactId>
+	 <version>8.3-603.jdbc3</version>
+	</dependency>
+      
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.liftweb</groupId>
+      <artifactId>lift-core</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.4.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>[6.1.6,)</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- for LiftConsole -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>${scala.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <scalaVersion>${scala.version}</scalaVersion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <configuration>
+          <contextPath>/</contextPath>
+          <scanIntervalSeconds>5</scanIntervalSeconds>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>net.sf.alchim</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <nosuffix>true</nosuffix>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <excludes>
+            <exclude>org.scala-lang:scala-library</exclude>
+          </excludes>
+          <classpathContainers>
+            <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
+          </classpathContainers>
+          <projectnatures>
+            <java.lang.String>ch.epfl.lamp.sdt.core.scalanature</java.lang.String>
+            <java.lang.String>org.eclipse.jdt.core.javanature</java.lang.String>
+          </projectnatures>
+          <buildcommands>
+            <java.lang.String>ch.epfl.lamp.sdt.core.scalabuilder</java.lang.String>
+          </buildcommands>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <configuration>
+          <scalaVersion>${scala.version}</scalaVersion>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

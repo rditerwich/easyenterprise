@@ -2,12 +2,12 @@ root /architecture
 
 import Metaphor.PSM.DomainToRdbms.ColumnTemplates
 import Metaphor.PSM.DomainToRdbms.DomainToRdbms
-import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
+import Metaphor.PSM.J2eeArchitectureJpaEjbLift
 import Metaphor.PSM.Rdbms.Column
 import Metaphor.PSM.J2eeAspects.Crud
 
 
-J2eeArchitectureJpaEjbGwt {
+J2eeArchitectureJpaEjbLift {
     name = CatalogXSArchitecture
     commonModule = /modules:agilexs.catalogxs.common
     providerPackage = /packages:AgileXS

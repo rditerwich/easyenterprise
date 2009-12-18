@@ -1,22 +1,11 @@
 package agilexs.catalogxs.businesslogic;
 
-import java.io.IOException;
-
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.LockObtainFailedException;
-
-import agilexs.catalogxs.jpa.catalog.Product;
 
 @Stateless
 public class CatalogBean extends CatalogBeanBase implements Catalog {
 
-	private final static org.apache.log4j.Logger LOGGER = eu.future.earth.logging.ExtendedLog.getLogger(CatalogBean.class);
+//	private final static org.apache.log4j.Logger LOGGER = eu.future.earth.logging.ExtendedLog.getLogger(CatalogBean.class);
 
 //	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 //	public Product updateProduct(Product oldProduct, Product newProduct) {
