@@ -1,0 +1,28 @@
+<project name="EasyEnterprisePersitance" default="copy" basedir=".">
+
+	<property name="groupId" value="eu.easy.enterprise.bookkeeping" />
+	<property name="artifactId" value="BookKeepingCommon" />
+	<property name="version" value="1.1" />
+	<property name="dirName" value="${user.home}/.m2/repository/${groupId}/${artifactId}/${version}" />
+	<property name="fileName" value="${dirName}/${artifactId}-${version}.jar" />
+
+	<!-- BEGIN PUBLIC TARGETS -->
+	<target name="copy" description="Copy File To Maven Archive">
+		<echo level="info" message="******************************************************************" />
+		<echo level="info" message="***                Copy the Persistance jar                    ***" />
+		<echo level="info" message="******************************************************************" />
+		<mkdir dir="${dirName}" />
+		<move todir="${basedir}/deploy/" includeemptydirs="false">
+			<fileset dir="${basedir}/deploy/">
+				<include name="**/*-ide.jar" />
+			</fileset>
+			<mapper type="merge" from="*" to="test.jar" />
+		</move>
+
+		<copy tofile="${fileName}" file="${basedir}/deploy/test.jar" />
+
+	</target>
+
+
+
+</project>

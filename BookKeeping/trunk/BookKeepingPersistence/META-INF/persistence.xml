@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="EasyEnterprise.BookKeeping.Jpa.PersistenceUnit">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>jdbc/easyenterprise_bookkeeping_jpa_persistenceunit</jta-data-source>
+        <mapping-file>easyenterprise/bookkeeping/jpa/PersistenceUnit.xml</mapping-file>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.target-database" value="PostgreSQL"/>
+            <!-- logging options -->
+            <property name="eclipselink.logging.level" value="INFO"/>
+            <property name="eclipselink.logging.timestamp" value="true"/>
+            <property name="eclipselink.logging.session" value="true"/>
+            <property name="eclipselink.logging.thread" value="true"/>
+            <property name="eclipselink.logging.exceptions" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

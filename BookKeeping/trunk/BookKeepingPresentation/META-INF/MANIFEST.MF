@@ -1,0 +1,18 @@
+Bundle-Comment: This file was generated.  To prevent this, remove this line
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BookKeepingPresentation
+Bundle-SymbolicName: easyenterprise.bookkeeping.presentation; singleton:=true
+Bundle-Version: 1.0.0.20091219-1810-ide
+Bundle-Vendor: EasyEnterprise
+Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: 
+ easyenterprise.bookkeeping.businesslogic,
+ easyenterprise.bookkeeping.persistence,
+ metaphor.core,
+ metaphor.eclipse.core,
+ metaphor.models,
+ metaphor2.core,
+ org.eclipse.core.runtime
+

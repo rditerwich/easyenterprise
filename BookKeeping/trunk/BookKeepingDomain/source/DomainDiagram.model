@@ -1,0 +1,254 @@
+root /domainDiagrams
+
+import Metaphor.Eclipse.Diagrams.Point
+import Metaphor.Eclipse.Diagrams.Rectangle
+import Metaphor.Eclipse.DomainDiagrams.DiagramClass
+import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
+import Metaphor.Eclipse.DomainDiagrams.Reference
+import Metaphor.Eclipse.DomainDiagrams.SuperClassReference
+
+DomainDiagram {
+    name = EasyEnterprise
+    package = /packages:EasyEnterprise/packages:Domain
+    classes = {
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 108
+                    y = 17
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Bookkeeping
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 81
+                    y = 406
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:JournalEntry
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 284
+                    y = 480
+                    width = 153
+                    height = 155
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:BankTransaction
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 485
+                    y = 530
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:BankAccount
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 388
+                    y = 174
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Ledger
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 385
+                    y = 68
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:GeneralLedger
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 392
+                    y = 324
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Account
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 673
+                    y = 453
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Asset
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 664
+                    y = 393
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Liability
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 665
+                    y = 347
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Equity
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 667
+                    y = 298
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Revenue
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 669
+                    y = 251
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Expense
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 105
+                    y = 145
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Booking
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 98
+                    y = 263
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Mutation
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 59
+                    y = 569
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:BankTransactionJournalEntry
+        }
+    }
+    references = {
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Bookkeeping/attributes:bookings
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:JournalEntry/attributes:account
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Mutation/attributes:entries
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:BankTransaction/attributes:bankAccount
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 450
+                    y = 265
+                }
+                Point {
+                    x = 640
+                    y = 267
+                }
+                Point {
+                    x = 635
+                    y = 188
+                }
+            }
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Ledger/attributes:subLedgers
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Ledger/attributes:accounts
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Booking/attributes:mutations
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:BankTransactionJournalEntry/attributes:bankTransaction
+        }
+    }
+    superClassReferences = {
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:BankAccount
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Asset
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:GeneralLedger
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Ledger
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Asset
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Liability
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Equity
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Revenue
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Expense
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
+        }
+        SuperClassReference {
+            source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:BankTransactionJournalEntry
+            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:JournalEntry
+        }
+    }
+}

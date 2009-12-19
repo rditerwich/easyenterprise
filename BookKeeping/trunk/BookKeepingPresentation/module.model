@@ -1,0 +1,23 @@
+root /modules
+
+import Metaphor.Core.Dependency
+import Metaphor.Core.Version
+import Metaphor.PSM.Web.WebModule
+
+WebModule {
+    id = easyenterprise.bookkeeping.presentation
+    name = BookKeepingPresentation
+    provider = EasyEnterprise
+    version = Version { major = 1 minor = 0 micro = 0 }
+    dependencies = {
+        Dependency {
+            module = easyenterprise.bookkeeping.businesslogic
+        }
+        Dependency {
+            module = easyenterprise.bookkeeping.persistence
+        }
+        Dependency {
+            module = metaphor.models
+        }
+    }
+}
