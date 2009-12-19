@@ -1,0 +1,18 @@
+<project name="EasyEnterprisePersitance" default="copy" basedir=".">
+
+	<!-- BEGIN PUBLIC TARGETS -->
+	<target name="copy" description="Copy Files To Maven Archive">
+		<echo level="info" message="******************************************************************" />
+		<echo level="info" message="***                Copy the Persistance jar                    ***" />
+		<echo level="info" message="******************************************************************" />
+		<ant antfile="BookKeepingCommon/build.xml" target="copy" inheritAll="false" />
+		<ant antfile="BookKeepingPersistence/build.xml" target="copy" inheritAll="false" />
+		<ant antfile="BookKeepingDomain/build.xml" target="copy" inheritAll="false" />
+		<ant antfile="BookKeepingBusinessLogic/build.xml" target="copy" inheritAll="false" />
+		<ant antfile="BookKeepingPresentation/build.xml" target="copy" inheritAll="false" />
+
+	</target>
+
+
+
+</project>

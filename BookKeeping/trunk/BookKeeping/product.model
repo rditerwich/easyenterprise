@@ -1,0 +1,21 @@
+root /products
+
+import Metaphor.Core.Version
+import Metaphor.PSM.J2ee.J2eeProduct
+
+J2eeProduct {
+    id = easyenterprise.bookkeeping
+    name = BookKeeping
+    provider = EasyEnterprise
+    version = Version { major = 1 minor = 0 micro = 0 }
+    modules = {
+        easyenterprise.bookkeeping
+        easyenterprise.bookkeeping.common
+        easyenterprise.bookkeeping.persistence
+        easyenterprise.bookkeeping.businesslogic
+        easyenterprise.bookkeeping.presentation
+        easyenterprise.bookkeeping.domain
+    }
+    domain = /packages:EasyEnterprise/packages:Domain
+    architecture = /architecture:BookKeepingArchitecture
+}

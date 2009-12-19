@@ -1,0 +1,38 @@
+root /deployment
+
+import Metaphor.Core.DeploymentConfiguration
+import Metaphor.PSM.GWT.GwtWebConfiguration
+
+import Metaphor.PSM.Glassfish2.EclipseLinkConfiguration
+import Metaphor.PSM.Glassfish2.Glassfish2Configuration
+import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
+
+DeploymentConfiguration {
+    id = easyenterprise.bookkeeping.deployment.local
+    name = "BookKeeping Deployment Local"
+    productConfigurations = {
+        Glassfish2Configuration {
+            installDir = "D:/servers/glassfish"
+            domain = domain1
+            skipDeployment = true
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = true
+            }
+
+            dbConfiguration = PostgreSQLConfiguration {
+                installDir = "C:/Program Files (x86)/PostgreSQL/8.4"
+                server = localhost
+                port = 5432
+                databaseName = BookKeepingDatabase
+                username = postgres
+                password = postgres
+                schemaUpdateKind = upgrade
+                jdbcDriverClasspath = "D:/servers/glassfish/lib/postgresql-8.4-701.jdbc4.jar"
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}

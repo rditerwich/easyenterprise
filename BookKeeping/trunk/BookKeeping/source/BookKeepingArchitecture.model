@@ -1,0 +1,28 @@
+root /architecture
+
+import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
+import Metaphor.PSM.J2eeAspects.Crud
+
+J2eeArchitectureJpaEjbGwt {
+    name = BookKeepingArchitecture
+    providerPackage = /packages:EasyEnterprise
+    productPackage = /packages:EasyEnterprise/packages:BookKeeping
+    commonModule = /modules:easyenterprise.bookkeeping.common
+    persistenceModule = /modules:easyenterprise.bookkeeping.persistence
+    businessLogicModule = /modules:easyenterprise.bookkeeping.businesslogic
+    presentationModule = /modules:easyenterprise.bookkeeping.presentation
+    jpaVendor = generic
+    databaseVendor = postgresql
+    aspects = {
+        Crud {
+            name = CruddForAll 
+            participants = {
+                /packages:EasyEnterprise/packages:Domain/types:Ledger
+                /packages:EasyEnterprise/packages:Domain/types:Mutation
+                
+            }
+            
+            
+        }
+    }
+}
