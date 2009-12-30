@@ -21,14 +21,17 @@ import agilexs.catalogxs.presentation.model.Model
 import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.jpa.catalog._
 
-object CatalogOps {
+/**
+ * Catalog Operations 
+ */
+class CatalogOps {
 
   def list (xhtml : NodeSeq) : NodeSeq = {
-    val catalogs = Model.em.createQuery("from Catalog").getResultList().asInstanceOf[java.util.List[Catalog]]
+    val catalogs = Model.em.createQuery("Select c from Catalog c").getResultList().asInstanceOf[java.util.List[Catalog]]
 
     catalogs.flatMap(catalog =>
       bind("catalog", xhtml,
-	   "name" --> Text(catalog.getName())
+	   "name" -> Text(catalog.getName())
       ))
   }
 }
