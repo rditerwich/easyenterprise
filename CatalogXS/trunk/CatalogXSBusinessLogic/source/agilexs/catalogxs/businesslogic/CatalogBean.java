@@ -2,7 +2,6 @@ package agilexs.catalogxs.businesslogic;
 
 import java.util.Collection;
 
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -10,14 +9,14 @@ import javax.persistence.Query;
 
 import agilexs.catalogxs.jpa.catalog.Catalog;
 
-@Stateless(name="CatalogBean")
+@Stateless
 public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.businesslogic.Catalog {
 
 	@Override
 	@SuppressWarnings("unchecked")
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Collection<Catalog> listCatalogs() {
-        final Query query = entityManager.createQuery("select a from Catalog");
+        final Query query = entityManager.createQuery("select c from Catalog c");
 
         return query.getResultList();
     }

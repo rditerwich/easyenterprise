@@ -570,4 +570,12 @@ Package {
             }
         }
     }
+    operations = {
+        Operation {
+            name = listCatalogs
+            type = catalog:Catalog
+            lower = 0
+            upper = {}
+        }
+    }
 }

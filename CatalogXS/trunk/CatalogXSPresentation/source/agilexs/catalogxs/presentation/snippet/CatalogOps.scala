@@ -1,6 +1,7 @@
 package agilexs.catalogxs.presentation.snippet
 
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 
 import net.liftweb._ 
 import http._ 
@@ -26,14 +27,16 @@ import agilexs.catalogxs.businesslogic.CatalogBean
  * Catalog Operations 
  */
 class CatalogOps {
-  //@EJB private[this] var catalogBean : agilexs.catalogxs.businesslogic.Catalog = _
+  //this annotation doesn't work....
+  @EJB{val name = "ejb/CatalogBean"} private[this] var catalogBean : agilexs.catalogxs.businesslogic.Catalog = _
 
   object currentCatalog extends
      RequestVar[Box[Catalog]](Empty)
 
   def list (xhtml : NodeSeq) : NodeSeq = {
-	val catalogs = Model.em.createQuery("Select c from Catalog c").getResultList().asInstanceOf[java.util.List[Catalog]]
-//    val catalogs = Model.listToWrapper(catalogBean.listCatalogs().asInstanceOf[java.util.List[Catalog]])
+    catalogBean = lookupCatalog
+//	val catalogs = Model.em.createQuery("Select c from Catalog c").getResultList().asInstanceOf[java.util.List[Catalog]]
+    val catalogs = Model.listToWrapper(catalogBean.listCatalogs().asInstanceOf[java.util.List[Catalog]])
 
     catalogs.flatMap(catalog =>
       bind("catalog", xhtml,
@@ -43,4 +46,8 @@ class CatalogOps {
              Text(catalog.getName()))))
   }
 
+  private def lookupCatalog : agilexs.catalogxs.businesslogic.Catalog = {
+    val ic = new InitialContext
+    return ic.lookup("java:comp/env/ejb/CatalogBean").asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]    
+  }
 }
