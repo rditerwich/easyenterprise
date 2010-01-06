@@ -8,6 +8,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import agilexs.catalogxs.jpa.catalog.Catalog;
+import agilexs.catalogxs.jpa.catalog.Product;
 
 @Stateless
 public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.businesslogic.Catalog {
@@ -21,6 +22,21 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.bu
         return query.getResultList();
     }
 
+	@Override
+	@SuppressWarnings("unchecked")
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Product findProductById(Long id) {
+		final Product p = super.findProductById(id);
+		
+		if (p != null) {
+	        final Query query = entityManager.createQuery("select a from PropertyValue a join fetch a.property where a.product = :product");
+
+	        query.setParameter("product", p);
+	        p.setPropertyValues(query.getResultList());
+		}
+		return p;
+	}
+	
 	
 //	private final static org.apache.log4j.Logger LOGGER = eu.future.earth.logging.ExtendedLog.getLogger(CatalogBean.class);
 
