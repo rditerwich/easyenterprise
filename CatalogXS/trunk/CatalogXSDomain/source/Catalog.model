@@ -310,6 +310,7 @@ Package {
                 Attribute {
                     name = stringValue
                     type = primitive:String
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Integer
@@ -317,6 +318,7 @@ Package {
                 Attribute {
                     name = integerValue
                     type = primitive:Integer
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Enum
@@ -324,6 +326,7 @@ Package {
                 Attribute {
                     name = enumValue
                     type = primitive:Integer
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Real or any SI unit 
@@ -331,6 +334,7 @@ Package {
                 Attribute {
                     name = realValue
                     type = primitive:Real
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Boolean
@@ -338,6 +342,7 @@ Package {
                 Attribute {
                     name = booleanValue
                     type = primitive:Boolean
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Money
@@ -345,6 +350,7 @@ Package {
                 Attribute {
                     name = moneyValue
                     type = primitive:Money
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Money.
@@ -354,6 +360,7 @@ Package {
                 Attribute {
                     name = moneyCurrency
                     type = primitive:String
+                    lower = 0
                 }
                 
                 /**
@@ -362,6 +369,7 @@ Package {
                 Attribute {
                     name = mediaValue
                     type = primitive:Blob
+                    lower = 0
                 }
                 /**
                  * Used when property.type == Media.
@@ -371,6 +379,7 @@ Package {
                 Attribute {
                     name = mimeType
                     type = primitive:String
+                    lower = 0
                 }
                 
                 Attribute {
