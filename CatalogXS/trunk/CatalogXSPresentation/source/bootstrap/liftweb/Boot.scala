@@ -25,8 +25,19 @@ class Boot {
     //Schemifier.schemify(true, Log.infoF _, User)
 
     // Build SiteMap
-    val entries = Menu(Loc("Home", List("index"), "Home")) :: User.sitemap
+    //product is added otherwise product rewrite doesn't work
+    val entries =
+      Menu(Loc("Home", List("index"), "Home")) ::
+      Menu(Loc("Product", ("product" :: Nil) -> true, "Product", Hidden)) ::
+      User.sitemap
     LiftRules.setSiteMap(SiteMap(entries:_*))
+
+    LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
+	    case RewriteRequest(
+	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("product" :: Nil, Map("product" -> product)
+	    )
+    })
 
     /*
      * Show the spinny image when an Ajax call starts
