@@ -38,14 +38,16 @@ class ProductOps {
   def show(xhtml : NodeSeq) : NodeSeq = {
     val catalogBean = lookupCatalog   
     val product = catalogBean.findProductById((S.param("product").openOr("0")).toLong)
-    val propertyMap = new Array[BindParam](product.getPropertyValues.size + 1)
+    val propertyMap = new Array[BindParam](1 + (if (product == null) 0 else product.getPropertyValues.size))
 
     propertyMap(0) = "id" -> Text(S.param("product").openOr("fail over product"))
     var i = 1
 
-    for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
-      propertyMap(i) = pv.getProperty.getName -> Text(pv.getStringValue)
-      i+=1
+    if (product != null) {
+	    for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
+	      propertyMap(i) = pv.getProperty.getName -> Text(pv.getStringValue)
+	      i+=1
+	    }
     }
     bind("product", xhtml, propertyMap: _*)
   }
