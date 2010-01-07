@@ -1,0 +1,42 @@
+<lift:surround with="default" at="content">
+  <lift:ShoppingCart.phase phase="1">
+  <table>
+    <tr>
+      <th></th>
+      <th>Aantal:</th>
+      <th>Artikelen:</th>
+      <th>Prijs per stuk:</th>
+      <th>Totaalprijs:</th>
+      <th>Voorraad:</th>
+    </tr>
+    <ShoppingCart:list>
+    <tr>
+      <td><shoppingcart:deleteButton/></td>
+      <td><shoppingcart:amount/></td>
+      <td><shoppingcart:product/></td>
+      <td><shoppingcart:pricePerProduct/></td>
+      <td><shoppingcart:priceTotal/></td>
+      <td><shoppingcart:inStock/></td>
+    </tr>
+    </ShoppingCart:list>
+    <tr>
+      <td colspan="3"></td>
+      <td>Totaalprijs (excl. verzendkosten):</td>
+      <td><ShoppingCart:total/></td>
+      <td>Incl. BTW</td>
+    </tr>
+  </table>
+  </lift:ShoppingCart.phase>
+  <lift:ShoppingCart.phase phase="2">
+    Address gegevens...
+  </lift:ShoppingCart.phase>
+  <lift:ShoppingCart.phase phase="3">
+    Betalings methode...
+  </lift:ShoppingCart.phase>
+  <lift:ShoppingCart.phase phase="4">
+    Bevestigings overzicht...
+  </lift:ShoppingCart.phase>
+  <lift:ShoppingCart.phase phase="5">
+    Order geplaatst melding...
+  </lift:ShoppingCart.phase>
+</lift:surround>

@@ -36,9 +36,9 @@ class ProductOps {
    *       be calculated based to generate the specific binding, i.e. Text or SHtml.link.
    */
   def show(xhtml : NodeSeq) : NodeSeq = {
-    val catalogBean = lookupCatalog   
+    val catalogBean = lookupCatalog()
     val product = catalogBean.findProductById((S.param("product").openOr("0")).toLong)
-    val propertyMap = new Array[BindParam](1 + (if (product == null) 0 else product.getPropertyValues.size))
+    val propertyMap = new Array[BindParam](1 + (if (product == null) 0 else product.getPropertyValues().size()))
 
     propertyMap(0) = "id" -> Text(S.param("product").openOr("fail over product"))
     var i = 1
@@ -52,8 +52,8 @@ class ProductOps {
     bind("product", xhtml, propertyMap: _*)
   }
 
-    private def lookupCatalog : agilexs.catalogxs.businesslogic.Catalog = {
-      val ic = new InitialContext
+    private def lookupCatalog() : agilexs.catalogxs.businesslogic.Catalog = {
+      val ic = new InitialContext()
       return ic.lookup("java:comp/env/ejb/CatalogBean").asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]    
   }
 

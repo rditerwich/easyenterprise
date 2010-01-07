@@ -1,5 +1,6 @@
 package agilexs.catalogxs.businesslogic;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -22,12 +23,30 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.bu
         return query.getResultList();
     }
 
+	
+	@Override
+	@SuppressWarnings("unchecked")
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Collection<Product> findProductsByCatalogId(agilexs.catalogxs.jpa.catalog.Catalog catalog) {
+		final ArrayList<Product> products = new ArrayList<Product>();
+
+		if (catalog != null) {
+	        final Query query = entityManager.createQuery("select p from Product p where p.catalog = :catalog");
+
+	        query.setParameter("catalog", catalog);
+	        for (Product p : (Collection<Product>)query.getResultList()) {
+				products.add(findProductById(p.getId()));
+			}
+		}
+		return products;
+    }
+
 	@Override
 	@SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Product findProductById(Long id) {
 		final Product p = super.findProductById(id);
-		
+
 		if (p != null) {
 	        final Query query = entityManager.createQuery("select a from PropertyValue a join fetch a.property where a.product = :product");
 

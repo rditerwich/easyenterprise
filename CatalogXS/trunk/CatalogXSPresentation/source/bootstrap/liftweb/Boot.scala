@@ -28,11 +28,17 @@ class Boot {
     //product is added otherwise product rewrite doesn't work
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
+      Menu(Loc("Catalog", ("catalog" :: Nil) -> true, "Catalog", Hidden)) ::
       Menu(Loc("Product", ("product" :: Nil) -> true, "Product", Hidden)) ::
+   	  Menu(Loc("ShoppingCart", ("shoppingcart" :: Nil) -> true, "ShoppingCart", Hidden)) ::
       User.sitemap
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
     LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
+	    case RewriteRequest(
+	    	ParsePath("catalog" :: catalog :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("catalog" :: Nil, Map("catalog" -> catalog)
+	    )
 	    case RewriteRequest(
 	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
 	            RewriteResponse("product" :: Nil, Map("product" -> product)

@@ -30,12 +30,11 @@ class CatalogOps {
   //this annotation doesn't work....
   @EJB{val name = "ejb/CatalogBean"} private[this] var catalogBean : agilexs.catalogxs.businesslogic.Catalog = _
 
-  object currentCatalog extends
-     RequestVar[Box[Catalog]](Empty)
+  object currentCatalog extends RequestVar[Box[Catalog]](Empty)
+  object currentProduct extends RequestVar[Box[Product]](Empty)
 
   def list (xhtml : NodeSeq) : NodeSeq = {
-    catalogBean = lookupCatalog
-//	val catalogs = Model.em.createQuery("Select c from Catalog c").getResultList().asInstanceOf[java.util.List[Catalog]]
+    catalogBean = lookupCatalog()
     val catalogs = Model.listToWrapper(catalogBean.listCatalogs().asInstanceOf[java.util.List[Catalog]])
 
     catalogs.flatMap(catalog =>
@@ -46,8 +45,21 @@ class CatalogOps {
              Text(catalog.getName()))))
   }
 
-  private def lookupCatalog : agilexs.catalogxs.businesslogic.Catalog = {
-    val ic = new InitialContext
-    return ic.lookup("java:comp/env/ejb/CatalogBean").asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]    
+  def listProducts(xhtml : NodeSeq) : NodeSeq = {
+    catalogBean = lookupCatalog()
+    val cid = catalogBean.findCatalogById(S.param("catalog").openOr("0").toLong)
+    val products = Model.listToWrapper(catalogBean.findProductsByCatalogId(cid).asInstanceOf[java.util.List[Product]])
+
+    products.flatMap(product =>
+      bind("product", xhtml,
+          "link" ->
+             SHtml.link("/product/" + product.getId().toString(),
+             () => currentProduct(Full(product)),
+             Text(product.getId().toString()))))
+  }
+
+  private def lookupCatalog() : agilexs.catalogxs.businesslogic.Catalog = {
+    val ic = new InitialContext()
+    ic.lookup("java:comp/env/ejb/CatalogBean").asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]
   }
 }
