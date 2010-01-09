@@ -3,7 +3,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BookKeepingBusinessLogic
 Bundle-SymbolicName: easyenterprise.bookkeeping.businesslogic; singleton:=true
-Bundle-Version: 1.0.0.20091219-1810-ide
+Bundle-Version: 1.0.0
 Bundle-Vendor: EasyEnterprise
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy

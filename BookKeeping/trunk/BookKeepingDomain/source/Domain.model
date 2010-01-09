@@ -17,7 +17,7 @@ Package {
             name = Bookkeeping
             attributes = {
                 Attribute {
-                    name = owner
+                    name = organistation
                     type = primitive:Long
                 }
                 Attribute {
