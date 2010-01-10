@@ -59,6 +59,12 @@ Package {
                     name = journalDate
                     type = primitive:Timestamp
                 }
+                Attribute {
+                    name = owner
+                    type = bookkeeping:OwnerProperties
+                    lower = 1
+                    upper = {}
+                }
             }
         }
         
@@ -155,6 +161,12 @@ Package {
                     name = accountNr
                     type = primitive:String
                 }
+                Attribute {
+                    name = owner
+                    type = bookkeeping:OwnerProperties
+                    lower = 1
+                    upper = {}
+                }
             }
         }
         @comment "Activa"
@@ -222,6 +234,21 @@ Package {
                 }
             }
         }
+        
+        Class {
+            name = OwnerProperties
+            attributes = {
+                Attribute {
+                    name = ownerType
+                    type = primitive:String
+                }
+                Attribute {
+                    name = ownerId
+                    type = primitive:Long
+                }
+            }
+        }
+        
     }
     operations = {
         Operation {

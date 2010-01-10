@@ -47,8 +47,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 485
-                    y = 530
+                    x = 506
+                    y = 527
                     width = -1
                     height = -1
                 }
@@ -80,8 +80,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 392
-                    y = 324
+                    x = 375
+                    y = 310
                     width = -1
                     height = -1
                 }
@@ -176,6 +176,17 @@ DomainDiagram {
             }
             domainClass = /packages:EasyEnterprise/packages:Domain/types:BankTransactionJournalEntry
         }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 249
+                    y = 228
+                    width = 100
+                    height = 112
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:OwnerProperties
+        }
     }
     references = {
         Reference {
@@ -215,6 +226,12 @@ DomainDiagram {
         }
         Reference {
             sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:BankTransactionJournalEntry/attributes:bankTransaction
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:JournalEntry/attributes:owner
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Account/attributes:owner
         }
     }
     superClassReferences = {
