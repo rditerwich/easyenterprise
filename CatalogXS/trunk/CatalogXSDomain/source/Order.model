@@ -1,0 +1,80 @@
+root /packages:AgileXS/packages:Domain/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Enumeration
+import Metaphor.PIM.Domain.Literal
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+import Metaphor.PIM.Domain.Parameter
+
+path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
+path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path order = /packages:AgileXS/packages:Domain/packages:Order/types
+
+Package {
+    name = Order
+    types = {
+        Class {
+            name = Order
+            attributes = {
+                Attribute {
+                    name = orderDate
+                    type = primitive:Date
+                }
+                Attribute {
+                    name = productOrders
+                    type = order:ProductOrder
+                    lower = 1
+                    upper = {}
+                }
+                Attribute {
+                    name = transport
+                    type = order:Transport
+                }
+            }
+            
+        }
+        Class {
+            name = ProductOrder
+            attributes = {
+                Attribute {
+                    name = product
+                    type = catalog:Product
+                }
+                Attribute {
+                    name = volume
+                    type = primitive:Integer
+                }
+                Attribute {
+                    name = price
+                    type = primitive:Money 
+                }
+                Attribute {
+                    name = priceCurrency
+                    type = primitive:String
+                }
+            }
+        }
+        Class {
+            name = Transport
+            attributes = {
+                Attribute {
+                    name = desciption
+                    type = primitive:String
+                }
+                Attribute {
+                    name = transportCompany
+                    type = primitive:String
+                }
+                @comment "Delivery time in days"
+                Attribute {
+                    name = deliveryTime
+                    type = primitive:Integer
+                }
+            }
+        }
+    }
+}
+ 

@@ -1,5 +1,6 @@
 package bootstrap.liftweb
 
+import _root_.net.liftweb._
 import _root_.net.liftweb.util._
 import _root_.net.liftweb.http._
 import _root_.net.liftweb.sitemap._
@@ -10,17 +11,38 @@ import _root_.java.sql.{Connection, DriverManager}
 import _root_.agilexs.catalogxs.presentation.model._
 import _root_.javax.servlet.http.{HttpServletRequest}
 
+//import _root_.java.util.Locale
+
+//import _root_.agilexs.catalogxs._
+//import presentation._
+//import cache.{definedLocale}
+
 /**
   * A class that's instantiated early and run.  It allows the application
   * to modify lift's environment
   */
 class Boot {
+
+  //val localeCookieName = "cookie.agilexs.catalogxs.locale"
+
   def boot {
 //    if (!DB.jndiJdbcConnAvailable_?)
 //      DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
 
+    //http://wiki.github.com/dpp/liftweb/how-to-localization
+
+/*LIFT 2.0?? 
+    LiftRules.resourceBundleFactories.prepend { 
+	  case (basename, locale) if localeAvailable_?(locale) => 
+	      CacheResourceBundle(locale)
+	  case _ => CacheResourceBundle(new Locale("en","GB"))
+	}
+*/
     // where to search snippet
-    LiftRules.addToPackages("agilexs.catalogxs.presentation")
+    LiftRules.addToPackages("agilexs.catalogxs.presentation");
+
+    //LiftRules.localeCalculator = r => definedLocale.openOr(LiftRules.defaultLocaleCalculator(r))
+
     //We will take care of this
     //Schemifier.schemify(true, Log.infoF _, User)
 
@@ -28,16 +50,33 @@ class Boot {
     //product is added otherwise product rewrite doesn't work
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
-      Menu(Loc("Catalog", ("catalog" :: Nil) -> true, "Catalog", Hidden)) ::
-      Menu(Loc("Product", ("product" :: Nil) -> true, "Product", Hidden)) ::
-   	  Menu(Loc("ShoppingCart", ("shoppingcart" :: Nil) -> true, "ShoppingCart", Hidden)) ::
-      User.sitemap
+      Menu(Loc("ProductGroup", List("productgroup"), "Product Group", Hidden)) ::
+      Menu(Loc("Product", List("product"), "Product", Hidden)) ::
+   	  Menu(Loc("ShoppingCart", List("shoppingcart"), "ShoppingCart", Hidden)) ::
+      Menu(Loc("Admin", List("admin", "index"), "Admin"),
+           Menu(Loc("productgroups", List("admin", "productgroups"), "Product Groups")),
+           Menu(Loc("property", List("admin", "property") -> true, "Property", Hidden)),
+           Menu(Loc("products", List("admin", "products"), "Products"))
+          ) ::
+      Nil
+/*
+      
+        Menu(Loc("productgroups", List("admin", "productgroups"), "Product Groups")),
+        Menu(Loc("property", List("admin", "property"), "Property", Hidden),
+             Menu(Loc("property", List("admin", "property", "add"), "Property", Hidden)),
+             Menu(Loc("property", List("admin", "property", "new"), "Property", Hidden)),
+             Menu(Loc("property", List("admin", "property", "remove"), "Property", Hidden))
+          ),
+        Menu(Loc("products", List("admin", "products"), "Products"))) ::
+*/
+    //User.sitemap
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
+    //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
     LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
 	    case RewriteRequest(
-	    	ParsePath("catalog" :: catalog :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("catalog" :: Nil, Map("catalog" -> catalog)
+	    	ParsePath("productgroup" :: pgID :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("productgroup" :: Nil, Map("pgID" -> pgID)
 	    )
 	    case RewriteRequest(
 	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
@@ -84,6 +123,25 @@ class Boot {
     req.setCharacterEncoding("UTF-8")
   }
 
+/*
+  def localeCalculator(request : Box[HttpServletRequest]): Locale = 
+	  request.flatMap(r => {
+		  def workOutLocale: Box[java.util.Locale] = 
+			  S.findCookie(localeCookieName) match {
+//			    case Full(cookie) => cookie.getValue() 
+			    case _ => Full(LiftRules.defaultLocaleCalculator(request))
+			  }
+		  tryo(r.getParameter("locale")) match {
+		    case Full(null) => workOutLocale
+		    case Empty => workOutLocale
+		    case Failure(_,_,_) => workOutLocale
+//		    case Full(selectedLocale) => {
+//		      setLocale(selectedLocale)
+//		      selectedLocale
+//		    }
+		  }
+	}).openOr(java.util.Locale.getDefault())
+*/
 }
 
 /**

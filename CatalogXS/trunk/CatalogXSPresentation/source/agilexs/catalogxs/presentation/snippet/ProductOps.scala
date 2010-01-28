@@ -23,7 +23,7 @@ import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.businesslogic._
 import agilexs.catalogxs.jpa.catalog._
 
-class ProductOps {
+class ProductOps extends BasicSnippet[Product] {
 
   /**
    * This method query's the product passed via the get argument. e.g. /product/<id>
@@ -45,16 +45,10 @@ class ProductOps {
 
     if (product != null) {
 	    for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
-	      propertyMap(i) = pv.getProperty.getName -> Text(pv.getStringValue)
+	      propertyMap(i) = getNode(pv.getProperty.getName, pv)
 	      i+=1
 	    }
     }
     bind("product", xhtml, propertyMap: _*)
   }
-
-    private def lookupCatalog() : agilexs.catalogxs.businesslogic.Catalog = {
-      val ic = new InitialContext()
-      return ic.lookup("java:comp/env/ejb/CatalogBean").asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]    
-  }
-
 }

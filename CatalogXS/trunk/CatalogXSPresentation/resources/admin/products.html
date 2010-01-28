@@ -1,0 +1,23 @@
+<lift:surround with="admin_default" at="content">
+  <head><title>Product Management</title></head>
+  <h1>Product Management</h1>
+  <table>
+  	  <th>
+  	    <td>Articlenr</td>
+  	    <td>Synopsis</td>
+  	    <td>Price</td>
+  	    <td>Promotion</td>
+  	    <td>&nbsp;</td>
+  	  </th>
+    <lift:ProductAdmin.list>
+  	  <tr>
+  	    <td><product:articleNumber /></td>
+  	    <td><product:synopsis /></td>
+  	    <td><product:price /></td>
+  	    <td><product:promotion /></td>
+  	  </tr>
+    </lift:ProductAdmin.list>
+  </table>
+  <div>Add product:</div>
+    <product:newName/><product:buttonAdd>
+</lift:surround>

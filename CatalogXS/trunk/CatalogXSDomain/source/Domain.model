@@ -38,12 +38,5 @@ Package {
                 }
             }
         }
-        Operation {
-            name = getProductRelations
-            type = catalog:ProductRelation
-            lower = 0
-            upper = {}
-            
-        }
     }
 }

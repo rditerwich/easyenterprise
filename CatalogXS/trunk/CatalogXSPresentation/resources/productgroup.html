@@ -1,0 +1,17 @@
+<lift:surround with="default" at="content">
+  <head><title>Product Groups</title></head>
+  <table>
+    <thead>
+      <th><lift:loc>ArticleNumber</lift:loc></th>
+      <th><lift:loc>Description</lift:loc></th>
+      <th><lift:loc>Price</lift:loc></th>
+    </thead>
+    <lift:ProductGroupSnippet.listProducts>
+      <tr>
+        <td><p:ArticleNumber /></td>
+        <td><p:ProductDescription/></td>
+        <td><p:ProductPriceNew /></td>
+      </tr>
+    </lift:ProductGroupSnippet.listProducts>
+  </table>
+</lift:surround>

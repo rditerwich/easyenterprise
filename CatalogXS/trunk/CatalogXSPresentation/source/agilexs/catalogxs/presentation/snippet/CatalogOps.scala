@@ -33,30 +33,30 @@ class CatalogOps {
   object currentCatalog extends RequestVar[Box[Catalog]](Empty)
   object currentProduct extends RequestVar[Box[Product]](Empty)
 
-  def list (xhtml : NodeSeq) : NodeSeq = {
-    catalogBean = lookupCatalog()
-    val catalogs = Model.listToWrapper(catalogBean.listCatalogs().asInstanceOf[java.util.List[Catalog]])
-
-    catalogs.flatMap(catalog =>
-      bind("catalog", xhtml,
-          "link" ->
-             SHtml.link("/catalog/" + catalog.getId().toString(),
-             () => currentCatalog(Full(catalog)),
-             Text(catalog.getName()))))
-  }
-
-  def listProducts(xhtml : NodeSeq) : NodeSeq = {
-    catalogBean = lookupCatalog()
-    val cid = catalogBean.findCatalogById(S.param("catalog").openOr("0").toLong)
-    val products = Model.listToWrapper(catalogBean.findProductsByCatalogId(cid).asInstanceOf[java.util.List[Product]])
-
-    products.flatMap(product =>
-      bind("product", xhtml,
-          "link" ->
-             SHtml.link("/product/" + product.getId().toString(),
-             () => currentProduct(Full(product)),
-             Text(product.getId().toString()))))
-  }
+//  def list (xhtml : NodeSeq) : NodeSeq = {
+//    catalogBean = lookupCatalog()
+//    val catalogs = Model.listToWrapper(catalogBean.findAllCatalogs(0, 20).asInstanceOf[java.util.List[Catalog]])
+//
+//    catalogs.flatMap(catalog =>
+//      bind("catalog", xhtml,
+//          "link" ->
+//             SHtml.link("/catalog/" + catalog.getId().toString(),
+//             () => currentCatalog(Full(catalog)),
+//             Text(catalog.getName()))))
+//  }
+//
+//  def listProducts(xhtml : NodeSeq) : NodeSeq = {
+//    catalogBean = lookupCatalog()
+//    val cid = catalogBean.findCatalogById(S.param("catalog").openOr("0").toLong)
+//    val products = Model.listToWrapper(catalogBean.findProductsByCatalogId(cid).asInstanceOf[java.util.List[Product]])
+//
+//    products.flatMap(product =>
+//      bind("product", xhtml,
+//          "link" ->
+//             SHtml.link("/product/" + product.getId().toString(),
+//             () => currentProduct(Full(product)),
+//             Text(product.getId().toString()))))
+//  }
 
   private def lookupCatalog() : agilexs.catalogxs.businesslogic.Catalog = {
     val ic = new InitialContext()
