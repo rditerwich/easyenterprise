@@ -63,7 +63,10 @@ class BasicSnippet[A] {
   }
 
   def getNode(name: String, pv : PropertyValue) : TheBindParam = {
-    (name -> 
+    if (pv == null || pv.getProperty() == null) {
+      return (name -> Text(name));
+    }
+    (name ->
        (pv.getProperty().getType() match {
          case PropertyType.String =>
         	 Text(pv.getStringValue());

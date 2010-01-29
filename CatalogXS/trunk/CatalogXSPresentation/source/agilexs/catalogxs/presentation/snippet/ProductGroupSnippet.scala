@@ -48,7 +48,7 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
              Text(LabelCache.getLabel(productGroup.getLabels(), productGroup.getName())))))
   }
 
-  def listProducts(xhtml : NodeSeq) = {
+  def listProducts(xhtml : NodeSeq) : NodeSeq = {
     updateCurrentProductGroup()
     val catalogBean = lookupCatalog()
     val products = Model.listToWrapper(catalogBean.findAllByProductGroupProducts(0, 20, cpg.is).asInstanceOf[java.util.List[Product]])
@@ -64,16 +64,20 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
     }
     Model.listToWrapper(pl).flatMap(pMap => 
       bind("p", xhtml,
-    	"ArticleNumber" -> 
-          SHtml.link("/product/" + pMap.get("ArticleNumber").getProduct().getId().toString(),
-          () => currentProduct(Full(pMap.get("ArticleNumber").getProduct())),
-    		  getNode("ArticleNumber", pMap.get("ArticleNumber")).value),
+    	  "ArticleNumber" -> propToLink(pMap),
           getNode("ProductDescription", pMap.get("ProductDescription")),
           getNode("ProductPriceNew", pMap.get("ProductPriceNew")) 
              ))
-//          
   }
-
+  
+  private def propToLink(pMap: HashMap[String, PropertyValue]) : NodeSeq = {
+    if(pMap.get("ArticleNumber") != null)
+      SHtml.link("/product/" + pMap.get("ArticleNumber").getProduct().getId().toString(),
+          () => currentProduct(Full(pMap.get("ArticleNumber").getProduct())),
+    		  getNode("ArticleNumber", pMap.get("ArticleNumber")).value)
+    else Text("ArticleNumber")
+  }
+  
   def updateCurrentProductGroup() = {
     updateCurrentTaxenomy();
 //    cpg.set(
