@@ -69,7 +69,7 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
           getNode("ProductPriceNew", pMap.get("ProductPriceNew")) 
              ))
   }
-  
+
   private def propToLink(pMap: HashMap[String, PropertyValue]) : NodeSeq = {
     if(pMap.get("ArticleNumber") != null)
       SHtml.link("/product/" + pMap.get("ArticleNumber").getProduct().getId().toString(),

@@ -123,4 +123,11 @@ INSERT INTO "catalogxs"."property_value" (property_id,language,string_value,id, 
 INSERT INTO "catalogxs"."property_value" (property_id,language,string_value,id, product_id) VALUES (22,'en', '47K HKS',71,7);
 INSERT INTO "catalogxs"."property_value" (property_id,language,string_value,id, product_id) VALUES (21,'en', 'blue',72,7);
 
+/* Promotion examples */
+INSERT INTO "catalogxs"."promotion" (type,start_date,end_date,id,product_id,price,price_currency,volume_discount) VALUES ('agilexs.catalogxs.jpa.catalog.VolumeDiscountPromotion',{d '2010-01-20'},{d '2011-01-20'},1,1,100,'EUR',3);
+INSERT INTO "catalogxs"."promotion" (type,start_date,end_date,id,product_id,price,price_currency,volume_discount) VALUES ('agilexs.catalogxs.jpa.catalog.VolumeDiscountPromotion',{d '2010-01-22'},{d '2011-02-20'},2,2,700,'EUR',4);
+INSERT INTO "catalogxs"."promotion" (type,start_date,end_date,id,product_id,price,price_currency,volume_discount) VALUES ('agilexs.catalogxs.jpa.catalog.VolumeDiscountPromotion',{d '2010-01-10'},{d '2011-03-10'},3,3,80,'EUR',5);
+INSERT INTO "catalogxs"."promotion" (type,start_date,end_date,id,product_id,price,price_currency,volume_discount) VALUES ('agilexs.catalogxs.jpa.catalog.VolumeDiscountPromotion',{d '2009-12-30'},{d '2011-04-02'},4,4,90,'EUR',6);
+INSERT INTO "catalogxs"."promotion" (type,start_date,end_date,id,product_id,price,price_currency,volume_discount) VALUES ('agilexs.catalogxs.jpa.catalog.VolumeDiscountPromotion',{d '2010-01-05'},{d '2011-05-05'},5,5,110,'EUR',7);
+
 [/template]

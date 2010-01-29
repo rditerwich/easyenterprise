@@ -50,6 +50,7 @@ J2eeArchitectureJpaEjbLift {
                 catalog:Catalog
                 catalog:Product
                 catalog:ProductGroup
+                catalog:Promotion
                 catalog:Taxonomy
             }
             paging = true
