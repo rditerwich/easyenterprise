@@ -5,6 +5,8 @@ import java.util.HashMap
 import java.util.Collection
 import java.util.Locale
 
+import scala.collection.mutable
+
 import net.liftweb._ 
 import util._
 import Helpers._
@@ -24,16 +26,18 @@ object definedLocale extends SessionVar[Box[Locale]](Empty)
 
 object LabelCache extends BasicCache[Label] {
 
-  var labels : HashMap[String, HashMap[Long , Label]] = new HashMap[String, HashMap[Long, Label]]();
-  var currentLocal : String = "en"
+  var labels = new HashMap[String, HashMap[Long, Label]]()
+  var labels2 = new mutable.HashMap[Long, Label]
+  
+  var currentLocal = "en"
 
   def getLabel(lang : String, id : Long) : String =  {
-    init()
+    init
     labels.get(lang).get(id).getLabel();
   }
 
   def getLabel(lbls : Collection[Label], default:String) : String =  {
-     init()
+     init
      Model.listToWrapper(lbls.asInstanceOf[java.util.List[Label]]).
        find(x => x.getLanguage().equals(currentLocal)) match {
          case Some(y) => y.getLabel()
@@ -41,12 +45,12 @@ object LabelCache extends BasicCache[Label] {
        }
   }
   
-  def refresh() = {
-    labels = null;
-    init();
+  def refresh = {
+    labels = null
+    init
   }
 
-  private def init() = {
+  private def init = {
     if (labels == null) {
        val catalogBean = lookupCatalog()
        val dbLabels = catalogBean.findAllNonPagedLabels();
