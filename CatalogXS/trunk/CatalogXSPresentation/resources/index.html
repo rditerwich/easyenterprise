@@ -2,34 +2,6 @@
   <head><title>Catalog Listing</title></head>
 
   <lift:Promotions.all>
-	<h2>Promotion: <promotion:id/></h2>
-  	<p>Price: <promotion:price/></p>
-  	<p>Start Date: <promotion:start-date/></p>
-  	<promotion:product>
-  		<product:id/>
-  		<product:id/>
-  	</promotion:product>
-
+    <lift:embed what="promotion" eager_eval="true"/> 
   </lift:Promotions.all>
-  
-  <p>OLD:</p>
-  
-    <lift:PromotionSnippet.list>
-    <div class="productPromotion">
- <div class="productImage">
-   <p:ProductImage />
-   <div class="productOld"><p:ProductPrice/></div>
-   <div class="productNew"><p:PromotionPrice/></div>
-   <lift:loc>When ordered per </lift:loc><p:PromotionVolumeDiscount/> 
- </div>
- <div class="productText">
-   <p:Description/>
- </div>
- <div class="" >
-  <span><lift:loc>ArticleNumber</lift:loc><p:ArticleNumber/></span>
-  <img src="" title="Order now"/>
-  <a href=""><lift:loc>More info</lift:loc> &gt;&gt;</a>
- </div>
-</div>
-  </lift:PromotionSnippet.list>
 </lift:surround>

@@ -1,16 +1,8 @@
-<div class="productPromotion">
- <div class="productImage">
-   <p:ProductImage />
-   <div class="productOld"><p:ProductPrice/></div>
-   <div class="productNew"><p:PromotionPrice/></div>
-   <lift:loc>When ordered per </lift:loc><p:PromotionVolumeDiscount/> 
- </div>
- <div class="productText">
-   <p:Description/>
- </div>
- <div class="" >
-  <span><lift:loc>ArticleNumber</lift:loc><p:ArticleNumber/></span>
-  <img src="" title="Order now"/>
-  <a href=""><lift:loc>More info</lift:loc> &gt;&gt;</a>
- </div>
+<div style="width:50%;float:left;padding-bottom:50px;">
+  <div class="contentheading">Promotion: <promotion:id/></div>
+    <p>Price: <promotion:price/></p>
+    <p>Start Date: <promotion:start-date/></p>
+    <promotion:product>
+      <product:name/>
+    </promotion:product>
 </div>
