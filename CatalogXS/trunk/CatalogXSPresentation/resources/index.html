@@ -1,6 +1,19 @@
 <lift:surround with="default" at="content">
   <head><title>Catalog Listing</title></head>
-  <lift:PromotionSnippet.list>
+
+  <lift:Promotions.all>
+	<h2>Promotion: <promotion:id/></h2>
+  	<p>Price: <promotion:price/></p>
+  	<p>Start Date: <promotion:start-date/></p>
+  	<promotion:product>
+  		<product:id/>
+  	</promotion:product>
+
+  </lift:Promotions.all>
+  
+  <p>OLD:</p>
+  
+    <lift:PromotionSnippet.list>
     <div class="productPromotion">
  <div class="productImage">
    <p:ProductImage />
