@@ -23,7 +23,7 @@ import scala.xml.{NodeSeq, Text, SpecialNode}
 
 import agilexs.catalogxs.presentation.cache._
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic._
 import agilexs.catalogxs.jpa.catalog._
 
@@ -44,7 +44,7 @@ class PromotionSnippet extends BasicSnippet[Promotion] {
           var i = 6
 
           if (product != null) {
-              for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
+              for (pv <- product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]]) {
                 propertyMap(i) = getNode(pv.getProperty.getName, pv)
                 i+=1
               }
@@ -53,7 +53,7 @@ class PromotionSnippet extends BasicSnippet[Promotion] {
         case _ : Promotion => Array[BindParam]()
       }
       val catalogBean = lookupCatalog()
-      val promotions = Model.listToWrapper(catalogBean.findAllPromotions(0, 9).asInstanceOf[java.util.List[Promotion]])
+      val promotions = catalogBean.findAllPromotions().asInstanceOf[java.util.List[Promotion]]
 
       promotions.flatMap(promotion => bind("p", xhtml, getBinds(promotion): _*))
   }

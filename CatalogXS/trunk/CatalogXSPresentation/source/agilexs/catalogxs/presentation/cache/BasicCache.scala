@@ -4,7 +4,6 @@ import javax.ejb.EJB;
 import javax.naming.InitialContext;
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.CatalogBean
 

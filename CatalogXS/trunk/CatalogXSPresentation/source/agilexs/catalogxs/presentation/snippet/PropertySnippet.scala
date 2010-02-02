@@ -18,7 +18,7 @@ import scala.xml.{NodeSeq, Text, SpecialNode, Group}
 
 import agilexs.catalogxs.presentation.cache._
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic._
 import agilexs.catalogxs.jpa.catalog._
 

@@ -19,7 +19,6 @@ import Helpers._
 import scala.xml.{NodeSeq, Text} 
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.CatalogBean
 

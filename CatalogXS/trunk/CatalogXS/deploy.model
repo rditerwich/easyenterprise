@@ -42,7 +42,7 @@ DeploymentConfiguration {
     name = "CatalogXS Deployment Local Ruud"
     productConfigurations = {
         Glassfish2Configuration {
-            installDir = "c:/glassfish"
+            installDir = "d:/glassfish"
             domain = domain1
 
             webConfiguration = GwtWebConfiguration {
@@ -51,13 +51,13 @@ DeploymentConfiguration {
             }
 
             dbConfiguration = PostgreSQLConfiguration {
-                installDir = "C:/Program Files (x86)/PostgreSQL/8.3"
+                installDir = "C:/Program Files (x86)/PostgreSQL/8.4"
                 server = localhost
                 port = 5432
                 databaseName = CatalogXSDatabase
                 username = postgres
                 password = postgres
-                schemaUpdateKind = upgrade
+                schemaUpdateKind = none
                 jdbcDriverClasspath = "C:/Program Files (x86)/DbVisualizer-6.0.13/jdbc/postgresql/postgresql.jar"
             }
 

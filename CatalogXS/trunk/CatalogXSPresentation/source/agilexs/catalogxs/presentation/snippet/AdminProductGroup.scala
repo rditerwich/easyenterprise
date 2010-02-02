@@ -19,7 +19,7 @@ import Helpers._
 import scala.xml.{NodeSeq, Text} 
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.query._
 import agilexs.catalogxs.businesslogic.CatalogBean
@@ -68,7 +68,7 @@ class AdminProductGroup extends BasicSnippet[ProductGroup] {
 
   def listChildren(xhtml : NodeSeq) : NodeSeq = {
 		  val catalogBean = lookupCatalog()
-		  val list = Model.listToWrapper(catalogBean.findAllProductGroups(0, 20).asInstanceOf[java.util.List[ProductGroup]])
+		  val list = catalogBean.findAllProductGroups().asInstanceOf[java.util.List[ProductGroup]]
 		  
 		  list.flatMap(productGroup =>
 		  bind("productGroup", xhtml,
@@ -84,7 +84,7 @@ class AdminProductGroup extends BasicSnippet[ProductGroup] {
 	  val catalogBean = lookupCatalog()
       val propertyQuery = new PropertyQuery()
       //propertyQuery.setProductGroup()
-	  val list = Model.listToWrapper(catalogBean.findAllProperties(0, 20, propertyQuery).asInstanceOf[java.util.List[Property]])
+	  val list = catalogBean.findAllProperties(0, 20, propertyQuery).asInstanceOf[java.util.List[Property]]
 
       list.flatMap(property =>
 		  bind("productGroup", xhtml,

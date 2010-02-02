@@ -3,16 +3,19 @@ package agilexs.catalogxs.presentation.snippet
 import net.liftweb.util.Helpers._
 
 import scala.xml.NodeSeq 
-import agilexs.catalogxs.presentation.model.Bindings
-import agilexs.catalogxs.presentation.model.Model._
 import agilexs.catalogxs.jpa.catalog._
+import agilexs.catalogxs.presentation.model.{CatalogBindings, CatalogCache}
+import agilexs.catalogxs.presentation.model.Conversions._
 
 class Promotions extends BasicSnippet[Promotion] {
 
   lazy val catalogBean = lookupCatalog()
 
   def all(xhtml: NodeSeq) : NodeSeq = {
-      val promotions = catalogBean.findAllPromotions(0, 9) 
-      promotions flatMap (Bindings.promotionBindings(_)(xhtml))
+    
+	  // TODO store in global or session space somewhere
+	  val catalog = CatalogCache("staples", "webshop", "en")
+    
+      catalog.promotions flatMap (CatalogBindings.promotionBindings(_)(xhtml))
   }
 }  

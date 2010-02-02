@@ -49,12 +49,12 @@ Package {
                 }
 */
                 Attribute {
-                    name = taxonomies
-                    type = catalog:Taxonomy
+                    name = views
+                    type = catalog:CatalogView
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:Taxonomy/attributes:catalog
+                    opposite = catalog:CatalogView/attributes:catalog
                 }
 /*
                 Attribute {
@@ -221,7 +221,7 @@ Package {
             }
         }
         Class {
-            name = Taxonomy            
+            name = CatalogView            
             attributes = {
                 Attribute {
                     name = name
@@ -230,14 +230,14 @@ Package {
                 Attribute {
                     name = catalog
                     type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:taxonomies
+                    opposite = catalog:Catalog/attributes:views
                 }
                 Attribute {
                     name = topLevelProductGroups
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    opposite = catalog:ProductGroup/attributes:taxonomy
+                    opposite = catalog:ProductGroup/attributes:view
                 }
                 Attribute {
                     name = excludedProperties
@@ -262,11 +262,11 @@ Package {
                     opposite = catalog:Catalog/attributes:productGroups
                 }
                 Attribute {
-                    name = taxonomy
-                    type = catalog:Taxonomy
+                    name = view
+                    type = catalog:CatalogView
                     lower = 0
                     upper = {}
-                    opposite = catalog:Taxonomy/attributes:topLevelProductGroups
+                    opposite = catalog:CatalogView/attributes:topLevelProductGroups
                 }
                 Attribute {
                     name = Name
@@ -698,8 +698,8 @@ Package {
             upper = {}
             parameters = {
                 Parameter {
-                    name = taxonomy
-                    type = catalog:Taxonomy
+                    name = view
+                    type = catalog:CatalogView
                 }
                 Parameter {
                     name = parent

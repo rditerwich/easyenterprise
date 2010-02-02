@@ -19,7 +19,7 @@ import Helpers._
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic._
 import agilexs.catalogxs.jpa.catalog._
 
@@ -44,7 +44,7 @@ class ProductOps extends BasicSnippet[Product] {
     var i = 1
 
     if (product != null) {
-	    for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
+	    for (pv <- product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]]) {
 	      propertyMap(i) = getNode(pv.getProperty.getName, pv)
 	      i+=1
 	    }

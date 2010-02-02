@@ -20,7 +20,6 @@ import scala.collection.jcl.{BufferWrapper,SetWrapper}
 import scala.xml.{NodeSeq, Text, SpecialNode, Elem} 
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.CatalogBean
 

@@ -16,8 +16,7 @@ import mapper._
 import S._
 import util._
 
-import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.CatalogBean
 
@@ -38,7 +37,7 @@ object LabelCache extends BasicCache[Label] {
 
   def getLabel(lbls : Collection[Label], default:String) : String =  {
      init
-     Model.listToWrapper(lbls.asInstanceOf[java.util.List[Label]]).
+     lbls.
        find(x => x.getLanguage().equals(currentLocal)) match {
          case Some(y) => y.getLabel()
          case _ => default

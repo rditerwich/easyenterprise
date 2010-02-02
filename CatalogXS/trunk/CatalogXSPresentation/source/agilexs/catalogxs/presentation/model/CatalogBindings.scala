@@ -4,7 +4,7 @@ import net.liftweb.util.Helpers._
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 import agilexs.catalogxs.jpa.catalog._
 
-object Bindings {
+object CatalogBindings {
 
     def promotionBindings(p: Promotion)(xhtml: NodeSeq) : NodeSeq = {
 	  p match {

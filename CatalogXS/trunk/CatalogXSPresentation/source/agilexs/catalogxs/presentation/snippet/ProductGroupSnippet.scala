@@ -22,8 +22,8 @@ import Helpers._
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 
 import agilexs.catalogxs.presentation.cache._
+import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.Model.{setToWrapper,listToWrapper}
 import agilexs.catalogxs.businesslogic._
 import agilexs.catalogxs.jpa.catalog._
 
@@ -33,12 +33,12 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
   object currentProductGroup extends RequestVar[Box[ProductGroup]](Empty)
   object currentProduct extends RequestVar[Box[Product]](Empty)
   object cpg extends SessionVar[ProductGroup](null)
-  object ctaxonomy extends SessionVar[Taxonomy](null)
+  object cview extends SessionVar[CatalogView](null)
   
   def navList(xhtml : NodeSeq) : NodeSeq = {
     updateCurrentProductGroup()
     val catalogBean = lookupCatalog()
-    val pgs = Model.listToWrapper(catalogBean.findAllProductGroupChildren(ctaxonomy.is, cpg.is).asInstanceOf[java.util.List[ProductGroup]])
+    val pgs = catalogBean.findAllProductGroupChildren(cview.is, cpg.is).asInstanceOf[java.util.List[ProductGroup]]
 
     pgs.flatMap(productGroup =>
       bind("pg", xhtml,
@@ -51,18 +51,18 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
   def listProducts(xhtml : NodeSeq) : NodeSeq = {
     updateCurrentProductGroup()
     val catalogBean = lookupCatalog()
-    val products = Model.listToWrapper(catalogBean.findAllByProductGroupProducts(0, 20, cpg.is).asInstanceOf[java.util.List[Product]])
+    val products = catalogBean.findAllByProductGroupProducts(0, 20, cpg.is).asInstanceOf[java.util.List[Product]]
     val pl : List[HashMap[String, PropertyValue]] = new ArrayList[HashMap[String, PropertyValue]]();
 
     for (product <- products) {
       val pvMap : HashMap[String, PropertyValue] = new HashMap[String, PropertyValue]();
-      for (pv <- Model.listToWrapper(product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]])) {
+      for (pv <- product.getPropertyValues.asInstanceOf[java.util.List[PropertyValue]]) {
     	  pv.setProduct(product)
 	      pvMap.put(pv.getProperty.getName(), pv)
       }
       pl.add(pvMap)
     }
-    Model.listToWrapper(pl).flatMap(pMap => 
+    pl.flatMap(pMap => 
       bind("p", xhtml,
     	  "ArticleNumber" -> propToLink(pMap),
           getNode("ProductDescription", pMap.get("ProductDescription")),
@@ -100,7 +100,7 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
   def updateCurrentTaxenomy() = {
 	  //if (ctaxonomy.is != null) {
 		  val catalogBean = lookupCatalog();
-		  ctaxonomy.set(catalogBean.findTaxonomyById(1L));
+		  cview.set(catalogBean.findCatalogViewById(1L));
 	  //}
   }
 }

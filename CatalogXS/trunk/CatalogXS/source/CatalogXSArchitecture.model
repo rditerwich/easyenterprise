@@ -38,7 +38,7 @@ J2eeArchitectureJpaEjbLift {
                 catalog:Product
                 catalog:ProductGroup
                 catalog:Property                
-                catalog:Taxonomy
+                catalog:CatalogView
 /*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
             }
             
@@ -51,9 +51,9 @@ J2eeArchitectureJpaEjbLift {
                 catalog:Product
                 catalog:ProductGroup
                 catalog:Promotion
-                catalog:Taxonomy
+                catalog:CatalogView
             }
-            paging = true
+            paging = false
         }
         Query {
             name = "Query for all non paged"
