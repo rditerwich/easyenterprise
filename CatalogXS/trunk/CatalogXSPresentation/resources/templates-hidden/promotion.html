@@ -1,8 +1,12 @@
 <div style="width:50%;float:left;padding-bottom:50px;">
+  <p>PRIJS: <promotion:price/></p>
   <div class="contentheading">Promotion: <promotion:id/></div>
-    <p>Price: <promotion:price/></p>
-    <p>Start Date: <promotion:start-date/></p>
     <promotion:product>
-      <product:name/>
+      <product:description/>
     </promotion:product>
+    <p>&euro; <strike><promotion:product><product:oldPrice/></promotion:product></strike><br/>
+    <span style="color:red">&euro; <promotion:price/></span></p>
+    <p style="font-size:10px;">Promotion ends: <promotion:end-date/></p>
+    <a href=""><img src="order_now.png" /></a>
+    <a href="">More info &gt;&gt;</a>
 </div>

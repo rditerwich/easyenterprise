@@ -1,8 +1,7 @@
 <lift:surround with="default" at="content">
   <head><title>Catalog Listing</title></head>
 
-  <lift:Catalog.list_promotions>
-  	<p>PRIJS: <promotion:price/></p>
-    <lift:embed what="promotion" eager_eval="true"/> 
+  <lift:Catalog.list_promotions eager_eval="true">
+    <lift:embed what="promotion" /> 
   </lift:Catalog.list_promotions>
 </lift:surround>

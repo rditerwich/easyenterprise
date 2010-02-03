@@ -1,26 +1,28 @@
 package agilexs.catalogxs.presentation.model
 
+import net.liftweb.util._
 import net.liftweb.util.Helpers._
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 import agilexs.catalogxs.jpa.catalog._
+import agilexs.catalogxs.presentation.util.Util
 
 object CatalogBindings {
 
-    def promotionBindings(p: Promotion)(xhtml: NodeSeq) : NodeSeq = {
+    def promotionBindings(p: Promotion)(template: NodeSeq) : NodeSeq = {
 	  p match {
         case p : VolumeDiscountPromotion =>
-        	bind("promotion", xhtml,           
+        	bind("promotion", template,           
               "id" -> Text("VOLDISCPROMO_ID_X"),
-              "start-date" -> Text(p.getStartDate.formatted("YYYY")),
-              "end-date" -> Text(p.getStartDate.formatted("YYYY/mm/dd")),
+              "start-date" -> Text(Util.slashDate.format(p.getStartDate)),
+              "end-date" -> Text(Util.slashDate.format(p.getStartDate)),
               "price" -> Text(p.getPrice.toString),
               "currency" -> Text(p.getPriceCurrency.toString),
               "volume-discount" -> Text(p.getVolumeDiscount.toString),
-              "product" -> (xhtml => productBindings(p.getProduct)(xhtml)))
+              "product" -> (template => productBindings(p.getProduct)(template)))
         case _ => Seq.empty 
       }
   }
-  
+
   def productBindings(p: Product)(xhtml: NodeSeq) : NodeSeq = {
     bind("product", xhtml, 
     	"id" -> Text(p.getId.toString),
