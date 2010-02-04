@@ -27,7 +27,11 @@ object CatalogBindings {
   }
     
   private def bind2(defaultTag: String, xml: NodeSeq, params: BindParam*): NodeSeq = {
-    bind(defaultTag, xml, params:_*)
+    val parentBinding = (xml: NodeSeq) => bind(defaultTag, xml, params:_*)
+    bind(defaultTag, xml, params.map(param => param match {
+	      case param: FuncBindParam => FuncBindParam(param.name, (xml: NodeSeq) => parentBinding(param.calcValue(xml)))
+	      case _ => param
+    }):_*)
   }
     
   def productBindings(p: Product, tag: Tag, xml: NodeSeq) : NodeSeq = {
