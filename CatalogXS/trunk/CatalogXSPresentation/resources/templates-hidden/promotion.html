@@ -1,5 +1,11 @@
 <div style="width:50%;float:left;padding-bottom:50px;">
-  <p>PRIJS: <promotion:price/></p>
+  	<h2>Promotion: <promotion:id/></h2>
+  	<promotion:product>
+  		<h3>Promotion Product: <product:id/></h3>
+  		<product:properties>
+	  		<h4>Property <property:name/>: <property:value/></h4>
+  		</product:properties>
+  	</promotion:product>
   <div class="contentheading">Promotion: <promotion:id/></div>
     <promotion:product>
       <product:description/>

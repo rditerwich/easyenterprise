@@ -8,6 +8,12 @@ object Conversions {
   implicit def convertSortedSet[T](set : java.util.SortedSet[T]) = SortedSet(set)
   implicit def convertMap[T,E](set : java.util.Map[T,E]) = Map(set)
   implicit def convertSortedMap[T,E](set : java.util.SortedMap[T,E]) = SortedMap(set)
-  implicit def converCollection[A](collection : java.util.Collection[A]) = new IterableWrapper[A]{override def underlying = collection}
+  implicit def convertCollection[A](collection : java.util.Collection[A]) = scala.collection.jcl.Buffer[A](collection.asInstanceOf[java.util.List[A]])
 
+	case class OptionalString(s: String) {
+		def or (s2: String) = {
+		  if (s == null || s.trim() == "") s2 else s
+		}
+	}
+	implicit def optionalString(s: String) = OptionalString(s)
 }

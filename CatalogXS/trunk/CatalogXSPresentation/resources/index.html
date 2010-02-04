@@ -1,6 +1,27 @@
 <lift:surround with="default" at="content">
   <head><title>Catalog Listing</title></head>
 
+	<h1>Direct</h1>
+  <lift:Catalog.list_promotions tag="promo">
+  	<h2>Promotion: <promo:id/></h2>
+  <lift:Catalog.list_promotions >
+  	(other promotion: <promotion:id/>.<promo:id/>)
+  </lift:Catalog.list_promotions>
+  	
+  	<p>Contains product: <promotion:product:id/></p>
+  	<promotion:product>
+  		<h3>Promotion Product: <product:id/> (of promotion: <promotion:id/>)</h3>
+  		<product:properties tag="prop">
+	  		<h4>Property <property:name/>: <property:value/> or <prop:value/></h4>
+	  		<product:properties tag="subproperty">
+		  		<h5>Other <property:name/>.<subproperty:name/>: <property:value/> or <prop:value/></h5>
+	  		</product:properties>
+  		</product:properties>
+  	</promotion:product>
+  	
+  </lift:Catalog.list_promotions>
+  
+	<h1>Embedded Template</h1>
   <lift:Catalog.list_promotions eager_eval="true">
     <lift:embed what="promotion" /> 
   </lift:Catalog.list_promotions>
