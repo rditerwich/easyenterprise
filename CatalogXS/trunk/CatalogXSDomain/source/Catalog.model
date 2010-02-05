@@ -56,6 +56,13 @@ Package {
                     isComposite = true
                     opposite = catalog:CatalogView/attributes:catalog
                 }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
+                    lower = 0
+                    upper = {}
+                }
+                
 /*
                 Attribute {
                     name = productRelations
@@ -95,6 +102,13 @@ Package {
                     upper = {}
                     opposite = catalog:ProductGroup/attributes:products
                 }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
+                    lower = 0
+                    upper = {}
+                }
+                
 /*
                 Attribute {
                     name = relatedProducts
@@ -256,6 +270,12 @@ Package {
                     lower = 0
                     upper = {}
                 }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
+                    lower = 0
+                    upper = {}
+                }
             }
         }
         Class {
@@ -317,6 +337,12 @@ Package {
                 Attribute {
                     name = defaultPropertyValues
                     type = catalog:PropertyValue
+                    lower = 0
+                    upper = {}
+                }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
                     lower = 0
                     upper = {}
                 }
@@ -466,6 +492,12 @@ Package {
                     name = endDate
                     type = primitive:Date
                 }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
+                    lower = 0
+                    upper = {}
+                }
             }
         }
         Class {
@@ -487,6 +519,24 @@ Package {
                 Attribute {
                     name = volumeDiscount
                     type = primitive:Integer
+                }
+            }
+        }
+        Class {
+            name = Template
+            attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                }
+                Attribute {
+                    name = language
+                    type = primitive:String
+                    lower = 0
+                }
+                Attribute {
+                    name = templateXml
+                    type = primitive:String
                 }
             }
         }
