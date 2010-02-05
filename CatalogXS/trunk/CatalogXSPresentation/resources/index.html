@@ -4,14 +4,20 @@
 	<h1>Direct</h1>
   <lift:Catalog.list_promotions>
   	<h2>Promotion: <promotion:id/></h2>
-  	
-  	<p>Contains product: <promotion:product:id/></p>
-  	<promotion:product>
+  		<promotion:show_small>
+  		
+  		</promotion:show_small>
+  		
+  		
+	  	<promotion:product tag="prod">
+	  		(TestCustomTag:<prod:id/> or <product:id/>)
+	  	</promotion:product>
+  	<promotion:product template="small">
   		<h3>Promotion Product: <product:id/> (of promotion: <promotion:id/>)</h3>
-  		<product:properties tag="prop">
+  		<product:properties>
 	  		<h4>Property <property:name/>: <property:value/> or <prop:value/></h4>
 	  		<product:properties tag="subproperty">
-		  		<h5>Other <property:name/>.<subproperty:name/>: <property:value/> or <prop:value/></h5>
+		  		<h5>Other <property:name/>.<subproperty:name/>: <subproperty:value/> (promotion: <promotion:id/>)</h5>
 	  		</product:properties>
   		</product:properties>
   	</promotion:product>

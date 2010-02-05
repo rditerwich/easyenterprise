@@ -1,55 +1,39 @@
 package agilexs.catalogxs.presentation.model
 
-import net.liftweb.http.S 
-import net.liftweb.util._
-import net.liftweb.util.Helpers._
-import scala.xml.{NodeSeq, Text, SpecialNode} 
+import Conversions._
+import net.liftweb.util.BindHelpers._
+import scala.xml.Text 
 import agilexs.catalogxs.jpa.catalog._
-import agilexs.catalogxs.presentation.model._
-import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.util.Util
 
 object CatalogBindings {
+  
+  def promotionBinding(promotion : Promotion) = promotion match {
+  	case p : VolumeDiscountPromotion => volumeDiscountPromotionBinding(p)
+  	case _ => Binding()
+  }
+  
+  def volumeDiscountPromotionBinding(promotion : VolumeDiscountPromotion) = Binding(promotion,           
+      "id" -> Text(promotion.getId.toString),
+      "start_date" -> Text(Util.slashDate.format(promotion.getStartDate)),
+      "end_date" -> Text(Util.slashDate.format(promotion.getStartDate)),
+      "price" -> Text(promotion.getPrice.toString),
+      "currency" -> Text(promotion.getPriceCurrency.toString),
+      "volume_discount" -> Text(promotion.getVolumeDiscount.toString),
+      "product" -> productBinding(promotion.getProduct) -> "product")
 
-    def promotionBindings(p: Promotion, tag: Tag, xml: NodeSeq) : NodeSeq = {
-	  p match {
-        case p : VolumeDiscountPromotion =>
-        	bind2(tag or "promotion", xml,           
-              "id" -> Text(p.getId.toString),
-              "start_date" -> Text(Util.slashDate.format(p.getStartDate)),
-              "end_date" -> Text(Util.slashDate.format(p.getStartDate)),
-              "price" -> Text(p.getPrice.toString),
-              "currency" -> Text(p.getPriceCurrency.toString),
-              "volume_discount" -> Text(p.getVolumeDiscount.toString),
-              "product" -> (productBindings(p.getProduct, DefaultTag, _)))
-        case _ => Seq.empty 
-      }
-  }
-    
-  private def bind2(defaultTag: String, xml: NodeSeq, params: BindParam*): NodeSeq = {
-    val parentBinding = (xml: NodeSeq) => bind(defaultTag, xml, params:_*)
-    bind(defaultTag, xml, params.map(param => param match {
-	      case param: FuncBindParam => FuncBindParam(param.name, (xml: NodeSeq) => parentBinding(param.calcValue(xml)))
-	      case _ => param
-    }):_*)
-  }
-    
-  def productBindings(p: Product, tag: Tag, xml: NodeSeq) : NodeSeq = {
-    bind2(tag or "product", xml, 
-    	"id" -> Text(p.getId.toString),
-    	"properties" -> (listPropertyValueBindings(p.getPropertyValues, DefaultTag, _)))
-  }
+  def volumeDiscountPromotionShowSmall(promotion : VolumeDiscountPromotion) = Binding(
+  )
   
-  def listPropertyValueBindings(values: Seq[PropertyValue], tag: Tag, xml: NodeSeq) : NodeSeq = {
-    values flatMap (propertyValueBindings(_, tag, xml))
-  }
+  def productBinding(product : Product) = Binding(product,   
+	  "id" -> Text(product.getId.toString),
+      "properties" -> (product.getPropertyValues map (propertyValueBinding(_))) -> "property")
+//	  "name" -> Text(product.getName)
   
-  def propertyValueBindings(p: PropertyValue, tag: Tag, xml: NodeSeq) : NodeSeq = {
-    bind(tag or "property", xml,
-         "id" -> Text(p.getId.toString),
-         "name" -> Text(p.getProperty.getName),
-         "label" -> Text(p.getProperty.getName),
-         "value" -> Text(p.getStringValue)
-    )
-  }
+   def propertyValueBinding(value: PropertyValue) = Binding(value,  
+     "id" -> Text(value.getId.toString),
+     "name" -> Text(value.getProperty.getName),
+     "label" -> Text(value.getProperty.getName),
+     "value" -> Text(value.getStringValue)
+   )
 }

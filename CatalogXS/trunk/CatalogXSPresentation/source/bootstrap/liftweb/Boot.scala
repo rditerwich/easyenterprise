@@ -102,15 +102,15 @@ class Boot {
     S.addAround(List(
       new LoanWrapper { 
 		def apply[T] (f : => T): T = {
-		  val em = Model.factory.createEntityManager()
-	
-		  // Add EM into S scope
-		  Model.emVar.set(em)
+		  Model.catalogName("staples")
+		  Model.viewName("webshop")
 		  
 		  try {
 		    f
 		  } finally {
-		    em.close()
+			if (Model.entityManager.isOpen) {
+			  Model.entityManager.close;
+			}
 		  }
 		}
       }))

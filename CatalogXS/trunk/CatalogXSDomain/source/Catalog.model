@@ -71,6 +71,11 @@ Package {
             name = Product
             attributes = {
                 Attribute {
+                    name = name
+                    type = primitive:String
+                    lower = 0
+                }
+                Attribute {
                     name = catalog
                     type = catalog:Catalog
                     opposite = catalog:Catalog/attributes:products
@@ -269,7 +274,7 @@ Package {
                     opposite = catalog:CatalogView/attributes:topLevelProductGroups
                 }
                 Attribute {
-                    name = Name
+                    name = name
                     type = primitive:String
                     lower = 0
                 }
