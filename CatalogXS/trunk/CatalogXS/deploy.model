@@ -51,14 +51,14 @@ DeploymentConfiguration {
             }
 
             dbConfiguration = PostgreSQLConfiguration {
-                installDir = "C:/Program Files (x86)/PostgreSQL/8.4"
+                installDir = "C:/Program Files/PostgreSQL/8.4"
                 server = localhost
                 port = 5432
                 databaseName = CatalogXSDatabase
                 username = postgres
                 password = postgres
                 schemaUpdateKind = none
-                jdbcDriverClasspath = "C:/Program Files (x86)/DbVisualizer-6.0.13/jdbc/postgresql/postgresql.jar"
+                jdbcDriverClasspath = "C:/Program Files/PostgreSQL/pgJDBC/postgresql-8.4-701.jdbc4.jar"
             }
 
             jpaConfiguration = EclipseLinkConfiguration {

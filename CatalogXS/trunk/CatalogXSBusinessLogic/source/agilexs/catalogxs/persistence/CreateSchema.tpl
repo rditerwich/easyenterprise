@@ -8,7 +8,7 @@ import metaphor.psm.rdbms.IRdbmsPackage
 /* make keys unique so no duplicates can be added */
 ALTER TABLE "catalogxs"."product_groups_properties" ADD UNIQUE(properties_id,product_groups_id);
 ALTER TABLE "catalogxs"."product_product_groups_products_product_group" ADD UNIQUE ("products_id", "product_groups_id");
-ALTER TABLE "catalogxs"."product_group_children_parent_product_group" ADD UNIQUE ("children_id","parent_id");
+ALTER TABLE "catalogxs"."product_group_children_parents_product_group" ADD UNIQUE ("children_id","parents_id");
 ALTER TABLE "catalogxs"."product_group_default_property_values_property_value" ADD UNIQUE ("default_property_values_id","product_group_id");
 
 INSERT INTO "catalogxs"."catalog" (name,id) VALUES ('staples',1);
@@ -17,9 +17,9 @@ INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,2,'Suppli
 INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,3,'Inkt en hulpmiddelen');
 INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,4,'K+E inkten en hulpmiddelen');
 
-INSERT INTO "catalogxs"."product_group_children_parent_product_group" (children_id,parent_id) VALUES (2,1);
-INSERT INTO "catalogxs"."product_group_children_parent_product_group" (children_id,parent_id) VALUES (3,2);
-INSERT INTO "catalogxs"."product_group_children_parent_product_group" (children_id,parent_id) VALUES (4,3);
+INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (2,1);
+INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (3,2);
+INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (4,3);
 
 /* CatalogView */
 INSERT INTO "catalogxs"."catalog_view" (name,catalog_id,id) VALUES ('webshop',1,1);
