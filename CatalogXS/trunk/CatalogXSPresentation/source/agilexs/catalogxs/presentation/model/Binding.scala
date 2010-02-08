@@ -11,7 +11,7 @@ case class Binding[A](obj : Object, params : BindParam*)  {
 	val template = determineTemplate(obj, xml)
 	val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
 	val paramsWithParent = params.map(addParentBindings(_, parent)) 
-	BindHelpers.bind(actualTag, xml, paramsWithParent:_*)
+	BindHelpers.bind(actualTag, template, paramsWithParent:_*)
   } 
   
   private def addParentBindings(param : BindParam, parent : NodeSeq => NodeSeq) = {
@@ -29,10 +29,13 @@ case class Binding[A](obj : Object, params : BindParam*)  {
     }
   }
 
-  private def determineTemplate(obj : Object, default : NodeSeq) = {
+  private def determineTemplate(obj : Object, default : NodeSeq) : NodeSeq = {
 	BindHelpers.attr("template") match { 
       case Some(explicitTag) => 
-        Model.catalogCache.template(obj, explicitTag.toString) 
+        CatalogModel.template(obj, explicitTag.toString) match {
+          case Some(xml) => xml
+          case None => default
+        } 
       case None => default
     }
   }

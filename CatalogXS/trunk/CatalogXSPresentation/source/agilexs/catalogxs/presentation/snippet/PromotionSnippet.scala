@@ -21,7 +21,7 @@ import Helpers._
 
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 
-import agilexs.catalogxs.presentation.cache._
+import agilexs.catalogxs.presentation.cache
 import agilexs.catalogxs.presentation.model.Model
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic._

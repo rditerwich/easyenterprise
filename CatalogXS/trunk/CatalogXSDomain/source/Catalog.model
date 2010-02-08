@@ -311,10 +311,10 @@ Package {
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    opposite = catalog:ProductGroup/attributes:parent
+                    opposite = catalog:ProductGroup/attributes:parents
                 }
                 Attribute {
-                    name = parent
+                    name = parents
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}

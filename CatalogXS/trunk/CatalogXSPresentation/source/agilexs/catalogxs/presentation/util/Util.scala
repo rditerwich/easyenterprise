@@ -26,7 +26,7 @@ object Util {
     try { 
       S.param(name).map(_.toInt) openOr default
     }
-    catch { 
+    catch {
       case e => default // Should log something in this case
     } 
   }

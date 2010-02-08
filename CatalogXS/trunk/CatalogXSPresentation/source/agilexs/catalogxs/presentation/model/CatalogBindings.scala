@@ -22,15 +22,28 @@ object CatalogBindings {
       "volume_discount" -> Text(promotion.getVolumeDiscount.toString),
       "product" -> productBinding(promotion.getProduct) -> "product")
 
-  def volumeDiscountPromotionShowSmall(promotion : VolumeDiscountPromotion) = Binding(
-  )
-  
   def productBinding(product : Product) = Binding(product,   
 	  "id" -> Text(product.getId.toString),
-      "properties" -> (product.getPropertyValues map (propertyValueBinding(_))) -> "property")
-//	  "name" -> Text(product.getName)
+      "properties" -> (product.getPropertyValues map (propertyValueBinding(_))) -> "property",
+      "groups" -> (CatalogModel.productGroups(product) map (productGroupProductBinding(_))) -> "group")
   
-   def propertyValueBinding(value: PropertyValue) = Binding(value,  
+  def productGroupProductBinding(group : ProductGroupProduct) = Binding(group,
+	  "id" -> Text(group.group.getId.toString),
+	  "properties" -> (group.product.getPropertyValues map (propertyValueBinding(_))) -> "property")
+  
+  def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
+    "id" -> Text(group.getId.toString),
+	"properties" -> (group.getProperties map (propertyBinding(_))) -> "property",
+	"child-groups" -> (group.getChildren map (productGroupBinding(_))) -> "group",
+	"parent-groups" -> (group.getParents map (productGroupBinding(_))) -> "group")
+	//	  "name" -> Text(product.getName)
+		
+  def propertyBinding(property: Property) = Binding(property,  
+	"id" -> Text(property.getId.toString),
+	"name" -> Text(property.getName),
+	"label" -> Text(property.getName))
+
+ def propertyValueBinding(value: PropertyValue) = Binding(value,  
      "id" -> Text(value.getId.toString),
      "name" -> Text(value.getProperty.getName),
      "label" -> Text(value.getProperty.getName),

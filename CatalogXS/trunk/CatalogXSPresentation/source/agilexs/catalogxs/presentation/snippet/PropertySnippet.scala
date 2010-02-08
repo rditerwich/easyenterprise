@@ -16,7 +16,7 @@ import Helpers._
 
 import scala.xml.{NodeSeq, Text, SpecialNode, Group} 
 
-import agilexs.catalogxs.presentation.cache._
+import agilexs.catalogxs.presentation.cache
 import agilexs.catalogxs.presentation.model.Model
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic._
@@ -49,7 +49,7 @@ class PropertySnippet extends BasicSnippet[Property] {
 	}
     bind("e", xhtml,
             "productGroupName" ->
-              Text(LabelCache.getLabel(productGroup.getLabels(), productGroup.getName())),
+              Text(productGroup.getName()),
 			"name" -> SHtml.text(name, name= _),
 			"label" -> SHtml.text(label, label = _),
 			"type" -> SHtml.selectObj[PropertyType](

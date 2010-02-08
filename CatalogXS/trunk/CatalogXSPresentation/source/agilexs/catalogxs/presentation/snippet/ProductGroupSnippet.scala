@@ -21,7 +21,7 @@ import Helpers._
 
 import scala.xml.{NodeSeq, Text, SpecialNode} 
 
-import agilexs.catalogxs.presentation.cache._
+import agilexs.catalogxs.presentation.cache
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.model.Model
 import agilexs.catalogxs.businesslogic._
@@ -45,7 +45,7 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
           "link" ->
              SHtml.link("/productgroup/" + productGroup.getId().toString(),
              () => currentProductGroup(Full(productGroup)),
-             Text(LabelCache.getLabel(productGroup.getLabels(), productGroup.getName())))))
+             Text(cache.LabelCache.getLabel(productGroup.getLabels(), productGroup.getName())))))
   }
 
   def listProducts(xhtml : NodeSeq) : NodeSeq = {
