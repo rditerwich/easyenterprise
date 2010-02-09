@@ -9,6 +9,7 @@ object CatalogBindings {
 
   def catalogBinding(catalog : Catalog) = Binding(catalog,   
     "id" -> Text(catalog.id.toString),
+    "products" -> Complex(catalog.products map (productBinding _)) -> "product",
     "promotions" -> Complex(catalog.promotions map (promotionBinding _)) -> "promotion")
 
   def promotionBinding(promotion : Promotion) = promotion match {
@@ -27,6 +28,7 @@ object CatalogBindings {
 
   def productBinding(product : Product) = Binding(product,   
 	  "id" -> Text(product.id.toString),
+	  "name" -> Text(product.name),
       "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
       "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
   
@@ -40,5 +42,6 @@ object CatalogBindings {
   def propertyBinding(property: Property) : Binding[Property] = Binding(property,  
 	"id" -> Text(property.id.toString),
 	"name" -> Text(property.name),
-	"label" -> Text(property.name))
+	"label" -> Text(property.name),
+	"value" -> Text(property.valueAsString))
 }

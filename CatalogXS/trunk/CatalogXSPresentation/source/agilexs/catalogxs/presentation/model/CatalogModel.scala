@@ -49,7 +49,8 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   mapping.productGroups += (productGroup -> this)
   
   val id = productGroup.getId.longValue
-
+  val name = productGroup.getName or id.toString
+  
   val parents : Set[ProductGroup] = 
     productGroup.getParents map(mapping.productGroups) toSet
   
@@ -67,7 +68,7 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
 }
 
 class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping) extends Delegate(product) {
-
+  
   // terminate recursion
   mapping.products += (product -> this)
   
@@ -75,10 +76,11 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
   mapping = new Mapping(Some(this), cache)
 
   val id : Long = product.getId.longValue
+  val name = product.getName or id.toString
   
   val properties : Set[Property] = 
     product.getPropertyValues map (v => 
-      new Property(v.getProperty, Some(this), Some(v), cache, mapping)) toSet
+      new Property(v.getProperty, Some(this), Some(new PropertyValue(v, this)), cache, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
     product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
@@ -87,12 +89,31 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
     product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
 }
 
-class Property(property : jpa.Property, val product : Option[Product], val value : Option[jpa.PropertyValue], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.Property, val product : Option[Product], val value : Option[PropertyValue], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
   val id = property.getId.longValue
-  val name = property.getName
+  val name = property.getName or id.toString
+  
+  val valueAsString = value match {
+    case Some(value) => value.toString
+    case None => ""
+  }
+}
+
+class PropertyValue(value : jpa.PropertyValue, val product : Product) extends Delegate(value) {
+
+  override def toString = {
+    if (value.getStringValue != null) value.getStringValue
+    else if (value.getStringValue != null) value.getStringValue
+    else if (value.getBooleanValue != null) value.getBooleanValue.toString
+    else if (value.getEnumValue != null) value.getEnumValue.toString
+    else if (value.getIntegerValue != null) value.getIntegerValue.toString
+    else if (value.getMoneyValue != null) value.getMoneyValue.toString
+    else if (value.getRealValue != null) value.getRealValue.toString
+    else ""
+  }
 }
 
 class Promotion(promotion : jpa.Promotion, cache : CatalogCache, mapping : Mapping) extends Delegate(promotion) {
