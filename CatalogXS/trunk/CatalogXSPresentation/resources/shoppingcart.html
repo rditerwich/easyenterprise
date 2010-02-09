@@ -1,42 +1,49 @@
 <lift:surround with="default" at="content">
-  <lift:ShoppingCart.phase phase="1">
-  <table>
-    <tr>
-      <th></th>
-      <th>Aantal:</th>
-      <th>Artikelen:</th>
-      <th>Prijs per stuk:</th>
-      <th>Totaalprijs:</th>
-      <th>Voorraad:</th>
-    </tr>
-    <ShoppingCart:list>
-    <tr>
-      <td><shoppingcart:deleteButton/></td>
-      <td><shoppingcart:amount/></td>
-      <td><shoppingcart:product/></td>
-      <td><shoppingcart:pricePerProduct/></td>
-      <td><shoppingcart:priceTotal/></td>
-      <td><shoppingcart:inStock/></td>
-    </tr>
-    </ShoppingCart:list>
-    <tr>
-      <td colspan="3"></td>
-      <td>Totaalprijs (excl. verzendkosten):</td>
-      <td><ShoppingCart:total/></td>
-      <td>Incl. BTW</td>
-    </tr>
-  </table>
-  </lift:ShoppingCart.phase>
-  <lift:ShoppingCart.phase phase="2">
+ <h2>Shopping Cart</h2>
+  <lift:ShoppingCart.show phase="1" shopping_list_id="shopping_list">
+    <div id="shopping_list">
+      <show:empty>
+        <p>No articles in your shopping cart.</p>
+      </show:empty>
+      <show:items>
+        <table>
+          <thead>
+            <th>ArticleNumber</th>
+            <th>Product</th>
+            <th>Price per item</th>
+            <th>Volume</th>
+            <th>Total price</th>
+            <th>&nbsp;</th>
+          </thead>
+          <item:list>
+          <tr>
+            <td><shoppingcart:articleNumber/></td>
+            <td><shoppingcart:productDescription/></td>
+            <td><shoppingcart:pricePerProduct/></td>
+            <td><shoppingcart:volume/></td>
+            <td><shoppingcart:priceTotal/></td>
+            <td><shoppingcart:deleteButton/></td>
+          </tr>
+          </item:list>
+          <tr>
+            <td colspan="4">Total price (excl. shipping costs):</td>
+            <td><item:totalPrice/></td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      </show:items>
+    </div>
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="2">
     Address gegevens...
-  </lift:ShoppingCart.phase>
-  <lift:ShoppingCart.phase phase="3">
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="3">
     Betalings methode...
-  </lift:ShoppingCart.phase>
-  <lift:ShoppingCart.phase phase="4">
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="4">
     Bevestigings overzicht...
-  </lift:ShoppingCart.phase>
-  <lift:ShoppingCart.phase phase="5">
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="5">
     Order geplaatst melding...
-  </lift:ShoppingCart.phase>
+  </lift:ShoppingCart.show>
 </lift:surround>
