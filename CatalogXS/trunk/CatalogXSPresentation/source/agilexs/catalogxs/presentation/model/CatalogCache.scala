@@ -1,45 +1,83 @@
 package agilexs.catalogxs.presentation.model
 
+import scala.collection.{mutable, Set, Map}
 import scala.xml.NodeSeq 
 
-import scala.collection.{Set, Map}
-import scala.collection.immutable.{HashSet, HashMap}
-import scala.collection.mutable
-import agilexs.catalogxs.jpa.catalog._
-import Conversions._
+import agilexs.catalogxs.jpa.{catalog => jpa}
+import agilexs.catalogxs.presentation.util.ProjectionMap
+import Conversions._ 
 
-class CatalogCache private (catalog: Catalog, view: CatalogView, locale: String) {
-  
-  val templateObjectCache = new HashMap[Tuple2[Object, String], NodeSeq]
-  val templateClassCache = new HashMap[Tuple2[Class[_], String], NodeSeq]
+class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
 
-  val excludedProductGroups : Set[ProductGroup] = 
-	Set(view.getExcludedProductGroups:_*)
+  val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
+  val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]
+
+  val excludedProductGroups : Set[jpa.ProductGroup] = 
+   view.getExcludedProductGroups toSet
   
-  val excludedProperties : Set[Property] = 
-    Set(view.getExcludedProperties:_*)
+  val excludedProperties : Set[jpa.Property] = 
+    view.getExcludedProperties toSet
+
+  val promotions : Set[jpa.Promotion] = 
+    view.getPromotions toSet
   
-  val promotions : Set[Promotion] = 
-    Set(Model.catalogBean.findAllPromotions:_*)
-  
-  val productGroups : Set[ProductGroup] = 
-    Set(catalog.getProductGroups filter (!excludedProductGroups.contains(_)):_*)
-  
-  val products : Set[Product] = 
-    new mutable.HashSet[Product] useIn 
-      (CatalogCache.products(view.getTopLevelProductGroups, new mutable.HashSet[ProductGroup], _)) readOnly
-  
-  val productGroupProducts : Map[ProductGroup, Set[Product]] = 
-    new mutable.HashMap[ProductGroup, Set[Product]] useIn 
-      (CatalogCache.productGroupProducts(productGroups, _)) readOnly
-    
-  val productPropertiesByGroupML = null
-}
+  val productGroups : Set[jpa.ProductGroup] = 
+	catalog.getProductGroups filter (!excludedProductGroups.contains(_)) toSet
+
+  val topLevelProductGroups : Set[jpa.ProductGroup] = 
+	view.getTopLevelProductGroups toSet
+
+  val products : Set[jpa.Product] = 
+	new mutable.HashSet[jpa.Product] useIn 
+	 (products(view.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
+
+  val productGroupProductExtent : Map[jpa.ProductGroup, Set[jpa.Product]] = 
+	new mutable.HashMap[jpa.ProductGroup, Set[jpa.Product]] useIn 
+	  (productGroupProductExtent(view.getTopLevelProductGroups, _)) readOnly  
+
+  private def products(groups : Iterable[jpa.ProductGroup], visited : mutable.Set[jpa.ProductGroup], result : mutable.HashSet[jpa.Product]) : Unit = {
+    for (group <- groups; if !visited.contains(group)) {
+      visited += group
+      products(group.getChildren, visited, result)
+      result ++= group.getProducts 
+    }
+  }
+
+  private def productGroupProductExtent(groups : Iterable[jpa.ProductGroup], result : mutable.Map[jpa.ProductGroup, Set[jpa.Product]]) : Set[jpa.Product] = {
+    var allProducts = new mutable.HashSet[jpa.Product]
+    for (group <- groups; if !result.contains(group)) {
+      var products = new mutable.HashSet[jpa.Product]
+      result(group) = products
+      products ++= productGroupProductExtent(group.getChildren, result)
+      products ++= group.getProducts 
+      allProducts ++= products
+    }
+    allProducts
+  }
+
+  def template(obj : Object, template : String) : Option[NodeSeq] = {
+    None
+//    cache.templateObjectCache.get(obj, template) match {
+//      case Some(xml) => Some(xml)
+//      case None => cache.templateClassCache.get((obj.getClass, template)) match {
+//	      case Some(xml) => Some(xml)
+//	      case None => None
+//	    }
+//    }
+  }  
+
+//  private def productPropertiesByProductGroupML(groups : Iterable[ProductGroup], result : mutable.Map[Product, Map[ProductGroup, List[PropertyValue]]]) : Unit = {
+//    for (group <- groups; if !result.contains(group)) {
+//      
+//    }
+  }
+
+//}
 
 object CatalogCache {
 
   private val viewCaches = new mutable.HashMap[(String, String, String), CatalogCache] with mutable.SynchronizedMap[(String, String, String), CatalogCache]
-  
+
   def apply(catalogName: String, viewName: String, locale: String) : CatalogCache = {
    	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
    	  val catalog = Model.catalogBean.is.findAllCatalogs.find(_.getName == catalogName) match {
@@ -48,32 +86,9 @@ object CatalogCache {
    	  }
    	  val view = catalog.getViews.find(_.getName == viewName) match {
 	   	  case Some(view) => view
-	   	  case None => new CatalogView
+	   	  case None => new jpa.CatalogView
    	  }
    	  new CatalogCache(catalog, view, locale)
     })
   }
-
-  private def products(groups : Iterable[ProductGroup], visited : mutable.Set[ProductGroup], result : mutable.HashSet[Product]) : Unit = {
-    for (group <- groups; if !visited.contains(group)) {
-      visited += group
-      products(group.getChildren, visited, result)
-      result ++= group.getProducts
-    }
-  }
-  
-  private def productGroupProducts(groups : Iterable[ProductGroup], result : mutable.Map[ProductGroup, Set[Product]]) : Set[Product] = {
-    var allProducts = new mutable.HashSet[Product]
-    for (group <- groups; if !result.contains(group)) {
-      var products = new mutable.HashSet[Product]
-      result(group) = products
-      products ++= productGroupProducts(group.getChildren, result)
-      products ++= group.getProducts
-      allProducts ++= products
-    }
-    Set(allProducts.toArray:_*)
-  }
-  
 }
-
-

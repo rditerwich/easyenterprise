@@ -92,8 +92,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 734
-                    y = 108
+                    x = 746
+                    y = 145
                     width = 100
                     height = 98
                 }
@@ -103,8 +103,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 710
-                    y = 252
+                    x = 723
+                    y = 288
                     width = -1
                     height = -1
                 }
@@ -190,9 +190,6 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:productGroups
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:productGroups
-        }
-        Reference {
             bendPoints = {
                 Point {
                     x = 461
@@ -226,7 +223,7 @@ DomainDiagram {
             bendPoints = {
                 Point {
                     x = 200
-                    y = 253
+                    y = 267
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:labels
@@ -309,6 +306,15 @@ DomainDiagram {
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:templates
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 465
+                    y = 164
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:CatalogView/attributes:promotions
         }
     }
     superClassReferences = {

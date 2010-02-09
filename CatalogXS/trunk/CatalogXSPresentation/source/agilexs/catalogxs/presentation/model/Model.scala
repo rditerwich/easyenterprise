@@ -1,11 +1,10 @@
 package agilexs.catalogxs.presentation.model
 
 import javax.naming.InitialContext;
+import javax.persistence.{EntityManager,EntityManagerFactory,Persistence}
 import net.liftweb.http.RequestVar
 import net.liftweb.http.SessionVar
-
 import scala.collection.jcl.{BufferWrapper,SetWrapper,IterableWrapper} 
-import javax.persistence.{EntityManager,EntityManagerFactory,Persistence}
 import scala.collection.mutable.{HashMap, SynchronizedMap}
 import Conversions._
 
@@ -13,8 +12,8 @@ object Model {
   object catalogName extends SessionVar[String]("default")
   object viewName extends SessionVar[String]("default")
 
-  object catalogCache extends RequestVar[CatalogCache](
-    CatalogCache(catalogName, viewName, "nl"))
+  object catalog extends RequestVar[Catalog](
+    new Catalog(CatalogCache(catalogName, viewName, "nl")))
   
   object catalogBean extends RequestVar[agilexs.catalogxs.businesslogic.Catalog]( 
     new InitialContext().

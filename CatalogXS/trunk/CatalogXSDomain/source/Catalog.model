@@ -174,10 +174,8 @@ Package {
                 }
 */
                 Attribute {
-                    name = productGroups
+                    name = productGroup
                     type = catalog:ProductGroup
-                    lower = 0
-                    upper = {}
                     opposite = catalog:ProductGroup/attributes:properties
                 }
                 Attribute {
@@ -271,6 +269,14 @@ Package {
                     upper = {}
                 }
                 Attribute {
+                    name = promotions
+                    type = catalog:Promotion
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Promotion/attributes:view
+                }
+                Attribute {
                     name = templates
                     type = catalog:Template
                     lower = 0
@@ -332,7 +338,8 @@ Package {
                     type = catalog:Property
                     lower = 0
                     upper = {}
-                    opposite = catalog:Property/attributes:productGroups
+                    isComposite = true
+                    opposite = catalog:Property/attributes:productGroup
                 }
                 Attribute {
                     name = defaultPropertyValues
@@ -491,6 +498,11 @@ Package {
                 Attribute {
                     name = endDate
                     type = primitive:Date
+                }
+                Attribute {
+                    name = view
+                    type = catalog:CatalogView
+                    opposite = catalog:CatalogView/attributes:promotions
                 }
                 Attribute {
                     name = templates

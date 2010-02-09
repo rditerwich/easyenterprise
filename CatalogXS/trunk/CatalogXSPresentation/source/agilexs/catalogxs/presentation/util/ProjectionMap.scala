@@ -10,4 +10,5 @@ class ProjectionMap[A, B](init: A => B) extends mutable.HashMap[A, B] {
 	override def apply(a : A) = {
 	  getOrElseUpdate(a, init(a))
 	}
-}
+} 
+ 

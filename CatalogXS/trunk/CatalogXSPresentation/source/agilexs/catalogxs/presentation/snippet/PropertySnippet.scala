@@ -38,9 +38,7 @@ class PropertySnippet extends BasicSnippet[Property] {
     def processEntry () = {
         val catalogBean = lookupCatalog()
         val p : Property = new Property();
-        val pg : ArrayList[ProductGroup] = new ArrayList();
-        pg.add(productGroup)
-        p.setProductGroups(pg)
+        p.setProductGroup(productGroup)
         p.setName(name)
         p.setType(propertyType)
         //p.setLabel()

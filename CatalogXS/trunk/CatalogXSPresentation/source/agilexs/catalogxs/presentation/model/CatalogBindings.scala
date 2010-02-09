@@ -3,50 +3,42 @@ package agilexs.catalogxs.presentation.model
 import Conversions._
 import net.liftweb.util.BindHelpers._
 import scala.xml.Text 
-import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.presentation.util.Util
 
 object CatalogBindings {
-  
+
+  def catalogBinding(catalog : Catalog) = Binding(catalog,   
+    "id" -> Text(catalog.id.toString),
+    "promotions" -> Complex(catalog.promotions map (promotionBinding _)) -> "promotion")
+
   def promotionBinding(promotion : Promotion) = promotion match {
   	case p : VolumeDiscountPromotion => volumeDiscountPromotionBinding(p)
   	case _ => Binding()
   }
   
   def volumeDiscountPromotionBinding(promotion : VolumeDiscountPromotion) = Binding(promotion,           
-      "id" -> Text(promotion.getId.toString),
-      "start_date" -> Text(Util.slashDate.format(promotion.getStartDate)),
-      "end_date" -> Text(Util.slashDate.format(promotion.getStartDate)),
-      "price" -> Text(promotion.getPrice.toString),
-      "currency" -> Text(promotion.getPriceCurrency.toString),
-      "volume_discount" -> Text(promotion.getVolumeDiscount.toString),
-      "product" -> productBinding(promotion.getProduct) -> "product")
+      "id" -> Text(promotion.id.toString),
+      "start_date" -> Text(Util.slashDate.format(promotion.startDate)),
+      "end_date" -> Text(Util.slashDate.format(promotion.endDate)),
+      "price" -> Text(promotion.price.toString),
+      "currency" -> Text(promotion.priceCurrency.toString),
+      "volume_discount" -> Text(promotion.volumeDiscount.toString),
+      "product" -> Complex(productBinding(promotion.product)) -> "product")
 
   def productBinding(product : Product) = Binding(product,   
-	  "id" -> Text(product.getId.toString),
-      "properties" -> (product.getPropertyValues map (propertyValueBinding(_))) -> "property",
-      "groups" -> (CatalogModel.productGroups(product) map (productGroupProductBinding(_))) -> "group")
-  
-  def productGroupProductBinding(group : ProductGroupProduct) = Binding(group,
-	  "id" -> Text(group.group.getId.toString),
-	  "properties" -> (group.product.getPropertyValues map (propertyValueBinding(_))) -> "property")
+	  "id" -> Text(product.id.toString),
+      "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
+      "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
   
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
-    "id" -> Text(group.getId.toString),
-	"properties" -> (group.getProperties map (propertyBinding(_))) -> "property",
-	"child-groups" -> (group.getChildren map (productGroupBinding(_))) -> "group",
-	"parent-groups" -> (group.getParents map (productGroupBinding(_))) -> "group")
+    "id" -> Text(group.id.toString),
+	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
+	"child-groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
+	"parent-groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group")
 	//	  "name" -> Text(product.getName)
 		
-  def propertyBinding(property: Property) = Binding(property,  
-	"id" -> Text(property.getId.toString),
-	"name" -> Text(property.getName),
-	"label" -> Text(property.getName))
-
- def propertyValueBinding(value: PropertyValue) = Binding(value,  
-     "id" -> Text(value.getId.toString),
-     "name" -> Text(value.getProperty.getName),
-     "label" -> Text(value.getProperty.getName),
-     "value" -> Text(value.getStringValue)
-   )
+  def propertyBinding(property: Property) : Binding[Property] = Binding(property,  
+	"id" -> Text(property.id.toString),
+	"name" -> Text(property.name),
+	"label" -> Text(property.name))
 }
