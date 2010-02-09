@@ -10,12 +10,12 @@ object Complex {
   def apply(f : => Iterable[Binding[_]]) = new ComplexList(f)
 }
 
-class Complex(f : => Binding[_]) extends Function1[String, NodeSeq => NodeSeq] {
-  override def apply(tag : String) : NodeSeq => NodeSeq = xml => f.bind(tag, xml)
+class Complex(f : => Binding[_]) extends Function2[String, NodeSeq, NodeSeq] {
+  override def apply(tag : String, xml : NodeSeq) : NodeSeq = f.bind(tag, xml)
 }
 
-class ComplexList(f : => Iterable[Binding[_]]) extends Function1[String, NodeSeq => NodeSeq] {
-  override def apply(tag : String) : NodeSeq => NodeSeq = xml => f.toSeq flatMap (_ bind(tag, xml))
+class ComplexList(f : => Iterable[Binding[_]]) extends Function2[String, NodeSeq, NodeSeq] {
+  override def apply(tag : String, xml : NodeSeq) : NodeSeq = f.toSeq flatMap (_ bind(tag, xml))
 }
 
 case class Binding[A](obj : Object, params : BindParam*)  {
@@ -30,7 +30,7 @@ case class Binding[A](obj : Object, params : BindParam*)  {
   private def addParentBindings(param : BindParam, parent : NodeSeq => NodeSeq) = {
     param match {
       case param : FuncBindParam => 
-        FuncBindParam(param.name, xml => parent(param.calcValue(xml))) 
+        FuncBindParam(param.name, xml => param.calcValue(parent(xml))) 
       case _ => param
     }
   }

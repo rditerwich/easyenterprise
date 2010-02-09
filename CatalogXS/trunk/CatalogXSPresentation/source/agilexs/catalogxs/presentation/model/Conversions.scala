@@ -53,8 +53,8 @@ object Conversions {
 //  implicit def stringToBindingWithTag[A](t : Tuple2[Tuple2[String,() => Binding[A]],String]) = 
 //    FuncBindParam(t._1._1, (xml) => t._1._2().bind(t._2, xml))
 //  
-  implicit def stringToBindingsWithTag[A](t : Tuple2[Tuple2[String, Function1[String, NodeSeq => NodeSeq]],String]) = 
-	FuncBindParam(t._1._1, (xml) => t._1._2(t._2)(xml))
+  implicit def stringToBindingsWithTag[A](t : Tuple2[Tuple2[String, Function2[String, NodeSeq, NodeSeq]],String]) = 
+	FuncBindParam(t._1._1, (xml) => t._1._2(t._2, xml))
   
   class SeqWrapper[A](elements : Iterable[A]) {
     def seqFlatMap[B](f : A => Iterable[B]) : Seq[B] = {
