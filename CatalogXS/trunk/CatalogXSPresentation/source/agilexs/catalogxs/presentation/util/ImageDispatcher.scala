@@ -42,6 +42,6 @@ object ImageDispatcher {
 
 case class ImageResponse(mimeType : String, bytes : Array[Byte]) extends LiftResponse with HeaderStuff {  
   def toResponse =
-    InMemoryResponse(Array(), ("Content-Length", bytes.length.toString) :: 
+    InMemoryResponse(bytes, ("Content-Length", bytes.length.toString) :: 
                      ("Content-Type", mimeType) :: headers, cookies, 200)  
 }
