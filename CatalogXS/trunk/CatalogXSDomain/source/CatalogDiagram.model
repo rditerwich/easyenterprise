@@ -316,6 +316,12 @@ DomainDiagram {
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:CatalogView/attributes:promotions
         }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:productGroupPoperties
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:groupPropertyValues
+        }
     }
     superClassReferences = {
         SuperClassReference {

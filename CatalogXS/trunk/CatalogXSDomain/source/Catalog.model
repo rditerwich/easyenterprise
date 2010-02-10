@@ -38,6 +38,13 @@ Package {
                     isComposite = true
                     opposite = catalog:ProductGroup/attributes:catalog
                 }
+                Attribute {
+                    name = productGroupPoperties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                }
 /*
                 Attribute {
                     name = propertyGroups
@@ -344,6 +351,14 @@ Package {
                 Attribute {
                     name = defaultPropertyValues
                     type = catalog:PropertyValue
+                    isComposite = true
+                    lower = 0
+                    upper = {}
+                }
+                Attribute {
+                    name = groupPropertyValues
+                    type = catalog:PropertyValue
+                    isComposite = true
                     lower = 0
                     upper = {}
                 }

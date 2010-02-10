@@ -11,6 +11,7 @@ object CatalogBindings {
   def catalogBinding(catalog : Catalog) = Binding(catalog,   
     "id" -> Text(catalog.id.toString),
     "products" -> Complex(catalog.products map (productBinding _)) -> "product",
+    "top_level_groups" -> Complex(catalog.topLevelProductGroups map (productGroupBinding _)) -> "group",
     "promotions" -> Complex(catalog.promotions map (promotionBinding _)) -> "promotion")
 
   def promotionBinding(promotion : Promotion) = promotion match {
@@ -37,8 +38,9 @@ object CatalogBindings {
   
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
     "id" -> Text(group.id.toString),
+    "name" -> Text(group.name),
 	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
-	"child_groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
+	"sub_groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
 	"parent_groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group")
 	//	  "name" -> Text(product.getName)
 		

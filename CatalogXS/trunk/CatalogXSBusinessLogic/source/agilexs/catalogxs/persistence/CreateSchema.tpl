@@ -15,22 +15,25 @@ INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,1,'produc
 INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,2,'Supplies');
 INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,3,'Inkt en hulpmiddelen');
 INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,4,'K+E inkten en hulpmiddelen');
+INSERT INTO "catalogxs"."product_group" (catalog_id,id,name) VALUES (1,100,'Producten');
 
 INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (2,1);
 INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (3,2);
 INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (4,3);
+INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (3,100);
+INSERT INTO "catalogxs"."product_group_children_parents_product_group" (children_id,parents_id) VALUES (4,100);
 
 /* CatalogView */
 INSERT INTO "catalogxs"."catalog_view" (name,catalog_id,id) VALUES ('webshop',1,1);
-INSERT INTO "catalogxs"."catalog_view_top_level_product_groups_view_product_group" (view_id,top_level_product_groups_id) VALUES (1,2);
+INSERT INTO "catalogxs"."catalog_view_top_level_product_groups_view_product_group" (view_id,top_level_product_groups_id) VALUES (1,100);
 
 /* Properties */
 INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ProductGroupName','String',1,1);
 INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ArticleNumber','String',2,1);
-INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ProductDescription','String',3,1);
-INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ProductImage','Media',4,1);
-INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ProductPrice','Money',5,1);
-INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('ProductPriceNew','Money',6,1);
+INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('Description','String',3,1);
+INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('Image','Media',4,1);
+INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('PriceOld','Money',5,1);
+INSERT INTO "catalogxs"."property" (name,type_id,id,product_group_id) VALUES ('Price','Money',6,1);
 
 /* labels for product groups */
 INSERT INTO "catalogxs"."label" (language,label,id,property_id,enum_value_id) VALUES ('en','Supplies',1,1,null);

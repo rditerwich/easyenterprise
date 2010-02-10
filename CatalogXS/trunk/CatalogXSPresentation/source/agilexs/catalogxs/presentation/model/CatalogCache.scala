@@ -56,8 +56,9 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
     for (group <- groups; if !visited.contains(group)) {
       visited += group
       productGroupGetRelated(getRelated(group), visited, getRelated, result)
-      result(group) = getRelated(group).filter(excludedProductGroups.contains(_)) ++
-        (group.getChildren.filter(!excludedProductGroups.contains(_)) flatMap (result.getOrElse(_, Set.empty))) toSet 
+      var direct = getRelated(group).filter(!excludedProductGroups.contains(_))
+      val indirect = getRelated(group).filter(excludedProductGroups.contains(_)) flatMap (result.getOrElse(_, Set.empty))
+      result(group) = direct ++ indirect toSet
     }
   }
   
