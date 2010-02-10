@@ -35,27 +35,40 @@ class ComplexList(f : => Iterable[Binding[_]]) extends Function2[String, NodeSeq
 }
 
 object Value {
-  def apply(property : => Property) = new Bindable {
-    override def asHtml = property.propertyType match {
+  def apply(property : => Option[Property]) = new Value(property)
+  def apply(property : => Property) = new Value2(property)
+}
+
+class Value(property : => Option[Property]) extends Bindable {
+  override def asHtml = property match { 
+    case Some(property) => property.propertyType match {
       case jpa.PropertyType.Media => 
         if (property.mediaValue == null) 
           Text("")
-        else if (property.mimeType.startsWith("image/")) 
-          Text("<img src=\"image/"+ property.valueId + "\" />")
-        else
-  	      Text(property.mediaValue.toString());
+	    else if (property.mimeType.startsWith("image/")) 
+		  Text("<img src=\"image/"+ property.valueId + "\" />")
+	     else
+  		   Text(property.mediaValue.toString());
       case _ => Text(property.valueAsString)
     }
-  } 
+    case None => Text("")
+  }
+}
+
+class Value2(property : => Property) extends Value(if (property != null) Some(property) else None) {
 }
 
 case class Binding[A](obj : Object, params : BindParam*)  {
   def bind(tag : String, xml: NodeSeq) = {
-	val actualTag = BindAttr("tag", tag)
-	val template = determineTemplate(obj, xml)
-	val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
-	val paramsWithParent = params.map(addParentBindings(_, parent)) 
-	BindHelpers.bind(actualTag, template, paramsWithParent:_*)
+    obj match {
+      case null => Text("")
+      case _ =>
+	      val actualTag = BindAttr("tag", tag)
+	      val template = determineTemplate(obj, xml)
+	      val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
+	      val paramsWithParent = params.map(addParentBindings(_, parent)) 
+	      BindHelpers.bind(actualTag, template, paramsWithParent:_*)
+    }
   } 
   
   private def addParentBindings(param : BindParam, parent : NodeSeq => NodeSeq) = {

@@ -92,7 +92,7 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
     product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet
 
   val propertiesByName : Map[String, Property] = 
-    null
+    properties makeMapReverse (_.name)
 }
 
 class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {

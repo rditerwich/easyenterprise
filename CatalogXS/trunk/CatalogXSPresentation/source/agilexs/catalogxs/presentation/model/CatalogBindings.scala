@@ -32,14 +32,14 @@ object CatalogBindings {
 	  "name" -> Text(product.name),
       "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
 	  "property" -> Complex(propertyBinding(product.propertiesByName(BindAttr("name")))) -> "property",
-	  "value" -> Value(product.propertiesByName(BindAttr("property"))),
+	  "value" -> Value(product.propertiesByName.get(BindAttr("property"))),
       "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
   
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
     "id" -> Text(group.id.toString),
 	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
-	"child-groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
-	"parent-groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group")
+	"child_groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
+	"parent_groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group")
 	//	  "name" -> Text(product.getName)
 		
   def propertyBinding(property: Property) : Binding[Property] = Binding(property,  

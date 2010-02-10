@@ -8,11 +8,12 @@
   	</promotion:product>
   <div class="contentheading">Promotion: <promotion:id/></div>
     <promotion:product>
-      <product:description/>
+      Description: <product:value property="ProductDescription"/>
+      Color: <product:value property="Color"/>
     </promotion:product>
-    <p>&euro; <strike><promotion:product><product:oldPrice/></promotion:product></strike><br/>
+    <p>&euro; <strike><promotion:product><product:value property="oldPrice"/></promotion:product></strike><br/>
     <span style="color:red">&euro; <promotion:price/></span></p>
-    <p style="font-size:10px;">Promotion ends: <promotion:end-date/></p>
+    <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
     <a href=""><img src="order_now.png" /></a>
     <a href="">More info &gt;&gt;</a>
 </div>
