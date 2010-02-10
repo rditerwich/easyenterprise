@@ -10,6 +10,8 @@ import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConn
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.agilexs.catalogxs.presentation.model._
 import _root_.javax.servlet.http.{HttpServletRequest}
+import _root_.scala.xml._
+import agilexs.catalogxs.presentation.util.ImageDispatcher
 
 //import _root_.java.util.Locale
 
@@ -53,14 +55,14 @@ class Boot {
       Menu(Loc("ProductGroup", List("productgroup"), "Product Group", Hidden)) ::
       Menu(Loc("Product", List("product"), "Product", Hidden)) ::
    	  Menu(Loc("ShoppingCart", List("shoppingcart"), "ShoppingCart", Hidden)) ::
-      Menu(Loc("Admin", List("admin", "index"), "Admin"),
+// 	    Menu(Loc("Image", List("image"), "Image", Hidden)) ::
+      Menu(Loc("Admin", List("admin", "index"), "Admin", Hidden),
            Menu(Loc("productgroups", List("admin", "productgroups"), "Product Groups")),
            Menu(Loc("property", List("admin", "property") -> true, "Property", Hidden)),
            Menu(Loc("products", List("admin", "products"), "Products"))
           ) ::
       Nil
 /*
-      
         Menu(Loc("productgroups", List("admin", "productgroups"), "Product Groups")),
         Menu(Loc("property", List("admin", "property"), "Property", Hidden),
              Menu(Loc("property", List("admin", "property", "add"), "Property", Hidden)),
@@ -82,8 +84,13 @@ class Boot {
 	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
 	            RewriteResponse("product" :: Nil, Map("product" -> product)
 	    )
+	    case RewriteRequest(
+	        ParsePath("image" :: imageID :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("image" :: Nil, Map("imageID" -> imageID)
+	            )
     })
 
+    LiftRules.dispatch.prepend(ImageDispatcher.dispatch)
     /*
      * Show the spinny image when an Ajax call starts
      */
