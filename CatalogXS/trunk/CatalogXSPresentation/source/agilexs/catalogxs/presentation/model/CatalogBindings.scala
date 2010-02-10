@@ -32,7 +32,7 @@ object CatalogBindings {
 	  "name" -> Text(product.name),
       "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
 	  "property" -> Complex(propertyBinding(product.propertiesByName(BindAttr("name")))) -> "property",
-	  "value" -> Text(product.propertiesByName(BindAttr("property")) toString),
+	  "value" -> Value(product.propertiesByName(BindAttr("property"))),
       "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
   
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
@@ -46,5 +46,5 @@ object CatalogBindings {
 	"id" -> Text(property.id.toString),
 	"name" -> Text(property.name),
 	"label" -> Text(property.name),
-	"value" -> Text(property.valueAsString))
+	"value" -> Value(property))
 }

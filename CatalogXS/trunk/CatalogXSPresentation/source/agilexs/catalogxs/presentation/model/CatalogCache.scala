@@ -41,10 +41,13 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 
   val productPropertyValues : Map[jpa.Product, Seq[jpa.PropertyValue]] =
     products makeMap (_.getPropertyValues filter(_.getProperty != null))
-    
-//  val mediaPropertyValues : Seq[jpa.PropertyValue] = 
-//    products flatMap (productPropertyValues(_)) filter (_.getProperty.getType == jpa.PropertyType.Media)
+
+  val mediaPropertyValues : Seq[jpa.PropertyValue] = 
+    products flatMap (productPropertyValues(_)) filter (_.getProperty.getType == jpa.PropertyType.Media) filter(_.getMediaValue != null)
   
+  val mediaValues : Map[Long, (String, Array[Byte])] =
+    mutable.HashMap(mediaPropertyValues map (v => (v.getId.longValue, (v.getMimeType, v.getMediaValue))):_*)
+    	
   val productGroupProductExtent : Map[jpa.ProductGroup, Set[jpa.Product]] = 
 	new mutable.HashMap[jpa.ProductGroup, Set[jpa.Product]] useIn 
 	  (productGroupProductExtent(view.getTopLevelProductGroups, _)) readOnly  

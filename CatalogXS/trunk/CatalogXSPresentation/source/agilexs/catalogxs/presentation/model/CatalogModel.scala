@@ -11,7 +11,7 @@ import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap}
 class Mapping(product : Option[Product], cache : CatalogCache) {
   lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, cache, this))
   lazy val products = ProjectionMap((p : jpa.Product) => new Product(p, cache, this))
-  lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, product, None, cache, this))
+  lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, noPropertyValue, product, cache, this))
   lazy val promotions = ProjectionMap( (p : jpa.Promotion) => p match { 
     case p : jpa.VolumeDiscountPromotion => new VolumeDiscountPromotion(p, cache, this)
     case _ => new Promotion(p, cache, this)
@@ -42,8 +42,8 @@ class Catalog (val cache : CatalogCache) extends Delegate(cache.catalog) {
   val products : Set[Product] =
     cache.products map (mapping.products) toSet
 
-  val mediaPropertyValues : Map[Long, PropertyValue] =
-	products flatMap (_.propertyValues) filter(_.propertyType == jpa.PropertyType.Media) makeMapReverse (_.id) 
+  val mediaValues : Map[Long, (String, Array[Byte])] =
+    cache.mediaValues
 }
 
 class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(productGroup) {
@@ -81,11 +81,9 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
   val id : Long = product.getId.longValue
   val name = product.getName or id.toString
   
-  val propertyValues : Set[PropertyValue] = 
-    cache.productPropertyValues(product) map (new PropertyValue(_, this)) toSet 
-  
   val properties : Set[Property] =
-    propertyValues map (v => new Property(v.value.getProperty, Some(this), Some(v), cache, mapping)) toSet
+	cache.productPropertyValues(product) map (v => 
+	  new Property(v.getProperty, v, Some(this), cache, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
     product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
@@ -97,25 +95,21 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
     null
 }
 
-class Property(property : jpa.Property, val product : Option[Product], val value : Option[PropertyValue], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
-  val id = property.getId.longValue
-  val name = property.getName or id.toString
+  val id : Long = property.getId.longValue
+  val name : String = property.getName or id.toString
+  val propertyType : jpa.PropertyType = property.getType
   
-  val valueAsString = value match {
-    case Some(value) => value.toString
-    case None => ""
-  }
-}
-
-class PropertyValue(val value : jpa.PropertyValue, val product : Product) extends Delegate(value) {
-
-  val id : Long = value.getId.longValue
-  val propertyType : jpa.PropertyType = value.getProperty.getType
+  val valueId : Long = value.getId.longValue
+  val mimeType : String = value.getMimeType or ""
+  val mediaValue : Array[Byte] = value.getMediaValue
   
-  override def toString = {
+  def hasValue = value != noPropertyValue
+  
+  val valueAsString = 
     if (value.getStringValue != null) value.getStringValue
     else if (value.getStringValue != null) value.getStringValue
     else if (value.getBooleanValue != null) value.getBooleanValue.toString
@@ -124,7 +118,10 @@ class PropertyValue(val value : jpa.PropertyValue, val product : Product) extend
     else if (value.getMoneyValue != null) value.getMoneyValue.toString
     else if (value.getRealValue != null) value.getRealValue.toString
     else ""
-  }
+}
+
+object noPropertyValue extends jpa.PropertyValue {
+  setId(-1l)
 }
 
 class Promotion(promotion : jpa.Promotion, cache : CatalogCache, mapping : Mapping) extends Delegate(promotion) {

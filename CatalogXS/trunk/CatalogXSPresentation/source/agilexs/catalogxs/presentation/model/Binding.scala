@@ -3,7 +3,9 @@ package agilexs.catalogxs.presentation.model
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers.BindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
-import scala.xml.NodeSeq 
+import net.liftweb.util.Bindable
+import scala.xml.{NodeSeq, Text} 
+import agilexs.catalogxs.jpa.{catalog => jpa}
 
 object BindAttr {
   def apply(name : String) : String = 
@@ -30,6 +32,21 @@ class Complex(f : => Binding[_]) extends Function2[String, NodeSeq, NodeSeq] {
 
 class ComplexList(f : => Iterable[Binding[_]]) extends Function2[String, NodeSeq, NodeSeq] {
   override def apply(tag : String, xml : NodeSeq) : NodeSeq = f.toSeq flatMap (_ bind(tag, xml))
+}
+
+object Value {
+  def apply(property : => Property) = new Bindable {
+    override def asHtml = property.propertyType match {
+      case jpa.PropertyType.Media => 
+        if (property.mediaValue == null) 
+          Text("")
+        else if (property.mimeType.startsWith("image/")) 
+          Text("<img src=\"image/"+ property.valueId + "\" />")
+        else
+  	      Text(property.mediaValue.toString());
+      case _ => Text(property.valueAsString)
+    }
+  } 
 }
 
 case class Binding[A](obj : Object, params : BindParam*)  {
