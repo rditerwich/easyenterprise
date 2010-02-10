@@ -31,10 +31,10 @@ object ImageDispatcher {
     // Req(url_pattern_list, suffix, request_type)
     case Req(List("image"), _, _) => () => Full(get)
   }
-
+  
   def get = {
     Model.catalog.mediaValues.get(S.param("imageID").openOr("0").toLong) match {
-      case Some(p) => ImageResponse(p._1, p._2)
+	  case Some((mimeType, image)) => ImageResponse(mimeType, image)
       case _ =>  NotFoundResponse()
     }
   }
