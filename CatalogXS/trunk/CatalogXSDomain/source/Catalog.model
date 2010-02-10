@@ -39,11 +39,12 @@ Package {
                     opposite = catalog:ProductGroup/attributes:catalog
                 }
                 Attribute {
-                    name = productGroupPoperties
+                    name = productGroupProperties
                     type = catalog:Property
+                    isComposite = true
                     lower = 0
                     upper = {}
-                    isComposite = true
+                    opposite = catalog:Property/attributes:owningCatalog
                 }
 /*
                 Attribute {
@@ -184,6 +185,13 @@ Package {
                     name = productGroup
                     type = catalog:ProductGroup
                     opposite = catalog:ProductGroup/attributes:properties
+                    lower = 0
+                }
+                Attribute {
+                    name = owningCatalog
+                    type = catalog:Catalog
+                    opposite = catalog:Catalog/attributes:productGroupProperties
+                    lower = 0
                 }
                 Attribute {
                     name = type
@@ -351,16 +359,20 @@ Package {
                 Attribute {
                     name = defaultPropertyValues
                     type = catalog:PropertyValue
+                    // BUG: when composite, table is not created
                     isComposite = true
                     lower = 0
                     upper = {}
+                    opposite = catalog:PropertyValue/attributes:defaultPropertyValuesOpposite
                 }
                 Attribute {
                     name = groupPropertyValues
                     type = catalog:PropertyValue
+                    // BUG: when composite, table is not created
                     isComposite = true
                     lower = 0
                     upper = {}
+                    opposite = catalog:PropertyValue/attributes:groupPropertyValuesOpposite
                 }
                 Attribute {
                     name = templates
@@ -499,6 +511,18 @@ Package {
                     type = catalog:Product
                     lower = 0
                     opposite = catalog:Product/attributes:propertyValues
+                }
+                Attribute {
+                    name = groupPropertyValuesOpposite
+                    type = catalog:ProductGroup
+                    lower = 0
+                    opposite = catalog:ProductGroup/attributes:groupPropertyValues
+                }
+                Attribute {
+                    name = defaultPropertyValuesOpposite
+                    type = catalog:ProductGroup
+                    lower = 0
+                    opposite = catalog:ProductGroup/attributes:defaultPropertyValues
                 }
             }
         }
