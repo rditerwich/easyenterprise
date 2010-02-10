@@ -1,6 +1,6 @@
-<lift:surround with="default" at="content">
-  <head><title>Catalog Listing</title></head>
-  <lift:Catalog.list_promotions eager_eval="true">
-    <lift:embed what="promotion" /> 
-  </lift:Catalog.list_promotions>
-</lift:surround>
+<lift:Catalog.catalog eager_eval="true">
+	<lift:surround with="default" at="content">
+	  <head><title>Catalog Listing</title></head>
+	    <lift:embed what="promotion" /> 
+	</lift:surround>
+</lift:Catalog.catalog>

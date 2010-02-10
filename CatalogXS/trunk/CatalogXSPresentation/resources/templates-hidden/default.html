@@ -21,16 +21,7 @@
     <table id="site_table" class="page_content">
       <tr valign="top"> 
         <td class="page_left"> 
-          <div class="page_menu" id="page_left">
-            <div class="page_menu_artgrp"><lift:snippet type="msgs"/></div>
-            <div class="page_menu_artgrp">
-              <div class="description">Products</div>
-            </div>
-            <div id="navigatie">
-                <lift:embed what="productgroup_list" />
-            </div> 
-            <div class="page_menu_footer"></div> 
-          </div> 
+          <lift:embed what="left_bar" eager_eval="true"/>
         </td>
         <td class="page_middle"> 
           <div class="homepage_nieuws_midden"> 
