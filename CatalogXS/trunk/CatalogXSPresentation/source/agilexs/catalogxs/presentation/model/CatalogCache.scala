@@ -24,6 +24,14 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
   val productGroups : Set[jpa.ProductGroup] = 
 	catalog.getProductGroups filter (!excludedProductGroups.contains(_)) toSet
 
+  val productGroupChildren : Map[jpa.ProductGroup, Set[jpa.ProductGroup]] = 
+    new mutable.HashMap[jpa.ProductGroup, Set[jpa.ProductGroup]] useIn 
+	  (productGroupGetRelated(catalog.getProductGroups, new mutable.HashSet[jpa.ProductGroup], g => g.getChildren,  _)) readOnly  
+    
+  val productGroupParents : Map[jpa.ProductGroup, Set[jpa.ProductGroup]] = 
+    new mutable.HashMap[jpa.ProductGroup, Set[jpa.ProductGroup]] useIn 
+	  (productGroupGetRelated(catalog.getProductGroups, new mutable.HashSet[jpa.ProductGroup], g => g.getParents,  _)) readOnly  
+    
   val topLevelProductGroups : Set[jpa.ProductGroup] = 
 	view.getTopLevelProductGroups toSet
 
@@ -31,10 +39,25 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	new mutable.HashSet[jpa.Product] useIn 
 	 (products(view.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
 
+  val productPropertyValues : Map[jpa.Product, Seq[jpa.PropertyValue]] =
+    products makeMap (_.getPropertyValues filter(_.getProperty != null))
+    
+//  val mediaPropertyValues : Seq[jpa.PropertyValue] = 
+//    products flatMap (productPropertyValues(_)) filter (_.getProperty.getType == jpa.PropertyType.Media)
+  
   val productGroupProductExtent : Map[jpa.ProductGroup, Set[jpa.Product]] = 
 	new mutable.HashMap[jpa.ProductGroup, Set[jpa.Product]] useIn 
 	  (productGroupProductExtent(view.getTopLevelProductGroups, _)) readOnly  
 
+  private def productGroupGetRelated(groups : Iterable[jpa.ProductGroup], visited : mutable.Set[jpa.ProductGroup], getRelated : jpa.ProductGroup => Seq[jpa.ProductGroup], result : mutable.HashMap[jpa.ProductGroup, Set[jpa.ProductGroup]]) : Unit = {
+    for (group <- groups; if !visited.contains(group)) {
+      visited += group
+      productGroupGetRelated(getRelated(group), visited, getRelated, result)
+      result(group) = getRelated(group).filter(excludedProductGroups.contains(_)) ++
+        (group.getChildren.filter(!excludedProductGroups.contains(_)) flatMap (result.getOrElse(_, Set.empty))) toSet 
+    }
+  }
+  
   private def products(groups : Iterable[jpa.ProductGroup], visited : mutable.Set[jpa.ProductGroup], result : mutable.HashSet[jpa.Product]) : Unit = {
     for (group <- groups; if !visited.contains(group)) {
       visited += group

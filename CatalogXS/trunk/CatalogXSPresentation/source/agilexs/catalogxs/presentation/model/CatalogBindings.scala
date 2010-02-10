@@ -1,6 +1,7 @@
 package agilexs.catalogxs.presentation.model
 
 import Conversions._
+import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers._
 import scala.xml.Text 
 import agilexs.catalogxs.presentation.util.Util
@@ -30,6 +31,8 @@ object CatalogBindings {
 	  "id" -> Text(product.id.toString),
 	  "name" -> Text(product.name),
       "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
+	  "property" -> Complex(propertyBinding(product.propertiesByName(BindAttr("name")))) -> "property",
+	  "value" -> Text(product.propertiesByName(BindAttr("property")) toString),
       "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
   
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   

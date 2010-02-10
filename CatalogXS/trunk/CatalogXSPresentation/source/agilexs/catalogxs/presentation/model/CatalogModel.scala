@@ -2,7 +2,7 @@ package agilexs.catalogxs.presentation.model
 
 import java.util.LinkedHashSet
 import scala.xml.NodeSeq 
-import scala.collection.Set
+import scala.collection.{Set, Map}
 
 import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.model.Conversions._
@@ -24,23 +24,26 @@ class Catalog (val cache : CatalogCache) extends Delegate(cache.catalog) {
   
   val id = cache.catalog.getId.longValue
   
-  lazy val excludedProductGroups : Set[ProductGroup] =
+  val excludedProductGroups : Set[ProductGroup] =
    cache.excludedProductGroups map (mapping.productGroups) toSet
   
-  lazy val excludedProperties : Set[Property] = 
+  val excludedProperties : Set[Property] = 
     cache.excludedProperties map (mapping.properties) toSet
 
-  lazy val promotions : Set[Promotion] = 
+  val promotions : Set[Promotion] = 
     cache.promotions map (mapping.promotions) toSet
   
-  lazy val productGroups : Set[ProductGroup] = 
+  val productGroups : Set[ProductGroup] = 
 	cache.catalog.getProductGroups map (mapping.productGroups) filter (!excludedProductGroups.contains(_)) toSet
 
-  lazy val topLevelProductGroups : Set[ProductGroup] = 
+  val topLevelProductGroups : Set[ProductGroup] = 
 	cache.topLevelProductGroups map (mapping.productGroups) toSet
 
-  lazy val products : Set[Product] =
+  val products : Set[Product] =
     cache.products map (mapping.products) toSet
+
+  val mediaPropertyValues : Map[Long, PropertyValue] =
+	products flatMap (_.propertyValues) filter(_.propertyType == jpa.PropertyType.Media) makeMapReverse (_.id) 
 }
 
 class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(productGroup) {
@@ -52,10 +55,10 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   val name = productGroup.getName or id.toString
   
   val parents : Set[ProductGroup] = 
-    productGroup.getParents map(mapping.productGroups) toSet
+    cache.productGroupParents(productGroup) map (mapping.productGroups) toSet
   
-  val children : Set[ProductGroup] = 
-	productGroup.getChildren map(mapping.productGroups) toSet
+  val children : Set[ProductGroup] =
+    cache.productGroupChildren(productGroup) map (mapping.productGroups) toSet
     
   val products : Set[Product] =
     productGroup.getProducts map(mapping.products) toSet 
@@ -78,15 +81,20 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
   val id : Long = product.getId.longValue
   val name = product.getName or id.toString
   
-  val properties : Set[Property] = 
-    product.getPropertyValues map (v => 
-      new Property(v.getProperty, Some(this), Some(new PropertyValue(v, this)), cache, mapping)) toSet
+  val propertyValues : Set[PropertyValue] = 
+    cache.productPropertyValues(product) map (new PropertyValue(_, this)) toSet 
+  
+  val properties : Set[Property] =
+    propertyValues map (v => new Property(v.value.getProperty, Some(this), Some(v), cache, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
     product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
   
   val productGroupExtent : Set[ProductGroup] = 
-    product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
+    product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet
+
+  val propertiesByName : Map[String, Property] = 
+    null
 }
 
 class Property(property : jpa.Property, val product : Option[Product], val value : Option[PropertyValue], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
@@ -102,8 +110,11 @@ class Property(property : jpa.Property, val product : Option[Product], val value
   }
 }
 
-class PropertyValue(value : jpa.PropertyValue, val product : Product) extends Delegate(value) {
+class PropertyValue(val value : jpa.PropertyValue, val product : Product) extends Delegate(value) {
 
+  val id : Long = value.getId.longValue
+  val propertyType : jpa.PropertyType = value.getProperty.getType
+  
   override def toString = {
     if (value.getStringValue != null) value.getStringValue
     else if (value.getStringValue != null) value.getStringValue

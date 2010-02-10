@@ -5,6 +5,20 @@ import net.liftweb.util.BindHelpers.BindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
 import scala.xml.NodeSeq 
 
+object BindAttr {
+  def apply(name : String) : String = 
+	BindHelpers.attr(name) match { 
+      case Some(attr) => attr.toString 
+      case None => error("Missing required tag: " + name)
+    }
+
+  def apply(name : String, default : => String) : String = 
+	  BindHelpers.attr(name) match { 
+	  case Some(attr) => attr.toString 
+	  case None => default
+  }
+}
+
 object Complex {
   def apply[A](f : => Binding[A]) = new Complex(f)
   def apply(f : => Iterable[Binding[_]]) = new ComplexList(f)
@@ -20,7 +34,7 @@ class ComplexList(f : => Iterable[Binding[_]]) extends Function2[String, NodeSeq
 
 case class Binding[A](obj : Object, params : BindParam*)  {
   def bind(tag : String, xml: NodeSeq) = {
-	val actualTag = determineTag(tag)
+	val actualTag = BindAttr("tag", tag)
 	val template = determineTemplate(obj, xml)
 	val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
 	val paramsWithParent = params.map(addParentBindings(_, parent)) 
@@ -32,13 +46,6 @@ case class Binding[A](obj : Object, params : BindParam*)  {
       case param : FuncBindParam => 
         FuncBindParam(param.name, xml => param.calcValue(parent(xml))) 
       case _ => param
-    }
-  }
-  
-  private def determineTag(default: String) = {
-	BindHelpers.attr("tag") match { 
-      case Some(explicitTag) => explicitTag.toString 
-      case None => default
     }
   }
 
