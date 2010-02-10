@@ -1,59 +1,5 @@
 <lift:surround with="default" at="content">
   <head><title>Catalog Listing</title></head>
-
-  <lift:Catalog.catalog>
-	<h1>All Products</h1>
-	<catalog:products>
-	<h2>Product: <product:name/></h2>
-	<table>
-  	<product:properties>
-		  <tr>
-		    <td><b><property:name/></b>:</td>
-		    <td><property:value/></td>
-		    <td>(<product:properties tag="property"><property:value/> </product:properties>)</td>
-		  </tr>
-  	</product:properties>
-	</table>
-	<product:properties tag="subproperty">
-		<h5>Other <property:name/>.<subproperty:name/>: <subproperty:value/> (promotion: <promotion:id/>)</h5>
-	</product:properties>
-	</catalog:products>
-	
-  	<h2>Promotion: <promotion:id/></h2>
-	  	<promotion:product tag="prod">
-	  		(TestCustomTag:<prod:id/>)
-	  	</promotion:product>
-  	<promotion:product template="small">
-  		<h3>Promotion Product: <product:name/> (of promotion: <promotion:id/>)</h3>
-  		<product:properties>
-	  		<h4>Property <property:name/>: <property:value/> or <prop:value/></h4>
-	  		<product:properties tag="subproperty">
-		  		<h5>Other <property:name/>.<subproperty:name/>: <subproperty:value/> (promotion: <promotion:id/>)</h5>
-	  		</product:properties>
-  		</product:properties>
-  	</promotion:product>
-  	
-  </lift:Catalog.catalog>
-  
-	<h1>Direct</h1>
-  <lift:Catalog.list_promotions>
-  	<h2>Promotion: <promotion:id/></h2>
-	  	<promotion:product tag="prod">
-	  		(TestCustomTag:<prod:id/> or <product:id/>)
-	  	</promotion:product>
-  	<promotion:product template="small">
-  		<h3>Promotion Product: <product:id/> (of promotion: <promotion:id/>)</h3>
-  		<product:properties>
-	  		<h4>Property <property:name/>: <property:value/> or <prop:value/></h4>
-	  		<product:properties tag="subproperty">
-		  		<h5>Other <property:name/>.<subproperty:name/>: <subproperty:value/> (promotion: <promotion:id/>)</h5>
-	  		</product:properties>
-  		</product:properties>
-  	</promotion:product>
-  	
-  </lift:Catalog.list_promotions>
-  
-	<h1>Embedded Template</h1>
   <lift:Catalog.list_promotions eager_eval="true">
     <lift:embed what="promotion" /> 
   </lift:Catalog.list_promotions>
