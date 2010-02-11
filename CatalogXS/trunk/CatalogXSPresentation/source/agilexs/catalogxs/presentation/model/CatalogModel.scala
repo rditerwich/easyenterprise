@@ -6,7 +6,7 @@ import scala.collection.{mutable, Set, Map}
 
 import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.model.Conversions._
-import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap}
+import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
 
 class Mapping(product : Option[Product], cache : CatalogCache) {
   lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, cache, this))
@@ -57,9 +57,13 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
   val productsById : Map[Long, Product] = 
     products makeMapReverse (_.id)
     
-
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cache.mediaValues
+  
+  val keywordMap =
+    KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
+
+  def findProducts(s: String ) = null
 }
 
 class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(productGroup) {

@@ -54,6 +54,7 @@ class Boot {
       Menu(Loc("Home", List("index"), "Home")) ::
       Menu(Loc("Group", List("group"), "Group", Hidden)) ::
       Menu(Loc("Product", List("product"), "Product", Hidden)) ::
+   	  Menu(Loc("Search", List("search"), "Search", Hidden)) ::
    	  Menu(Loc("ShoppingCart", List("shoppingcart"), "ShoppingCart", Hidden)) ::
 // 	    Menu(Loc("Image", List("image"), "Image", Hidden)) ::
       Menu(Loc("Admin", List("admin", "index"), "Admin", Hidden),
@@ -87,7 +88,11 @@ class Boot {
 	    case RewriteRequest(
 	        ParsePath("image" :: imageID :: Nil, _, _,_), _, _) => 
 	            RewriteResponse("image" :: Nil, Map("imageID" -> imageID)
-	            )
+	    )
+	    case RewriteRequest(
+	        ParsePath("search" :: searchString :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("search" :: Nil, Map("searchString" -> searchString)
+	    )
     })
 
     LiftRules.dispatch.prepend(ImageDispatcher.dispatch)

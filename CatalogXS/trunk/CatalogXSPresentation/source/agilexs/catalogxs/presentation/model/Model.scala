@@ -40,4 +40,10 @@ object Model {
       case Full(id) => Model.catalog.productsById.get(id.toLong) 
       case _ => None
     }
+      
+  def currentSearchProducts : Seq[Product] =
+	  S.param("searchString") match {
+	  case Full(searchString) => Model.catalog.keywordMap.find(searchString) 
+	  case _ => Seq.empty
+  }
 }

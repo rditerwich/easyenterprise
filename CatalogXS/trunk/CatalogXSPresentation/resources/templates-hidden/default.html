@@ -31,14 +31,14 @@
         <td class="page_right"> 
           <div class="page_menu" id="page_right"> 
             <div class="page_searchbox">
-              <form name="search" action="/zoeken/" method="GET"> 
+              <lift:Catalog.search form="POST"> 
                 <table> 
                   <tr> 
-                    <td><input type="text" class="formfield searchfield" value="Zoeken" name="q" onclick="javascript:this.value=(this.value == 'Zoeken' ? '' : this.value);" /></td> 
-                    <td><input type="submit" class="formbutton" value="Vind!" /></td> 
+                    <td><search:searchString /></td> 
+                    <td><search:submit /></td> 
                   </tr> 
                 </table> 
-              </form> 
+              </lift:Catalog.search> 
               <form method="post" action="http://nieuwsbrief.netrex.eu/netrexmail/form.php?form=23" id="frmSS23" onSubmit="return CheckForm23(this);"> 
                 <table style="margin-top:5px;"> 
                   <tr> 
