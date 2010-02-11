@@ -1,21 +1,21 @@
 <catalog:promotions>
-  <div style="width:50%;float:left;padding-bottom:50px;">
-  	<h2>Promotion: <promotion:id/></h2>
-  	<promotion:product>
-  		<h3>Promotion Product: <product:id/></h3>
-  		<product:properties>
-	  		<h4>Property <property:name/>: <property:value/></h4>
-  		</product:properties>
-  	</promotion:product>
-  <div class="contentheading">Promotion: <promotion:id/></div>
+  <div style="width:270px;float:left;padding-bottom:50px;margin-right:5px;">
+    <!-- img src="images/specialoffer.png" style="position:relative;top:0;right:0" /-->
     <promotion:product>
-      Description: <product:value property="ProductDescription"/>
-      Color: <product:value property="Color"/>
-    </promotion:product>
-    <p>&euro; <strike><promotion:product><product:value property="oldPrice"/></promotion:product></strike><br/>
-    <span style="color:red">&euro; <promotion:price/></span></p>
-    <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
-    <a href=""><img src="order_now.png" /></a>
-    <a href="">More info &gt;&gt;</a>
+      <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
+      <p><product:value property="Description"/></p>
+    </promotion:product> 
+    <div style="float:left">
+      <p>&euro; <strike><promotion:product><product:value property="OldPrice"/></promotion:product></strike><br/>
+      <span style="color:red">&euro; <promotion:price/></span></p>
+      <p>Price when order<br/> per <b><promotion:volume_discount/></b> articles</p>
+      <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
+    </div>
+    <div style="float:right;margin:30px 20px 0 0">
+      <br/><br/>
+      <a href="" style="padding: 8px 12px;font-size: 12px;text-decoration: none;white-space:nowrap;line-height:20px;border: 1px solid #999;color: #4D4D4D;background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;">Add to Cart</a>
+      <br/><br/>
+      <promotion:product><product:link>More info &gt;&gt;</product:link></promotion:product>
+    </div>
   </div>
 </catalog:promotions>
