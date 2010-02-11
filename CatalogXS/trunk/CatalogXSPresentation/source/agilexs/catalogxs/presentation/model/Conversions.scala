@@ -56,6 +56,17 @@ object Conversions {
   implicit def stringToBindingsWithTag[A](t : Tuple2[Tuple2[String, Function2[String, NodeSeq, NodeSeq]],String]) = 
 	FuncBindParam(t._1._1, (xml) => t._1._2(t._2, xml))
   
+  implicit def toBindableObject(obj : Object) = new BindableObject(obj)
+
+  class OrNull[A](option : Option[A]) {
+    def orNull : A = option match {
+      case Some(value) => value
+      case None => null.asInstanceOf[A]
+    }
+  }
+  
+  implicit def orNull[A](option : Option[A]) = new OrNull(option)
+
   class SeqWrapper[A](elements : Iterable[A]) {
     def seqFlatMap[B](f : A => Iterable[B]) : Seq[B] = {
       val buf = new mutable.ArrayBuffer[B]

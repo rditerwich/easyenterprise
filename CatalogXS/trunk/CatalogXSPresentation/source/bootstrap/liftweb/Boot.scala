@@ -78,7 +78,7 @@ class Boot {
     LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
 	    case RewriteRequest(
 	    	ParsePath("productgroup" :: pgID :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("productgroup" :: Nil, Map("pgID" -> pgID)
+	            RewriteResponse("productgroup" :: Nil, Map("currentProductGroup" -> pgID)
 	    )
 	    case RewriteRequest(
 	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 

@@ -80,21 +80,27 @@ INSERT INTO catalogxs.product_product_groups_products_product_group (products_id
 
 /* Product 5001 Property Values */
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10010, 1010, 5001, 'en', '188078');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10011, 1020, 5001, 'en', 'blue');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10012, 1021, 5001, 'en', '39K HKS');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10013, 1023, 5001, 'en', 'Rol');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10011, 1011, 5001, 'en', 'Blue Ink');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10012, 1014, 5001, 'en', '12.95');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10013, 1020, 5001, 'en', 'blue');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10014, 1021, 5001, 'en', '39K HKS');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10015, 1023, 5001, 'en', 'Rol');
 
 /* Product 5002 Property Values */
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10020, 1010, 5002, 'en', '128116');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10021, 1020, 5002, 'en', 'red');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10022, 1021, 5002, 'en', '275-C NP');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10023, 1023, 5002, 'en', 'Rol');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10021, 1011, 5002, 'en', 'Red Ink');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10022, 1014, 5002, 'en', '22.95');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10023, 1020, 5002, 'en', 'red');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10024, 1021, 5002, 'en', '275-C NP');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10025, 1023, 5002, 'en', 'Rol');
 
 /* Product 5003 Property Values */
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10030, 1010, 5003, 'en', '175778');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10031, 1020, 5003, 'en', 'yellow');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10032, 1021, 5003, 'en', '51K* HKS');
-INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10033, 1023, 5003, 'en', 'Blik');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10031, 1011, 5003, 'en', 'Yellow Ink');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10032, 1014, 5003, 'en', '8.55');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10033, 1020, 5003, 'en', 'yellow');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10034, 1021, 5003, 'en', '51K* HKS');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10035, 1023, 5003, 'en', 'Blik');
 
 /*
 INSERT INTO catalogxs.property_value (property_id,language,string_value,id, product_id) VALUES (2,'en', '188078',10,1);

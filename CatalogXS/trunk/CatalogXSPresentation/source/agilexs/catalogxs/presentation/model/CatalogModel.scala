@@ -36,6 +36,9 @@ class Catalog (val cache : CatalogCache) extends Delegate(cache.catalog) {
   val productGroups : Set[ProductGroup] = 
 	cache.catalog.getProductGroups map (mapping.productGroups) filter (!excludedProductGroups.contains(_)) toSet
 
+  val productGroupsById : Map[Long, ProductGroup] = 
+    productGroups makeMapReverse (_.id)
+    
   val topLevelProductGroups : Set[ProductGroup] = 
 	cache.topLevelProductGroups map (mapping.productGroups) toSet
 

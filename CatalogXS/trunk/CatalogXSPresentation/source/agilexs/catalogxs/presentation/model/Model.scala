@@ -4,6 +4,9 @@ import javax.naming.InitialContext;
 import javax.persistence.{EntityManager,EntityManagerFactory,Persistence}
 import net.liftweb.http.RequestVar
 import net.liftweb.http.SessionVar
+import net.liftweb.http.S
+import net.liftweb.util.Box
+import net.liftweb.util.Full
 import scala.collection.jcl.{BufferWrapper,SetWrapper,IterableWrapper} 
 import scala.collection.mutable.{HashMap, SynchronizedMap}
 import Conversions._
@@ -26,5 +29,9 @@ object Model {
   object entityManager extends RequestVar[EntityManager]( 
   	entityManagerFactory.createEntityManager)
   
-  object v extends RequestVar[Any](null)
+  def currentProductGroup : Option[ProductGroup] =
+    S.param("currentProductGroup") match {
+      case Full(id) => Model.catalog.productGroupsById.get(id.toLong) 
+      case _ => None
+    }
 }

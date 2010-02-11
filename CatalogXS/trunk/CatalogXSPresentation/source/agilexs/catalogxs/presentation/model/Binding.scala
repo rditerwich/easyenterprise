@@ -1,10 +1,13 @@
 package agilexs.catalogxs.presentation.model
 
+import net.liftweb.http.SHtml
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers.BindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
 import net.liftweb.util.Bindable
+import net.liftweb.util.Full
 import scala.xml.{NodeSeq, Text} 
+import scala.collection.mutable 
 import agilexs.catalogxs.jpa.{catalog => jpa}
 
 object BindAttr {
@@ -22,15 +25,15 @@ object BindAttr {
 }
 
 object Complex {
-  def apply[A](f : => Binding[A]) = new Complex(f)
-  def apply(f : => Iterable[Binding[_]]) = new ComplexList(f)
+  def apply(f : => Binding) = new Complex(f)
+  def apply(f : => Iterable[Binding]) = new ComplexList(f)
 }
 
-class Complex(f : => Binding[_]) extends Function2[String, NodeSeq, NodeSeq] {
+class Complex(f : => Binding) extends Function2[String, NodeSeq, NodeSeq] {
   override def apply(tag : String, xml : NodeSeq) : NodeSeq = f.bind(tag, xml)
 }
 
-class ComplexList(f : => Iterable[Binding[_]]) extends Function2[String, NodeSeq, NodeSeq] {
+class ComplexList(f : => Iterable[Binding]) extends Function2[String, NodeSeq, NodeSeq] {
   override def apply(tag : String, xml : NodeSeq) : NodeSeq = f.toSeq flatMap (_ bind(tag, xml))
 }
 
@@ -55,28 +58,28 @@ class Value(property : => Option[Property]) extends Bindable {
   }
 }
 
-object Link {
-//  def apply(group : ProductGroup) = new ProductGroupLink(group)
-}
-
-//class ProductGroupLink(group : ProductGroup) extends Bindable {
-//  override def asHtml = 
-//}
-
 class Value2(property : => Property) extends Value(if (property != null) Some(property) else None) {
 }
 
-case class Binding[A](obj : Object, params : BindParam*)  {
+object Link {
+  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={"/productgroup/" + group.id}>{xml}</a>
+}
+
+class BindableObject(obj : Object) {
+  def bindWith(params : => Seq[BindParam]) = if (obj != null) new Binding(obj, params) else NullBinding
+}
+
+object params {
+	def apply(params : BindParam*) : Seq[BindParam] = params
+}
+
+class Binding(obj : Object, params : Seq[BindParam])  {
   def bind(tag : String, xml: NodeSeq) = {
-    obj match {
-      case null => Text("")
-      case _ =>
-	      val actualTag = BindAttr("tag", tag)
-	      val template = determineTemplate(obj, xml)
-	      val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
-	      val paramsWithParent = params.map(addParentBindings(_, parent)) 
-	      BindHelpers.bind(actualTag, template, paramsWithParent:_*)
-    }
+    val actualTag = BindAttr("tag", tag)
+    val template = determineTemplate(obj, xml)
+    val parent = (xml: NodeSeq) => BindHelpers.bind(actualTag, xml, params:_*)
+    val paramsWithParent = params.map(addParentBindings(_, parent)) 
+    BindHelpers.bind(actualTag, template, paramsWithParent:_*)
   } 
   
   private def addParentBindings(param : BindParam, parent : NodeSeq => NodeSeq) = {
@@ -97,5 +100,9 @@ case class Binding[A](obj : Object, params : BindParam*)  {
       case None => default
     }
   }
+}
+
+object NullBinding extends Binding(null, null) {
+  override def bind(tag : String, xml: NodeSeq) = NodeSeq.Empty
 }
   
