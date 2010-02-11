@@ -55,6 +55,14 @@ class Value(property : => Option[Property]) extends Bindable {
   }
 }
 
+object Link {
+//  def apply(group : ProductGroup) = new ProductGroupLink(group)
+}
+
+//class ProductGroupLink(group : ProductGroup) extends Bindable {
+//  override def asHtml = 
+//}
+
 class Value2(property : => Property) extends Value(if (property != null) Some(property) else None) {
 }
 

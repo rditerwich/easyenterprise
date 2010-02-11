@@ -3,6 +3,7 @@ package agilexs.catalogxs.presentation.model
 import Conversions._
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers._
+import net.liftweb.http.SHtml
 import scala.xml.Text 
 import agilexs.catalogxs.presentation.util.Util
 
@@ -39,9 +40,13 @@ object CatalogBindings {
   def productGroupBinding(group : ProductGroup) : Binding[ProductGroup] = Binding(group,   
     "id" -> Text(group.id.toString),
     "name" -> Text(group.name),
-	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
 	"sub_groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
-	"parent_groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group")
+	"parent_groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group",
+	"group_properties" -> Complex(group.groupProperties map (propertyBinding(_))) -> "property",
+	"group_property" -> Complex(propertyBinding(group.groupPropertiesByName(BindAttr("name")))) -> "property",
+	"group_value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
+	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
+  )
 	//	  "name" -> Text(product.getName)
 		
   def propertyBinding(property: Property) : Binding[Property] = Binding(property,  

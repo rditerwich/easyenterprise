@@ -63,6 +63,13 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   val products : Set[Product] =
     productGroup.getProducts map(mapping.products) toSet 
   
+  val groupProperties : Seq[Property] = 
+	cache.productGroupPropertyValues(productGroup) map (v => 
+	  new Property(v.getProperty, v, None, cache, mapping)) toSet
+
+  val groupPropertiesByName : Map[String, Property] = 
+    groupProperties makeMapReverse (_.name)
+    
   val properties : Set[Property] =
     productGroup.getProperties map(mapping.properties) toSet
     

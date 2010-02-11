@@ -35,6 +35,9 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
   val topLevelProductGroups : Set[jpa.ProductGroup] = 
 	view.getTopLevelProductGroups toSet
 
+  val productGroupPropertyValues : Map[jpa.ProductGroup, Seq[jpa.PropertyValue]] =
+    productGroups makeMap (_.getGroupPropertyValues filter(_.getProperty != null))
+
   val products : Set[jpa.Product] = 
 	new mutable.HashSet[jpa.Product] useIn 
 	 (products(view.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
