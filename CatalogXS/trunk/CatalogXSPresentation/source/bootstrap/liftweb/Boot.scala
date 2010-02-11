@@ -52,7 +52,7 @@ class Boot {
     //product is added otherwise product rewrite doesn't work
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
-      Menu(Loc("ProductGroup", List("productgroup"), "Product Group", Hidden)) ::
+      Menu(Loc("Group", List("group"), "Group", Hidden)) ::
       Menu(Loc("Product", List("product"), "Product", Hidden)) ::
    	  Menu(Loc("ShoppingCart", List("shoppingcart"), "ShoppingCart", Hidden)) ::
 // 	    Menu(Loc("Image", List("image"), "Image", Hidden)) ::

@@ -43,7 +43,7 @@ class ProductGroupSnippet extends BasicSnippet[ProductGroup] {
     pgs.flatMap(productGroup =>
       bind("pg", xhtml,
           "link" ->
-             SHtml.link("/productgroup/" + productGroup.getId().toString(),
+             SHtml.link("/group/" + productGroup.getId().toString(),
              () => currentProductGroup(Full(productGroup)),
              Text(cache.LabelCache.getLabel(productGroup.getLabels(), productGroup.getName())))))
   }
