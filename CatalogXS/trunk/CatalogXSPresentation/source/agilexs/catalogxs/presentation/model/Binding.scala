@@ -66,6 +66,14 @@ object Link {
   def apply(product : Product) = (xml : NodeSeq) => <a href={"/product/" + product.id}>{xml}</a>
 }
 
+object LinkAttr {
+	def apply(group : ProductGroup) = new LinkAttr(Text("/group/" + group.id))
+	def apply(product : Product) = new LinkAttr(Text("/product/" + product.id))
+}
+
+class LinkAttr(val value : NodeSeq) {
+}
+
 class BindableObject(obj : Object) {
   def bindWith(params : => Seq[BindParam]) = if (obj != null) new Binding(obj, params) else NullBinding
 }

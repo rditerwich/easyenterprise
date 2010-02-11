@@ -37,7 +37,8 @@ object CatalogBindings {
 	"property" -> Complex(propertyBinding(product.propertiesByName.get(BindAttr("name")) orNull)) -> "property",
 	"value" -> Value(product.propertiesByName.get(BindAttr("property"))),
     "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group",
-  	"link" -> Link(product))
+  	"link" -> Link(product),
+    "href" -> LinkAttr(product) -> "href")
   
   def productGroupBinding(group : ProductGroup) : Binding = group bindWith params(   
     "id" -> Text(group.id.toString),
@@ -49,7 +50,8 @@ object CatalogBindings {
 	"group_value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
 	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
 	"products" -> Complex(group.products map (productBinding(_))) -> "product",
-	"link" -> Link(group))
+	"link" -> Link(group),
+	"href" -> LinkAttr(group) -> "href")
 	//	  "name" -> Text(product.getName)
 		
   def propertyBinding(property: Property) : Binding = property bindWith params(  
