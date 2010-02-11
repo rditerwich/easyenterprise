@@ -16,7 +16,7 @@ object Model {
   object viewName extends SessionVar[String]("default")
 
   object catalog extends RequestVar[Catalog](
-    new Catalog(CatalogCache(catalogName, viewName, "nl")))
+    Catalog(catalogName, viewName, "nl"))
   
   object catalogBean extends RequestVar[agilexs.catalogxs.businesslogic.Catalog]( 
     new InitialContext().
@@ -32,6 +32,12 @@ object Model {
   def currentProductGroup : Option[ProductGroup] =
     S.param("currentProductGroup") match {
       case Full(id) => Model.catalog.productGroupsById.get(id.toLong) 
+      case _ => None
+    }
+
+  def currentProduct : Option[Product] =
+    S.param("currentProduct") match {
+      case Full(id) => Model.catalog.productsById.get(id.toLong) 
       case _ => None
     }
 }

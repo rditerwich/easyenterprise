@@ -2,7 +2,7 @@ package agilexs.catalogxs.presentation.model
 
 import java.util.LinkedHashSet
 import scala.xml.NodeSeq 
-import scala.collection.{Set, Map}
+import scala.collection.{mutable, Set, Map}
 
 import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.model.Conversions._
@@ -18,7 +18,16 @@ class Mapping(product : Option[Product], cache : CatalogCache) {
   })
 }
 
-class Catalog (val cache : CatalogCache) extends Delegate(cache.catalog) {
+object Catalog {
+  private val catalogs = new mutable.HashMap[(String, String, String), Catalog] with mutable.SynchronizedMap[(String, String, String), Catalog]
+  def apply(catalogName: String, viewName: String, locale: String) : Catalog = {
+   	catalogs.getOrElseUpdate((catalogName, viewName, locale), {
+   	  new Catalog(CatalogCache(catalogName, viewName, locale))
+    })
+  }
+}
+
+class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog) {
 
   private val mapping = new Mapping(None, cache)
   
@@ -44,6 +53,10 @@ class Catalog (val cache : CatalogCache) extends Delegate(cache.catalog) {
 
   val products : Set[Product] =
     cache.products map (mapping.products) toSet
+
+  val productsById : Map[Long, Product] = 
+    products makeMapReverse (_.id)
+    
 
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cache.mediaValues

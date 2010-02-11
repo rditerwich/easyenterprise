@@ -11,6 +11,7 @@ object CatalogBindings {
   def catalogBinding(catalog : Catalog) = catalog bindWith params(   
     "id" -> Text(catalog.id.toString),
     "currentProductGroup" -> Complex(productGroupBinding(Model.currentProductGroup orNull)) -> "group",
+    "currentProduct" -> Complex(productBinding(Model.currentProduct orNull)) -> "product",
     "products" -> Complex(catalog.products map (productBinding _)) -> "product",
     "top_level_groups" -> Complex(catalog.topLevelProductGroups map (productGroupBinding _)) -> "group",
     "promotions" -> Complex(catalog.promotions map (promotionBinding _)) -> "promotion")
@@ -30,12 +31,13 @@ object CatalogBindings {
       "product" -> Complex(productBinding(promotion.product)) -> "product")
 
   def productBinding(product : Product) = product bindWith params(   
-	  "id" -> Text(product.id.toString),
-	  "name" -> Text(product.name),
-      "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
-	  "property" -> Complex(propertyBinding(product.propertiesByName.get(BindAttr("name")) orNull)) -> "property",
-	  "value" -> Value(product.propertiesByName.get(BindAttr("property"))),
-      "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group")
+    "id" -> Text(product.id.toString),
+	"name" -> Text(product.name),
+    "properties" -> Complex(product.properties map (propertyBinding _)) -> "property",
+	"property" -> Complex(propertyBinding(product.propertiesByName.get(BindAttr("name")) orNull)) -> "property",
+	"value" -> Value(product.propertiesByName.get(BindAttr("property"))),
+    "groups" -> Complex(product.productGroups map (productGroupBinding _)) -> "group",
+  	"link" -> Link(product))
   
   def productGroupBinding(group : ProductGroup) : Binding = group bindWith params(   
     "id" -> Text(group.id.toString),
@@ -47,8 +49,7 @@ object CatalogBindings {
 	"group_value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
 	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
 	"products" -> Complex(group.products map (productBinding(_))) -> "product",
-	"link" -> Link(group)
-  )
+	"link" -> Link(group))
 	//	  "name" -> Text(product.getName)
 		
   def propertyBinding(property: Property) : Binding = property bindWith params(  

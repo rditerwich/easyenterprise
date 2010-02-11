@@ -77,12 +77,12 @@ class Boot {
     //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
     LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
 	    case RewriteRequest(
-	    	ParsePath("productgroup" :: pgID :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("productgroup" :: Nil, Map("currentProductGroup" -> pgID)
+	    	ParsePath("group" :: group :: Nil, _, _,_), _, _) => 
+	            RewriteResponse("group" :: Nil, Map("currentProductGroup" -> group)
 	    )
 	    case RewriteRequest(
 	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("product" :: Nil, Map("product" -> product)
+	            RewriteResponse("product" :: Nil, Map("currentProduct" -> product)
 	    )
 	    case RewriteRequest(
 	        ParsePath("image" :: imageID :: Nil, _, _,_), _, _) => 

@@ -62,7 +62,8 @@ class Value2(property : => Property) extends Value(if (property != null) Some(pr
 }
 
 object Link {
-  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={"/productgroup/" + group.id}>{xml}</a>
+  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={"/group/" + group.id}>{xml}</a>
+  def apply(product : Product) = (xml : NodeSeq) => <a href={"/product/" + product.id}>{xml}</a>
 }
 
 class BindableObject(obj : Object) {
