@@ -42,7 +42,7 @@ class ShoppingCart {
          "total" -> Text(  
            if (shoppingCart.getProductOrders == null || 
                shoppingCart.getProductOrders.isEmpty) "0" else 
-             shoppingCart.getProductOrders.size.toString ))
+             totalArticles.toString))
     }
     inner()
   }
@@ -120,8 +120,12 @@ class ShoppingCart {
               "maxlength" -> "3"),
           "priceTotal" -> <span>&euro; {productOrder.getPrice}</span>)) 
   }
-  
-  private def totalPrice : Double = {
-    (0.0 /: shoppingCart.getProductOrders.map(_.getPrice.doubleValue)) (_ + _) 
+
+  private def totalArticles : Int = {
+    (0 /: shoppingCart.getProductOrders.map(_.getVolume.intValue)) (_ + _) 
   }
+
+  private def totalPrice : Double = {
+        (0.0 /: shoppingCart.getProductOrders.map(_.getPrice.doubleValue)) (_ + _) 
+    }
 }
