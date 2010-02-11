@@ -117,8 +117,8 @@ class ShoppingCart {
           "volume" -> SHtml.text(
               productOrder.getVolume.toString, 
               { v => productOrder.setVolume(Integer.valueOf(v))},
-              "maxlength" -> "3"),
-          "priceTotal" -> <span>&euro; {productOrder.getPrice}</span>)) 
+              "maxlength" -> "3", "style" -> "width:30px;margin:0 5px;"),
+          "priceTotal" -> <b>&euro; {productOrder.getPrice}</b>)) 
   }
 
   private def totalArticles : Int = {
