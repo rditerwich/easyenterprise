@@ -82,8 +82,11 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	      products ++= productGroupProductExtent(group.getChildren, result)
 	      products ++= group.getProducts 
 	      allProducts ++= products
-//      println("Products of group " + group.getName + ": " + (products map (_.getId) mkString(" ")))
-    }}
+          println("Products of group " + group.getName + ": " + (products map (_.getId) mkString(" ")))
+      } else {
+        allProducts ++= result(group)
+      }
+    }
     allProducts
   }
 

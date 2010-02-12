@@ -62,8 +62,6 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
   
   val keywordMap =
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
-
-  def findProducts(s: String ) = null
 }
 
 class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(productGroup) {
@@ -95,6 +93,11 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
     
   lazy val productExtent : Set[Product] =
     cache.productGroupProductExtent(productGroup) map(mapping.products) toSet
+    
+  lazy val productExtentPromotions : Set[Promotion] = {
+    val promotions = cache.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
+    if (promotions isEmpty) Set.empty else Set(promotions first) 
+  }
 }
 
 class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping) extends Delegate(product) {
@@ -155,6 +158,7 @@ class Promotion(promotion : jpa.Promotion, cache : CatalogCache, mapping : Mappi
   // terminate recursion
   mapping.promotions(promotion) = this
   val id = promotion.getId.longValue
+  def products : Set[Product] = Set.empty
 }
 
 class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : CatalogCache, mapping : Mapping) extends Promotion(promotion, cache, mapping) {
@@ -164,4 +168,5 @@ class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : C
   val priceCurrency = promotion.getPriceCurrency
   val volumeDiscount = promotion.getVolumeDiscount
   val product = mapping.products(promotion.getProduct)
+  override def products = Set(product)
 }
