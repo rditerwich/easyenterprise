@@ -61,6 +61,7 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
       productGroupGetRelated(getRelated(group), visited, getRelated, result)
       var direct = getRelated(group).filter(!excludedProductGroups.contains(_))
       val indirect = getRelated(group).filter(excludedProductGroups.contains(_)) flatMap (result.getOrElse(_, Set.empty))
+      println("Children of group " + group.getName + ": " + direct.map(_.getName).mkString);
       result(group) = direct ++ indirect toSet
     }
   }
@@ -109,7 +110,17 @@ object CatalogCache {
   private val viewCaches = new mutable.HashMap[(String, String, String), CatalogCache] with mutable.SynchronizedMap[(String, String, String), CatalogCache]
 
   def apply(catalogName: String, viewName: String, locale: String) : CatalogCache = {
-   	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
+//   	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
+//   	  val catalog = Model.catalogBean.is.findAllCatalogs.find(_.getName == catalogName) match {
+//	   	  case Some(catalog) => catalog
+//	   	  case None => error("Catalog not found: " + catalogName)
+//   	  }
+//   	  val view = catalog.getViews.find(_.getName == viewName) match {
+//	   	  case Some(view) => view
+//	   	  case None => new jpa.CatalogView
+//   	  }
+//   	  new CatalogCache(catalog, view, locale)
+//    })
    	  val catalog = Model.catalogBean.is.findAllCatalogs.find(_.getName == catalogName) match {
 	   	  case Some(catalog) => catalog
 	   	  case None => error("Catalog not found: " + catalogName)
@@ -119,6 +130,5 @@ object CatalogCache {
 	   	  case None => new jpa.CatalogView
    	  }
    	  new CatalogCache(catalog, view, locale)
-    })
   }
 }

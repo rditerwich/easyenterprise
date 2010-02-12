@@ -21,9 +21,10 @@ class Mapping(product : Option[Product], cache : CatalogCache) {
 object Catalog {
   private val catalogs = new mutable.HashMap[(String, String, String), Catalog] with mutable.SynchronizedMap[(String, String, String), Catalog]
   def apply(catalogName: String, viewName: String, locale: String) : Catalog = {
-   	catalogs.getOrElseUpdate((catalogName, viewName, locale), {
-   	  new Catalog(CatalogCache(catalogName, viewName, locale))
-    })
+//   	catalogs.getOrElseUpdate((catalogName, viewName, locale), {
+//   	  new Catalog(CatalogCache(catalogName, viewName, locale))
+//    })
+    new Catalog(CatalogCache(catalogName, viewName, locale))
   }
 }
 
