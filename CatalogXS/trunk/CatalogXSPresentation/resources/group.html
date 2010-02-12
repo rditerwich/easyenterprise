@@ -1,8 +1,15 @@
 <lift:Catalog.catalog eager_eval="true">
   <catalog:currentProductGroup>
 		<lift:surround with="default" at="content">
-		  <head><title>Product Groups</title></head>
-		  <div class="contentheading"><group:name /></div>
+		  <head><title>Group <group:group_value property="Name"/></title></head>
+		  <div class="contentheading"><group:group_value property="Name"/></div>
+		  <div class="groupimage"><group:group_value property="Image"/></div>
+		  <group:sub_groups tag="sub">
+			  <div class="subgroup">   	    
+			  	<p><a class="subgroup" sub:href=""><sub:group_value property="Name"/></a></p>
+				</div>
+		  
+		  </group:sub_groups>
 		  <table>
 		    <thead>
 		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>

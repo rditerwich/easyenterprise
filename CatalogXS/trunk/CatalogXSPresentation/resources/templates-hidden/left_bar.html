@@ -1,14 +1,5 @@
 <div class="page_menu" id="page_left">
   <div class="page_menu_artgrp"><lift:snippet type="msgs"/></div>
-  <catalog:top_level_groups>
-	  <div class="page_menu_artgrp">
-	    <div class="description"><group:name/></div>
-	    <group:sub_groups tag="sub">
-	    <p>subgroup: <sub:group_value property="Name"/> (<sub:group_value property="Description"/>): <sub:link>goto <sub:group_value property="Name"/></sub:link></p>
-	    <p><a class="ThemePanelMainItemText" sub:href="">jump to <sub:group_value property="Name"/></a></p>
-	    </group:sub_groups>
-	  </div>
-  </catalog:top_level_groups>
   <div id="navigatie">
       <lift:embed what="productgroup_list" />
   </div> 
