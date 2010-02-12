@@ -41,6 +41,12 @@ object Model {
       case _ => None
     }
       
+  def currentSearchString : Option[String] =
+	  S.param("searchString") match {
+	  case Full(searchString) => Some(searchString) 
+	  case _ => None
+  }
+
   def currentSearchProducts : Seq[Product] =
 	  S.param("searchString") match {
 	  case Full(searchString) => Model.catalog.keywordMap.find(searchString) 

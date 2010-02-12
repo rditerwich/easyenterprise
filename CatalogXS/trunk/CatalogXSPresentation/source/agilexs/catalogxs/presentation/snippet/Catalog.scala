@@ -19,7 +19,7 @@ class Catalog extends BasicSnippet[Promotion] {
   }
   
   def search(xml : NodeSeq) : NodeSeq = {
-    var searchString = ""
+    var searchString = Model.currentSearchString getOrElse("")
 
     bind("search", xml, 
       "searchString" -> SHtml.text(searchString, searchString = _, 

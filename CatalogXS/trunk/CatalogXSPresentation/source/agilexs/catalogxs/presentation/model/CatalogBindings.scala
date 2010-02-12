@@ -12,6 +12,7 @@ object CatalogBindings {
     "id" -> Text(catalog.id.toString),
     "currentProductGroup" -> Complex(productGroupBinding(Model.currentProductGroup orNull)) -> "group",
     "currentProduct" -> Complex(productBinding(Model.currentProduct orNull)) -> "product",
+    "currentSearchString" -> Text(Model.currentSearchString.getOrElse("")),
     "currentSearchProducts" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
     "products" -> Complex(catalog.products map (productBinding _)) -> "product",
     "top_level_groups" -> Complex(catalog.topLevelProductGroups map (productGroupBinding _)) -> "group",

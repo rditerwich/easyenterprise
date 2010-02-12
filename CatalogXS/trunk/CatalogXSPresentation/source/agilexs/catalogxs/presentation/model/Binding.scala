@@ -47,9 +47,9 @@ class Value(property : => Option[Property]) extends Bindable {
     case Some(property) => property.propertyType match {
       case jpa.PropertyType.Media => 
         if (property.mediaValue == null) 
-          Text("")
+          <img src={"/images/image-"+property.valueId+".jpg"} />
 	    else if (property.mimeType.startsWith("image/")) 
-		  Text("<img src=\"image/"+ property.valueId + "\" />")
+		  Text("<img src=\"image/" + property.valueId + "\" />")
 	     else
   		   Text(property.mediaValue.toString());
       case _ => Text(property.valueAsString)
