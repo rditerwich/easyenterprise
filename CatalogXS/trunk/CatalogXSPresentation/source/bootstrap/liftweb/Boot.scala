@@ -42,7 +42,19 @@ class Boot {
 */
     // where to search snippet
     LiftRules.addToPackages("agilexs.catalogxs.presentation");
-
+    
+    LiftRules.defaultHeaders = {
+      // Permit caching of our home page 
+      case (_, Req(List("index"),_,_)) => 
+          List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
+                     "Pragma" -> "private") 
+      case _ => 
+          List("Expires" -> "Mon, 26 Jul 1997 05:00:00 GMT", 
+                     "Cache-Control" -> 
+                     "cache; public; no-store; must-revalidate; max-stale=0; post-check=0; pre-check=0; max-age=0", 
+                     "Pragma" -> "public") 
+    } 
+    
     //LiftRules.localeCalculator = r => definedLocale.openOr(LiftRules.defaultLocaleCalculator(r))
 
     //We will take care of this
