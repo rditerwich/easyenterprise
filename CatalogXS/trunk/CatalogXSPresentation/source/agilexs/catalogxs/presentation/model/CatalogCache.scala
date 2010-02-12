@@ -75,13 +75,15 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 
   private def productGroupProductExtent(groups : Iterable[jpa.ProductGroup], result : mutable.Map[jpa.ProductGroup, Set[jpa.Product]]) : Set[jpa.Product] = {
     var allProducts = new mutable.HashSet[jpa.Product]
-    for (group <- groups; if !result.contains(group)) {
-      var products = new mutable.HashSet[jpa.Product]
-      result(group) = products
-      products ++= productGroupProductExtent(group.getChildren, result)
-      products ++= group.getProducts 
-      allProducts ++= products
-    }
+    for (group <- groups) {
+      if (!result.contains(group)) {
+	      var products = new mutable.HashSet[jpa.Product]
+	      result += ((group, products))
+	      products ++= productGroupProductExtent(group.getChildren, result)
+	      products ++= group.getProducts 
+	      allProducts ++= products
+//      println("Products of group " + group.getName + ": " + (products map (_.getId) mkString(" ")))
+    }}
     allProducts
   }
 

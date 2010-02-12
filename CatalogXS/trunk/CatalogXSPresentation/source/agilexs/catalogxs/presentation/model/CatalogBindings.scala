@@ -51,7 +51,7 @@ object CatalogBindings {
 	"group_property" -> Complex(propertyBinding(group.groupPropertiesByName.get(BindAttr("name")) orNull)) -> "property",
 	"group_value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
 	"properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
-	"products" -> Complex(group.products map (productBinding(_))) -> "product",
+	"products" -> Complex(IfAttr("include_sub_groups", group.productExtent, group.products) map (productBinding(_))) -> "product",
 	"link" -> Link(group),
 	"href" -> LinkAttr(group) -> "href")
 	//	  "name" -> Text(product.getName)

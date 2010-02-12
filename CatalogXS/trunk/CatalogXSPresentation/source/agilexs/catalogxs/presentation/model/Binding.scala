@@ -24,6 +24,14 @@ object BindAttr {
   }
 }
 
+object IfAttr {
+  def apply[A](name : String, yes : => A, no : => A) = 
+    BindHelpers.attr(name) match { 
+      case Some(attr) => if (attr.toString.toLowerCase == "yes") {println("YYYYYYEEEEEEEEEEEEEESSSSSSSSSSSS");yes} else no 
+      case None => no
+    }
+}
+
 object Complex {
   def apply(f : => Binding) = new Complex(f)
   def apply(f : => Iterable[Binding]) = new ComplexList(f)

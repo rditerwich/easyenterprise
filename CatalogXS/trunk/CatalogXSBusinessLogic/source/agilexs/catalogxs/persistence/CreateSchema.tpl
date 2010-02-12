@@ -36,19 +36,13 @@ INSERT INTO catalogxs.property_value (id,property_id,group_property_values_oppos
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (10007, 1000, 2004, 'en', 'Products');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (10008, 1001, 2004, 'en', 'All products');
 
-/* Product Group hierarchy */
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2001,2000);
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2002,2001);
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2003,2002);
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2001,2004);
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2002,2004);
-
 /* Root properties */
 INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1010,'ArticleNumber','String',2000);
-INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1011,'Description','String',2000);
+INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1011,'Name','String',2000);
 INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1012,'Image','Media',2000);
 INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1013,'PriceOld','Money',2000);
 INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1014,'Price','Money',2000);
+INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1015,'Description','String',2000);
 
 /* Ink example properties */
 INSERT INTO catalogxs.property (id,name,type_id,product_group_id) VALUES (1020,'Color','String', 2002);
@@ -87,7 +81,6 @@ INSERT INTO catalogxs.property_value (id,property_id,group_property_values_oppos
 
 /* Product group Saphira Supplies Proofing */
 INSERT INTO catalogxs.product_group (catalog_id,id,name) VALUES (1,2006,'saphirasuppliesproofing');
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2006,2001);
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200621, 1000, 2006, 'en', 'Saphira Proofing Supplies');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200622, 1001, 2006, 'en', 'Saphira offers you a wide range of consumables to cover all your needs - from prepress to postpress. Our experts provide technical and application support for Saphira products, and advise you on how to use them most effectively.');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200623, 1002, 2006, 'en', null);
@@ -95,13 +88,11 @@ INSERT INTO catalogxs.property_value (id,property_id,group_property_values_oppos
 
 /* Product group Saphira Supplies Ink */
 INSERT INTO catalogxs.product_group (catalog_id,id,name) VALUES (1,2007,'saphirasuppliesink');
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2007,2001);
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200711, 1000, 2007, 'en', 'Saphira Inks');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200712, 1001, 2007, 'en', 'Saphira offers you a wide range of consumables to cover all your needs - from prepress to postpress. Our experts provide technical and application support for Saphira products, and advise you on how to use them most effectively.');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200713, 1002, 2007, 'en', null);
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200714, 1000, 2007, 'de', 'Saphira Lacke');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200715, 1001, 2007, 'de', 'Heidelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2007, 2002);
 
 /* Product group Brands */
 INSERT INTO catalogxs.product_group (catalog_id,id,name) VALUES (1,2008,'brands');
@@ -110,16 +101,42 @@ INSERT INTO catalogxs.property_value (id,property_id,group_property_values_oppos
 
 /* Product group Brand: Others */
 INSERT INTO catalogxs.product_group (catalog_id,id,name) VALUES (1,2009,'otherbrands');
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2009,2008);
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200901, 1000, 2009, 'en', 'Other');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (200902, 1001, 2009, 'en', 'Other brands.');
 
 /* Product group Brand: Saphira */
 INSERT INTO catalogxs.product_group (catalog_id,id,name) VALUES (1,2010,'saphira');
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2010,2008);
-INSERT INTO catalogxs.product_group_children_parents_product_group (children_id,parents_id) VALUES (2005, 2010);
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (201001, 1000, 2010, 'en', 'Saphira');
 INSERT INTO catalogxs.property_value (id,property_id,group_property_values_opposite_id,language,string_value) VALUES (201002, 1001, 2010, 'en', 'Saphira Products');
+
+/* Product Group hierarchy */
+INSERT INTO catalogxs.product_group_children_parents_product_group (parents_id,children_id) VALUES
+
+/* Root */ 
+(2000,2001),
+
+/* Supplies */
+(2001,2002),
+(2001,2006),
+(2001,2007),
+
+/* Products */
+(2004,2001),
+(2004,2002),
+
+/* Saphira */
+(2005,2006),
+(2005,2007),
+
+/* Ink */
+(2002,2003),
+(2002,2007),
+
+/* Brands */
+(2008,2009),
+(2008,2010);
+
+
 
 /* Product 5001 Property Values */
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10010, 1010, 5001, 'en', '188078');
@@ -144,6 +161,16 @@ INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10033, 1020, 5003, 'en', 'yellow');
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10034, 1021, 5003, 'en', '51K* HKS');
 INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (10035, 1023, 5003, 'en', 'Blik');
+
+/* Product 5010 Saphira Ink */
+INSERT INTO catalogxs.product (catalog_id,id) VALUES (1,5010);
+INSERT INTO catalogxs.product_product_groups_products_product_group (products_id,product_groups_id) VALUES (5010,2007);
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501001, 1010, 5010, 'en', 'SU18364565');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501002, 1011, 5010, 'en', 'Saphira Anicolor Ink S Black');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501003, 1014, 5010, 'en', '8.55');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501004, 1020, 5010, 'en', 'black');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501005, 1023, 5010, 'en', 'Box');
+INSERT INTO catalogxs.property_value (id,property_id,product_id,language,string_value) VALUES (501006, 1015, 5010, 'en', 'Standard density Black ink for coated papers. Specifically formulated to react quickly to changes in temperature.');
 
 /*
 INSERT INTO catalogxs.property_value (property_id,language,string_value,id, product_id) VALUES (2,'en', '188078',10,1);
