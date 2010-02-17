@@ -43,4 +43,15 @@ object Util {
   def getDateParam(name : String, converter : DateConverter) : Box[Date] = {
     S.param(name).map(parseDate(_, converter)) openOr Empty
   }
+  
+  def formatMoney(currency: String, value : Double) : NodeSeq  = {
+    def getCurrency(currency : String) : Unparsed =
+      Unparsed(currency match {
+        case "EUR" => "&euro;";
+        case "GBP" => "&pound;";
+        case "USD" => "$";
+      })
+    getCurrency(currency) :: Text(" ") ::
+    Text(String.format("%.2f", double2Double(value/100.0))) :: Nil
+  }
 }

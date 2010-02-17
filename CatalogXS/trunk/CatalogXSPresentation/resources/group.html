@@ -19,8 +19,8 @@
 	      <p><product:value property="Description"/></p>
 	    </promotion:product> 
 	    <div >
-	      <p>&euro; <strike><promotion:product><product:value property="PriceOld"/></promotion:product></strike><br/>
-	      <span style="color:red">&euro; <promotion:price/></span></p>
+	      <p><strike><promotion:product><product:value property="PriceOld"/></promotion:product></strike><br/>
+	      <span style="color:red"><promotion:price/></span></p>
 	      <p>Price when order<br/> per <b><promotion:volume_discount/></b> articles</p>
 	      <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
 	    </div>
@@ -41,7 +41,7 @@
 		      <tr>
             <td><product:link><product:value property="ArticleNumber" /></product:link></td>
 		        <td><product:value property="Description"/></td>
-		        <td>&euro; <product:value property="Price" /></td>
+		        <td><product:value property="Price" /></td>
 		      </tr>
 		    </group:products>
 		  </table>

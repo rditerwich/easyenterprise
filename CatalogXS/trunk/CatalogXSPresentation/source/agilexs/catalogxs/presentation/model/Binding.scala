@@ -6,8 +6,9 @@ import net.liftweb.util.BindHelpers.BindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
 import net.liftweb.util.Bindable
 import net.liftweb.util.Full
-import scala.xml.{NodeSeq, Text} 
+import scala.xml.{NodeSeq, Text, Unparsed} 
 import scala.collection.mutable 
+import agilexs.catalogxs.presentation.util.Util
 import agilexs.catalogxs.jpa.{catalog => jpa}
 
 object BindAttr {
@@ -56,10 +57,12 @@ class Value(property : => Option[Property]) extends Bindable {
       case jpa.PropertyType.Media => 
         if (property.mediaValue == null) 
           <img src={"/images/image-"+property.valueId+".jpg"} />
-	    else if (property.mimeType.startsWith("image/")) 
-		  Text("<img src=\"image/" + property.valueId + "\" />")
-	     else
-  		   Text(property.mediaValue.toString());
+	      else if (property.mimeType.startsWith("image/")) 
+		      <img src={"image/" + property.valueId} />
+	       else
+  		     Text(property.mediaValue.toString());
+      case jpa.PropertyType.Money =>
+        Util.formatMoney(property.pvalue.getMoneyCurrency, property.pvalue.getMoneyValue.doubleValue)
       case _ => Text(property.valueAsString)
     }
     case None => Text("")
