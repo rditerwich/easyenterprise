@@ -3,9 +3,9 @@
  <h2>Shopping Cart</h2>
   <lift:ShoppingCart.show phase="1" shopping_list_id="shopping_list">
     <div id="shopping_list">
-      <show:empty>
+      <show:no_items>
         <p>No articles in your shopping cart.</p>
-      </show:empty>
+      </show:no_items>
       <show:items>
         <table>
           <thead>
@@ -21,16 +21,16 @@
             <shoppingcart:product>
               <td><product:value property="ArticleNumber"/></td>
               <td><product:value property="Description"/></td>
-              <td><product:value property="Price"/></td>
+              <td style="text-align:right;"><product:value property="Price"/></td>
             </shoppingcart:product>
-            <td><shoppingcart:volume/></td>
-            <td><shoppingcart:priceTotal/></td>
-            <td><shoppingcart:deleteButton/></td>
+            <td><shoppingcart:volume shoppingcart:maxlength="3" shoppingcart:style="width:30px;margin:0 5px;" /></td>
+            <td style="text-align:right;"><shoppingcart:priceTotal/></td>
+            <td style="text-align:center;"><shoppingcart:deleteButton><img src="images/bin_closed.png" /></shoppingcart:deleteButton></td>
           </tr>
           </item:list>
           <tr>
-            <td colspan="4">Total price (excl. shipping costs):</td>
-            <td><item:totalPrice/></td>
+            <td colspan="4"><b>Total price (excl. shipping costs):</b></td>
+            <td style="text-align:right;"><b><item:totalPrice/></b></td>
             <td>&nbsp;</td>
           </tr>
         </table>

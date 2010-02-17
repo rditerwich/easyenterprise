@@ -47,6 +47,24 @@ body {
 	background-repeat:no-repeat;
 }
 
+.page_messages {
+  position:absolute;
+  display:inline;
+  left:250px;
+  top:30px;
+  padding:3px 5px;
+  font-size:12px;
+  font-weight: bold;
+  color:#032D67;
+  background-color:gold; 
+}
+
+.page_messages ul, .page_messages li {
+  padding-left:0;
+  display:inline;
+  list-style:none;
+}
+
 .page_login {
 	position:absolute;
 	right:0px;

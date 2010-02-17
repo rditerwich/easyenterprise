@@ -15,7 +15,11 @@
 <body> 
   <div id="site_content"> 
     <div class="page_header"> 
-      <a href="/"><div class="page_logo"></div></a>  
+      <a href="/"><div class="page_logo"></div></a>
+      <lift:msgs>
+        <lift:notice_class>page_messages</lift:notice_class>
+        <lift:notice_msg>&nbsp;</lift:notice_msg>
+      </lift:msgs>
       <div class="page_login"><a href="/admin/">Login</a> intranet</div> 
     </div>
     <table id="site_table" class="page_content">
@@ -50,7 +54,7 @@
             </div> 
             <div class="page_menu_artgrp"> 
               <div class="description">Order status</div>
-              <lift:embed what="order_status" />
+              <div id="order_status"><lift:embed what="order_status" /></div>
             </div> 
             <div class="page_menu_footer"></div> 
           </div>

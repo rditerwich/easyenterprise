@@ -1,19 +1,21 @@
 package agilexs.catalogxs.presentation.snippet
 
-import net.liftweb._ 
-import http._ 
-import SHtml._ 
-import S._ 
- 
-import js._ 
-import JsCmds._ 
- 
-import mapper._ 
- 
-import util._ 
+import net.liftweb._
+import http._
+import SHtml._
+import S._
+
+import js._
+import js.jquery.JqJsCmds._
+import js.JE._
+import JsCmds._
+
+import mapper._
+
+import util._
 import Helpers._
 
-import scala.xml.{NodeSeq, Text} 
+import scala.xml.{NodeSeq, Text}
 
 import agilexs.catalogxs.presentation.model._
 import agilexs.catalogxs.presentation.model.Conversions._
@@ -22,36 +24,33 @@ import agilexs.catalogxs.businesslogic.CatalogBean
 import agilexs.catalogxs.jpa.{order => jpa}
 import agilexs.catalogxs.presentation.util.Util
 
-//TODO format money
-//TODO show correct currency sign
-//TODO how to handle multiple currencies
+//TODO correctly calculate promotion prices, currently the original product price is calculated.
+//TODO add button "next step"
+//TODO on shoppingcart page, when emptying shopping cart, table should be refreshed too.
+//FIXME anchor for buttons no are anchor, with # this introduces new history token, or return false or no a, and set style via css, like cursor
+
+//FIXE "add to" cart on promotion page broken, because "currentProduct" not set when rendering
+//FIXME shoppingcart not refreshed when update(delete/volume update)
 class ShoppingCart {
   //Session variable that contains the items in the shopping cart during session
-  object shoppingCart extends SessionVar[jpa.Order](new jpa.Order)
-  //object orderStatusID extends SessionVar[Box[Long]](Empty)
+  object shoppingCart extends SessionVar[Order](new Order(new jpa.Order))
 
   /**
-   * Method to bind to order_status template to display total number of 
+   * Method to bind to order_status template to display total number of
    * articles in shopping cart
    */
   def orderStatus (xhtml : NodeSeq) = {
-    val id = S.attr("order_status_id").open_!
-
-    def reDraw() = SetHtml(id, inner())
-
     def inner() : NodeSeq = {
-      bind("os", xhtml, 
-         "total" -> Text(  
-           if (shoppingCart.getProductOrders == null || 
-               shoppingCart.getProductOrders.isEmpty) "0" else 
+      bind("os", xhtml,
+         "empty" ->
+           {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
+               ("onclick" -> ajaxInvoke(emptyShoppingBasket _ )._2)},
+         "total" -> Text(
+           if (shoppingCart.order.getProductOrders == null ||
+               shoppingCart.order.getProductOrders.isEmpty) "0" else
              totalArticles.toString))
     }
     inner()
-  }
-
-  def redrawOrderStatus() : JsCmd = {
-    //SetHtml(orderStatusID, inner)
-    null;
   }
 
   /**
@@ -59,34 +58,63 @@ class ShoppingCart {
    * This method is used to display the wanted html. Use as follows in template:
    * <pre>
    *   <lift:ShoppingCart.show phase="1">
-   *     ... code for specific phase goes here 
+   *     ... code for specific phase goes here
    *   </lift:ShoppingCart.show>
    * </pre>
-   * 
+   *
    */
   def show(xhtml: NodeSeq) : NodeSeq = {
-    val phase = S.attr("phase").open_!
-
-    phase match {
+    S.attr("phase").open_! match {
       case "1" => phase1(xhtml)
       case _ => NodeSeq.Empty
     }
   }
 
-  def add(xhtml: NodeSeq) = {
+  /**
+   * Method to be used in template to insert add to cart. The inner
+   * xml will be wrapped by the anchor.
+   * Use:
+   * <pre>
+   *   <lift:ShoppingCart.addToCart>
+   *     ... html displaying the add button
+   *   </lift:ShoppingCart.addToCart>
+   * </pre>
+   */
+  def addToCart(xhtml: NodeSeq) : NodeSeq = {
     val p = Model.currentProduct orNull
-    val o = new jpa.ProductOrder()
-    o.setProduct(p.delegate)
-    o.setVolume(1)
 
-    def inner(reDraw: () => JsCmd)(xhtml: NodeSeq) : NodeSeq = {
-      //val price = p.propertiesByName.get("Price")
-      //o.setPrice(price.toLong)
-      bind("sc", xhtml,
-           "add" -> ajaxButton(Text("Add to Cart"), () => {
-                  shoppingCart.getProductOrders.add(o);reDraw()}))
+    def addProduct : JsCmd = {
+      shoppingCart.addProduct(p, 1)
+      S.notice("Added product " + p.propertiesByName("ArticleNumber").pvalue.getStringValue +
+                " to the shopping cart")
+      redrawOrderStatus()
     }
-    inner(redrawOrderStatus)(xhtml)
+
+    def inner() : NodeSeq = {
+      <a href="#" style="text-decoration:none">{xhtml}</a> %
+        ("onclick" -> ajaxInvoke(addProduct _ )._2
+           /*FIXME: javascript should call: return false = JsExp("return false;")*/)
+    }
+    inner()
+  }
+
+  /*
+   * Empties the shopping cart, displays a message and redraws the shopping cart
+   * overview on the right side of the page.
+   */
+  private def emptyShoppingBasket : JsCmd = {
+    shoppingCart.empty
+    S.notice("Shopping cart emptied")
+    redrawOrderStatus()
+  }
+
+  /**
+   * Redraws the shopping cart on the right side of the page. The template shows
+   * the number of items in the shopping cart.
+   */
+  private def redrawOrderStatus() : JsCmd = {
+    SetHtml("order_status",
+       TemplateFinder.findAnyTemplate(List("templates-hidden", "order_status")) openOr NodeSeq.Empty)
   }
 
   /**
@@ -102,55 +130,75 @@ class ShoppingCart {
    *   </show:items>
    * </pre>
    */
-  def phase1(xhtml : NodeSeq) : NodeSeq = {
+  private def phase1(xhtml : NodeSeq) : NodeSeq = {
     val id = S.attr("shopping_list_id").open_!
 
-    //FIXME: remove test code from release
-    val po = new jpa.ProductOrder
-    po.setVolume(10)
-    po.setPrice(10 *
-       Model.catalog.productsById(5001).propertiesByName("Price").valueAsString.toDouble)
-    po.setProduct(Model.catalog.productsById(5001).delegate)
-    shoppingCart.getProductOrders.add(po)
-
     def inner(): NodeSeq = {
-      def reDraw() = SetHtml(id, inner())
- 
-      if (shoppingCart.getProductOrders == null || 
-           shoppingCart.getProductOrders.isEmpty)
-        chooseTemplate("show", "empty", xhtml)
+      def reDraw() = {
+        SetHtml(id, inner())
+        redrawOrderStatus()
+      }
+
+      if (shoppingCart.order.getProductOrders == null ||
+           shoppingCart.order.getProductOrders.isEmpty)
+        chooseTemplate("show", "no_items", xhtml)
+//        bind("show", xhtml,
+//             "no_items" -> NodeSeq.Empty,
+//             "items" -> { items : NodeSeq => 
       else {
-           val nhtml = chooseTemplate("show", "items", xhtml);
-           bind("item", nhtml,
-                "list" -> list(reDraw)(chooseTemplate("item", "list", nhtml)),
-                "totalPrice" -> <b>&euro; {totalPrice}</b>)
+        bind("show", xhtml,
+             "no_items" -> NodeSeq.Empty,
+             "items" -> { items : NodeSeq => 
+                bind("item", items,
+                  "list" -> {item : NodeSeq => list(reDraw)(item)},
+                  "totalPrice" -> Util.formatMoney("EUR", totalPrice))})
       }
     }
     inner()
   }
 
-  def list(reDraw: () => JsCmd)(xhtml : NodeSeq) : NodeSeq = {
-    shoppingCart.getProductOrders.flatMap(productOrder => {
+  private def list(reDraw: () => JsCmd)(xhtml : NodeSeq) : NodeSeq = {
+    def removeProduct(productOrder : jpa.ProductOrder)() : JsCmd = {
+      shoppingCart.removeProductOrder(productOrder)
+      S.notice(Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+               " removed from the shopping cart")
+      reDraw()
+    }
+
+    def updateVolume(productOrder : jpa.ProductOrder, v : String)() : JsCmd = {
+      if (shoppingCart.updateVolume(productOrder, Integer.valueOf(v).intValue)) {
+        S.notice("Volume of " +
+                Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+                " updated to " + v)
+      }
+      reDraw()
+    }
+
+    shoppingCart.order.getProductOrders.flatMap(productOrder => {
       bind("shoppingcart", xhtml,
-          "deleteButton" -> 
-            ajaxButton(Text("delete"),
-              () => {shoppingCart.getProductOrders.remove(productOrder); 
-               reDraw()}),
-          "product" -> 
+          "deleteButton" -> {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
+             ("onclick" -> ajaxInvoke(removeProduct(productOrder) _)._2)},
+          "product" ->
             CatalogBindings.productBinding(
               Model.catalog.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),
-          "volume" -> SHtml.text(
-              productOrder.getVolume.toString, 
-              { v => productOrder.setVolume(Integer.valueOf(v))},
-              "maxlength" -> "3", "style" -> "width:30px;margin:0 5px;"),
-          "priceTotal" -> <span>&euro; {productOrder.getPrice}</span>)}) 
+          "volume" -> ajaxText(productOrder.getVolume.toString,
+              v => updateVolume(productOrder, v)),
+          "priceTotal" -> Util.formatMoney(
+             Model.catalog.productsById(
+               productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyCurrency,
+             productOrder.getPrice.doubleValue))
+    })
   }
 
+  /**
+   * Calculates the total number of articles in the shopping cart, based on
+   * volume. 
+   */
   private def totalArticles : Int = {
-    (0 /: shoppingCart.getProductOrders.map(_.getVolume.intValue)) (_ + _) 
+    (0 /: shoppingCart.order.getProductOrders.map(_.getVolume.intValue)) (_ + _)
   }
 
   private def totalPrice : Double = {
-    (0.0 /: shoppingCart.getProductOrders.map(_.getPrice.doubleValue)) (_ + _) 
+    (0 /: shoppingCart.order.getProductOrders.map(_.getPrice.intValue)) (_ + _)
   }
 }

@@ -1,8 +1,7 @@
-<lift:ShoppingCart.orderStatus order_status_id="order_status">
-  <div class="order_status" id="order_status">
-    <div><a href="/shoppingcart" style="color: #FFFFFF;"><lift:loc>Shopping Cart</lift:loc></a></div>
-    <div><a href="/shoppingcart?action=complete" ><b><lift:loc>Complete Order</lift:loc>&gt;&gt;</b></a></div>
+<lift:ShoppingCart.orderStatus>
+  <div class="order_status" >
+    <div><a href="/shoppingcart" ><b><lift:loc>Complete Order</lift:loc>&gt;&gt;</b></a></div>
     <div><os:total /> <lift:loc>articles in shopping cart</lift:loc></div> 
-    <div><a href="/shoppingcart?action=clear" ><lift:loc>Empty shopping cart</lift:loc>&gt;&gt;</a></div>
+    <div><os:empty><lift:loc>Empty shopping cart</lift:loc>&gt;&gt;</os:empty></div>
   </div>
 </lift:ShoppingCart.orderStatus>    

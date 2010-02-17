@@ -2,9 +2,13 @@ package agilexs.catalogxs.presentation.model
 
 import java.util.LinkedHashSet
 import scala.xml.NodeSeq 
+import scala.xml.Text 
 import scala.collection.{mutable, Set, Map}
 
 import agilexs.catalogxs.jpa.{catalog => jpa}
+import agilexs.catalogxs.jpa.{order => jpaOrder}
+import agilexs.catalogxs.jpa.order.ProductOrder
+import agilexs.catalogxs.jpa.catalog.PropertyType
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
 
@@ -136,16 +140,17 @@ class Property(property : jpa.Property, val value : jpa.PropertyValue, val produ
   val valueId : Long = value.getId.longValue
   val mimeType : String = value.getMimeType or ""
   val mediaValue : Array[Byte] = value.getMediaValue
+  val pvalue = value
   
   def hasValue = value != noPropertyValue
-  
+
+  //FIXME: check should not be on null check but on property type
   val valueAsString = 
     if (value.getStringValue != null) value.getStringValue
-    else if (value.getStringValue != null) value.getStringValue
     else if (value.getBooleanValue != null) value.getBooleanValue.toString
     else if (value.getEnumValue != null) value.getEnumValue.toString
     else if (value.getIntegerValue != null) value.getIntegerValue.toString
-    else if (value.getMoneyValue != null) value.getMoneyValue.toString
+    else if (value.getMoneyValue != null) "&euro; " + value.getMoneyValue.toString
     else if (value.getRealValue != null) value.getRealValue.toString
     else ""
 }
@@ -170,3 +175,50 @@ class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : C
   val product = mapping.products(promotion.getProduct)
   override def products = Set(product)
 }
+
+//FIXME calculate promotion price when calculating new price
+class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
+  val order = jOrder
+
+  def empty = {
+    order.getProductOrders.clear
+  }
+
+  def updateVolume(productOrder : jpaOrder.ProductOrder, v : Int) : Boolean = {
+    if (productOrder.getVolume != v) {
+      productOrder.setVolume(v)
+      productOrder.setPrice(v * Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
+      return true
+    }
+    return false
+  }
+
+  def removeProductOrder(productOrder : jpaOrder.ProductOrder) = {
+    order.getProductOrders.remove(productOrder)
+  }
+
+  /**
+   * Adds a product to the order list. If the product already is present update
+   * the volume count for that product.
+   */
+  def addProduct(product : Product, volume : Int) = {
+    val arn = product.propertiesByName("ArticleNumber").pvalue.getStringValue
+    order.getProductOrders find((po) =>
+      Model.catalog.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
+          == arn) match {
+        case None =>
+            val productOrder = new jpaOrder.ProductOrder()
+            //fake a productOrder Id, otherwise remove will fail, because equals
+            //is implemented that if id == null the objects of same type are
+            //always equal
+            productOrder.setId(product.delegate.getId)
+            productOrder.setProduct(product.delegate)
+            updateVolume(productOrder, volume)
+            order.getProductOrders.add(productOrder)
+        case Some(p) =>
+            p.setVolume(p.getVolume.intValue + volume)
+            p.setPrice(p.getVolume.intValue * product.propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
+      }
+  }
+}
+
