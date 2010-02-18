@@ -45,13 +45,15 @@ object Util {
   }
   
   def formatMoney(currency: String, value : Double) : NodeSeq  = {
-    def getCurrency(currency : String) : Unparsed =
-      Unparsed(currency match {
-        case "EUR" => "&euro;";
-        case "GBP" => "&pound;";
+    //Unparsed doesn't seem to work in combination with ajax calls...
+    //Therefore we use the symbol tokens instead of html symbols.
+    Text(currency match {
+        case "EUR" => "€"; //"&euro;"
+        case "GBP" => "£"; //"&pound;";
         case "USD" => "$";
-      })
-    getCurrency(currency) :: Text(" ") ::
-    Text(String.format("%.2f", double2Double(value/100.0))) :: Nil
+        case _ => "&euro;";
+    }) ++
+    Text(" ") ++
+    Text(String.format("%.2f", double2Double(value/100.0)))
   }
 }

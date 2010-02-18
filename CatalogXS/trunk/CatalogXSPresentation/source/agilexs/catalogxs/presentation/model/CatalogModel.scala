@@ -178,12 +178,10 @@ class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : C
 
 //FIXME calculate promotion price when calculating new price
 class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
-  val order = jOrder
+  def empty = delegate.getProductOrders.clear
 
-  def empty = {
-    order.getProductOrders.clear
-  }
-
+  def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
+    
   def updateVolume(productOrder : jpaOrder.ProductOrder, v : Int) : Boolean = {
     if (productOrder.getVolume != v) {
       productOrder.setVolume(v)
@@ -194,7 +192,19 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
   }
 
   def removeProductOrder(productOrder : jpaOrder.ProductOrder) = {
-    order.getProductOrders.remove(productOrder)
+    delegate.getProductOrders.remove(productOrder)
+  }
+
+  /**
+   * Calculates the total number of articles in the shopping cart, based on
+   * volume. 
+   */
+  def totalProducts : Int = {
+    (0 /: delegate.getProductOrders.map(_.getVolume.intValue)) (_ + _)
+  }
+  
+  def totalPrice : Double = {
+    (0 /: delegate.getProductOrders.map(_.getPrice.intValue)) (_ + _)
   }
 
   /**
@@ -203,7 +213,7 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
    */
   def addProduct(product : Product, volume : Int) = {
     val arn = product.propertiesByName("ArticleNumber").pvalue.getStringValue
-    order.getProductOrders find((po) =>
+    delegate.getProductOrders find((po) =>
       Model.catalog.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
           == arn) match {
         case None =>
@@ -214,7 +224,7 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
             productOrder.setId(product.delegate.getId)
             productOrder.setProduct(product.delegate)
             updateVolume(productOrder, volume)
-            order.getProductOrders.add(productOrder)
+            delegate.getProductOrders.add(productOrder)
         case Some(p) =>
             p.setVolume(p.getVolume.intValue + volume)
             p.setPrice(p.getVolume.intValue * product.propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
