@@ -23,28 +23,12 @@ Package {
                     type = primitive:String
                 }
                 Attribute {
-                    name = products
-                    type = catalog:Product
+                    name = items
+                    type = catalog:Item
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:Product/attributes:catalog
-                }
-                Attribute {
-                    name = productGroups
-                    type = catalog:ProductGroup
-                    lower = 0
-                    upper = {}
-                    isComposite = true
-                    opposite = catalog:ProductGroup/attributes:catalog
-                }
-                Attribute {
-                    name = productGroupProperties
-                    type = catalog:Property
-                    isComposite = true
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:Property/attributes:owningCatalog
+                    opposite = catalog:Item/attributes:catalog
                 }
 /*
                 Attribute {
@@ -83,17 +67,31 @@ Package {
             }
         }
         Class {
-            name = Product
+            name = Item
             attributes = {
-                Attribute {
-                    name = name
-                    type = primitive:String
-                    lower = 0
-                }
                 Attribute {
                     name = catalog
                     type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:products
+                    opposite = catalog:Catalog/attributes:items
+                }
+                Attribute {
+                    name = parents
+                    type = catalog:ProductGroup
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:ProductGroup/attributes:children
+                }
+                /**
+                 * Defines the properties that a product in the child-extent
+                 * can have. This includes this item, if it is a product.
+                 */
+                Attribute {
+                    name = properties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Property/attributes:item
                 }
                 Attribute {
                     name = propertyValues
@@ -101,14 +99,76 @@ Package {
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:PropertyValue/attributes:product
+                    opposite = catalog:PropertyValue/attributes:item
                 }
                 Attribute {
-                    name = productGroups
+                    name = relations
+                    type = catalog:Relation
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Relation/attributes:item
+                }
+                Attribute {
+                    name = templates
+                    type = catalog:Template
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Template/attributes:item
+                }
+            }
+        }
+        Class {
+            name = ProductGroup
+            superClass = catalog:Item
+            attributes = {
+                Attribute {
+                    name = view
+                    type = catalog:CatalogView
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:CatalogView/attributes:topLevelProductGroups
+                }
+                Attribute {
+                    name = name
+                    type = primitive:String
+                    lower = 0
+                }
+                Attribute {
+                    name = children
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    opposite = catalog:ProductGroup/attributes:products
+                    opposite = catalog:Item/attributes:parents
+                }
+                Attribute {
+                    name = defaultValues
+                    type = catalog:PropertyValue
+                    // BUG: when composite, table is not created, except when there is an opposite
+                    isComposite = true
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:PropertyValue/attributes:defaultValuesOpposite
+                }
+/*
+                Attribute {
+                    name = excludedProperties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                }
+*/
+            }
+        }
+        Class {
+            name = Product
+            superClass = catalog:Item
+            attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                    lower = 0
                 }
                 Attribute {
                     name = templates
@@ -116,42 +176,31 @@ Package {
                     lower = 0
                     upper = {}
                 }
-                
-/*
-                Attribute {
-                    name = relatedProducts
-                    type = catalog:RelatedProduct
-                    lower = 0
-                    upper = {}
-                    isComposite = true
-                }
-*/
             }
         }
-/*
-        Class {
-            name = RelatedProduct
-            attributes = {
-                Attribute {
-                    name = product
-                    type = catalog:Product
-                    lower = 0
-                    upper = {}
-                }
-                Attribute {
-                    name = relation
-                    type = catalog:ProductRelation
-                    lower = 1
-                }
-            }
-        }
-*/
         /** 
          * Used to qualify a relation between two related products, e.g. Supply, SparePart
          */
-/*
         Class {
-            name = ProductRelation
+            name = Relation
+            attributes = {
+                Attribute {
+                    name = item
+                    type = catalog:Item
+                    opposite = catalog:Item/attributes:relations
+                }
+                Attribute {
+                    name = relatedTo
+                    type = catalog:Item
+                }
+                Attribute {
+                    name = relation
+                    type = catalog:RelationType
+                }
+            }
+        }
+        Class {
+            name = RelationType
             attributes = {
                 Attribute {
                     name = name
@@ -159,7 +208,7 @@ Package {
                 }
             }
         }
-*/
+
         Class {
             name = Property
             attributes = {
@@ -182,16 +231,10 @@ Package {
                 }
 */
                 Attribute {
-                    name = productGroup
-                    type = catalog:ProductGroup
-                    opposite = catalog:ProductGroup/attributes:properties
+                    name = item
+                    type = catalog:Item
                     lower = 0
-                }
-                Attribute {
-                    name = owningCatalog
-                    type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:productGroupProperties
-                    lower = 0
+                    opposite = catalog:Item/attributes:properties
                 }
                 Attribute {
                     name = type
@@ -278,8 +321,8 @@ Package {
                     upper = {}
                 }
                 Attribute {
-                    name = excludedProductGroups
-                    type = catalog:ProductGroup
+                    name = excludedItems
+                    type = catalog:Item
                     lower = 0
                     upper = {}
                 }
@@ -297,97 +340,6 @@ Package {
                     lower = 0
                     upper = {}
                 }
-            }
-        }
-        Class {
-            name = ProductGroup
-            attributes = {
-                Attribute {
-                    name = catalog
-                    type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:productGroups
-                }
-                Attribute {
-                    name = view
-                    type = catalog:CatalogView
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:CatalogView/attributes:topLevelProductGroups
-                }
-                Attribute {
-                    name = name
-                    type = primitive:String
-                    lower = 0
-                }
-                Attribute {
-                    name = labels
-                    type = catalog:Label
-                    lower = 0
-                    upper = {}
-                    /*If enable 'isComposite' no join table is generated by Metaphor: 
-                    isComposite = true*/
-                }
-                Attribute {
-                    name = children
-                    type = catalog:ProductGroup
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:ProductGroup/attributes:parents
-                }
-                Attribute {
-                    name = parents
-                    type = catalog:ProductGroup
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:ProductGroup/attributes:children
-                }
-                Attribute {
-                    name = products
-                    type = catalog:Product
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:Product/attributes:productGroups
-                }
-                Attribute {
-                    name = properties
-                    type = catalog:Property
-                    lower = 0
-                    upper = {}
-                    isComposite = true
-                    opposite = catalog:Property/attributes:productGroup
-                }
-                Attribute {
-                    name = defaultPropertyValues
-                    type = catalog:PropertyValue
-                    // BUG: when composite, table is not created
-                    isComposite = true
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:PropertyValue/attributes:defaultPropertyValuesOpposite
-                }
-                Attribute {
-                    name = groupPropertyValues
-                    type = catalog:PropertyValue
-                    // BUG: when composite, table is not created
-                    isComposite = true
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:PropertyValue/attributes:groupPropertyValuesOpposite
-                }
-                Attribute {
-                    name = templates
-                    type = catalog:Template
-                    lower = 0
-                    upper = {}
-                }
-/*
-                Attribute {
-                    name = excludedProperties
-                    type = catalog:Property
-                    lower = 0
-                    upper = {}
-                }
-*/
             }
         }
         Class {
@@ -507,22 +459,16 @@ Package {
                 }
                 
                 Attribute {
-                    name = product
-                    type = catalog:Product
+                    name = item
+                    type = catalog:Item
                     lower = 0
-                    opposite = catalog:Product/attributes:propertyValues
+                    opposite = catalog:Item/attributes:propertyValues
                 }
                 Attribute {
-                    name = groupPropertyValuesOpposite
+                    name = defaultValuesOpposite
                     type = catalog:ProductGroup
                     lower = 0
-                    opposite = catalog:ProductGroup/attributes:groupPropertyValues
-                }
-                Attribute {
-                    name = defaultPropertyValuesOpposite
-                    type = catalog:ProductGroup
-                    lower = 0
-                    opposite = catalog:ProductGroup/attributes:defaultPropertyValues
+                    opposite = catalog:ProductGroup/attributes:defaultValues
                 }
             }
         }
@@ -588,6 +534,12 @@ Package {
                 Attribute {
                     name = templateXml
                     type = primitive:String
+                }
+                Attribute {
+                    name = item
+                    type = catalog:Item
+                    lower = 0
+                    opposite = catalog:Item/attributes:templates
                 }
             }
         }
