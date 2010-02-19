@@ -292,9 +292,6 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relatedTo
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relation
-        }
-        Reference {
             bendPoints = {
                 Point {
                     x = 551
@@ -332,6 +329,9 @@ DomainDiagram {
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:defaultValues
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relationType
         }
     }
     superClassReferences = {

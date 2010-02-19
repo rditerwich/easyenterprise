@@ -137,7 +137,7 @@ Package {
                 }
                 Attribute {
                     name = children
-                    type = catalog:ProductGroup
+                    type = catalog:Item
                     lower = 0
                     upper = {}
                     opposite = catalog:Item/attributes:parents
@@ -194,7 +194,7 @@ Package {
                     type = catalog:Item
                 }
                 Attribute {
-                    name = relation
+                    name = relationType
                     type = catalog:RelationType
                 }
             }
