@@ -16,13 +16,13 @@ path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 
 J2eeArchitectureJpaEjbGwt {
-    name = CatalogXSArchitecture
+    name = CatalogXSAdminArchitecture
     providerPackage = /packages:AgileXS
-    productPackage = /packages:AgileXS/packages:CatalogXS
+    productPackage = /packages:AgileXS/packages:CatalogXSAdmin
     commonModule = /modules:agilexs.catalogxs.common
     persistenceModule = /modules:agilexs.catalogxs.persistence
     businessLogicModule = /modules:agilexs.catalogxs.businesslogic
-    presentationModule = /modules:agilexs.catalogxs.presentation
+    presentationModule = /modules:agilexs.catalogxsadmin.presentation
     jpaVendor = EclipseLink
     databaseVendor = postgresql
     generateBaseClasses = true

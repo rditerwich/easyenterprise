@@ -1,4 +1,4 @@
-root /packages:AgileXS/packages:CatalogXS/packages
+root /packages:AgileXS/packages:CatalogXSAdmin/packages
 
 import Metaphor.PSM.GWT.EntryPoint
 import Metaphor.PSM.GWT.ExtendProperty
@@ -21,7 +21,7 @@ GwtPackage {
     name = Presentation
     modules = {
         GwtModule {
-            name = CatalogXS
+            name = CatalogXSAdmin
             entryPoint = {
                 EntryPoint {
                     name = CatalogXSAdmin
