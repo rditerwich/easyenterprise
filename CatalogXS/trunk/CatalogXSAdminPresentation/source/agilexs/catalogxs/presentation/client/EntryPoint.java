@@ -4,7 +4,7 @@ package agilexs.catalogxs.presentation.client;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 
-public class CatalogXSAdmin implements com.google.gwt.core.client.EntryPoint {
+public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
   @Override
   public void onModuleLoad() {
