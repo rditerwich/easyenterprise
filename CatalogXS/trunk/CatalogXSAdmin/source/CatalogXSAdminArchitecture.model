@@ -1,0 +1,149 @@
+root /architecture
+
+import Metaphor.PIM.Domain.View.ClassView
+import Metaphor.PSM.DomainToRdbms.ColumnTemplates
+import Metaphor.PSM.DomainToRdbms.DomainToRdbms
+import Metaphor.PSM.GWT.EntryPoint
+import Metaphor.PSM.GWT.GwtModule
+import Metaphor.PSM.J2ee.Persistence
+import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
+import Metaphor.PSM.J2eeAspects.Crud
+import Metaphor.PSM.J2eeAspects.Query
+import Metaphor.PSM.Rdbms.Column
+import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
+
+path domain = /packages:AgileXS/packages:Domain/packages
+path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+
+J2eeArchitectureJpaEjbGwt {
+    name = CatalogXSArchitecture
+    providerPackage = /packages:AgileXS
+    productPackage = /packages:AgileXS/packages:CatalogXS
+    commonModule = /modules:agilexs.catalogxs.common
+    persistenceModule = /modules:agilexs.catalogxs.persistence
+    businessLogicModule = /modules:agilexs.catalogxs.businesslogic
+    presentationModule = /modules:agilexs.catalogxs.presentation
+    jpaVendor = EclipseLink
+    databaseVendor = postgresql
+    generateBaseClasses = true
+    aspects = {
+/*        Scala {
+            name = ScalaAspect
+            participants = {
+                /modules:agilexs.catalogxs.presentation
+            }
+        }
+*/
+        Crud {
+            name = CrudForAll
+            participants = {
+                catalog:Catalog
+                catalog:Product
+                catalog:ProductGroup
+                catalog:Property                
+                catalog:CatalogView
+/*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
+            }
+        }
+        Query {
+            name = "Query for all"
+            methodNamePrefix = findAll
+            participants = { 
+                catalog:Catalog
+                catalog:Product
+                catalog:ProductGroup
+                catalog:Promotion
+                catalog:CatalogView
+            }
+            paging = false
+            view = {
+                 ClassView {
+                     name = QueryForAllView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all non paged"
+            methodNamePrefix = findAllNonPaged
+            participants = { 
+                catalog:Label
+            }
+            view = {
+                 ClassView {
+                     name = QueryForAllNonPagedView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all products by ProductGroup"
+            methodNamePrefix = findAllByProductGroup
+            //filter = domain:Query/types:ProductGroupQuery
+            filter = catalog:ProductGroup
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllByProductGroupView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all ProductGroup children"
+            methodNamePrefix = findAllChildren
+            filter = domain:Query/types:ProductGroupQuery
+            participants = { 
+                catalog:ProductGroup
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllChildrenView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all Properties for a ProductGroup"
+            methodNamePrefix = findAllProperties
+            filter = domain:Query/types:PropertyQuery
+            participants = { 
+                catalog:Property
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllPropertiesView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all groups within a "
+            methodNamePrefix = findAllGroups
+            filter = domain:Query/types:PropertyQuery
+            participants = { 
+                catalog:Property
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllGroupsView
+                     kind = all
+                 }
+             }
+        }
+    }
+    persistence = {
+        DomainToRdbms {
+            name = DomainToRdbms
+            excluded = {
+                domain:Query
+            }
+        }
+    }
+}

@@ -1,0 +1,1232 @@
+root /packages:AgileXS/packages:CatalogXS/packages
+
+import Metaphor.PSM.GWT.EntryPoint
+import Metaphor.PSM.GWT.ExtendProperty
+import Metaphor.PSM.GWT.FlexTable
+import Metaphor.PSM.GWT.GwtFileDownloadServlet
+import Metaphor.PSM.GWT.GwtFileUploadServlet
+import Metaphor.PSM.GWT.GwtMethod
+import Metaphor.PSM.GWT.GwtModule
+import Metaphor.PSM.GWT.GwtPackage
+import Metaphor.PSM.GWT.GwtService
+import Metaphor.PSM.GWT.TextBox
+import Metaphor.PSM.GWT.VerticalPanel
+import Metaphor.PSM.Java.Expression.VariableAccess
+import Metaphor.PSM.Java.JavaBeanPropertyView
+import Metaphor.PSM.Java.JavaBeanView
+import Metaphor.PSM.UIToGwt.Page
+
+
+GwtPackage {
+    name = Presentation
+    modules = {
+        GwtModule {
+            name = CatalogXS
+            entryPoint = {
+                EntryPoint {
+                    name = CatalogXSAdmin
+                }
+            }
+        }
+    }
+//    services = {
+//    }
+}
+/*        
+        GwtService {
+            name = SecurityService
+            methods = {
+                GwtMethod {
+                    name = getLoggedInParty
+                    view = {
+                        JavaBeanView {
+                            name = PartyView
+                            kind = basic-types
+                            included = general:Party/properties:users
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Users
+                                    kind = all
+                                    referringProperties = general:Party/properties:users
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getLoggedInUser
+                    view = {
+                        JavaBeanView {
+                            name = UserView
+                            kind = all
+                        }
+                    }
+                }
+            }
+        }
+        GwtService {
+            name = GeneralService
+            methods = {
+                GwtMethod {
+                    name = getAllParties
+                    view = {
+                        JavaBeanView {
+                            name = PartyView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = PartyLocations
+                                    kind = all
+                                    referringProperties = general:Party/properties:locations
+                                }
+                                JavaBeanPropertyView {
+                                    name = GeoLocations
+                                    kind = all
+                                    referringProperties = {
+                                        general:Address/properties:geoLocation
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Addresses
+                                    kind = all
+                                    referringProperties = {
+                                        general:Location/properties:address
+                                        general:Party/properties:invoiceAddress
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = ObjectView
+                                    kind = all
+                                    referringProperties = general:Party/properties:object
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getRelationships
+                    view = {
+                        JavaBeanView {
+                            name = RelationshipView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Contracts
+                                    kind = all
+                                    referringProperties = general:Relationship/properties:contract
+                                }
+                                JavaBeanPropertyView {
+                                    name = Relationship
+                                    kind = all
+                                    referringProperties = general:Contract/properties:relationship
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = basic-types
+                                    referringProperties = {
+                                        general:Relationship/properties:subject
+                                        general:Relationship/properties:object
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getAllLocations
+                    view = {
+                        JavaBeanView {
+                            name = LocationView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = GeoLocations
+                                    kind = all
+                                    referringProperties = {
+                                        general:Address/properties:geoLocation
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = all
+                                    excluded = {
+                                        general:Party/properties:owns
+                                        general:Party/properties:uses
+                                    }
+                                    referringProperties = general:Location/properties:party
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getLocations
+                    view = {
+                        JavaBeanView {
+                            name = LocationView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = GeoLocations
+                                    kind = all
+                                    referringProperties = {
+                                        general:Address/properties:geoLocation
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = all
+                                    excluded = {
+                                        general:Party/properties:owns
+                                        general:Party/properties:uses
+                                    }
+                                    referringProperties = general:Location/properties:party
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GwtService {
+            name = NetService
+            methods = {
+                GwtMethod {
+                    name = getAllMissingGateways
+                    view = {
+                        JavaBeanView {
+                            name = GatewayView
+                            kind = none
+                            included = {
+                                net:Asset/properties:id
+                                net:Asset/properties:model
+                                net:Asset/properties:serialNumber
+                                net:Gateway/properties:description
+                                net:Asset/properties:location
+                                net:Gateway/properties:ipAddress
+                                net:Asset/properties:linkQuality
+                                net:Asset/properties:linkQualityValue
+                                net:Asset/properties:lastSignOfLife
+                                net:Asset/properties:lastSignOfLifeStatus
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = none
+                                    included = {
+                                        general:Location/properties:id
+                                        general:Location/properties:address
+                                        general:Location/properties:party
+                                    }
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = none
+                                    included = {
+                                        general:Address/properties:id
+                                        general:Address/properties:street
+                                        general:Address/properties:number
+                                        general:Address/properties:zipcode
+                                        general:Address/properties:city
+                                        general:Address/properties:country
+                                    }
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = general:Location/properties:party
+                                }                                
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = none
+                                    included = {
+                                        net:AssetModel/properties:id
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getAllMissingConnects
+                    view = {
+                        JavaBeanView {
+                            name = AssetConnectView
+                            kind = none
+                            included = {
+                                net:Asset/properties:id
+                                net:Asset/properties:location
+                                net:Asset/properties:linkQuality
+                                net:Asset/properties:linkQualityValue
+                                net:Asset/properties:lastSignOfLife
+                                net:Asset/properties:lastSignOfLifeStatus
+                                net:Asset/properties:owner
+                                net:Asset/properties:model
+                                net:Asset/properties:readingInterval
+                                net:Asset/properties:serialNumber
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = none
+                                    included = {
+                                        general:Location/properties:id
+                                        general:Location/properties:address
+                                    }
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = net:Asset/properties:owner
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = none
+                                    included = {
+                                        general:Address/properties:id
+                                        general:Address/properties:street
+                                        general:Address/properties:number
+                                        general:Address/properties:zipcode
+                                        general:Address/properties:city
+                                        general:Address/properties:country
+                                    }
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = none
+                                    included = {
+                                        net:AssetModel/properties:id
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findAssets
+                    view = {
+                        @comment "include all view data for Asset, AssetConnect, Repeater and Gateways"
+                        JavaBeanView {
+                            name = AssetsView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = all
+                                    excluded = {
+                                        general:Party/properties:owns
+                                        general:Party/properties:uses
+                                    }
+                                    referringProperties = {
+                                        net:Asset/properties:owner
+                                        net:Asset/properties:user
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = GeoLocations
+                                    kind = all
+                                    referringProperties = {
+                                        general:Address/properties:geoLocation
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = Sim
+                                    kind = none
+                                    included = {
+                                        net:SimCard/properties:id
+                                        net:SimCard/properties:gsmNumber
+                                        net:SimCard/properties:sim
+                                        net:SimCard/properties:gprsAccessPoint
+                                    }
+                                    referringProperties = net:Gateway/properties:sim
+                                }
+                                JavaBeanPropertyView {
+                                    name = GprsAccessPointView
+                                    kind = all
+                                    referringProperties = net:SimCard/properties:gprsAccessPoint
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findGateways
+                    view = {
+                        JavaBeanView {
+                            name = GatewayView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    included = {
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = {
+                                        general:Location/properties:party
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findGateway
+                    view = {
+                        JavaBeanView {
+                            name = GatewayView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    included = {
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = {
+                                        general:Location/properties:party
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findAssetConnects
+                    view = {
+                        JavaBeanView {
+                            name = AssetConnectView
+                            kind = all
+                            excluded = net:Asset/properties:assetConnect
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = ConnectedAsset
+                                    kind = all
+                                    kindIncludesSubClasses = false
+                                    referringProperties = net:AssetConnect/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = GatewayPath
+                                    included = {
+                                        net:Asset/properties:serialNumber
+                                        net:Asset/properties:specificLocation
+                                        net:AmplixsAsset/properties:hardwareAddress
+                                    }
+                                    referringProperties = net:AssetConnect/properties:gatewayPath
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findRepeaters
+                    view = {
+                        JavaBeanView {
+                            name = RepeaterView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = GatewayPath
+                                    included = {
+                                        net:Asset/properties:serialNumber
+                                        net:Asset/properties:specificLocation
+                                        net:AmplixsAsset/properties:hardwareAddress
+                                    }
+                                    referringProperties = net:Repeater/properties:gatewayPath
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findNonAmplixsAssets
+                    view = {
+                        JavaBeanView {
+                            name = NonAmplixsAssets
+                            kind = all
+                            kindIncludesSubClasses = true
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = AssetConnect
+                                    kind = all
+                                    referringProperties = net:Asset/properties:assetConnect
+                                }
+                                JavaBeanPropertyView {
+                                    name = InitialValue
+                                    kind = all
+                                    referringProperties = assets:Printer/properties:correction
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findNonAmplixsAssetsToConnectTo
+                    view = {
+                        JavaBeanView {
+                            name = NonAmplixsAssets
+                            kind = all
+                            kindIncludesSubClasses = false
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = AssetConnect
+                                    kind = all
+                                    referringProperties = net:Asset/properties:assetConnect
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findAssetConnectsToConnectTo
+                    view = {
+                        JavaBeanView {
+                            name = AssetConnects
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    included = {
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = Asset
+                                    kind = all
+                                    kindIncludesSubClasses = false
+                                    referringProperties = net:AssetConnect/properties:asset
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = setLocation
+                    view = {
+                        JavaBeanView {
+                            name = AssetView
+                            included = net:Asset/properties:location
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = all
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = GeoLocations
+                                    kind = all
+                                    referringProperties = {
+                                        general:Address/properties:geoLocation
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = basic-types
+                                    referringProperties = general:Location/properties:party
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = basic-types
+                                    referringProperties = general:Location/properties:address
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GwtService {
+            name = AssetsService
+            methods = {
+            }
+        }
+        GwtService {
+            name = MonitorService
+            methods = {
+                GwtMethod {
+                    name = getAllEvents
+                    view = {
+                        JavaBeanView {
+                            name = EventsView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ReadingAsset
+                                    kind = none
+                                    included = {
+                                        net:Asset/properties:id
+                                        net:Asset/properties:location
+                                        net:Asset/properties:model
+                                        net:Asset/properties:owner
+                                        net:Asset/properties:readingInterval
+                                        net:Asset/properties:serialNumber
+                                        net:Asset/properties:specificLocation
+                                        net:Asset/properties:user
+                                    }
+                                    referringProperties = monitor:Event/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Assignee
+                                    kind = none
+                                    included = {
+                                        general:User/properties:name
+                                    }
+                                    referringProperties = monitor:Event/properties:assignee
+                                }
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = none
+                                    included = {
+                                        general:Location/properties:id
+                                        general:Location/properties:address
+                                        general:Location/properties:description
+                                    }
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = none
+                                    included = {
+                                        net:SpecificLocation/properties:id
+                                        net:SpecificLocation/properties:building
+                                        net:SpecificLocation/properties:room
+                                        net:SpecificLocation/properties:floor
+                                        net:SpecificLocation/properties:other
+                                    }
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Owner
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = net:Asset/properties:owner
+                                }
+                                JavaBeanPropertyView {
+                                    name = User
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = net:Asset/properties:user
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = none
+                                    included = {
+                                        general:Address/properties:id
+                                        general:Address/properties:street
+                                        general:Address/properties:number
+                                        general:Address/properties:zipcode
+                                        general:Address/properties:city
+                                        general:Address/properties:country
+                                    }
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = none
+                                    included = {
+                                        net:AssetModel/properties:id
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = updateNotifications
+                    view = {
+                        JavaBeanView {
+                            name = NotificationsView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = User
+                                    kind = none
+                                    included = {
+                                        general:User/properties:name
+                                    }
+                                    referringProperties = monitor:Notification/properties:user
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GwtService {
+            name = ReportingService
+            methods = {
+                GwtMethod {
+                    name = findReportItems
+                    view = {
+                        JavaBeanView {
+                            name = ReportPartyView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ReportPartyPartyView
+                                    kind = all
+                                    excluded = {
+                                        general:Party/properties:owns
+                                        general:Party/properties:uses
+                                    }
+                                    referringProperties = {
+                                        reporting:ReportParty/properties:party
+                                        general:Location/properties:party
+                                        net:Asset/properties:owner
+                                        net:Asset/properties:user
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = ReportLocationView
+                                    kind = all
+                                    referringProperties = reporting:ReportParty/properties:reportLocations
+                                }
+                                JavaBeanPropertyView {
+                                    name = LocationView
+                                    kind = all
+                                    referringProperties = {
+                                        reporting:ReportLocation/properties:location
+                                        net:Asset/properties:location
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = AddressView
+                                    kind = all
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = ReportItemView
+                                    kind = all
+                                    referringProperties = reporting:ReportLocation/properties:items
+                                }
+                                JavaBeanPropertyView {
+                                    name = AssetView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocationView
+                                    kind = all
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = ReportItemPropertyView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:properties
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findLastCoolerReportItem
+                    view = {
+                        JavaBeanView {
+                            name = CoolerReportItemView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = CoolerView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = CoolerReportItemPropertyView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:properties
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findLastPrinterReportItem
+                    view = {
+                        JavaBeanView {
+                            name = PrinterReportItemView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = PrinterView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = PrinterReportItemPropertyView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:properties
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findLastVendingMachineReportItem
+                    view = {
+                        JavaBeanView {
+                            name = VendingMachineReportItemView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = VendingMachineView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = VendingMachineReportItemPropertyView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:properties
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findLastElevatorReportItem
+                    view = {
+                        JavaBeanView {
+                            name = ElevatorReportItemView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ElevatorView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = basic-types
+                                    referringProperties = net:Asset/properties:model
+                                }
+                                JavaBeanPropertyView {
+                                    name = ElevatorReportItemPropertyView
+                                    kind = all
+                                    referringProperties = reporting:ReportItem/properties:properties
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getAllMissedReadings
+                    view = {
+                        JavaBeanView {
+                            name = ReadingAssets
+                            kind = none
+                            included = {
+                                reporting:ReportItem/properties:id
+                                reporting:ReportItem/properties:asset
+                                reporting:ReportItem/properties:lastReading
+                                reporting:ReportItem/properties:lastReadingStatus
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ReadingAsset
+                                    kind = none
+                                    included = {
+                                        net:Asset/properties:id
+                                        net:Asset/properties:location
+                                        net:Asset/properties:model
+                                        net:Asset/properties:owner
+                                        net:Asset/properties:readingInterval
+                                        net:Asset/properties:serialNumber
+                                        net:Asset/properties:specificLocation
+                                    }
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = none
+                                    included = {
+                                        general:Location/properties:id
+                                        general:Location/properties:address
+                                    }
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = SpecificLocation
+                                    kind = none
+                                    included = {
+                                        net:SpecificLocation/properties:id
+                                        net:SpecificLocation/properties:building
+                                        net:SpecificLocation/properties:room
+                                        net:SpecificLocation/properties:floor
+                                        net:SpecificLocation/properties:other
+                                    }
+                                    referringProperties = net:Asset/properties:specificLocation
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = net:Asset/properties:owner
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = none
+                                    included = {
+                                        general:Address/properties:id
+                                        general:Address/properties:street
+                                        general:Address/properties:number
+                                        general:Address/properties:zipcode
+                                        general:Address/properties:city
+                                        general:Address/properties:country
+                                    }
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = none
+                                    included = {
+                                        net:AssetModel/properties:id
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = getAllActivationDateMissing
+                    view = {
+                        JavaBeanView {
+                            name = ReadingAssets
+                            kind = none
+                            included = {
+                                reporting:ReportItem/properties:id
+                                reporting:ReportItem/properties:asset
+                                reporting:ReportItem/properties:firstReading
+                                reporting:ReportItem/properties:activationDateStatus
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ReadingAsset
+                                    kind = none
+                                    included = {
+                                        net:Asset/properties:id
+                                        net:Asset/properties:activationDate
+                                        net:Asset/properties:location
+                                        net:Asset/properties:model
+                                        net:Asset/properties:owner
+                                        net:Asset/properties:serialNumber
+                                    }
+                                    referringProperties = reporting:ReportItem/properties:asset
+                                }
+                                JavaBeanPropertyView {
+                                    name = Location
+                                    kind = none
+                                    included = {
+                                        general:Location/properties:id
+                                        general:Location/properties:address
+                                    }
+                                    referringProperties = net:Asset/properties:location
+                                }
+                                JavaBeanPropertyView {
+                                    name = Party
+                                    kind = none
+                                    included = {
+                                        general:Party/properties:id
+                                        general:Party/properties:name
+                                    }
+                                    referringProperties = net:Asset/properties:owner
+                                }
+                                JavaBeanPropertyView {
+                                    name = Address
+                                    kind = none
+                                    included = {
+                                        general:Address/properties:id
+                                        general:Address/properties:street
+                                        general:Address/properties:number
+                                        general:Address/properties:zipcode
+                                        general:Address/properties:city
+                                        general:Address/properties:country
+                                    }
+                                    referringProperties = general:Location/properties:address
+                                }
+                                JavaBeanPropertyView {
+                                    name = Model
+                                    kind = none
+                                    included = {
+                                        net:AssetModel/properties:id
+                                        net:AssetModel/properties:make
+                                        net:AssetModel/properties:model
+                                    }
+                                    referringProperties = net:Asset/properties:model
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GwtService {
+            name = VendingMachineService
+            methods = {
+                GwtMethod {
+                    name = getConfigurationStatus
+                    view = {
+                        JavaBeanView {
+                            name = ConfigurationStatus
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = VendingMachineConfigurationView
+                                    kind = all
+                                    referringProperties = vendingMachine:ConfigurationStatus/properties:vendingMachineConfiguration
+                                    views = {
+                                        JavaBeanPropertyView {
+                                            name = AssetView
+                                            kind = all
+                                            referringProperties = vendingMachine:VendingMachineConfiguration/properties:asset
+                                        }
+                                        
+                                    }
+                                }
+                                JavaBeanPropertyView {
+                                    name = CommandRequestStatusView
+                                    kind = all
+                                    referringProperties = vendingMachine:ConfigurationStatus/properties:commandRequestStatus
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    specialPurposeServlets = {
+        GwtFileDownloadServlet {
+            name = DownloadVerosIIConfig
+        }
+        GwtFileUploadServlet {
+            name = UploadVerosIIConfig
+        }
+    }
+*/

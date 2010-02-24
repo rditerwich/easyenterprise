@@ -1,0 +1,23 @@
+root /modules
+
+import Metaphor.Core.Dependency
+import Metaphor.Core.Version
+import Metaphor.PSM.Web.WebModule
+
+WebModule {
+    id = agilexs.catalogxs.presentation
+    name = CatalogXSPresentation
+    provider = AgileXS
+    version = Version { major = 1 minor = 0 micro = 0 }
+    dependencies = {
+        Dependency {
+            module = agilexs.catalogxs.businesslogic
+        }
+        Dependency {
+            module = agilexs.catalogxs.persistence
+        }
+        Dependency {
+            module = metaphor.models
+        }
+    }
+}

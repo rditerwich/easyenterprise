@@ -1,0 +1,38 @@
+root /deployment
+
+import Metaphor.Core.DeploymentConfiguration
+import Metaphor.PSM.GWT.GwtWebConfiguration
+
+import Metaphor.PSM.Glassfish2.EclipseLinkConfiguration
+import Metaphor.PSM.Glassfish2.Glassfish2Configuration
+import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
+
+DeploymentConfiguration {
+    id = agilexs.catalogxsadmin.deployment.local
+    name = "CatalogXSAdmin Deployment Local Hilbrand"
+    productConfigurations = {
+        Glassfish2Configuration {
+            installDir = "E:/tools/glassfish"
+            domain = domain1
+
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = false
+            }
+
+            dbConfiguration = PostgreSQLConfiguration {
+                installDir = "c:/Program Files/PostgreSQL/8.3"
+                server = localhost
+                port = 5432
+                databaseName = CatalogXSDatabase
+                username = postgres
+                password = postgres
+                schemaUpdateKind = none
+                jdbcDriverClasspath = "E:/libraries/psqlJDBC/postgresql-8.3-603.jdbc4.jar"
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}
