@@ -2,24 +2,21 @@ root /architecture
 
 import Metaphor.PSM.DomainToRdbms.ColumnTemplates
 import Metaphor.PSM.DomainToRdbms.DomainToRdbms
-import Metaphor.PSM.J2ee.Persistence
-import Metaphor.PSM.J2eeArchitectureJpaEjbLift
-import Metaphor.PSM.J2eeAspects.Crud
-import Metaphor.PSM.J2eeAspects.Query
+import Metaphor.PSM.JavaEE.Persistence
+import Metaphor.PSM.JavaEEArchitectureJpaEjbLift
+import Metaphor.PSM.JavaEEAspects.Crud
+import Metaphor.PSM.JavaEEAspects.Query
 import Metaphor.PSM.Rdbms.Column
 
 
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 
-J2eeArchitectureJpaEjbLift {
+JavaEEArchitectureJpaEjbLift {
     name = CatalogXSArchitecture
     commonModule = /modules:agilexs.catalogxs.common
     providerPackage = /packages:AgileXS
     productPackage = /packages:AgileXS/packages:CatalogXS
-    persistenceModule = /modules:agilexs.catalogxs.persistence
-    businessLogicModule = /modules:agilexs.catalogxs.businesslogic
-    presentationModule = /modules:agilexs.catalogxs.presentation
     databaseVendor = postgresql
     jpaVendor = EclipseLink
     generateBaseClasses = true

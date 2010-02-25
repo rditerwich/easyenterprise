@@ -1,9 +1,9 @@
 root /products
 
 import Metaphor.Core.Version
-import Metaphor.PSM.J2ee.J2eeProduct
+import Metaphor.PSM.JavaEE.JavaEEProduct
 
-J2eeProduct {
+JavaEEProduct {
     id = agilexs.catalogxs
     name = CatalogXS
     provider = AgileXS
@@ -16,6 +16,9 @@ J2eeProduct {
         agilexs.catalogxs.presentation
         agilexs.catalogxs.domain
     }
+    persistenceModule = /modules:agilexs.catalogxs.persistence
+    businessLogicModule = /modules:agilexs.catalogxs.businesslogic
+    presentationModule = /modules:agilexs.catalogxs.presentation
     domain = /packages:AgileXS/packages:Domain
     architecture = /architecture:CatalogXSArchitecture
 }

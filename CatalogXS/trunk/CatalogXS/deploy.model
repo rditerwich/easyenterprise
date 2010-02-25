@@ -7,58 +7,15 @@ import Metaphor.PSM.Glassfish2.Glassfish2Configuration
 import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
 
 DeploymentConfiguration {
-    id = agilexs.catalogxs.deployment.local
-    name = "CatalogXS Deployment Local Marteijn"
-    productConfigurations = {
-        Glassfish2Configuration {
-            installDir = "E:/Glassfish"
-            domain = domain1
-            skipAutoConfig = true
-
-            webConfiguration = GwtWebConfiguration {
-                userAgent = All
-                skipGwtCompilation = false
-            }
-
-            dbConfiguration = PostgreSQLConfiguration {
-                installDir = "C:/Program Files (x86)/PostgreSQL/8.3"
-                server = localhost
-                port = 5432
-                databaseName = CatalogXSDatabase
-                username = postgres
-                password = postgres
-                schemaUpdateKind = none
-                jdbcDriverClasspath = "C:/Program Files (x86)/DbVisualizer-6.0.13/jdbc/postgresql/postgresql.jar"
-            }
-
-            jpaConfiguration = EclipseLinkConfiguration {
-            }
-        }
-    }
-}
-
-DeploymentConfiguration {
     id = agilexs.catalogxs.deployment.local.ruud
     name = "CatalogXS Deployment Local Ruud"
     productConfigurations = {
         Glassfish2Configuration {
-            installDir = "d:/glassfish"
-            domain = domain1
+            ideIntegration = true
 
             webConfiguration = GwtWebConfiguration {
                 userAgent = All
                 skipGwtCompilation = false
-            }
-
-            dbConfiguration = PostgreSQLConfiguration {
-                installDir = "C:/Program Files (x86)/PostgreSQL/8.4"
-                server = localhost
-                port = 5432
-                databaseName = CatalogXSDatabase
-                username = postgres
-                password = postgres
-                schemaUpdateKind = create
-                jdbcDriverClasspath = "C:/Program Files/PostgreSQL/pgJDBC/postgresql-8.4-701.jdbc4.jar"
             }
 
             jpaConfiguration = EclipseLinkConfiguration {

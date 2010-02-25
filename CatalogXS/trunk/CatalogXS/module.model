@@ -2,9 +2,9 @@ root /modules
 
 import Metaphor.Core.Dependency
 import Metaphor.Core.Version
-import Metaphor.PSM.J2ee.J2eeModule
+import Metaphor.Core.Module
 
-J2eeModule {
+Module {
     id = agilexs.catalogxs
     name = CatalogXS
     provider = AgileXS
