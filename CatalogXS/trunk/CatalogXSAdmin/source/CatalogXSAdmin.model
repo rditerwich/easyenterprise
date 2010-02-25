@@ -3,5 +3,5 @@ root /packages:AgileXS/packages
 import Metaphor.Core.ModelPackage
 
 ModelPackage {
-    name = CatalogXSAdmin
+    name = CatalogXS
 }

@@ -5,24 +5,20 @@ import Metaphor.PSM.DomainToRdbms.ColumnTemplates
 import Metaphor.PSM.DomainToRdbms.DomainToRdbms
 import Metaphor.PSM.GWT.EntryPoint
 import Metaphor.PSM.GWT.GwtModule
-import Metaphor.PSM.J2ee.Persistence
-import Metaphor.PSM.J2eeArchitectureJpaEjbGwt
-import Metaphor.PSM.J2eeAspects.Crud
-import Metaphor.PSM.J2eeAspects.Query
+import Metaphor.PSM.JavaEE.Persistence
+import Metaphor.PSM.JavaEEArchitectureJpaEjbGwt
+import Metaphor.PSM.JavaEEAspects.Crud
+import Metaphor.PSM.JavaEEAspects.Query
 import Metaphor.PSM.Rdbms.Column
 import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
 
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 
-J2eeArchitectureJpaEjbGwt {
+JavaEEArchitectureJpaEjbGwt {
     name = CatalogXSAdminArchitecture
     providerPackage = /packages:AgileXS
-    productPackage = /packages:AgileXS/packages:CatalogXSAdmin
-    commonModule = /modules:agilexs.catalogxs.common
-    persistenceModule = /modules:agilexs.catalogxs.persistence
-    businessLogicModule = /modules:agilexs.catalogxs.businesslogic
-    presentationModule = /modules:agilexs.catalogxsadmin.presentation
+    productPackage = /packages:AgileXS/packages:CatalogXS
     jpaVendor = EclipseLink
     databaseVendor = postgresql
     generateBaseClasses = true
