@@ -1,6 +1,6 @@
-package agilexs.catalogxs.presentation.client;
+package agilexs.catalogxsadmin.presentation.client;
 
-import agilexs.catalogxs.presentation.client.page.Presenter;
+import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 
 public class ProductPresenter implements Presenter<ProductView> {
 

@@ -1,4 +1,4 @@
-package agilexs.catalogxs.presentation.client;
+package agilexs.catalogxsadmin.presentation.client;
 
 
 import com.google.gwt.user.client.ui.RootPanel;

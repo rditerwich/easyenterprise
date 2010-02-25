@@ -1,17 +1,18 @@
-package agilexs.catalogxs.presentation.client;
+package agilexs.catalogxsadmin.presentation.client;
 
-import agilexs.catalogxs.presentation.client.page.View;
+import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProductView extends Composite implements View {
+public class ProductGroupView extends Composite implements View {
 
-  private FlowPanel panel = new FlowPanel();
+  FlowPanel panel = new FlowPanel();
   
-  public ProductView() {
+  public ProductGroupView() {
     initWidget(panel);
+    
   }
 
   @Override

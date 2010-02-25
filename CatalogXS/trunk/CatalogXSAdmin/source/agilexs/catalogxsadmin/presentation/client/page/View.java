@@ -1,4 +1,4 @@
-package agilexs.catalogxs.presentation.client.page;
+package agilexs.catalogxsadmin.presentation.client.page;
 
 import com.google.gwt.user.client.ui.Widget;
 
