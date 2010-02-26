@@ -336,28 +336,16 @@ DomainDiagram {
     }
     superClassReferences = {
         SuperClassReference {
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:VolumeDiscountPromotion
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Promotion
+            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Product
+            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
         SuperClassReference {
-            bendPoints = {
-                Point {
-                    x = 403
-                    y = 239
-                }
-            }
             source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:ProductGroup
             target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
         SuperClassReference {
-            bendPoints = {
-                Point {
-                    x = 500
-                    y = 234
-                }
-            }
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Product
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
+            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:VolumeDiscountPromotion
+            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Promotion
         }
     }
 }

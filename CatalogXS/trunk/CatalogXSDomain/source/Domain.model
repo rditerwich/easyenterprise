@@ -1,4 +1,4 @@
-root /packages:AgileXS/packages
+root /packages
 
 import Metaphor.PIM.Archetypes.CrmArchetype
 import Metaphor.PIM.Domain.Class
@@ -10,33 +10,39 @@ path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
 path catalog=/packages:AgileXS/packages:Domain/packages:Catalog/types
 
 Package {
-    name = Domain
-    types = {
-        Class {
-            name = ExampleClass
-        }
-    }
-    operations = {
-        Operation {
-            name = find
-            parameters = {
-                Parameter {
-                    name = channel
-                    type = primitive:Date
+    name = AgileXS
+    packages = {
+        Package {
+            name = Domain
+            types = {
+                Class {
+                    name = ExampleClass
                 }
             }
-        }
-        Operation {
-            name = findProducts
-            type = catalog:Product
-            lower = 0
-            upper = {}
-            parameters = {
-                Parameter {
-                    name = channel
-                    type = primitive:Long
+            operations = {
+                Operation {
+                    name = find
+                    parameters = {
+                        Parameter {
+                            name = channel
+                            type = primitive:Date
+                        }
+                    }
+                }
+                Operation {
+                    name = findProducts
+                    type = catalog:Product
+                    lower = 0
+                    upper = {}
+                    parameters = {
+                        Parameter {
+                            name = channel
+                            type = primitive:Long
+                        }
+                    }
                 }
             }
-        }
+        }        
     }
 }
+

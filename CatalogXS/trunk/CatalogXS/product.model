@@ -16,9 +16,6 @@ JavaEEProduct {
         agilexs.catalogxs.presentation
         agilexs.catalogxs.domain
     }
-    persistenceModule = /modules:agilexs.catalogxs.persistence
-    businessLogicModule = /modules:agilexs.catalogxs.businesslogic
-    presentationModule = /modules:agilexs.catalogxs.presentation
     domain = /packages:AgileXS/packages:Domain
     architecture = /architecture:CatalogXSArchitecture
 }

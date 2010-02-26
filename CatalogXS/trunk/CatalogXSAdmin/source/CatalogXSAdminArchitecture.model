@@ -18,7 +18,7 @@ path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 JavaEEArchitectureJpaEjbGwt {
     name = CatalogXSAdminArchitecture
     providerPackage = /packages:AgileXS
-    productPackage = /packages:AgileXS/packages:CatalogXS
+    productPackage = /packages:AgileXS/packages:CatalogXSAdmin
     jpaVendor = EclipseLink
     databaseVendor = postgresql
     generateBaseClasses = true

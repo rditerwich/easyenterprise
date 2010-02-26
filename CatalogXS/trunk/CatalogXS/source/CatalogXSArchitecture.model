@@ -14,7 +14,6 @@ path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 
 JavaEEArchitectureJpaEjbLift {
     name = CatalogXSArchitecture
-    commonModule = /modules:agilexs.catalogxs.common
     providerPackage = /packages:AgileXS
     productPackage = /packages:AgileXS/packages:CatalogXS
     databaseVendor = postgresql
