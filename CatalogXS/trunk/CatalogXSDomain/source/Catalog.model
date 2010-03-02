@@ -30,6 +30,14 @@ Package {
                     isComposite = true
                     opposite = catalog:Item/attributes:catalog
                 }
+                Attribute {
+                    name = productGroupProperties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:Property/attributes:owningCatalog
+                }
 /*
                 Attribute {
                     name = propertyGroups
@@ -69,6 +77,11 @@ Package {
         Class {
             name = Item
             attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                    lower = 0
+                }
                 Attribute {
                     name = catalog
                     type = catalog:Catalog
@@ -131,11 +144,6 @@ Package {
                     opposite = catalog:CatalogView/attributes:topLevelProductGroups
                 }
                 Attribute {
-                    name = name
-                    type = primitive:String
-                    lower = 0
-                }
-                Attribute {
                     name = children
                     type = catalog:Item
                     lower = 0
@@ -165,11 +173,6 @@ Package {
             name = Product
             superClass = catalog:Item
             attributes = {
-                Attribute {
-                    name = name
-                    type = primitive:String
-                    lower = 0
-                }
                 Attribute {
                     name = templates
                     type = catalog:Template
@@ -237,6 +240,12 @@ Package {
                     opposite = catalog:Item/attributes:properties
                 }
                 Attribute {
+                    name = owningCatalog
+                    type = catalog:Catalog
+                    lower = 0
+                    opposite = catalog:Catalog/attributes:productGroupProperties
+                }
+                Attribute {
                     name = type
                     type = catalog:PropertyType
                 }
@@ -247,6 +256,7 @@ Package {
                     lower = 1
                     upper = {}
                 }
+                
             }
         }
 /*
