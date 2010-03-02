@@ -198,6 +198,11 @@ Package {
             name = Property
             attributes = {
                 Attribute {
+                    name = name
+                    type = primitive:String
+                    lower = 0
+                }
+                Attribute {
                     name = label
                     type = catalog:Label
                     isComposite = true
