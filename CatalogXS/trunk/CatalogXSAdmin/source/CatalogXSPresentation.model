@@ -19,16 +19,6 @@ import Metaphor.PSM.UIToGwt.Page
 
 GwtPackage {
     name = Presentation
-    modules = {
-        GwtModule {
-            name = CatalogXSAdmin
-            entryPoint = {
-                EntryPoint {
-                    name = CatalogXSAdmin
-                }
-            }
-        }
-    }
 //    services = {
 //    }
 }
