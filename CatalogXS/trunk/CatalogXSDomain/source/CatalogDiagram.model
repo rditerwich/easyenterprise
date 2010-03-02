@@ -49,9 +49,9 @@ DomainDiagram {
             bounds = {
                 Rectangle {
                     x = 99
-                    y = 403
+                    y = 420
                     width = 131
-                    height = 174
+                    height = 157
                 }
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property
@@ -70,8 +70,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 289
-                    y = 594
+                    x = 291
+                    y = 615
                     width = -1
                     height = -1
                 }
@@ -81,8 +81,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 132
-                    y = 619
+                    x = 126
+                    y = 630
                     width = -1
                     height = -1
                 }
@@ -233,8 +233,8 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 50
-                    y = 423
+                    x = 51
+                    y = 444
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:CatalogView/attributes:excludedProperties
@@ -320,15 +320,6 @@ DomainDiagram {
         }
         Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:items
-        }
-        Reference {
-            bendPoints = {
-                Point {
-                    x = 355
-                    y = 431
-                }
-            }
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:defaultValues
         }
         Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relationType
