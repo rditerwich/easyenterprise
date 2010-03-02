@@ -1,0 +1,18 @@
+<lift:surround with="admin_default" at="content">
+  <head><title>Template Editing</title></head>
+  <h1>Template Management</h1>
+  <table>
+  	  <th>
+  	    <td>Template name</td>
+  	    <td>&nbsp;</td>
+  	  </th>
+    <lift:TemplateAdmin.showTemplates>
+  	  <tr>
+  	    <td><template:name /></td>
+  	    <td><template:edit /></td>
+  	  </tr>
+    </lift:TemplateAdmin.showTemplates>
+  </table>
+  <div>Add template:</div>
+    <template:newName/><template:buttonAdd>
+</lift:surround>

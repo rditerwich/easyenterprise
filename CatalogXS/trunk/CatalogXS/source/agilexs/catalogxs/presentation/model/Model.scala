@@ -47,7 +47,7 @@ object Model {
 	  case _ => None
   }
 
-  def currentSearchProducts : Seq[Product] =
+  def currentSearchProducts : Iterable[Product] =
 	  S.param("searchString") match {
 	  case Full(searchString) => Model.catalog.keywordMap.find(searchString) 
 	  case _ => Seq.empty

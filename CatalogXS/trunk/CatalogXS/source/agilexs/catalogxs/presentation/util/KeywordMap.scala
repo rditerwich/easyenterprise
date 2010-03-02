@@ -20,7 +20,7 @@ class KeywordMap[A] extends mutable.HashMap[String, mutable.Set[A]] with mutable
     }
   }
   
-  def addAll(keywords : Seq[String], obj : A) = {
+  def addAll(keywords : Iterable[String], obj : A) = {
     for (keyword <- keywords) {
       add(keyword, obj)
     }

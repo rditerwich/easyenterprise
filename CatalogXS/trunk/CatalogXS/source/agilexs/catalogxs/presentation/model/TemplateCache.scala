@@ -18,7 +18,7 @@ class TemplateCache private (val catalogCache : CatalogCache, val catalog : jpa.
     view.getTemplates toSet
   
   val productGroupTemplates : Map[jpa.ProductGroup, Templates] =
-    mutable.Map((for (group <- catalogCache.productGroups) 
+    mutable.Map((for (group <- catalogCache.productGroups toSeq) 
       yield (group -> byName(group.getTemplates))):_*)
   
   val productGroupTemplates2 : Map[jpa.ProductGroup, Templates] = 

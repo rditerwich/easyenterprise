@@ -12,7 +12,7 @@ import net.liftweb.util.Full
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
 
-class Catalog extends BasicSnippet[Promotion] {
+class Catalog {
 
   def catalog(xml : NodeSeq) : NodeSeq = {
 	CatalogBindings.catalogBinding(Model.catalog).bind(S.attr("tag") openOr "catalog", xml) 

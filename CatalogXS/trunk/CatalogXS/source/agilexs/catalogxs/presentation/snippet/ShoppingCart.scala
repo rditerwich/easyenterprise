@@ -161,7 +161,7 @@ class ShoppingCart {
       reDraw()
     }
 
-    shoppingCart.delegate.getProductOrders.flatMap(productOrder => {
+    shoppingCart.delegate.getProductOrders.toSeq.flatMap(productOrder => {
       bind("shoppingcart", xhtml,
           "deleteButton" -> {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
              ("onclick" -> ajaxInvoke(removeProduct(productOrder) _)._2)},

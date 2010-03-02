@@ -28,6 +28,7 @@ class Boot {
   //val localeCookieName = "cookie.agilexs.catalogxs.locale"
 
   def boot {
+
 //    if (!DB.jndiJdbcConnAvailable_?)
 //      DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
 
@@ -60,6 +61,7 @@ class Boot {
     //We will take care of this
     //Schemifier.schemify(true, Log.infoF _, User)
 
+      
     // Build SiteMap
     //product is added otherwise product rewrite doesn't work
     val entries =

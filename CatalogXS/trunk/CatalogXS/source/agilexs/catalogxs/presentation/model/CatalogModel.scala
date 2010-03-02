@@ -37,9 +37,6 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
   
   val id = cache.catalog.getId.longValue
   
-  val excludedProductGroups : Set[ProductGroup] =
-   cache.excludedProductGroups map (mapping.productGroups) toSet
-  
   val excludedProperties : Set[Property] = 
     cache.excludedProperties map (mapping.properties) toSet
 
@@ -47,7 +44,7 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
     cache.promotions map (mapping.promotions) toSet
   
   val productGroups : Set[ProductGroup] = 
-	cache.catalog.getProductGroups map (mapping.productGroups) filter (!excludedProductGroups.contains(_)) toSet
+	cache.productGroups map (mapping.productGroups) toSet
 
   val productGroupsById : Map[Long, ProductGroup] = 
     productGroups makeMapReverse (_.id)
@@ -80,14 +77,14 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
     cache.productGroupParents(productGroup) map (mapping.productGroups) toSet
   
   val children : Set[ProductGroup] =
-    cache.productGroupChildren(productGroup) map (mapping.productGroups) toSet
+    cache.productGroupChildGroups(productGroup) map (mapping.productGroups) toSet
     
   val products : Set[Product] =
-    productGroup.getProducts map(mapping.products) toSet 
+    cache.productGroupProducts(this) map(mapping.products) toSet 
   
   val groupProperties : Seq[Property] = 
 	cache.productGroupPropertyValues(productGroup) map (v => 
-	  new Property(v.getProperty, v, None, cache, mapping)) toSet
+	  new Property(v.getProperty, v, None, cache, mapping)) 
 
   val groupPropertiesByName : Map[String, Property] = 
     groupProperties makeMapReverse (_.name)
@@ -100,7 +97,7 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
     
   lazy val productExtentPromotions : Set[Promotion] = {
     val promotions = cache.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
-    if (promotions isEmpty) Set.empty else Set(promotions first) 
+    if (promotions isEmpty) Set.empty else Set(promotions.toSeq first) 
   }
 }
 
@@ -120,10 +117,10 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
 	  new Property(v.getProperty, v, Some(this), cache, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
-    product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet 
+    product.getParents filter(!cache.excludedItems.contains(_)) map(mapping.productGroups) toSet 
   
   val productGroupExtent : Set[ProductGroup] = 
-    product.getProductGroups filter(!cache.excludedProductGroups.contains(_)) map(mapping.productGroups) toSet
+    product.getParents filter(!cache.excludedItems.contains(_)) map(mapping.productGroups) toSet
 
   val propertiesByName : Map[String, Property] = 
     properties makeMapReverse (_.name)

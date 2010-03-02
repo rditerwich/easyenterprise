@@ -10,10 +10,6 @@ JavaEEProduct {
     version = Version { major = 1 minor = 0 micro = 0 }
     modules = {
         agilexs.catalogxs
-        agilexs.catalogxs.common
-        agilexs.catalogxs.persistence
-        agilexs.catalogxs.businesslogic
-        agilexs.catalogxs.presentation
         agilexs.catalogxs.domain
     }
     domain = /packages:AgileXS/packages:Domain

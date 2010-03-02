@@ -9,37 +9,28 @@ import net.liftweb.util.BindHelpers.AttrBindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
 
 object Conversions {
-  implicit def convertList[T](list : java.util.List[T]) = jcl.Buffer(list)
-  implicit def convertSet[T](set : java.util.Set[T]) = jcl.Set(set)
-  implicit def convertSortedSet[T](set : java.util.SortedSet[T]) = jcl.SortedSet(set)
-  implicit def convertMap[T,E](map : java.util.Map[T,E]) = jcl.Map(map)
-  implicit def convertSortedMap[T,E](map : java.util.SortedMap[T,E]) = jcl.SortedMap(map)
-//  implicit def convertCollection[A](collection : java.util.Collection[A]) : jcl.Buffer[A] = jcl.Buffer[A](collection.asInstanceOf[java.util.List[A]])
-//  implicit def convertCollection[A](collection : java.util.Collection[A]) : Seq[A] = collection.toSeq
-//  implicit def convertCollectionToSet[A](collection : java.util.Collection[A]) : Set[A] = Set(collection.toSeq:_*)
-  implicit def convertIterableToSeq[A](it : Iterable[A]) : Seq[A] = it.toSeq
-  implicit def convertIterableToSeq[A](it : java.lang.Iterable[A]) : Seq[A] = jcl.Buffer[A](it.asInstanceOf[java.util.List[A]])
+  
 //  implicit def convertIterableToSet[A](it : java.lang.Iterable[A]) : Set[A] = Set(it.toSeq:_*)
   
 //  implicit def convertIterableToSet[A](it : Iterable[A]) : Set[A] = it match {
 //    case set : Set[_] => set.asInstanceOf[Set[A]]
 //    case _ => Set(it.toSeq:_*)
 //  }
-
-  class ToSet[A](it : java.lang.Iterable[A]) {
-    def toSet : Set[A] = Set(it.toSeq:_*)
-  }
-  implicit def toSet[A](it : java.lang.Iterable[A]) = new ToSet(it)
-  
-  class SeqToSet[A](it : Seq[A]) {
-	def toSet = Set(it:_*)
-  }
-  
+//
+//  class ToSet[A](it : java.lang.Iterable[A]) {
+//    def toSet : Set[A] = Set(it.toSeq:_*)
+//  }
+//  implicit def toSet[A](it : java.lang.Iterable[A]) = new ToSet(it)
+//  
+//  class SeqToSet[A](it : Seq[A]) {
+//	def toSet = Set(it:_*)
+//  }
+//  
 //  implicit def seqToSet[A](seq : Seq[A]) = new SeqToSet(seq)
-  class ItToSet[A](it : Iterable[A]) {
-	  def toSet = Set(it:_*)
-  }
-  implicit def itToSet[A](seq : Iterable[A]) = new ItToSet(seq)
+//  class ItToSet[A](it : Iterable[A]) {
+//	  def toSet = Set(it:_*)
+//  }
+//  implicit def itToSet[A](seq : Iterable[A]) = new ItToSet(seq)
   
   
   class OptionalString(s: String) {
@@ -103,27 +94,47 @@ object Conversions {
                 
   implicit def makeMap[A, B](it : Iterable[A]) = new MakeMap[A](it)
   implicit def makeMapReverse[B](it : Iterable[B]) = new MakeMapReverse[B](it)
-  
-  implicit def toScala[A](it : java.util.Collection[A]) = new scala.collection.jcl.CollectionWrapper[A] { override def underlying = it }
-  
-  class RichIterable[A](it : Iterable[A]) {
-      
-      def filterInstancesOf[B<:A](c : Class[A]) : Seq[B] = 
-    	  it filter (c.isInstance(_)) map (_.asInstanceOf[B])
 
+  /**
+   * Java collection conversions
+   */
+  implicit def convertList[T](list : java.util.List[T]) = jcl.Buffer(list)
+  implicit def convertSet[T](set : java.util.Set[T]) = jcl.Set(set)
+  implicit def convertSortedSet[T](set : java.util.SortedSet[T]) = jcl.SortedSet(set)
+  implicit def convertMap[T,E](map : java.util.Map[T,E]) = jcl.Map(map)
+  implicit def convertSortedMap[T,E](map : java.util.SortedMap[T,E]) = jcl.SortedMap(map)
+  implicit def convertIterable[A](it : java.util.Collection[A]) = new scala.collection.jcl.IterableWrapper[A] { override def underlying = it }
+
+  /**
+   * Rich collections
+   */
+  class RichIterable[A](it : Iterable[A]) {
+    def toSet = Set(it toSeq:_*)
+	def classFilter[B <: A](c : java.lang.Class[B]) : Seq[B] = 
+	 (it filter (c.isInstance(_)) toSeq) map (_.asInstanceOf[B])
   }
   
-  class RichCollection[A](col : Collection[A]) {
-	  def filterInstancesOf[B<:A](c : Class[A]) : Seq[B] = 
-		  col filter (c.isInstance(_)) map (_.asInstanceOf[B])
+  class RichCollection[A](col : Collection[A]) extends RichIterable[A](col) {
   }
   
-  class RichSeq[A](seq : Seq[A]) {
-    def filterInstancesOf[B<:A](c : java.lang.Class[A]) : Seq[B] = 
-      seq filter (c.isInstance(_)) map (_.asInstanceOf[B])
+  class RichSeq[A](seq : Seq[A]) extends RichIterable[A](seq) {
   }
-  
-  implicit def richJavaCollection[A](collection : java.util.Collection[A]) = new RichCollection[A](collection)
+
+  class RichSet[A](set : Set[A]) {
+	def classFilter[B <: A](c : java.lang.Class[B]) : Set[B] = 
+	 Set((set filter (c.isInstance(_)) toSeq) map (_.asInstanceOf[B]):_*)
+  }
+
+  implicit def richIterable[A](it : Iterable[A]) = new RichIterable[A](it)
+  implicit def richCollection[A](collection : java.util.Collection[A]) = new RichCollection[A](collection)
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def richSeq[A](seq : Seq[A]) = new RichSeq[A](seq)
+  implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
+  
+//  implicit def convertCollection[A](collection : java.util.Collection[A]) : jcl.Buffer[A] = jcl.Buffer[A](collection.asInstanceOf[java.util.List[A]])
+//  implicit def convertCollection[A](collection : java.util.Collection[A]) : Seq[A] = collection.toSeq
+//  implicit def convertCollectionToSet[A](collection : java.util.Collection[A]) : Set[A] = Set(collection.toSeq:_*)
+//  implicit def convertIterableToSeq[A](it : Iterable[A]) : Seq[A] = it.toSeq
+//  implicit def convertIterableToSeq[A](it : java.lang.Iterable[A]) : Seq[A] = jcl.Buffer[A](it.asInstanceOf[java.util.List[A]])
+
 }
