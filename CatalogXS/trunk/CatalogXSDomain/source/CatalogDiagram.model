@@ -48,9 +48,9 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 99
-                    y = 420
-                    width = 131
+                    x = 109
+                    y = 418
+                    width = 189
                     height = 157
                 }
             }
@@ -70,8 +70,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 291
-                    y = 615
+                    x = 304
+                    y = 616
                     width = -1
                     height = -1
                 }
@@ -81,8 +81,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 126
-                    y = 630
+                    x = 153
+                    y = 624
                     width = -1
                     height = -1
                 }
@@ -207,9 +207,6 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:EnumValue/attributes:label
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:label
-        }
-        Reference {
             bendPoints = {
                 Point {
                     x = 814
@@ -323,6 +320,9 @@ DomainDiagram {
         }
         Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relationType
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Property/attributes:name
         }
     }
     superClassReferences = {
