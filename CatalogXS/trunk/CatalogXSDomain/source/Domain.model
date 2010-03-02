@@ -15,9 +15,6 @@ Package {
         Package {
             name = Domain
             types = {
-                Class {
-                    name = ExampleClass
-                }
             }
             operations = {
                 Operation {
