@@ -140,6 +140,7 @@ Package {
                 Attribute {
                     name = containsProducts
                     type = primitive:Boolean
+                    default = true
                 }
 /*
                 Attribute {
@@ -215,6 +216,7 @@ Package {
                 Attribute {
                     name = productGroupProperty
                     type = primitive:Boolean
+                    default = false
                 }
 
                 Attribute {
