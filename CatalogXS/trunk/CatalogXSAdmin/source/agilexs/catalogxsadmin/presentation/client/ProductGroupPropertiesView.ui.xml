@@ -1,0 +1,14 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'
+    >
+  <ui:style>
+    .right { text-align:right; }
+  </ui:style>
+  
+  <g:FlowPanel>
+    <g:HTMLPanel>
+      <g:InlineHTML ui:field="name"/><g:HTML><h2>Properties</h2></g:HTML><g:Button ui:field="addNew"></g:Button><g:ListBox styleName="{style.right}" ui:field="languages"/>
+    </g:HTMLPanel>
+    <g:Grid ui:field="grid"/>
+  </g:FlowPanel>
+</ui:UiBinder>

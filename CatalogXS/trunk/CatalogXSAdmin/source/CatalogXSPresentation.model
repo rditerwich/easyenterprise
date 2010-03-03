@@ -16,11 +16,48 @@ import Metaphor.PSM.Java.JavaBeanPropertyView
 import Metaphor.PSM.Java.JavaBeanView
 import Metaphor.PSM.UIToGwt.Page
 
+path catalog = /packages:AgileXS/packages:CatalogXSAdmin/packages:Presentation/packages:Catalog/types
 
 GwtPackage {
     name = Presentation
-//    services = {
-//    }
+    servlets = {
+       GwtService {
+            name = CatalogService
+            methods = {
+                GwtMethod {
+                    name = findAllProductGroupChildren
+                    view = {
+                        JavaBeanView {
+                            name = ProductGroupView
+                            kind = none
+                            included = {
+                                catalog:Item/properties:id
+                                catalog:Item/properties:catalog
+                                catalog:Item/properties:propertyValues
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = PropertyValuesView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:propertyValues
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyItemView
+                                    kind = all
+                                    referringProperties = catalog:PropertyValue/properties:property
+                                }
+                                JavaBeanPropertyView {
+                                    name = LabelsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:labels
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 /*        
         GwtService {

@@ -5,19 +5,16 @@ import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.CatalogView;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.TreeItem;
 
 /**
@@ -26,18 +23,20 @@ import com.google.gwt.user.client.ui.TreeItem;
 public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   private final ProductGroupView view = new ProductGroupView();
-  private CatalogView catalogView; //FIXME handle catalog view
   private final HashMap<TreeItem, ProductGroup> treemap = new HashMap<TreeItem, ProductGroup>();
-
+  private ProductGroup currentProductGroup;
+  private ProductGroupPropertiesPresenter pgpp;
+  private CatalogView catalogView;
+  
   public ProductGroupPresenter() {
-    view.getTree().addOpenHandler(new OpenHandler<TreeItem>() {
+    view.getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
       @Override
-      public void onOpen(OpenEvent<TreeItem> event) {
-        final TreeItem item = event.getTarget();
+      public void onSelection(SelectionEvent<TreeItem> event) {
+        final TreeItem item = event.getSelectedItem();
 
         //FIXME: handle nodes that have no children in the database anyway
         if (item.getChildCount() == 0) {
-          loadChildren(item);
+          loadChildren(catalogView, item);
         }
       }
     });
@@ -54,8 +53,21 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         new ClickHandler() {
           @Override
           public void onClick(ClickEvent event) {
-            
+            currentProductGroup = new ProductGroup();
+            view.setProductGroup(currentProductGroup);
           }});
+    pgpp = new ProductGroupPropertiesPresenter(); 
+    view.getPropertiesPanel().add(pgpp.getView().getViewWidget());
+    Util.getCatalogView(new AsyncCallback<CatalogView>(){
+      @Override
+      public void onFailure(Throwable caught) {
+      }
+
+      @Override
+      public void onSuccess(CatalogView result) {
+        catalogView = result;
+        loadChildren(result, null); //initial tree
+      }});
   }
 
   @Override
@@ -63,7 +75,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     return view;
   }
 
-  private void loadChildren(final TreeItem parent) {
+  private void loadChildren(CatalogView catalogView, final TreeItem parent) {
     CatalogServiceAsync.findAllProductGroupChildren(
         catalogView, treemap.get(parent), new AsyncCallback<List<ProductGroup>>() {
           @Override
@@ -74,8 +86,10 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           @Override
           public void onSuccess(List<ProductGroup> result) {
             for (ProductGroup productGroup : result) {
+              final PropertyValue value = Util.getPropertyValueByName(productGroup.getPropertyValues(), Util.NAME, null);
+
               treemap.put(
-                  view.addTreeItem(parent, productGroup.getName()), productGroup);
+                  view.addTreeItem(parent, value != null ? value.getStringValue() : "<No Name>"), productGroup);
             }
           }
         });
@@ -91,20 +105,9 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
           @Override
           public void onSuccess(ProductGroup pg) {
-            view.setProductGroup(pg);
-            final List<PropertyValue> result = pg.getDefaultValues();
-            final Grid g = view.getGrid();
-
-            if (g.getRowCount() != result.size()) {
-              g.resizeRows(result.size());
-            }
-            //FIXME set header grid
-            for (int i = 0; i < result.size(); i++) {
-              PropertyValue propertyValue = result.get(i);
-              g.setWidget(i, 0, new InlineHTML(propertyValue.getProperty().getName()));
-            //  g.setWidget(i, 1, new InlineHTML(propertyValue.getDefaultValue());
-              g.setWidget(i, 2, new InlineHTML());
-            }
+            //view.setProductGroup(pg);
+            final List<Property> properties = pg.getProperties();
+            pgpp.show("TODO:Name", properties);
           }
     });
   }
