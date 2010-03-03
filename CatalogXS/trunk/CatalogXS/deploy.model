@@ -18,6 +18,10 @@ DeploymentConfiguration {
                 skipGwtCompilation = false
             }
 
+            dbConfiguration = PostgreSQLConfiguration {
+                loggingLevel = FINE
+            }
+
             jpaConfiguration = EclipseLinkConfiguration {
             }
         }
