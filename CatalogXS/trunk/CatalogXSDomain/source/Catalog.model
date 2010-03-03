@@ -199,11 +199,12 @@ Package {
             name = Property
             attributes = {
                 Attribute {
-                    name = name
+                    name = labels
                     type = catalog:Label
                     isComposite = true
                     lower = 0
                     upper = {}
+                    opposite = catalog:Label/attributes:property
                 }
 /*
                 Attribute {
@@ -235,6 +236,7 @@ Package {
                     isComposite = true
                     lower = 1
                     upper = {}
+                    opposite = catalog:EnumValue/attributes:property
                 }
                 
             }
@@ -277,11 +279,17 @@ Package {
                     type = primitive:Integer
                 }
                 Attribute {
-                    name = label
+                    name = labels
                     type = catalog:Label
                     isComposite = true
                     lower = 0
                     upper = {}
+                    opposite = catalog:Label/attributes:enumValue
+                }
+                Attribute {
+                    name = property
+                    type = catalog:Property
+                    opposite = catalog:Property/attributes:enumValues                                
                 }
             }
         }
@@ -347,6 +355,18 @@ Package {
                 Attribute {
                     name = label
                     type = primitive:String
+                }
+                Attribute {
+                    name = property
+                    type = catalog:Property
+                    lower = 0
+                    opposite = catalog:Property/attributes:labels
+                }
+                Attribute {
+                    name = enumValue
+                    type = catalog:EnumValue
+                    lower = 0
+                    opposite = catalog:EnumValue/attributes:labels                    
                 }
             }
         }

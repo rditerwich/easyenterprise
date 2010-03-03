@@ -22,8 +22,8 @@ class TemplateCache private (val catalogCache : CatalogCache, val catalog : jpa.
       yield (group -> byName(group.getTemplates))):_*)
   
   val productGroupTemplates2 : Map[jpa.ProductGroup, Templates] = 
-    catalogCache.productGroups makeMap ((g : jpa.ProductGroup) => byName(g.getTemplates))
+    catalogCache.productGroups makeMapWithValues ((g : jpa.ProductGroup) => byName(g.getTemplates))
   
   private def byName(templates : Iterable[jpa.Template]) : Templates =
-    templates makeMapReverse (_.getName)
+    templates makeMapWithKeys (_.getName)
 }

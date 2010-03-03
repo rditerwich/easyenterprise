@@ -3,7 +3,7 @@ package agilexs.catalogxs.presentation.model
 import java.util.LinkedHashSet
 import scala.xml.NodeSeq 
 import scala.xml.Text 
-import scala.collection.{mutable, Set, Map}
+import scala.collection.{mutable, immutable, Set, Map}
 
 import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.jpa.{order => jpaOrder}
@@ -47,7 +47,7 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
 	cache.productGroups map (mapping.productGroups) toSet
 
   val productGroupsById : Map[Long, ProductGroup] = 
-    productGroups makeMapReverse (_.id)
+    productGroups makeMapWithKeys (_.id)
     
   val topLevelProductGroups : Set[ProductGroup] = 
 	cache.topLevelProductGroups map (mapping.productGroups) toSet
@@ -56,7 +56,7 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
     cache.products map (mapping.products) toSet
 
   val productsById : Map[Long, Product] = 
-    products makeMapReverse (_.id)
+    products makeMapWithKeys (_.id)
     
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cache.mediaValues
@@ -71,7 +71,6 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   mapping.productGroups += (productGroup -> this)
   
   val id = productGroup.getId.longValue
-  val name = productGroup.getName or id.toString
   
   val parents : Set[ProductGroup] = 
     cache.productGroupParents(productGroup) map (mapping.productGroups) toSet
@@ -87,7 +86,7 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
 	  new Property(v.getProperty, v, None, cache, mapping)) 
 
   val groupPropertiesByName : Map[String, Property] = 
-    groupProperties makeMapReverse (_.name)
+    groupProperties makeMapWithKeys (_.name)
     
   val properties : Set[Property] =
     productGroup.getProperties map(mapping.properties) toSet
@@ -110,7 +109,6 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
   mapping = new Mapping(Some(this), cache)
 
   val id : Long = product.getId.longValue
-  val name = product.getName or id.toString
   
   val properties : Set[Property] =
 	cache.productPropertyValues(product) map (v => 
@@ -123,7 +121,7 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
     product.getParents filter(!cache.excludedItems.contains(_)) map(mapping.productGroups) toSet
 
   val propertiesByName : Map[String, Property] = 
-    properties makeMapReverse (_.name)
+    properties makeMapWithKeys (_.name)
 }
 
 class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
@@ -131,11 +129,15 @@ class Property(property : jpa.Property, val value : jpa.PropertyValue, val produ
   mapping.properties(property) = this
 
   val id : Long = property.getId.longValue
-  val name : String = property.getName or id.toString
   val propertyType : jpa.PropertyType = property.getType
+
+  val namesByLanguage : Map[Option[String], String] = 
+    property.getLabels makeMap (l => (l.getLanguage asOption, l.getLabel )) 
+  
+  val name : String = namesByLanguage.get(None) getOrElse ""
   
   val valueId : Long = value.getId.longValue
-  val mimeType : String = value.getMimeType or ""
+  val mimeType : String = value.getMimeType getOrElse ""
   val mediaValue : Array[Byte] = value.getMediaValue
   val pvalue = value
   

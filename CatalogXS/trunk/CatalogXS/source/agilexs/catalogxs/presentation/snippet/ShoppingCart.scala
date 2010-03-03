@@ -77,7 +77,7 @@ class ShoppingCart {
    * </pre>
    */
   def addToCart(xhtml: NodeSeq) : NodeSeq = {
-    val p = Model.currentProduct orNull
+    val p = Model.currentProduct getOrNull
 
     def addProduct : JsCmd = {
       shoppingCart.addProduct(p, 1)

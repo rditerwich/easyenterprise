@@ -40,10 +40,10 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	 (products(view.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
 
   val productGroupPropertyValues : Map[jpa.ProductGroup, Seq[jpa.PropertyValue]] =
-    productGroups makeMap (_.getPropertyValues filter(_.getProperty != null) toSeq)
+    productGroups makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
   val productPropertyValues : Map[jpa.Product, Seq[jpa.PropertyValue]] =
-    products makeMap (_.getPropertyValues filter(_.getProperty != null) toSeq)
+    products makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
   val mediaPropertyValues : Seq[jpa.PropertyValue] = 
     products flatMap (productPropertyValues(_)) filter (_.getProperty.getType == jpa.PropertyType.Media) filter(_.getMediaValue != null) toSeq
@@ -52,7 +52,7 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
     mutable.HashMap(mediaPropertyValues map (v => (v.getId.longValue, (v.getMimeType, v.getMediaValue))):_*)
     	
   val productGroupProducts : Map[jpa.ProductGroup, Set[jpa.Product]] =
-    productGroups makeMap (_.getChildren classFilter(classOf[jpa.Product]) toSet)   
+    productGroups makeMapWithValues (_.getChildren classFilter(classOf[jpa.Product]) toSet)   
 	  
   val productGroupProductExtent : Map[jpa.ProductGroup, Set[jpa.Product]] = 
     new mutable.HashMap[jpa.ProductGroup, Set[jpa.Product]] useIn 
@@ -96,7 +96,6 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	      products ++= productGroupProductExtent(group.getChildren classFilter(classOf[jpa.ProductGroup]), result)
 	      products ++= group.getChildren classFilter(classOf[jpa.Product])
 	      allProducts ++= products
-          println("Products of group " + group.getName + ": " + (products map (_.getId) mkString(" ")))
       } else {
         allProducts ++= result(group)
       }

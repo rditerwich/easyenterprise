@@ -3,6 +3,7 @@ package agilexs.catalogxs.presentation.model
 import scala.collection.jcl
 import scala.collection.Set
 import scala.collection.Map
+import scala.collection.immutable
 import scala.collection.mutable
 import scala.xml.NodeSeq 
 import net.liftweb.util.BindHelpers.AttrBindParam
@@ -33,13 +34,6 @@ object Conversions {
 //  implicit def itToSet[A](seq : Iterable[A]) = new ItToSet(seq)
   
   
-  class OptionalString(s: String) {
-	def or (s2: String) = {
-	 if (s == null || s.trim() == "") s2 else s
-	}
-  }
-  implicit def optionalString(s: String) = new OptionalString(s)
-  
 //  implicit def stringToBindingWithTag[A](t : Tuple2[Tuple2[String,() => Binding[A]],String]) = 
 //	FuncBindParam(t._1._1, (xml) => t._1._2().bind(t._2, xml))
 //  implicit def stringToBindingWithTag[A](t : Tuple2[Tuple2[String,() => Binding[A]],String]) = 
@@ -54,47 +48,18 @@ object Conversions {
 
   implicit def toBindableObject(obj : Object) = new BindableObject(obj)
 
-  class OrNull[A](option : Option[A]) {
-    def orNull : A = option match {
-      case Some(value) => value
-      case None => null.asInstanceOf[A]
-    }
-  }
+//  class SeqWrapper[A](elements : Iterable[A]) {
+//    def seqFlatMap[B](f : A => Iterable[B]) : Seq[B] = {
+//      val buf = new mutable.ArrayBuffer[B]
+//      for (element <- elements) {
+//        buf ++= f(element)
+//      }
+//      buf.readOnly
+//    }
+//  }
+//   
+//  implicit def seqWrapper[A](elements : Iterable[A]) = new SeqWrapper[A](elements)
   
-  implicit def orNull[A](option : Option[A]) = new OrNull(option)
-
-  class SeqWrapper[A](elements : Iterable[A]) {
-    def seqFlatMap[B](f : A => Iterable[B]) : Seq[B] = {
-      val buf = new mutable.ArrayBuffer[B]
-      for (element <- elements) {
-        buf ++= f(element)
-      }
-      buf.readOnly
-    }
-  }
-   
-  implicit def seqWrapper[A](elements : Iterable[A]) = new SeqWrapper[A](elements)
-  
-  class UseInWrapper[A](obj : A) {
-    def useIn(f: A => Any) : A = {
-      f(obj)
-      obj
-    }
-  }
-  implicit def useInWrapper[A](obj : A) = new UseInWrapper[A](obj)
-
-  class MakeMap[A](it : Iterable[A]) {
-	def makeMap[B](map : A => B) : Map[A, B] = 
-	  mutable.Map((for (a <- it.toSeq; b = map(a)) yield (a, b)):_*)
-  }
-  class MakeMapReverse[B](it : Iterable[B]) {
-	def makeMapReverse[A](map : B => A) : Map[A, B] = 
-	  mutable.Map((for (b <- it.toSeq; a = map(b)) yield (a -> b)):_*)
-  }
-                
-  implicit def makeMap[A, B](it : Iterable[A]) = new MakeMap[A](it)
-  implicit def makeMapReverse[B](it : Iterable[B]) = new MakeMapReverse[B](it)
-
   /**
    * Java collection conversions
    */
@@ -106,12 +71,72 @@ object Conversions {
   implicit def convertIterable[A](it : java.util.Collection[A]) = new scala.collection.jcl.IterableWrapper[A] { override def underlying = it }
 
   /**
-   * Rich collections
+   * Extensions to the Object class
+   */
+  class RichObject[A](obj : A) {
+    
+	/** 
+	 * Convert null values to Option
+	 */
+    def asOption = if (obj == null) None else Some(obj)
+    
+    
+    def useIn(f: A => Any) : A = {
+      f(obj)
+      obj
+    }
+  }
+  implicit def richObject[A](value : A) = new RichObject(value)
+
+  /**
+   * Extensions to the Option class
+   */
+  class RichOption[A](option : Option[A]) {
+    def getOrNull : A = option match {
+      case Some(value) => value
+      case None => null.asInstanceOf[A]
+    }
+  }
+  
+  implicit def richOption[A](option : Option[A]) = new RichOption(option)
+
+  /**
+   * Extensions to the String class
+   */
+  class RichString(s: String) {
+	def getOrElse (s2: String) = {
+	 if (s == null || s.trim() == "") s2 else s
+	}
+  }
+  implicit def richString(s: String) = new RichString(s)
+
+  /**
+   * Extensions to the collection classes
    */
   class RichIterable[A](it : Iterable[A]) {
-    def toSet = Set(it toSeq:_*)
-	def classFilter[B <: A](c : java.lang.Class[B]) : Seq[B] = 
-	 (it filter (c.isInstance(_)) toSeq) map (_.asInstanceOf[B])
+    
+    /** 
+     * Convert the iterable to an immutable set
+     */
+    def toSet = immutable.Set(it toSeq:_*)
+    
+    /**
+     * Filters element that are not of specified type.
+     */
+	def classFilter[B <: A](c : java.lang.Class[B]) : Iterable[B] = 
+	 it filter (c.isInstance(_)) map (_.asInstanceOf[B])
+ 
+    /**
+     * Convert elements to a immutable hash map. 
+     */
+	def makeMap[B,C](map : A => (B,C)) : Map[B, C] = 
+	  immutable.Map((for (a <- it.toSeq) yield map(a)):_*)
+
+ 	def makeMapWithValues[B](map : A => B) : Map[A, B] = 
+	  immutable.Map((for (a <- it.toSeq; b = map(a)) yield (a, b)):_*)
+
+    def makeMapWithKeys[B](map : A => B) : Map[B, A] = 
+	  immutable.Map((for (a <- it.toSeq; b = map(a)) yield (b -> a)):_*)
   }
   
   class RichCollection[A](col : Collection[A]) extends RichIterable[A](col) {
@@ -130,11 +155,5 @@ object Conversions {
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def richSeq[A](seq : Seq[A]) = new RichSeq[A](seq)
   implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
-  
-//  implicit def convertCollection[A](collection : java.util.Collection[A]) : jcl.Buffer[A] = jcl.Buffer[A](collection.asInstanceOf[java.util.List[A]])
-//  implicit def convertCollection[A](collection : java.util.Collection[A]) : Seq[A] = collection.toSeq
-//  implicit def convertCollectionToSet[A](collection : java.util.Collection[A]) : Set[A] = Set(collection.toSeq:_*)
-//  implicit def convertIterableToSeq[A](it : Iterable[A]) : Seq[A] = it.toSeq
-//  implicit def convertIterableToSeq[A](it : java.lang.Iterable[A]) : Seq[A] = jcl.Buffer[A](it.asInstanceOf[java.util.List[A]])
 
 }
