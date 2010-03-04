@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import agilexs.catalogxsadmin.jpa.catalog.CatalogView;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
 import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
+import agilexs.catalogxsadmin.jpa.catalog.Property;
 import agilexs.catalogxsadmin.jpa.catalog.PropertyValue;
 
 @Stateless
@@ -96,8 +97,21 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
       final List<ProductGroup> result = query.getResultList();
       if (result != null) {
         for (ProductGroup productGroup : result) {
-          for (PropertyValue value : productGroup.getPropertyValues()) {
-            value.setProperty(value.getProperty());
+          for (Property property : productGroup.getProperties()) {
+            boolean found = false;
+
+            for (PropertyValue value : productGroup.getPropertyValues()) {
+              if (property.equals(value.getProperty())) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              final PropertyValue p = new PropertyValue();
+
+              p.setProperty(property);
+              productGroup.getPropertyValues().add(p);
+            }
           }
         }
       }

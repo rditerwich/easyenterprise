@@ -34,6 +34,7 @@ GwtPackage {
                                 catalog:Item/properties:id
                                 catalog:Item/properties:catalog
                                 catalog:Item/properties:propertyValues
+                                catalog:Item/properties:properties
                             }
                             views = {
                                 JavaBeanPropertyView {

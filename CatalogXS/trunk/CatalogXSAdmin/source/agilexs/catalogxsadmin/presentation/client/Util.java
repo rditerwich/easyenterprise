@@ -14,7 +14,12 @@ public class Util {
 
   public static final String NAME = "Name";
 
+  private static final Label EMPTY_LABEL = new Label();
   private static CatalogView catalogView;
+
+  {
+    EMPTY_LABEL.setLabel("UNKNOWN LABEL");
+  }
 
   public static CatalogView getCatalogView(final AsyncCallback<CatalogView> async) {
     if (catalogView == null) {
@@ -70,7 +75,7 @@ public class Util {
 
       if (label != null) return label;
     }
-    return null;
+    return EMPTY_LABEL;
   }
 
   public static Label getLabel(PropertyValue value, String name, String lang) {
@@ -78,10 +83,30 @@ public class Util {
     for (Label label : value.getProperty().getLabels()) {
       if (name.equals(label.getLabel()) &&
           ((lang == null && label.getLanguage() == null) || 
-           (lang != null && lang.equals(label.getLanguage())))) {
+           (lang != null && (label.getLanguage() == null || lang.equals(label.getLanguage()))))) {
         return label;
       }
     }
-    return null;
+    return EMPTY_LABEL;
+  }
+
+  /**
+   * Returns the label matching the language. If lang is not null, but the list
+   * of Labels contains a label with language null this label is returns. If no
+   * match could be found, an empty label is returned.
+   *  
+   * @param labels
+   * @param lang
+   * @return
+   */
+  public static Label getLabel(List<Label> labels, String lang) {
+    if (labels == null) return null;
+    for (Label label : labels) {
+      if ((lang == null && label.getLanguage() == null) || 
+          (lang != null && (label.getLanguage() == null || lang.equals(label.getLanguage())))) {
+        return label;
+      }
+    }
+    return EMPTY_LABEL;
   }
 }

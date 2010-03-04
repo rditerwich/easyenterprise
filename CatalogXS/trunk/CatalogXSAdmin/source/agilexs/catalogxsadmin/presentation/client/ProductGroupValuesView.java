@@ -8,46 +8,35 @@ import agilexs.catalogxsadmin.presentation.client.page.View;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-class ProductGroupPropertiesView extends Composite implements View {
+public class ProductGroupValuesView extends Composite implements View {
 
   public class PGPRowView {
-    final TextBox defaultName = new TextBox();
-    final TextBox name = new TextBox();
-    final ListBox type = new ListBox();
+    final Label name = new Label();
+    final Label type = new Label();
     final SimplePanel valueWrapper = new SimplePanel();
     Widget value;
-    final CheckBox pgOnly = new CheckBox();
-
-    public HasText getDefaultName() {
-      return defaultName;
-    }
 
     public HasText getName() {
       return name;
     }
 
-    public ListBox getType() {
+    public HasText getType() {
       return type;
     }
 
     public Widget getValueWidget() {
       return valueWrapper;
-    }
-
-    public CheckBox getPGOnly() {
-      return pgOnly;
     }
 
     public void setValueWidget(PropertyType type) {
@@ -93,18 +82,17 @@ class ProductGroupPropertiesView extends Composite implements View {
     }
   }
 
-  interface ProductGroupPropertiesUiBinder extends UiBinder<Widget, ProductGroupPropertiesView> {}
-  private static ProductGroupPropertiesUiBinder uiBinder = GWT.create(ProductGroupPropertiesUiBinder.class);
+  interface ProductGroupValuesUiBinder extends UiBinder<Widget, ProductGroupValuesView> {}
+  private static ProductGroupValuesUiBinder uiBinder = GWT.create(ProductGroupValuesUiBinder.class);
 
-  @UiField Button addNew;
   @UiField Grid grid;
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
-  public ProductGroupPropertiesView() {
+  public ProductGroupValuesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    grid.resize(1, 5);
-    addNew.setText("Add new property");
+    grid.resize(1, 3);
+    //addNew.setText("Add new property");
     addHeader();
   }
 
@@ -115,10 +103,8 @@ class ProductGroupPropertiesView extends Composite implements View {
 
   private void addHeader() {
     grid.setWidget(0, 0, new InlineLabel("Name"));
-    grid.setWidget(0, 1, new InlineLabel("Language Specific Name"));
-    grid.setWidget(0, 2, new InlineLabel("Type"));
-    grid.setWidget(0, 3, new InlineLabel("Default value"));
-    grid.setWidget(0, 4, new InlineLabel("ProductGroup Only"));
+    grid.setWidget(0, 1, new InlineLabel("Type"));
+    grid.setWidget(0, 2, new InlineLabel("Value"));
   }
 
   public void resizeRows(int rows) {
@@ -135,12 +121,10 @@ class ProductGroupPropertiesView extends Composite implements View {
       rowViews.add(rowView);
     }
     row = row + 1; //offset header
-    grid.setWidget(row, 0, (Widget) rowView.getDefaultName());
-    grid.setWidget(row, 1, (Widget) rowView.getName());
-    grid.setWidget(row, 2, rowView.getType());
-    grid.setWidget(row, 3, rowView.getValueWidget());
-    grid.setWidget(row, 4, rowView.getPGOnly());
+    grid.setWidget(row, 0, (Widget) rowView.getName());
+    grid.setWidget(row, 1, (Widget) rowView.getType());
+    grid.setWidget(row, 2, rowView.getValueWidget());
 
     return rowView;
-  }
+  }  
 }
