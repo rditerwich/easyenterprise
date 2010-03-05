@@ -7,7 +7,7 @@ import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import Conversions._ 
 
-class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
+class CatalogJpaCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
 
   val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
   val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]
@@ -122,13 +122,13 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 
 //}
 
-object CatalogCache {
+object CatalogJpaCache {
 
-  private val viewCaches = new mutable.HashMap[(String, String, String), CatalogCache] with mutable.SynchronizedMap[(String, String, String), CatalogCache]
+  val viewCaches = new mutable.HashMap[(String, String, String), CatalogJpaCache] with mutable.SynchronizedMap[(String, String, String), CatalogJpaCache]
 
-  def apply(catalogName: String, viewName: String, locale: String) : CatalogCache = {
+  def apply(catalogName: String, viewName: String, locale: String) : CatalogJpaCache = {
    	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
-   	  val catalog = Model.catalogBean.is.findAllCatalogs.find(_.getName == catalogName) match {
+   	  val catalog = findAllCatalogs.find(_.getName == catalogName) match {
 	   	  case Some(catalog) => catalog
 	   	  case None => error("Catalog not found: " + catalogName)
    	  }
@@ -136,7 +136,10 @@ object CatalogCache {
 	   	  case Some(view) => view
 	   	  case None => new jpa.CatalogView
    	  }
-   	  new CatalogCache(catalog, view, locale)
+   	  new CatalogJpaCache(catalog, view, locale)
     })
   }
+    
+  def findAllCatalogs : Seq[jpa.Catalog] =
+    Model.entityManager.is.createQuery("select c from Catalog c").getResultList.asInstanceOf[java.util.List[jpa.Catalog]]
 }

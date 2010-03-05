@@ -1,5 +1,6 @@
 package agilexs.catalogxs.presentation.model
 
+import java.util.Locale;
 import javax.naming.InitialContext;
 import javax.persistence.{EntityManager,EntityManagerFactory,Persistence}
 import net.liftweb.http.RequestVar
@@ -8,26 +9,33 @@ import net.liftweb.http.S
 import net.liftweb.util.Box
 import net.liftweb.util.Full
 import scala.collection.jcl.{BufferWrapper,SetWrapper,IterableWrapper} 
-import scala.collection.mutable.{HashMap, SynchronizedMap}
+import scala.collection.{mutable}
 import Conversions._
 
 object Model {
+  
+  val locales : Set[String] = Locale.getAvailableLocales map (_ toString) toSet
+  
   object catalogName extends SessionVar[String]("default")
   object viewName extends SessionVar[String]("default")
 
   object catalog extends RequestVar[Catalog](
     Catalog(catalogName, viewName, "nl"))
   
-  object catalogBean extends RequestVar[agilexs.catalogxs.businesslogic.Catalog]( 
+  def catalogBean =//extends RequestVar[agilexs.catalogxs.businesslogic.Catalog]( 
     new InitialContext().
     lookup("java:comp/env/ejb/CatalogBean").
-    asInstanceOf[agilexs.catalogxs.businesslogic.Catalog])
+    asInstanceOf[agilexs.catalogxs.businesslogic.Catalog]
 
+  val entityManagerProperties = new java.util.HashMap[String, String]()
+  
   object entityManagerFactory extends SessionVar[EntityManagerFactory]( 
-	Persistence.createEntityManagerFactory("AgileXS.CatalogXS.Jpa.PersistenceUnit"))
+	Persistence.createEntityManagerFactory("AgileXS.CatalogXS.Jpa.PersistenceUnit", entityManagerProperties))
     		
   object entityManager extends RequestVar[EntityManager]( 
   	entityManagerFactory.createEntityManager)
+  
+ // exbject entityManager = Persistence.createEntityManagerFactory("AgileXS.CatalogXS.Jpa.PersistenceUnit").createEntityManager
   
   def currentProductGroup : Option[ProductGroup] =
     S.param("currentProductGroup") match {

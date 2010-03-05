@@ -11,6 +11,7 @@ DeploymentConfiguration {
     name = "CatalogXS Deployment Local Ruud"
     productConfigurations = {
         Glassfish2Configuration {
+            autoDeployPath = "D:/glassfishv3/glassfish/domains/domain1/autodeploy"
             ideIntegration = true
 
             webConfiguration = GwtWebConfiguration {

@@ -28,8 +28,11 @@ class Boot {
   //val localeCookieName = "cookie.agilexs.catalogxs.locale"
 
   def boot {
+    
+//    Catalog.catalogs.clear()
+//    CatalogJpaCache.viewCaches.clear()
 
-//    if (!DB.jndiJdbcConnAvailable_?)
+//    if (!DB.jndiJdbcConnAvailable_?) 
 //      DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
 
     //http://wiki.github.com/dpp/liftweb/how-to-localization
@@ -86,11 +89,24 @@ class Boot {
           ),
         Menu(Loc("products", List("admin", "products"), "Products"))) ::
 */
+    
+    
     //User.sitemap
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
+        LiftRules.rewrite.prepend(new LiftRules.RewritePF {
+          override def apply(request : RewriteRequest) = {
+            RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
+          }
+          override def isDefinedAt(request : RewriteRequest) = {
+            !request.path.partPath.isEmpty && 
+              Model.locales.contains(request.path.partPath.head)
+            
+          }
+        })
+
     //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
-    LiftRules.rewrite.prepend(NamedPF("ProductRewrite") {
+    LiftRules.rewrite.append(NamedPF("ProductRewrite") {
 	    case RewriteRequest(
 	    	ParsePath("group" :: group :: Nil, _, _,_), _, _) => 
 	            RewriteResponse("group" :: Nil, Map("currentProductGroup" -> group)
@@ -134,9 +150,9 @@ class Boot {
 		  try {
 		    f
 		  } finally {
-			if (Model.entityManager.isOpen) {
-			  Model.entityManager.close;
-			}
+//			if (Model.entityManager.isOpen) {
+//			  Model.entityManager.close;
+//			}
 		  }
 		}
       }))

@@ -12,7 +12,7 @@ import agilexs.catalogxs.jpa.catalog.PropertyType
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
 
-class Mapping(product : Option[Product], cache : CatalogCache) {
+class Mapping(product : Option[Product], cache : CatalogJpaCache) {
   lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, cache, this))
   lazy val products = ProjectionMap((p : jpa.Product) => new Product(p, cache, this))
   lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, noPropertyValue, product, cache, this))
@@ -23,15 +23,20 @@ class Mapping(product : Option[Product], cache : CatalogCache) {
 }
 
 object Catalog {
-  private val catalogs = new mutable.HashMap[(String, String, String), Catalog] with mutable.SynchronizedMap[(String, String, String), Catalog]
+  val catalogs = new mutable.HashMap[(String, String, String), Catalog] with mutable.SynchronizedMap[(String, String, String), Catalog]
   def apply(catalogName: String, viewName: String, locale: String) : Catalog = {
    	catalogs.getOrElseUpdate((catalogName, viewName, locale), {
-   	  new Catalog(CatalogCache(catalogName, viewName, locale))
+   	  //val em = Model.em
+      try {
+    	  new Catalog(CatalogJpaCache(catalogName, viewName, locale))
+      } finally {
+        //em.close()
+      }
     })
   }
 }
 
-class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog) {
+class Catalog private (val cache : CatalogJpaCache) extends Delegate(cache.catalog) {
 
   private val mapping = new Mapping(None, cache)
   
@@ -65,7 +70,7 @@ class Catalog private (val cache : CatalogCache) extends Delegate(cache.catalog)
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(productGroup) {
+class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cache : CatalogJpaCache, mapping : Mapping) extends Delegate(productGroup) {
 
   // terminate recursion
   mapping.productGroups += (productGroup -> this)
@@ -100,7 +105,7 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   }
 }
 
-class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping) extends Delegate(product) {
+class Product(product : jpa.Product, cache : CatalogJpaCache, var mapping : Mapping) extends Delegate(product) {
   
   // terminate recursion
   mapping.products += (product -> this)
@@ -124,7 +129,7 @@ class Product(product : jpa.Product, cache : CatalogCache, var mapping : Mapping
     properties makeMapWithKeys (_.name)
 }
 
-class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cache : CatalogCache, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cache : CatalogJpaCache, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
@@ -158,14 +163,14 @@ object noPropertyValue extends jpa.PropertyValue {
   setId(-1l)
 }
 
-class Promotion(promotion : jpa.Promotion, cache : CatalogCache, mapping : Mapping) extends Delegate(promotion) {
+class Promotion(promotion : jpa.Promotion, cache : CatalogJpaCache, mapping : Mapping) extends Delegate(promotion) {
   // terminate recursion
   mapping.promotions(promotion) = this
   val id = promotion.getId.longValue
   def products : Set[Product] = Set.empty
 }
 
-class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : CatalogCache, mapping : Mapping) extends Promotion(promotion, cache, mapping) {
+class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cache : CatalogJpaCache, mapping : Mapping) extends Promotion(promotion, cache, mapping) {
   val startDate = promotion.getStartDate
   val endDate = promotion.getEndDate
   val price = promotion.getPrice
