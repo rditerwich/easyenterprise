@@ -57,7 +57,8 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
     }
   }
 
-  public void show(List<PropertyValue> pv) {
+  public void show(String name, List<PropertyValue> pv) {
+    view.setName(name);
     view.resizeRows(pv.size());
     final int bindingSize = bindings.size();
 

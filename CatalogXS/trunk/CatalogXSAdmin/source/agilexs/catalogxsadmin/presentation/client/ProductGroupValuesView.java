@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -86,6 +87,7 @@ public class ProductGroupValuesView extends Composite implements View {
   private static ProductGroupValuesUiBinder uiBinder = GWT.create(ProductGroupValuesUiBinder.class);
 
   @UiField Grid grid;
+  @UiField InlineHTML name;
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
@@ -99,12 +101,6 @@ public class ProductGroupValuesView extends Composite implements View {
   @Override
   public Widget getViewWidget() {
     return this;
-  }
-
-  private void addHeader() {
-    grid.setWidget(0, 0, new InlineLabel("Name"));
-    grid.setWidget(0, 1, new InlineLabel("Type"));
-    grid.setWidget(0, 2, new InlineLabel("Value"));
   }
 
   public void resizeRows(int rows) {
@@ -126,5 +122,15 @@ public class ProductGroupValuesView extends Composite implements View {
     grid.setWidget(row, 2, rowView.getValueWidget());
 
     return rowView;
-  }  
+  }
+
+  public void setName(String name) {
+    this.name.setHTML(name);
+  }
+
+  private void addHeader() {
+    grid.setWidget(0, 0, new InlineLabel("Name"));
+    grid.setWidget(0, 1, new InlineLabel("Type"));
+    grid.setWidget(0, 2, new InlineLabel("Value"));
+  }
 }

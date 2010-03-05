@@ -132,6 +132,10 @@ class ProductGroupPropertiesView extends Composite implements View {
     return setRow(grid.getRowCount()-1);
   }
 
+  public void gridReset() {
+    grid.resize(1, 6);
+  }
+
   /**
    * Initializes the grid at the given row + 1 number. 1 is added because this
    * first row is reserved for the header. This means the  

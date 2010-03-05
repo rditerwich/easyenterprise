@@ -51,9 +51,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       public void onClick(ClickEvent event) {
         CatalogServiceAsync.updateProductGroup(orgProductGroup, currentProductGroup, new AsyncCallback(){
           @Override public void onFailure(Throwable caught) {}
-          @Override public void onSuccess(Object result) {
-            // TODO Auto-generated method stub
-          }});
+          @Override public void onSuccess(Object result) {}
+        });
       }});
     view.getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
       @Override
@@ -82,17 +81,20 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         for (ProductGroup parent : parentMap.get(pg.getId())) {
           if (parent == null) continue;
           walkParents(iterator, parent);
-          ProductGroupValuesPresenter presenter;
-
-          if (iterator.hasNext()) {
-            presenter = iterator.next();
-          } else {
-            presenter = new ProductGroupValuesPresenter();
-            valuesPresenters.add(presenter);
+          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(parent, pg.getPropertyValues());
+          if (!pv.isEmpty()) {
+            ProductGroupValuesPresenter presenter;
+  
+            if (iterator.hasNext()) {
+              presenter = iterator.next();
+            } else {
+              presenter = new ProductGroupValuesPresenter();
+              valuesPresenters.add(presenter);
+            }
+            view.getParentPropertiesPanel().add(presenter.getView().getViewWidget());
+            //FIXME: this should be a map of parent props to child values 
+            presenter.show(Util.getLabel(parent.getPropertyValues(),Util.NAME, null).getLabel(), pv);
           }
-          view.getParentPropertiesPanel().add(presenter.getView().getViewWidget());
-          //FIXME: this should be a map of parent props to child values 
-          presenter.show(Util.getProductGroupPropertyValues(parent, pg.getPropertyValues()));
         }        
       }
     });

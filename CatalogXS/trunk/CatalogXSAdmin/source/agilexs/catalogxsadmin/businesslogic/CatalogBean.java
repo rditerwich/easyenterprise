@@ -83,9 +83,10 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
     public Collection<ProductGroup> findAllProductGroupChildren(CatalogView view, ProductGroup parent) {
       Query query;
       if (parent == null) {
-        query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
+        //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
+        query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
   
-        query.setParameter("view", view);
+        //query.setParameter("view", view);
       } else {
         //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache. 
         //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");

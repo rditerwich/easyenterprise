@@ -2,7 +2,7 @@
     xmlns:g='urn:import:com.google.gwt.user.client.ui'
     >
   <g:FlowPanel>
-    <g:HTML><h3>Properties</h3></g:HTML>
+    <g:HTMLPanel><h3>Properties from <g:InlineHTML ui:field="name" /></h3></g:HTMLPanel>
     <g:Grid ui:field="grid"/>
     <g:HTML><br/></g:HTML>
   </g:FlowPanel>

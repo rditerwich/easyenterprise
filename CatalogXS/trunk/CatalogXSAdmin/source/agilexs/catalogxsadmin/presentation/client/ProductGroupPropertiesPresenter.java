@@ -22,6 +22,9 @@ import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
+/**
+ * Presenter class for all properties on a specific ProductGroup. 
+ */
 public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPropertiesView> {
   
   private static final List<PropertyType> propertyTypeList = new ArrayList<PropertyType>();
@@ -49,7 +52,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     }
   };
   boolean lpbInit = false;
-  
+
   public ProductGroupPropertiesPresenter() {
     view.getNewPropertyButton().addClickHandler(new ClickHandler() {
       @Override
@@ -60,6 +63,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
         p.setProductGroupProperty(Boolean.FALSE);
         pv.setProperty(p);
         createRow(rowView).setData(pv);
+        lpb.setData(propertyTypeList);
         rowView.setValueWidget(PropertyType.String);
       }
     });
@@ -98,6 +102,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
   }
 
   public void show(List<PropertyValue> pv) {
+    view.gridReset();
     final int bindingSize = bindings.size();
 
     for (int i = 0; i < pv.size(); i++) {
@@ -109,7 +114,9 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
       bindings.get(i).setData(pv.get(i));
       rowView.setValueWidget(pv.get(i).getProperty().getType());
     }
-    
+    if (bindings.size() > 0) {
+      //lpb.setData(propertyTypeList);
+    }
   }
 
   private PropertyValueBinding createRow(final PGPRowView rowView) {
@@ -118,7 +125,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     bindings.add(pb);
     HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), labelBindingConverter);
     ListBoxBinding.bind(rowView.getType(), lpb, pb.property().type(), propertyTypeConverter);
-    if (!lpbInit) { lpb.setData(propertyTypeList); lpbInit = true; }
+//    if (!lpbInit) { lpb.setData(propertyTypeList); lpbInit = true; }
     pb.property().type().addBindingListener(
         new BindingListener() {
           @Override
