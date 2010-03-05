@@ -30,7 +30,7 @@ class Boot {
   def boot {
     
 //    Catalog.catalogs.clear()
-//    CatalogJpaCache.viewCaches.clear()
+//    CatalogCache.viewCaches.clear()
 
 //    if (!DB.jndiJdbcConnAvailable_?) 
 //      DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)

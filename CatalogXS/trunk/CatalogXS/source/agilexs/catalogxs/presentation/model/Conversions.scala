@@ -11,55 +11,6 @@ import net.liftweb.util.BindHelpers.FuncBindParam
 
 object Conversions {
   
-//  implicit def convertIterableToSet[A](it : java.lang.Iterable[A]) : Set[A] = Set(it.toSeq:_*)
-  
-//  implicit def convertIterableToSet[A](it : Iterable[A]) : Set[A] = it match {
-//    case set : Set[_] => set.asInstanceOf[Set[A]]
-//    case _ => Set(it.toSeq:_*)
-//  }
-//
-//  class ToSet[A](it : java.lang.Iterable[A]) {
-//    def toSet : Set[A] = Set(it.toSeq:_*)
-//  }
-//  implicit def toSet[A](it : java.lang.Iterable[A]) = new ToSet(it)
-//  
-//  class SeqToSet[A](it : Seq[A]) {
-//	def toSet = Set(it:_*)
-//  }
-//  
-//  implicit def seqToSet[A](seq : Seq[A]) = new SeqToSet(seq)
-//  class ItToSet[A](it : Iterable[A]) {
-//	  def toSet = Set(it:_*)
-//  }
-//  implicit def itToSet[A](seq : Iterable[A]) = new ItToSet(seq)
-  
-  
-//  implicit def stringToBindingWithTag[A](t : Tuple2[Tuple2[String,() => Binding[A]],String]) = 
-//	FuncBindParam(t._1._1, (xml) => t._1._2().bind(t._2, xml))
-//  implicit def stringToBindingWithTag[A](t : Tuple2[Tuple2[String,() => Binding[A]],String]) = 
-//    FuncBindParam(t._1._1, (xml) => t._1._2().bind(t._2, xml))
-//  
-  implicit def stringToBindingsWithTag[A](t : Tuple2[Tuple2[String, Function2[String, NodeSeq, NodeSeq]],String]) = 
-	FuncBindParam(t._1._1, (xml) => t._1._2(t._2, xml))
-
-  implicit def linkAttrBindParam[A](t : Tuple2[Tuple2[String, LinkAttr],String]) = 
-	AttrBindParam(t._1._1, t._1._2.value, t._2)
-  
-
-  implicit def toBindableObject(obj : Object) = new BindableObject(obj)
-
-//  class SeqWrapper[A](elements : Iterable[A]) {
-//    def seqFlatMap[B](f : A => Iterable[B]) : Seq[B] = {
-//      val buf = new mutable.ArrayBuffer[B]
-//      for (element <- elements) {
-//        buf ++= f(element)
-//      }
-//      buf.readOnly
-//    }
-//  }
-//   
-//  implicit def seqWrapper[A](elements : Iterable[A]) = new SeqWrapper[A](elements)
-  
   /**
    * Java collection conversions
    */
@@ -161,4 +112,16 @@ object Conversions {
   implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
   implicit def richArray[A](array : Array[A]) = new RichArray[A](array)
 
+  /**
+   * Implicit conversions for binding objects
+   */
+  implicit def stringToBindingsWithTag[A](t : Tuple2[Tuple2[String, Function2[String, NodeSeq, NodeSeq]],String]) = 
+	FuncBindParam(t._1._1, (xml) => t._1._2(t._2, xml))
+
+  implicit def linkAttrBindParam[A](t : Tuple2[Tuple2[String, LinkAttr],String]) = 
+	AttrBindParam(t._1._1, t._1._2.value, t._2)
+
+  implicit def toBindableObject(obj : Object) = new BindableObject(obj)
+
+  
 }

@@ -7,7 +7,7 @@ import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import Conversions._ 
 
-class CatalogJpaCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
+class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
 
   val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
   val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]
@@ -122,11 +122,11 @@ class CatalogJpaCache private (val catalog : jpa.Catalog, val view : jpa.Catalog
 
 //}
 
-object CatalogJpaCache {
+object CatalogCache {
 
-  val viewCaches = new mutable.HashMap[(String, String, String), CatalogJpaCache] with mutable.SynchronizedMap[(String, String, String), CatalogJpaCache]
+  val viewCaches = new mutable.HashMap[(String, String, String), CatalogCache] with mutable.SynchronizedMap[(String, String, String), CatalogCache]
 
-  def apply(catalogName: String, viewName: String, locale: String) : CatalogJpaCache = {
+  def apply(catalogName: String, viewName: String, locale: String) : CatalogCache = {
    	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
    	  val catalog = findAllCatalogs.find(_.getName == catalogName) match {
 	   	  case Some(catalog) => catalog
@@ -136,7 +136,7 @@ object CatalogJpaCache {
 	   	  case Some(view) => view
 	   	  case None => new jpa.CatalogView
    	  }
-   	  new CatalogJpaCache(catalog, view, locale)
+   	  new CatalogCache(catalog, view, locale)
     })
   }
     
