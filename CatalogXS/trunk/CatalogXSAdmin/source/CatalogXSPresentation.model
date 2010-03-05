@@ -43,6 +43,11 @@ GwtPackage {
                                     referringProperties = catalog:Item/properties:propertyValues
                                 }
                                 JavaBeanPropertyView {
+                                    name = PropertiessView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:properties
+                                }
+                                JavaBeanPropertyView {
                                     name = PropertyItemView
                                     kind = all
                                     referringProperties = catalog:PropertyValue/properties:property

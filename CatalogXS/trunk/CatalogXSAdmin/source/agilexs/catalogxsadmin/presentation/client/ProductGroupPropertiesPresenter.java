@@ -13,10 +13,14 @@ import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListBoxBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPropertiesView> {
   
@@ -44,8 +48,21 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
       //Nothing to do, list doesn't change.
     }
   };
-
+  boolean lpbInit = false;
+  
   public ProductGroupPropertiesPresenter() {
+    view.getNewPropertyButton().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        final PGPRowView rowView = view.addRow();
+        final PropertyValue pv = new PropertyValue();
+        final Property p = new Property();
+        p.setProductGroupProperty(Boolean.FALSE);
+        pv.setProperty(p);
+        createRow(rowView).setData(pv);
+        rowView.setValueWidget(PropertyType.String);
+      }
+    });
     labelBindingConverter = new BindingConverter<List<Label>, String>() {
       @Override
       public List<Label> convertFrom(String data) {
@@ -81,34 +98,39 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
   }
 
   public void show(List<PropertyValue> pv) {
-    view.resizeRows(pv.size());
     final int bindingSize = bindings.size();
 
     for (int i = 0; i < pv.size(); i++) {
       final PGPRowView rowView = view.setRow(i);
 
       if (bindingSize <= i) {
-        final PropertyValueBinding pb = new PropertyValueBinding();
-        bindings.add(pb);
-        //name
-        HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), labelBindingConverter);
-        ListBoxBinding.bind(rowView.getType(), lpb, pb.property().type(), propertyTypeConverter);
-        pb.property().type().addBindingListener(
-            new BindingListener() {
-              @Override
-              public void onBindingChangeEvent(BindingEvent event) {
-                if (event instanceof BindingChangeStateEvent) {
-                  rowView.setValueWidget(propertyTypeList.get(rowView.getType().getSelectedIndex()));
-                  //Next line doesn't work because data not set at this point. Bug?
-                  //rowView.setValueWidget((PropertyType) pb.property().type().getData());
-                }
-              }
-            });
-        CheckBoxBinding.bind(rowView.getPGOnly(), pb.property().productGroupProperty());
+        createRow(rowView);
       }
       bindings.get(i).setData(pv.get(i));
       rowView.setValueWidget(pv.get(i).getProperty().getType());
     }
-    lpb.setData(propertyTypeList);
+    
+  }
+
+  private PropertyValueBinding createRow(final PGPRowView rowView) {
+    final PropertyValueBinding pb = new PropertyValueBinding();
+
+    bindings.add(pb);
+    HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), labelBindingConverter);
+    ListBoxBinding.bind(rowView.getType(), lpb, pb.property().type(), propertyTypeConverter);
+    if (!lpbInit) { lpb.setData(propertyTypeList); lpbInit = true; }
+    pb.property().type().addBindingListener(
+        new BindingListener() {
+          @Override
+          public void onBindingChangeEvent(BindingEvent event) {
+            if (event instanceof BindingChangeStateEvent) {
+              rowView.setValueWidget(propertyTypeList.get(rowView.getType().getSelectedIndex()));
+              //Next line doesn't work because data not set at this point. Bug?
+              //rowView.setValueWidget((PropertyType) pb.property().type().getData());
+            }
+          }
+        });
+    CheckBoxBinding.bind(rowView.getPGOnly(), pb.property().productGroupProperty());
+    return pb;
   }
 }

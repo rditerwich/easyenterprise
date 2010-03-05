@@ -83,7 +83,7 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
     public Collection<ProductGroup> findAllProductGroupChildren(CatalogView view, ProductGroup parent) {
       Query query;
       if (parent == null) {
-        query = entityManager.createQuery("select p from ProductGroup p where p.view = :view and p.parents is empty");
+        query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
   
         query.setParameter("view", view);
       } else {
@@ -98,20 +98,10 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
       if (result != null) {
         for (ProductGroup productGroup : result) {
           for (Property property : productGroup.getProperties()) {
-            boolean found = false;
-
-            for (PropertyValue value : productGroup.getPropertyValues()) {
-              if (property.equals(value.getProperty())) {
-                found = true;
-                break;
-              }
-            }
-            if (!found) {
-              final PropertyValue p = new PropertyValue();
-
-              p.setProperty(property);
-              productGroup.getPropertyValues().add(p);
-            }
+            property.setLabels(property.getLabels());
+          }
+          for (PropertyValue value : productGroup.getPropertyValues()) {
+            value.setProperty(value.getProperty());
           }
         }
       }

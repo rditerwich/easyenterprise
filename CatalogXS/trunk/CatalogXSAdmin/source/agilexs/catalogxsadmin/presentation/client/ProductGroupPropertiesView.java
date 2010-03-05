@@ -13,7 +13,9 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -103,7 +105,7 @@ class ProductGroupPropertiesView extends Composite implements View {
 
   public ProductGroupPropertiesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    grid.resize(1, 5);
+    grid.resize(1, 6);
     addNew.setText("Add new property");
     addHeader();
   }
@@ -119,15 +121,26 @@ class ProductGroupPropertiesView extends Composite implements View {
     grid.setWidget(0, 2, new InlineLabel("Type"));
     grid.setWidget(0, 3, new InlineLabel("Default value"));
     grid.setWidget(0, 4, new InlineLabel("ProductGroup Only"));
+    grid.setWidget(0, 5, new InlineHTML("&nbsp;"));
   }
 
-  public void resizeRows(int rows) {
-    grid.resizeRows(rows + 1);
+  public Button getNewPropertyButton() {
+    return addNew;
   }
 
+  public PGPRowView addRow() {
+    return setRow(grid.getRowCount()-1);
+  }
+
+  /**
+   * Initializes the grid at the given row + 1 number. 1 is added because this
+   * first row is reserved for the header. This means the  
+   * @param row
+   * @return
+   */
   public PGPRowView setRow(int row) {
     PGPRowView rowView;
-
+    
     if (rowViews.size() > row) {
       rowView = rowViews.get(row);
     } else {
@@ -135,11 +148,15 @@ class ProductGroupPropertiesView extends Composite implements View {
       rowViews.add(rowView);
     }
     row = row + 1; //offset header
+    if (row >= grid.getRowCount()) {
+      grid.resizeRows(row + 1);
+    }
     grid.setWidget(row, 0, (Widget) rowView.getDefaultName());
     grid.setWidget(row, 1, (Widget) rowView.getName());
     grid.setWidget(row, 2, rowView.getType());
     grid.setWidget(row, 3, rowView.getValueWidget());
     grid.setWidget(row, 4, rowView.getPGOnly());
+    grid.setWidget(row, 5, new Label("delete")); //FIXME make delete image
 
     return rowView;
   }

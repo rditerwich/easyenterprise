@@ -1,9 +1,11 @@
 package agilexs.catalogxsadmin.presentation.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.CatalogView;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
@@ -36,6 +38,35 @@ public class Util {
         }});
     }
     return catalogView;
+  }
+
+  /**
+   * Returns a list of all PropertyValues based on all properties in a 
+   * ProductGroup. If no propertyValue is present, a new one is created.
+   *   
+   * @param pg
+   * @param values
+   * @return
+   */
+  public static List<PropertyValue> getProductGroupPropertyValues(
+      ProductGroup pg, List<PropertyValue> values) {
+    final List<PropertyValue> pgValues = new ArrayList<PropertyValue>();
+
+    for (Property property : pg.getProperties()) {
+      PropertyValue found = null;
+      for (PropertyValue value : values) {
+        if (value.getProperty().getId() == property.getId()) {
+          found = value;
+          break;
+        }
+      }
+      if (found == null) {
+        found = new PropertyValue();
+        found.setProperty(property);
+      }
+      pgValues.add(found);
+    }
+    return pgValues;
   }
 
   public static Property getPropertyByName(List<Property> properties, String name, String lang) {

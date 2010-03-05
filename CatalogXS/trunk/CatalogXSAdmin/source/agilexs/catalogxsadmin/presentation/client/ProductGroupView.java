@@ -29,7 +29,8 @@ public class ProductGroupView extends Composite implements View {
   final FlowPanel allPropertiesPanel = new FlowPanel();
   final TextBox name = new TextBox();
   final ProductGroupBinding pgBinding = new ProductGroupBinding();
-  final Button button = new Button("Add new product group");
+  final Button newButton = new Button("Add new product group");
+  final Button saveButton = new Button("Save changes");
   final ListBox languageList = new ListBox();
   final SimplePanel propertiesPanel = new SimplePanel();
   final FlowPanel parentPropertiesPanel = new FlowPanel();
@@ -43,8 +44,10 @@ public class ProductGroupView extends Composite implements View {
     //top 
     final VerticalPanel topBar = new VerticalPanel();
     final FlowPanel buttonBar = new FlowPanel();
-    buttonBar.add(button);
+    buttonBar.add(newButton);
     buttonBar.add(languageList);
+    buttonBar.add(saveButton);
+    //TODO auto enable save button on changes: saveButton.setEnabled(false);
     //TODO build language listbox items dynamic instead of static 
     languageList.addItem("English", "");
     languageList.addItem("Nederlands", "nl");
@@ -80,6 +83,14 @@ public class ProductGroupView extends Composite implements View {
     return name;
   }
 
+  public HasClickHandlers getNewButtonClickHandler() {
+    return newButton;
+  }
+
+  public HasClickHandlers getSaveButtonClickHandler() {
+    return saveButton;
+  }
+
   @Override
   public Widget getViewWidget() {
     return this;
@@ -89,10 +100,6 @@ public class ProductGroupView extends Composite implements View {
     pgBinding.setData(pg);
   }
 
-  HasClickHandlers getNewButtonClickHandler() {
-    return button;
-  }
-  
   public TreeItem addTreeItem(TreeItem parent, String text) {
     final TreeItem item = new TreeItem(text);
 

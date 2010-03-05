@@ -7,6 +7,7 @@ import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.CatalogView;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroupBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
@@ -30,28 +31,48 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   private ProductGroupPropertiesPresenter pgpp;
   private CatalogView catalogView;
   private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
+  private final ProductGroupBinding pgBinding = new ProductGroupBinding();
+  private ProductGroup orgProductGroup;
 
   public ProductGroupPresenter() {
+    view.getNewButtonClickHandler().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        orgProductGroup = null;
+        currentProductGroup = new ProductGroup();
+        view.getName().setText("");
+        pgpp.show(currentProductGroup.getPropertyValues());
+        view.getParentPropertiesPanel().clear();
+        view.getTree().setSelectedItem(null);
+      }});
+    view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
+
+      @Override
+      public void onClick(ClickEvent event) {
+        CatalogServiceAsync.updateProductGroup(orgProductGroup, currentProductGroup, new AsyncCallback(){
+          @Override public void onFailure(Throwable caught) {}
+          @Override public void onSuccess(Object result) {
+            // TODO Auto-generated method stub
+          }});
+      }});
     view.getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
       @Override
       public void onSelection(SelectionEvent<TreeItem> event) {
         final TreeItem item = event.getSelectedItem();
-
         //FIXME: handle nodes that have no children in the database anyway
         if (item.getChildCount() == 0) {
           loadChildren(catalogView, item);
         }
-        final ProductGroup pg = treemap.get(event.getSelectedItem());
+        currentProductGroup = treemap.get(event.getSelectedItem());
+        orgProductGroup = currentProductGroup.clone(new HashMap());  
 
-        if (pg != null) {
-          final PropertyValue name = Util.getPropertyValueByName(pg.getPropertyValues(),Util.NAME, null);
+        if (currentProductGroup != null) {
+          final PropertyValue name = Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, null);
 
           view.getName().setText(name==null?"":name.getStringValue());
-          pgpp.show(pg.getPropertyValues());
+          pgpp.show(Util.getProductGroupPropertyValues(currentProductGroup, currentProductGroup.getPropertyValues()));
           view.getParentPropertiesPanel().clear();
-          final Iterator<ProductGroupValuesPresenter> iterator = valuesPresenters.iterator();
-
-          walkParents(iterator, pg);
+          walkParents(valuesPresenters.iterator(), currentProductGroup);
         }
       }
 
@@ -71,20 +92,13 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           }
           view.getParentPropertiesPanel().add(presenter.getView().getViewWidget());
           //FIXME: this should be a map of parent props to child values 
-          presenter.show(parent.getPropertyValues());
+          presenter.show(Util.getProductGroupPropertyValues(parent, pg.getPropertyValues()));
         }        
       }
     });
-    view.getNewButtonClickHandler().addClickHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            currentProductGroup = new ProductGroup();
-            view.setProductGroup(currentProductGroup);
-          }});
     pgpp = new ProductGroupPropertiesPresenter(); 
     view.setPropertiesPanel(pgpp.getView().getViewWidget());
-    
+
     Util.getCatalogView(new AsyncCallback<CatalogView>(){
       @Override
       public void onFailure(Throwable caught) {
@@ -104,6 +118,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   private void loadChildren(CatalogView catalogView, final TreeItem parent) {
     final ProductGroup parentPG = treemap.get(parent);
+
     CatalogServiceAsync.findAllProductGroupChildren(
         catalogView, parentPG, new AsyncCallback<List<ProductGroup>>() {
           @Override
@@ -121,7 +136,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
               }
               boolean found = false;
               for (ProductGroup pr : parentMap.get(productGroup.getId())) {
-                if (pr.equals(parentPG)) {
+                if (parentPG != null && pr.getId().equals(parentPG.getId())) {
                   found = true;
                   break;
                 }
