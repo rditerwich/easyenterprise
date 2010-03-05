@@ -34,7 +34,7 @@ JavaEEArchitectureJpaEjbLift {
                 catalog:Product
                 catalog:ProductGroup
                 catalog:Property                
-                catalog:CatalogView
+                catalog:WebShop
 /*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
             }
             
@@ -47,7 +47,7 @@ JavaEEArchitectureJpaEjbLift {
                 catalog:Product
                 catalog:ProductGroup
                 catalog:Promotion
-                catalog:CatalogView
+                catalog:WebShop
             }
             paging = false
         }

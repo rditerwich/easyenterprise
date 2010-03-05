@@ -94,16 +94,19 @@ class Boot {
     //User.sitemap
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
-        LiftRules.rewrite.prepend(new LiftRules.RewritePF {
-          override def apply(request : RewriteRequest) = {
-            RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
-          }
-          override def isDefinedAt(request : RewriteRequest) = {
-            !request.path.partPath.isEmpty && 
-              Model.locales.contains(request.path.partPath.head)
-            
-          }
-        })
+    /**
+     * Parse language url entry
+     */
+    LiftRules.rewrite.append(new LiftRules.RewritePF {
+      override def apply(request : RewriteRequest) = {
+        RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
+      }
+      override def isDefinedAt(request : RewriteRequest) = {
+        !request.path.partPath.isEmpty && 
+          Model.locales.contains(request.path.partPath.head)
+        
+      }
+    })
 
     //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
     LiftRules.rewrite.append(NamedPF("ProductRewrite") {

@@ -30,23 +30,13 @@ Package {
                     isComposite = true
                     opposite = catalog:Item/attributes:catalog
                 }
-/*
                 Attribute {
-                    name = propertyGroups
-                    type = catalog:PropertyGroup
+                    name = shops
+                    type = catalog:WebShop
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:PropertyGroup/attributes:catalog
-                }
-*/
-                Attribute {
-                    name = views
-                    type = catalog:CatalogView
-                    lower = 0
-                    upper = {}
-                    isComposite = true
-                    opposite = catalog:CatalogView/attributes:catalog
+                    opposite = catalog:WebShop/attributes:catalog
                 }
                 Attribute {
                     name = templates
@@ -54,16 +44,6 @@ Package {
                     lower = 0
                     upper = {}
                 }
-                
-/*
-                Attribute {
-                    name = productRelations
-                    type = catalog:ProductRelation
-                    lower = 0
-                    upper = {}
-                    isComposite = true
-                }
-*/
             }
         }
         Class {
@@ -124,11 +104,11 @@ Package {
             superClass = catalog:Item
             attributes = {
                 Attribute {
-                    name = view
-                    type = catalog:CatalogView
+                    name = webShop
+                    type = catalog:WebShop
                     lower = 0
                     upper = {}
-                    opposite = catalog:CatalogView/attributes:topLevelProductGroups
+                    opposite = catalog:WebShop/attributes:topLevelProductGroups
                 }
                 Attribute {
                     name = children
@@ -142,14 +122,6 @@ Package {
                     type = primitive:Boolean
                     default = true
                 }
-/*
-                Attribute {
-                    name = excludedProperties
-                    type = catalog:Property
-                    lower = 0
-                    upper = {}
-                }
-*/
             }
         }
         Class {
@@ -206,14 +178,6 @@ Package {
                     upper = {}
                     opposite = catalog:Label/attributes:property
                 }
-/*
-                Attribute {
-                    name = propertyGroup
-                    type = catalog:PropertyGroup
-                    opposite = catalog:PropertyGroup/attributes:properties
-                }
-*/
-
                 Attribute {
                     name = productGroupProperty
                     type = primitive:Boolean
@@ -241,36 +205,6 @@ Package {
                 
             }
         }
-/*
-        Class {
-            name = PropertyGroup
-            attributes = {
-                Attribute {
-                    name = name
-                    type = primitive:String
-                }
-                Attribute {
-                    name = label
-                    type = catalog:Label
-                    isComposite = true
-                    lower = 0
-                    upper = {}
-                }
-                Attribute {
-                    name = catalog
-                    type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:propertyGroups
-                }
-                Attribute {
-                    name = properties
-                    type = catalog:Property
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:Property/attributes:propertyGroup
-                }
-            }
-        }
-*/
         Class {
             name = EnumValue
             attributes = {
@@ -294,23 +228,27 @@ Package {
             }
         }
         Class {
-            name = CatalogView            
+            name = WebShop            
             attributes = {
                 Attribute {
                     name = name
                     type = primitive:String
                 }
                 Attribute {
+                    name = urlPrefix
+                    type = primitive:String
+                }
+                Attribute {
                     name = catalog
                     type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:views
+                    opposite = catalog:Catalog/attributes:shops
                 }
                 Attribute {
                     name = topLevelProductGroups
                     type = catalog:ProductGroup
                     lower = 0
                     upper = {}
-                    opposite = catalog:ProductGroup/attributes:view
+                    opposite = catalog:ProductGroup/attributes:webShop
                 }
                 Attribute {
                     name = excludedProperties
@@ -330,7 +268,7 @@ Package {
                     lower = 0
                     upper = {}
                     isComposite = true
-                    opposite = catalog:Promotion/attributes:view
+                    opposite = catalog:Promotion/attributes:webShop
                 }
                 Attribute {
                     name = templates
@@ -489,9 +427,9 @@ Package {
                     type = primitive:Date
                 }
                 Attribute {
-                    name = view
-                    type = catalog:CatalogView
-                    opposite = catalog:CatalogView/attributes:promotions
+                    name = webShop
+                    type = catalog:WebShop
+                    opposite = catalog:WebShop/attributes:promotions
                 }
                 Attribute {
                     name = templates
@@ -760,8 +698,8 @@ Package {
             upper = {}
             parameters = {
                 Parameter {
-                    name = view
-                    type = catalog:CatalogView
+                    name = shop
+                    type = catalog:WebShop
                 }
                 Parameter {
                     name = parent

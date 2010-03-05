@@ -9,9 +9,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
-import agilexs.catalogxs.jpa.catalog.CatalogView;
 import agilexs.catalogxs.jpa.catalog.Product;
 import agilexs.catalogxs.jpa.catalog.ProductGroup;
+import agilexs.catalogxs.jpa.catalog.WebShop;
 
 @Stateless
 public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.businesslogic.Catalog {
@@ -78,7 +78,7 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.bu
 	@Override
 	@SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<ProductGroup> findAllProductGroupChildren(CatalogView view, ProductGroup parent) {
+    public Collection<ProductGroup> findAllProductGroupChildren(WebShop view, ProductGroup parent) {
 		Query query;
 		if (parent == null) {
 			query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
