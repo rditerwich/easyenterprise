@@ -31,7 +31,7 @@ Package {
                     opposite = catalog:Item/attributes:catalog
                 }
                 Attribute {
-                    name = shops
+                    name = webShops
                     type = catalog:WebShop
                     lower = 0
                     upper = {}
@@ -241,7 +241,7 @@ Package {
                 Attribute {
                     name = catalog
                     type = catalog:Catalog
-                    opposite = catalog:Catalog/attributes:shops
+                    opposite = catalog:Catalog/attributes:webShops
                 }
                 Attribute {
                     name = topLevelProductGroups

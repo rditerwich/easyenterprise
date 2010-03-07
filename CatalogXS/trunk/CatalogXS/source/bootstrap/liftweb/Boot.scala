@@ -95,19 +95,39 @@ class Boot {
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
     /**
-     * Parse language url entry
+     * Parse server name and webshop prefix
      */
     LiftRules.rewrite.append(new LiftRules.RewritePF {
       override def apply(request : RewriteRequest) = {
-        RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
+        val serverName = request.httpRequest.getServerName
+        if (serverName == "localhost" || serverName == "127.0.0.1") {
+        	RewriteResponse(request.path.partPath.tail, Map("webShop" -> WebShopCache().shopsByName(request.path.partPath.head)))
+        } else {
+          
+        }
       }
       override def isDefinedAt(request : RewriteRequest) = {
+          
         !request.path.partPath.isEmpty && 
           Model.locales.contains(request.path.partPath.head)
         
       }
     })
 
+    /**
+    * Parse language url entry
+    */
+    LiftRules.rewrite.append(new LiftRules.RewritePF {
+    	override def apply(request : RewriteRequest) = {
+    		RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
+    	}
+    	override def isDefinedAt(request : RewriteRequest) = {
+    		!request.path.partPath.isEmpty && 
+    		Model.locales.contains(request.path.partPath.head)
+    		
+    	}
+    })
+    
     //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
     LiftRules.rewrite.append(NamedPF("ProductRewrite") {
 	    case RewriteRequest(

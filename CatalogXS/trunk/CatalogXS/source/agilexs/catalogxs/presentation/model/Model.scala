@@ -19,8 +19,7 @@ object Model {
   object catalogName extends SessionVar[String]("default")
   object viewName extends SessionVar[String]("default")
 
-  object catalog extends RequestVar[Catalog](
-    Catalog(catalogName, viewName, "nl"))
+  def webShop = S.attr("webShop") 
   
   def catalogBean =//extends RequestVar[agilexs.catalogxs.businesslogic.Catalog]( 
     new InitialContext().
@@ -36,6 +35,8 @@ object Model {
   	entityManagerFactory.createEntityManager)
   
  // exbject entityManager = Persistence.createEntityManagerFactory("AgileXS.CatalogXS.Jpa.PersistenceUnit").createEntityManager
+
+  lazy val webShops = new WebShopCache 
   
   def currentProductGroup : Option[ProductGroup] =
     S.param("currentProductGroup") match {

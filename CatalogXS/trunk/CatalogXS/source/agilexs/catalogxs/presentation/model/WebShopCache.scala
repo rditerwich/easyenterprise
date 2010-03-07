@@ -7,19 +7,47 @@ import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import Conversions._ 
 
-class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogView, val locale : String) {
+object WebShopCache {
+
+  private var instance : WebShopCache = null
+  
+  def apply() : WebShopCache = {
+    synchronized {
+      if (instance == null) {
+        instance = new WebShopCache
+      }
+      instance
+    }
+  }
+    
+  def reset = {
+    instance = null
+  }
+}
+
+class WebShopCache private {
+
+  val shopCaches = findAllWebShops map (shop => new WebShop(new WebShopData(shop.getCatalog, shop)))
+  val shopsByName = shopCaches makeMapWithKeys (_.webShopData.shop.getName)
+  val shopsByPrefix = shopCaches makeMapWithKeys (_.webShopData.shop.getUrlPrefix)
+    
+  def findAllWebShops : Seq[jpa.WebShop] =
+    Model.entityManager.is.createQuery("select shop from WebShop shop").getResultList.asInstanceOf[java.util.List[jpa.WebShop]]
+}
+
+class WebShopData (val catalog : jpa.Catalog, val shop : jpa.WebShop) {
 
   val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
   val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]
 
   val excludedItems : Set[jpa.Item] = 
-	view.getExcludedItems toSet
+	shop.getExcludedItems toSet
                                             	   
   val excludedProperties : Set[jpa.Property] = 
-    view.getExcludedProperties toSet
+    shop.getExcludedProperties toSet
 
   val promotions : Set[jpa.Promotion] = 
-    view.getPromotions toSet
+    shop.getPromotions toSet
   
   val productGroups : Set[jpa.ProductGroup] = 
 	catalog.getItems classFilter (classOf[jpa.ProductGroup]) filter (!excludedItems.contains(_)) toSet 
@@ -33,11 +61,11 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	  (productGroupParents(catalog.getItems classFilter(classOf[jpa.ProductGroup]), new mutable.HashSet[jpa.ProductGroup], _)) readOnly  
     
   val topLevelProductGroups : Set[jpa.ProductGroup] = 
-	view.getTopLevelProductGroups toSet
+	shop.getTopLevelProductGroups toSet
 
   val products : Set[jpa.Product] = 
 	new mutable.HashSet[jpa.Product] useIn 
-	 (products(view.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
+	 (products(shop.getTopLevelProductGroups, new mutable.HashSet[jpa.ProductGroup], _)) readOnly
 
   val productGroupPropertyValues : Map[jpa.ProductGroup, Seq[jpa.PropertyValue]] =
     productGroups makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
@@ -56,7 +84,7 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 	  
   val productGroupProductExtent : Map[jpa.ProductGroup, Set[jpa.Product]] = 
     new mutable.HashMap[jpa.ProductGroup, Set[jpa.Product]] useIn 
-    (productGroupProductExtent(view.getTopLevelProductGroups, _)) readOnly  
+    (productGroupProductExtent(shop.getTopLevelProductGroups, _)) readOnly  
 
   private def productGroupChildGroups(groups : Iterable[jpa.ProductGroup], visited : mutable.Set[jpa.ProductGroup], result : mutable.HashMap[jpa.ProductGroup, Set[jpa.ProductGroup]]) : Unit = {
     for (group <- groups; if !visited.contains(group)) {
@@ -105,41 +133,5 @@ class CatalogCache private (val catalog : jpa.Catalog, val view : jpa.CatalogVie
 
   def template(obj : Object, template : String) : Option[NodeSeq] = {
     None
-//    cache.templateObjectCache.get(obj, template) match {
-//      case Some(xml) => Some(xml)
-//      case None => cache.templateClassCache.get((obj.getClass, template)) match {
-//	      case Some(xml) => Some(xml)
-//	      case None => None
-//	    }
-//    }
   }  
-
-//  private def productPropertiesByProductGroupML(groups : Iterable[ProductGroup], result : mutable.Map[Product, Map[ProductGroup, List[PropertyValue]]]) : Unit = {
-//    for (group <- groups; if !result.contains(group)) {
-//      
-//    }
-  }
-
-//}
-
-object CatalogCache {
-
-  val viewCaches = new mutable.HashMap[(String, String, String), CatalogCache] with mutable.SynchronizedMap[(String, String, String), CatalogCache]
-
-  def apply(catalogName: String, viewName: String, locale: String) : CatalogCache = {
-   	viewCaches.getOrElseUpdate((catalogName, viewName, locale), {
-   	  val catalog = findAllCatalogs.find(_.getName == catalogName) match {
-	   	  case Some(catalog) => catalog
-	   	  case None => error("Catalog not found: " + catalogName)
-   	  }
-   	  val view = catalog.getViews.find(_.getName == viewName) match {
-	   	  case Some(view) => view
-	   	  case None => new jpa.CatalogView
-   	  }
-   	  new CatalogCache(catalog, view, locale)
-    })
-  }
-    
-  def findAllCatalogs : Seq[jpa.Catalog] =
-    Model.entityManager.is.createQuery("select c from Catalog c").getResultList.asInstanceOf[java.util.List[jpa.Catalog]]
 }
