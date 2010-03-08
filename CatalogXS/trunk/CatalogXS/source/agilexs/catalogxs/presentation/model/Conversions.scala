@@ -58,6 +58,10 @@ object Conversions {
 	def getOrElse (s2: String) = {
 	 if (s == null || s.trim() == "") s2 else s
 	}
+    def parsePrefix (prefix : String) : Option[String] = {
+      if (s.startsWith(prefix)) Some(s.substring(prefix.length))
+      else None
+    }
   }
   implicit def richString(s: String) = new RichString(s)
 
@@ -80,14 +84,18 @@ object Conversions {
     /**
      * Convert elements to a immutable hash map. 
      */
-	def makeMap[B,C](map : A => (B,C)) : Map[B, C] = 
-	  immutable.Map((for (a <- it.toSeq) yield map(a)):_*)
+	def makeMap[B,C](f : A => Option[(B,C)]) : Map[B, C] = 
+	  immutable.Map((for (a <- it.toSeq; elt = f(a); if (elt != None)) yield elt.get ):_*)
 
  	def makeMapWithValues[B](map : A => B) : Map[A, B] = 
 	  immutable.Map((for (a <- it.toSeq; b = map(a)) yield (a, b)):_*)
 
-    def makeMapWithKeys[B](map : A => B) : Map[B, A] = 
-	  immutable.Map((for (a <- it.toSeq; b = map(a)) yield (b -> a)):_*)
+    def mapBy[K](map : A => K) : Map[K, A] = 
+	  immutable.Map((for (a <- it.toSeq; k = map(a)) yield (k -> a)):_*)
+    
+    def groupBy[K](f: A => K): Map[K, Set[A]] =
+      new mutable.HashMap[K, mutable.Set[A]] with mutable.MultiMap[K, A] useIn 
+      	(m => it foreach { a => m add (f(a), a) }) //add is defined in MultiMap
   }
   
   class RichCollection[A](col : Collection[A]) extends RichIterable[A](col) {
@@ -101,6 +109,10 @@ object Conversions {
 	 Set((set filter (c.isInstance(_)) toSeq) map (_.asInstanceOf[B]):_*)
   }
   
+  class RichMap[A,B](map : Map[A,B]) {
+    def toJava = new java.util.HashMap[A,B] useIn (result => for ((a,b) <- map) result.put(a,b))
+  }
+  
   class RichArray[A](array : Array[A]) {
     def toSet = immutable.Set(array toSeq:_*)
   }
@@ -110,6 +122,7 @@ object Conversions {
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def richSeq[A](seq : Seq[A]) = new RichSeq[A](seq)
   implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
+  implicit def richMap[A,B](map : Map[A,B]) = new RichMap[A,B](map)
   implicit def richArray[A](array : Array[A]) = new RichArray[A](array)
 
   /**

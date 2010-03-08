@@ -95,58 +95,48 @@ class Boot {
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
     /**
-     * Parse server name and webshop prefix
+     * Select webshop from url
      */
-    LiftRules.rewrite.append(new LiftRules.RewritePF {
-      override def apply(request : RewriteRequest) = {
-        val serverName = request.httpRequest.getServerName
-        if (serverName == "localhost" || serverName == "127.0.0.1") {
-        	RewriteResponse(request.path.partPath.tail, Map("webShop" -> WebShopCache().shopsByName(request.path.partPath.head)))
-        } else {
-          
-        }
+    object WebShopPath {
       }
-      override def isDefinedAt(request : RewriteRequest) = {
-          
-        !request.path.partPath.isEmpty && 
-          Model.locales.contains(request.path.partPath.head)
-        
-      }
+      
+    LiftRules.rewrite.prepend(NamedPF("WebShopPathRewriter") {
+      case WebShopPathRewriter(response : RewriteResponse) => response 
     })
 
-    /**
-    * Parse language url entry
-    */
-    LiftRules.rewrite.append(new LiftRules.RewritePF {
-    	override def apply(request : RewriteRequest) = {
-    		RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
-    	}
-    	override def isDefinedAt(request : RewriteRequest) = {
-    		!request.path.partPath.isEmpty && 
-    		Model.locales.contains(request.path.partPath.head)
-    		
-    	}
-    })
-    
-    //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
-    LiftRules.rewrite.append(NamedPF("ProductRewrite") {
-	    case RewriteRequest(
-	    	ParsePath("group" :: group :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("group" :: Nil, Map("currentProductGroup" -> group)
-	    )
-	    case RewriteRequest(
-	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("product" :: Nil, Map("currentProduct" -> product)
-	    )
-	    case RewriteRequest(
-	        ParsePath("image" :: imageID :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("image" :: Nil, Map("imageID" -> imageID)
-	    )
-	    case RewriteRequest(
-	        ParsePath("search" :: searchString :: Nil, _, _,_), _, _) => 
-	            RewriteResponse("search" :: Nil, Map("searchString" -> searchString)
-	    )
-    })
+//    /**
+//    * Parse language url entry
+//    */
+//    LiftRules.rewrite.append(new LiftRules.RewritePF {
+//    	override def apply(request : RewriteRequest) = {
+//    		RewriteResponse(request.path.partPath.tail, Map("language" -> request.path.partPath.head))
+//    	}
+//    	override def isDefinedAt(request : RewriteRequest) = {
+//    		!request.path.partPath.isEmpty && 
+//    		Model.locales.contains(request.path.partPath.head)
+//    		
+//    	}
+//    })
+//    
+//    //Rewrite rules to remap urls with id to page with id as argument, e.g. /product/123 -> product with id=123
+//    LiftRules.rewrite.append(NamedPF("ProductRewrite") {
+//	    case RewriteRequest(
+//	    	ParsePath("group" :: group :: Nil, _, _,_), _, _) => 
+//	            RewriteResponse("group" :: Nil, Map("currentProductGroup" -> group)
+//	    )
+//	    case RewriteRequest(
+//	    	ParsePath("product" :: product :: Nil, _, _,_), _, _) => 
+//	            RewriteResponse("product" :: Nil, Map("currentProduct" -> product)
+//	    )
+//	    case RewriteRequest(
+//	        ParsePath("image" :: imageID :: Nil, _, _,_), _, _) => 
+//	            RewriteResponse("image" :: Nil, Map("imageID" -> imageID)
+//	    )
+//	    case RewriteRequest(
+//	        ParsePath("search" :: searchString :: Nil, _, _,_), _, _) => 
+//	            RewriteResponse("search" :: Nil, Map("searchString" -> searchString)
+//	    )
+//    })
 
     LiftRules.dispatch.prepend(ImageDispatcher.dispatch)
     /*
@@ -167,9 +157,7 @@ class Boot {
     S.addAround(List(
       new LoanWrapper { 
 		def apply[T] (f : => T): T = {
-		  Model.catalogName("staples")
-		  Model.viewName("webshop")
-		  
+
 		  try {
 		    f
 		  } finally {

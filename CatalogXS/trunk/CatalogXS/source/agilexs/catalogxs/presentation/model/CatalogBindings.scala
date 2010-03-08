@@ -8,15 +8,15 @@ import agilexs.catalogxs.presentation.util.Util
 
 object CatalogBindings {
 
-  def catalogBinding(catalog : Catalog) = catalog bindWith params(   
-    "id" -> Text(catalog.id.toString),
+  def webShopBinding(webShop : WebShop) = webShop bindWith params(   
+    "id" -> Text(webShop.id.toString),
     "currentProductGroup" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
     "currentProduct" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
     "currentSearchString" -> Text(Model.currentSearchString.getOrElse("")),
     "currentSearchProducts" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
-    "products" -> Complex(catalog.products map (productBinding _)) -> "product",
-    "top_level_groups" -> Complex(catalog.topLevelProductGroups map (productGroupBinding _)) -> "group",
-    "promotions" -> Complex(catalog.promotions map (promotionBinding _)) -> "promotion")
+    "products" -> Complex(webShop.products map (productBinding _)) -> "product",
+    "top_level_groups" -> Complex(webShop.topLevelProductGroups map (productGroupBinding _)) -> "group",
+    "promotions" -> Complex(webShop.promotions map (promotionBinding _)) -> "promotion")
 
   def promotionBinding(promotion : Promotion) = promotion match {
     case p : VolumeDiscountPromotion => volumeDiscountPromotionBinding(p)

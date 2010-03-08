@@ -7,7 +7,7 @@ import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import agilexs.catalogxs.presentation.model.Conversions._ 
 
-class TemplateCache private (val CatalogCache : CatalogCache, val catalog : jpa.Catalog, val shop : jpa.WebShop, val locale : String) {
+class TemplateCache private (val cacheData : WebShopCacheData, val catalog : jpa.Catalog, val shop : jpa.WebShop, val locale : String) {
 
   type Templates = Map[String, jpa.Template]
   
@@ -18,12 +18,12 @@ class TemplateCache private (val CatalogCache : CatalogCache, val catalog : jpa.
     shop.getTemplates toSet
   
   val productGroupTemplates : Map[jpa.ProductGroup, Templates] =
-    mutable.Map((for (group <- WebShopCache.productGroups toSeq) 
+    mutable.Map((for (group <- cacheData.productGroups toSeq) 
       yield (group -> byName(group.getTemplates))):_*)
   
   val productGroupTemplates2 : Map[jpa.ProductGroup, Templates] = 
-    WebShopCache.productGroups makeMapWithValues ((g : jpa.ProductGroup) => byName(g.getTemplates))
+    cacheData.productGroups makeMapWithValues ((g : jpa.ProductGroup) => byName(g.getTemplates))
   
   private def byName(templates : Iterable[jpa.Template]) : Templates =
-    templates makeMapWithKeys (_.getName)
+    templates mapBy (_.getName)
 }

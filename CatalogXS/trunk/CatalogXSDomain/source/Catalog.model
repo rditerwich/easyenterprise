@@ -237,12 +237,22 @@ Package {
                 Attribute {
                     name = urlPrefix
                     type = primitive:String
+                    lower = 0
                 }
                 Attribute {
                     name = catalog
                     type = catalog:Catalog
                     opposite = catalog:Catalog/attributes:webShops
                 }
+                /**
+                 * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
+                 * When not specified (null), denotes a default value applicable for all languages.
+                 */
+                Attribute {
+                    name = defaultLanguage
+                    type = primitive:String
+                    lower = 0
+                } 
                 Attribute {
                     name = topLevelProductGroups
                     type = catalog:ProductGroup

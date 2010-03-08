@@ -147,7 +147,7 @@ class ShoppingCart {
   private def doList(reDraw: () => JsCmd)(xhtml : NodeSeq) : NodeSeq = {
     def removeProduct(productOrder : jpa.ProductOrder)() : JsCmd = {
       shoppingCart.removeProductOrder(productOrder)
-      S.notice(Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+      S.notice(Model.webShop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
                " removed from the shopping cart")
       reDraw()
     }
@@ -155,7 +155,7 @@ class ShoppingCart {
     def updateVolume(productOrder : jpa.ProductOrder, v : String)() : JsCmd = {
       if (shoppingCart.updateVolume(productOrder, Integer.valueOf(v).intValue)) {
         S.notice("Volume of " +
-                Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+                Model.webShop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
                 " updated to " + v)
       }
       reDraw()
@@ -167,11 +167,11 @@ class ShoppingCart {
              ("onclick" -> ajaxInvoke(removeProduct(productOrder) _)._2)},
           "product" ->
             CatalogBindings.productBinding(
-              Model.catalog.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),
+              Model.webShop.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),
           "volume" -> ajaxText(productOrder.getVolume.toString,
               v => updateVolume(productOrder, v)),
           "priceTotal" -> Util.formatMoney(
-             Model.catalog.productsById(
+             Model.webShop.productsById(
                productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyCurrency,
              productOrder.getPrice.doubleValue))
     })

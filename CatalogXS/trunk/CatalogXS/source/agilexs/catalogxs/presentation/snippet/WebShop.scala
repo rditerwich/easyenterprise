@@ -12,10 +12,10 @@ import net.liftweb.util.Full
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
 
-class Catalog {
+class WebShop {
 
-  def catalog(xml : NodeSeq) : NodeSeq = {
-	CatalogBindings.catalogBinding(Model.catalog).bind(S.attr("tag") openOr "catalog", xml) 
+  def webShop(xml : NodeSeq) : NodeSeq = {
+	CatalogBindings.webShopBinding(Model.webShop).bind(S.attr("tag") openOr "shop", xml) 
   }
   
   def search(xml : NodeSeq) : NodeSeq = {

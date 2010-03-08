@@ -7,35 +7,18 @@ import agilexs.catalogxs.jpa.{catalog => jpa}
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import Conversions._ 
 
-object WebShopCache {
+class WebShopCache {
 
-  private var instance : WebShopCache = null
+  val webShops = findAllWebShops map (shop => new WebShop(new WebShopCacheData(shop.getCatalog, shop)))
+  val webShopsById = webShops mapBy (_.id.toString)
+  val webShopsByName = webShops mapBy (_.shop.getName)
+  val webShopsByServerName : Map[String, Set[WebShop]] = webShops groupBy (_.serverName)
   
-  def apply() : WebShopCache = {
-    synchronized {
-      if (instance == null) {
-        instance = new WebShopCache
-      }
-      instance
-    }
-  }
-    
-  def reset = {
-    instance = null
-  }
-}
-
-class WebShopCache private {
-
-  val shopCaches = findAllWebShops map (shop => new WebShop(new WebShopData(shop.getCatalog, shop)))
-  val shopsByName = shopCaches makeMapWithKeys (_.webShopData.shop.getName)
-  val shopsByPrefix = shopCaches makeMapWithKeys (_.webShopData.shop.getUrlPrefix)
-    
   def findAllWebShops : Seq[jpa.WebShop] =
     Model.entityManager.is.createQuery("select shop from WebShop shop").getResultList.asInstanceOf[java.util.List[jpa.WebShop]]
 }
 
-class WebShopData (val catalog : jpa.Catalog, val shop : jpa.WebShop) {
+class WebShopCacheData (val catalog : jpa.Catalog, val shop : jpa.WebShop) {
 
   val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
   val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]

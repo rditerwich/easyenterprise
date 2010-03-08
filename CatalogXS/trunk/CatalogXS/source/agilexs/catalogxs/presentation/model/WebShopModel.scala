@@ -12,51 +12,55 @@ import agilexs.catalogxs.jpa.catalog.PropertyType
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
 
-class Mapping(product : Option[Product], webShopData : WebShopData) {
-  lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, webShopData, this))
-  lazy val products = ProjectionMap((p : jpa.Product) => new Product(p, webShopData, this))
-  lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, noPropertyValue, product, webShopData, this))
+class Mapping(product : Option[Product], cacheData : WebShopCacheData) {
+  lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, cacheData, this))
+  lazy val products = ProjectionMap((p : jpa.Product) => new Product(p, cacheData, this))
+  lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, noPropertyValue, product, cacheData, this))
   lazy val promotions = ProjectionMap( (p : jpa.Promotion) => p match { 
-    case p : jpa.VolumeDiscountPromotion => new VolumeDiscountPromotion(p, webShopData, this)
-    case _ => new Promotion(p, webShopData, this)
+    case p : jpa.VolumeDiscountPromotion => new VolumeDiscountPromotion(p, cacheData, this)
+    case _ => new Promotion(p, cacheData, this)
   })
 }
 
-class WebShop (val webShopData : WebShopData) extends Delegate(webShopData.catalog) {
+class WebShop (val cacheData : WebShopCacheData) extends Delegate(cacheData.catalog) {
 
-  private val mapping = new Mapping(None, webShopData)
+  private val mapping = new Mapping(None, cacheData)
   
-  val id = webShopData.catalog.getId.longValue
+  val shop = cacheData.shop
+  val id = shop.getId.longValue
+  val serverName : String = (shop.getUrlPrefix getOrElse ("") split ("/"))(0)
+  val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)
+  val defaultLanguage = shop.getDefaultLanguage getOrElse "en"
   
   val excludedProperties : Set[Property] = 
-    webShopData.excludedProperties map (mapping.properties) toSet
+    cacheData.excludedProperties map (mapping.properties) toSet
 
   val promotions : Set[Promotion] = 
-    webShopData.promotions map (mapping.promotions) toSet
+    cacheData.promotions map (mapping.promotions) toSet
   
   val productGroups : Set[ProductGroup] = 
-	webShopData.productGroups map (mapping.productGroups) toSet
+	cacheData.productGroups map (mapping.productGroups) toSet
 
   val productGroupsById : Map[Long, ProductGroup] = 
-    productGroups makeMapWithKeys (_.id)
+    productGroups mapBy (_.id)
     
   val topLevelProductGroups : Set[ProductGroup] = 
-	webShopData.topLevelProductGroups map (mapping.productGroups) toSet
+	cacheData.topLevelProductGroups map (mapping.productGroups) toSet
 
   val products : Set[Product] =
-    webShopData.products map (mapping.products) toSet
+    cacheData.products map (mapping.products) toSet
 
   val productsById : Map[Long, Product] = 
-    products makeMapWithKeys (_.id)
+    products mapBy (_.id)
     
   val mediaValues : Map[Long, (String, Array[Byte])] =
-    webShopData.mediaValues
+    cacheData.mediaValues
   
   val keywordMap =
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], webShopData : WebShopData, mapping : Mapping) extends Delegate(productGroup) {
+class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(productGroup) {
 
   // terminate recursion
   mapping.productGroups += (productGroup -> this)
@@ -64,58 +68,58 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   val id = productGroup.getId.longValue
   
   val parents : Set[ProductGroup] = 
-    webShopData.productGroupParents(productGroup) map (mapping.productGroups) toSet
+    cacheData.productGroupParents(productGroup) map (mapping.productGroups) toSet
   
   val children : Set[ProductGroup] =
-    webShopData.productGroupChildGroups(productGroup) map (mapping.productGroups) toSet
+    cacheData.productGroupChildGroups(productGroup) map (mapping.productGroups) toSet
     
   val products : Set[Product] =
-    webShopData.productGroupProducts(this) map(mapping.products) toSet 
+    cacheData.productGroupProducts(this) map(mapping.products) toSet 
   
   val groupProperties : Seq[Property] = 
-	webShopData.productGroupPropertyValues(productGroup) map (v => 
-	  new Property(v.getProperty, v, None, webShopData, mapping)) 
+	cacheData.productGroupPropertyValues(productGroup) map (v => 
+	  new Property(v.getProperty, v, None, cacheData, mapping)) 
 
   val groupPropertiesByName : Map[String, Property] = 
-    groupProperties makeMapWithKeys (_.name)
+    groupProperties mapBy (_.name)
     
   val properties : Set[Property] =
     productGroup.getProperties map(mapping.properties) toSet
     
   lazy val productExtent : Set[Product] =
-    webShopData.productGroupProductExtent(productGroup) map(mapping.products) toSet
+    cacheData.productGroupProductExtent(productGroup) map(mapping.products) toSet
     
   lazy val productExtentPromotions : Set[Promotion] = {
-    val promotions = webShopData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
+    val promotions = cacheData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
     if (promotions isEmpty) Set.empty else Set(promotions.toSeq first) 
   }
 }
 
-class Product(product : jpa.Product, webShopData : WebShopData, var mapping : Mapping) extends Delegate(product) {
+class Product(product : jpa.Product, cacheData : WebShopCacheData, var mapping : Mapping) extends Delegate(product) {
   
   // terminate recursion
   mapping.products += (product -> this)
   
   // product has its own mappings
-  mapping = new Mapping(Some(this), webShopData)
+  mapping = new Mapping(Some(this), cacheData)
 
   val id : Long = product.getId.longValue
   
   val properties : Set[Property] =
-	webShopData.productPropertyValues(product) map (v => 
-	  new Property(v.getProperty, v, Some(this), webShopData, mapping)) toSet
+	cacheData.productPropertyValues(product) map (v => 
+	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
-    product.getParents filter(!webShopData.excludedItems.contains(_)) map(mapping.productGroups) toSet 
+    product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet 
   
   val productGroupExtent : Set[ProductGroup] = 
-    product.getParents filter(!webShopData.excludedItems.contains(_)) map(mapping.productGroups) toSet
+    product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet
 
   val propertiesByName : Map[String, Property] = 
-    properties makeMapWithKeys (_.name)
+    properties mapBy (_.name)
 }
 
-class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], webShopData : WebShopData, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
@@ -123,7 +127,7 @@ class Property(property : jpa.Property, val value : jpa.PropertyValue, val produ
   val propertyType : jpa.PropertyType = property.getType
 
   val namesByLanguage : Map[Option[String], String] = 
-    property.getLabels makeMap (l => (l.getLanguage asOption, l.getLabel )) 
+    property.getLabels makeMap (l => Some((l.getLanguage asOption, l.getLabel ))) 
   
   val name : String = namesByLanguage.get(None) getOrElse ""
   
@@ -149,14 +153,14 @@ object noPropertyValue extends jpa.PropertyValue {
   setId(-1l)
 }
 
-class Promotion(promotion : jpa.Promotion, webShopData : WebShopData, mapping : Mapping) extends Delegate(promotion) {
+class Promotion(promotion : jpa.Promotion, cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(promotion) {
   // terminate recursion
   mapping.promotions(promotion) = this
   val id = promotion.getId.longValue
   def products : Set[Product] = Set.empty
 }
 
-class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, webShopData : WebShopData, mapping : Mapping) extends Promotion(promotion, webShopData, mapping) {
+class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cacheData : WebShopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
   val startDate = promotion.getStartDate
   val endDate = promotion.getEndDate
   val price = promotion.getPrice
@@ -175,7 +179,7 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
   def updateVolume(productOrder : jpaOrder.ProductOrder, v : Int) : Boolean = {
     if (productOrder.getVolume != v) {
       productOrder.setVolume(v)
-      productOrder.setPrice(v * Model.catalog.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
+      productOrder.setPrice(v * Model.webShop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
       return true
     }
     return false
@@ -204,7 +208,7 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
   def addProduct(product : Product, volume : Int) = {
     val arn = product.propertiesByName("ArticleNumber").pvalue.getStringValue
     delegate.getProductOrders find((po) =>
-      Model.catalog.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
+      Model.webShop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
           == arn) match {
         case None =>
             val productOrder = new jpaOrder.ProductOrder()

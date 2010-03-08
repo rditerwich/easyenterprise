@@ -113,7 +113,7 @@ class Binding(obj : Object, params : Seq[BindParam])  {
   private def determineTemplate(obj : Object, default : NodeSeq) : NodeSeq = {
 	BindHelpers.attr("template") match { 
       case Some(explicitTag) => 
-        Model.catalog.cache.template(obj, explicitTag.toString) match {
+        Model.webShop.cacheData.template(obj, explicitTag.toString) match {
           case Some(xml) => xml
           case None => default
         } 
