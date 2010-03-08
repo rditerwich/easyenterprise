@@ -13,9 +13,9 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -24,10 +24,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 class ProductGroupPropertiesView extends Composite implements View {
 
+  private final static ResourceBundle rb = GWT.create(ResourceBundle.class);
+
   public class PGPRowView {
     final TextBox defaultName = new TextBox();
-    final TextBox name = new TextBox();
     final ListBox type = new ListBox();
+    final SimplePanel defaultValueWrapper = new SimplePanel();
+    final TextBox name = new TextBox();
     final SimplePanel valueWrapper = new SimplePanel();
     Widget value;
     final CheckBox pgOnly = new CheckBox();
@@ -44,6 +47,10 @@ class ProductGroupPropertiesView extends Composite implements View {
       return type;
     }
 
+    public Widget getDefaultValueWidget() {
+      return defaultValueWrapper;
+    }
+
     public Widget getValueWidget() {
       return valueWrapper;
     }
@@ -52,7 +59,15 @@ class ProductGroupPropertiesView extends Composite implements View {
       return pgOnly;
     }
 
-    public void setValueWidget(PropertyType type) {
+    public Widget setDefaultValueWidget(PropertyType type) {
+      return setWidget(defaultValueWrapper, type);
+    }
+
+    public Widget setValueWidget(PropertyType type) {
+      return setWidget(valueWrapper, type);
+    }
+
+    private Widget setWidget(SimplePanel wrapper, PropertyType type) {
       switch (type) {
       case Enum:
         value = new TextBox();
@@ -91,7 +106,8 @@ class ProductGroupPropertiesView extends Composite implements View {
       default:
         value = new TextBox();
       }
-      valueWrapper.setWidget(value);
+      wrapper.setWidget(value);
+      return value;
     }
   }
 
@@ -105,7 +121,7 @@ class ProductGroupPropertiesView extends Composite implements View {
 
   public ProductGroupPropertiesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    grid.resize(1, 6);
+    gridReset();
     addNew.setText("Add new property");
     addHeader();
   }
@@ -117,11 +133,12 @@ class ProductGroupPropertiesView extends Composite implements View {
 
   private void addHeader() {
     grid.setWidget(0, 0, new InlineLabel("Name"));
-    grid.setWidget(0, 1, new InlineLabel("Language Specific Name"));
-    grid.setWidget(0, 2, new InlineLabel("Type"));
-    grid.setWidget(0, 3, new InlineLabel("Default value"));
-    grid.setWidget(0, 4, new InlineLabel("ProductGroup Only"));
-    grid.setWidget(0, 5, new InlineHTML("&nbsp;"));
+    grid.setWidget(0, 1, new InlineLabel("Type"));
+    grid.setWidget(0, 2, new InlineLabel("Default value"));
+    grid.setWidget(0, 3, new InlineLabel("ProductGroup Only"));
+    grid.setWidget(0, 4, new InlineLabel("Language Specific Name"));
+    grid.setWidget(0, 5, new InlineLabel("Language Default value"));
+    grid.setWidget(0, 6, new InlineHTML("&nbsp;"));
   }
 
   public Button getNewPropertyButton() {
@@ -133,7 +150,7 @@ class ProductGroupPropertiesView extends Composite implements View {
   }
 
   public void gridReset() {
-    grid.resize(1, 6);
+    grid.resize(1, 7);
   }
 
   /**
@@ -156,11 +173,12 @@ class ProductGroupPropertiesView extends Composite implements View {
       grid.resizeRows(row + 1);
     }
     grid.setWidget(row, 0, (Widget) rowView.getDefaultName());
-    grid.setWidget(row, 1, (Widget) rowView.getName());
-    grid.setWidget(row, 2, rowView.getType());
-    grid.setWidget(row, 3, rowView.getValueWidget());
-    grid.setWidget(row, 4, rowView.getPGOnly());
-    grid.setWidget(row, 5, new Label("delete")); //FIXME make delete image
+    grid.setWidget(row, 1, rowView.getType());
+    grid.setWidget(row, 2, rowView.getDefaultValueWidget());
+    grid.setWidget(row, 3, rowView.getPGOnly());
+    grid.setWidget(row, 4, (Widget) rowView.getName());
+    grid.setWidget(row, 5, rowView.getValueWidget());
+    grid.setWidget(row, 6, new Image(rb.deleteImage()));
 
     return rowView;
   }

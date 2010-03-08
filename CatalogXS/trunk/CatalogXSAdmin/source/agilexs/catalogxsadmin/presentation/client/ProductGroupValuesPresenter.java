@@ -12,6 +12,9 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 
+/**
+ * 
+ */
 public class ProductGroupValuesPresenter implements Presenter<ProductGroupValuesView> {
   private final ProductGroupValuesView view = new ProductGroupValuesView();
 
@@ -31,17 +34,16 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
       public String convertTo(List<Label> data) {
         return Util.getLabel(data, language).getLabel();
       }};
-      propertyTypeConverter = new BindingConverter<PropertyType, String>() {
-        @Override
-        public PropertyType convertFrom(String data) {
-          return PropertyType.valueOf(data);
-        }
-        @Override
-        public String convertTo(PropertyType data) {
-          return data.toString();
-        }
-      };
-      
+    propertyTypeConverter = new BindingConverter<PropertyType, String>() {
+      @Override
+      public PropertyType convertFrom(String data) {
+        return PropertyType.valueOf(data);
+      }
+      @Override
+      public String convertTo(PropertyType data) {
+        return data.toString();
+      }
+    };
   }
 
   @Override
@@ -71,6 +73,7 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
         //name
         HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), labelBindingConverter);
         HasTextBinding.<PropertyType>bind(rowView.getType(), pb.property().type(), propertyTypeConverter);
+        //HasTextBinding.<PropertyValue>bind(rowView.getDevaultValue(), pb)
         //HasTextBinding.<PropertyValue>bind(rowView.get)
       }
       bindings.get(i).setData(pv.get(i));

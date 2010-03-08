@@ -12,6 +12,8 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -28,20 +30,25 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   private final HashMap<TreeItem, ProductGroup> treemap = new HashMap<TreeItem, ProductGroup>();
   private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
   private ProductGroup currentProductGroup;
-  private ProductGroupPropertiesPresenter pgpp;
+  private String currentLanguage = "en";
   private CatalogView catalogView;
+  private ProductGroupPropertiesPresenter pgpp;
   private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
   private final ProductGroupBinding pgBinding = new ProductGroupBinding();
   private ProductGroup orgProductGroup;
 
   public ProductGroupPresenter() {
+    final List<String> langs = new ArrayList<String>(2);
+    langs.add("en");
+    langs.add("de");
+
     view.getNewButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         orgProductGroup = null;
         currentProductGroup = new ProductGroup();
         view.getName().setText("");
-        pgpp.show(currentProductGroup.getPropertyValues());
+        pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
         view.getParentPropertiesPanel().clear();
         view.getTree().setSelectedItem(null);
       }});
@@ -69,7 +76,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           final PropertyValue name = Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, null);
 
           view.getName().setText(name==null?"":name.getStringValue());
-          pgpp.show(Util.getProductGroupPropertyValues(currentProductGroup, currentProductGroup.getPropertyValues()));
+          pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
           view.getParentPropertiesPanel().clear();
           walkParents(valuesPresenters.iterator(), currentProductGroup);
         }
@@ -81,7 +88,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         for (ProductGroup parent : parentMap.get(pg.getId())) {
           if (parent == null) continue;
           walkParents(iterator, parent);
-          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(parent, pg.getPropertyValues());
+          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, pg.getPropertyValues());
           if (!pv.isEmpty()) {
             ProductGroupValuesPresenter presenter;
   
@@ -93,13 +100,29 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             }
             view.getParentPropertiesPanel().add(presenter.getView().getViewWidget());
             //FIXME: this should be a map of parent props to child values 
-            presenter.show(Util.getLabel(parent.getPropertyValues(),Util.NAME, null).getLabel(), pv);
+            presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), pv);
           }
         }        
       }
     });
     pgpp = new ProductGroupPropertiesPresenter(); 
     view.setPropertiesPanel(pgpp.getView().getViewWidget());
+
+    final List<List<String>> l2 = new ArrayList<List<String>>(2);
+    final List<String> en = new ArrayList<String>(2);
+    en.add("en");
+    en.add("English");
+    l2.add(en);
+    final List<String> de = new ArrayList<String>(2);
+    de.add("de");
+    de.add("Deutsch");
+    l2.add(de);
+    view.setLanguages(l2, "en");
+    view.getLanguageChangeHandler().addChangeHandler(new ChangeHandler(){
+      @Override
+      public void onChange(ChangeEvent event) {
+        setLanguage(view.getSelectedLanguage());
+      }});
 
     Util.getCatalogView(new AsyncCallback<CatalogView>(){
       @Override
@@ -116,6 +139,14 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   @Override
   public ProductGroupView getView() {
     return view;
+  }
+
+  private void setLanguage(String lang) {
+    currentLanguage = lang;
+    pgpp.setLanguage(lang);
+    for (ProductGroupValuesPresenter pgvp : valuesPresenters) {
+      pgvp.setLanguage(lang);
+    }
   }
 
   private void loadChildren(CatalogView catalogView, final TreeItem parent) {

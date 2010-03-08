@@ -1,10 +1,13 @@
 package agilexs.catalogxsadmin.presentation.client;
 
+import java.util.List;
+
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroupBinding;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -49,8 +52,6 @@ public class ProductGroupView extends Composite implements View {
     buttonBar.add(saveButton);
     //TODO auto enable save button on changes: saveButton.setEnabled(false);
     //TODO build language listbox items dynamic instead of static 
-    languageList.addItem("English", "");
-    languageList.addItem("Nederlands", "nl");
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
 
     topBar.add(buttonBar);
@@ -96,6 +97,28 @@ public class ProductGroupView extends Composite implements View {
     return this;
   }
 
+  /**
+   * Sets the languages on the Language ListBox
+   * @param languages
+   * @param selected
+   */
+  public void setLanguages(List<List<String>> languages, String selected) {
+    for (List<String> lang : languages) {
+      languageList.addItem(lang.get(1), lang.get(0));
+      if (lang.get(0).equals(selected)) {
+        languageList.setItemSelected(languageList.getItemCount()-1, true);
+      }
+    }
+  }
+  
+  public HasChangeHandlers getLanguageChangeHandler() {
+    return languageList;
+  }
+
+  public String getSelectedLanguage() {
+    return languageList.getValue(languageList.getSelectedIndex());
+  }
+  
   public void setProductGroup(ProductGroup pg) {
     pgBinding.setData(pg);
   }
@@ -110,4 +133,5 @@ public class ProductGroupView extends Composite implements View {
     }
     return item;
   }
+
 }

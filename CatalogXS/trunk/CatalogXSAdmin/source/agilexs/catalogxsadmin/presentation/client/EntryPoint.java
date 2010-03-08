@@ -2,8 +2,6 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -11,11 +9,6 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 
 public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
-
-  interface ResourceBundle extends ClientBundle {
-    @Source("AgileXS.png")
-    ImageResource logo();
-  }
 
   @Override
   public void onModuleLoad() {
