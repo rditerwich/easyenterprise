@@ -11,6 +11,7 @@ import Metaphor.PSM.Rdbms.Column
 
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
 
 JavaEEArchitectureJpaEjbLift {
     name = CatalogXSArchitecture
@@ -34,7 +35,7 @@ JavaEEArchitectureJpaEjbLift {
                 catalog:Product
                 catalog:ProductGroup
                 catalog:Property                
-                catalog:WebShop
+                shop:Shop
 /*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
             }
             
@@ -46,8 +47,8 @@ JavaEEArchitectureJpaEjbLift {
                 catalog:Catalog
                 catalog:Product
                 catalog:ProductGroup
-                catalog:Promotion
-                catalog:WebShop
+                shop:Promotion
+                shop:Shop
             }
             paging = false
         }

@@ -1,5 +1,6 @@
 package agilexs.catalogxs.businesslogic;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +12,6 @@ import javax.persistence.Query;
 
 import agilexs.catalogxs.jpa.catalog.Product;
 import agilexs.catalogxs.jpa.catalog.ProductGroup;
-import agilexs.catalogxs.jpa.catalog.WebShop;
 
 @Stateless
 public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.businesslogic.Catalog {
@@ -78,12 +78,12 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxs.bu
 	@Override
 	@SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<ProductGroup> findAllProductGroupChildren(WebShop view, ProductGroup parent) {
+    public Collection<ProductGroup> findAllProductGroupChildren(agilexs.catalogxs.jpa.shop.Shop shop, ProductGroup parent) {
 		Query query;
 		if (parent == null) {
 			query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
 
-			query.setParameter("view", view);
+			query.setParameter("view", shop);
 		} else {
 			//FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache. 
 			//invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");

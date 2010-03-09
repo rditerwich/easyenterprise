@@ -250,15 +250,15 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501505, 1023, 5015, 'en', 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501506, 1015, 5015, 'en', 'Magenta bio process ink for best results at a high speed.');
 
-/* WebShop */
-INSERT INTO catalogxs.webshop (name,catalog_id,id) VALUES ('webshop',1,1);
-INSERT INTO catalogxs.productgroup_webshop (webshop_id,toplevelproductgroups_id) VALUES (1,2004);
-INSERT INTO catalogxs.productgroup_webshop (webshop_id,toplevelproductgroups_id) VALUES (1,2008);
-INSERT INTO catalogxs.productgroup_webshop (webshop_id,toplevelproductgroups_id) VALUES (1,2020);
+/* bShop */
+INSERT INTO catalogxs.shop (name,catalog_id,id) VALUES ('webshop',1,1);
+INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2004);
+INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2008);
+INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2020);
 
 /* Promotion examples */
-INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,webshop_id) VALUES ('catalog.volumediscountpromotion','2010-01-20','2011-01-20',1,5001,1000,'EUR',3,1);
-INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,webshop_id) VALUES ('catalog.volumediscountpromotion','2010-01-22','2011-02-20',2,5001,700,'EUR',4,1);
-INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,webshop_id) VALUES ('catalog.volumediscountpromotion','2010-01-10','2011-03-10',3,5002,800,'EUR',5,1);
+INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-20','2011-01-20',1,5001,1000,'EUR',3,1);
+INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-22','2011-02-20',2,5001,700,'EUR',4,1);
+INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-10','2011-03-10',3,5002,800,'EUR',5,1);
 
 [/template]

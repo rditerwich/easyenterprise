@@ -19,9 +19,8 @@ import scala.xml.{NodeSeq, Text}
 
 import agilexs.catalogxs.presentation.model._
 import agilexs.catalogxs.presentation.model.Conversions._
-import agilexs.catalogxs.jpa.catalog._
 import agilexs.catalogxs.businesslogic.CatalogBean
-import agilexs.catalogxs.jpa.{order => jpa}
+import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.Util
 
 //TODO correctly calculate promotion prices, currently the original product price is calculated.
@@ -32,7 +31,7 @@ import agilexs.catalogxs.presentation.util.Util
 //FIXE "add to" cart on promotion page broken, because "currentProduct" not set when rendering
 class ShoppingCart {
   //Session variable that contains the items in the shopping cart during session
-  object shoppingCart extends SessionVar[Order](new Order(new jpa.Order))
+  object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
 
   /**
    * Method to bind to order_status template to display total number of
@@ -145,17 +144,17 @@ class ShoppingCart {
   }
 
   private def doList(reDraw: () => JsCmd)(xhtml : NodeSeq) : NodeSeq = {
-    def removeProduct(productOrder : jpa.ProductOrder)() : JsCmd = {
+    def removeProduct(productOrder : jpa.shop.ProductOrder)() : JsCmd = {
       shoppingCart.removeProductOrder(productOrder)
-      S.notice(Model.webShop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+      S.notice(Model.shop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
                " removed from the shopping cart")
       reDraw()
     }
 
-    def updateVolume(productOrder : jpa.ProductOrder, v : String)() : JsCmd = {
+    def updateVolume(productOrder : jpa.shop.ProductOrder, v : String)() : JsCmd = {
       if (shoppingCart.updateVolume(productOrder, Integer.valueOf(v).intValue)) {
         S.notice("Volume of " +
-                Model.webShop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
+                Model.shop.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue +
                 " updated to " + v)
       }
       reDraw()
@@ -166,12 +165,12 @@ class ShoppingCart {
           "deleteButton" -> {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
              ("onclick" -> ajaxInvoke(removeProduct(productOrder) _)._2)},
           "product" ->
-            CatalogBindings.productBinding(
-              Model.webShop.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),
+            ShopBindings.productBinding(
+              Model.shop.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),
           "volume" -> ajaxText(productOrder.getVolume.toString,
               v => updateVolume(productOrder, v)),
           "priceTotal" -> Util.formatMoney(
-             Model.webShop.productsById(
+             Model.shop.productsById(
                productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyCurrency,
              productOrder.getPrice.doubleValue))
     })

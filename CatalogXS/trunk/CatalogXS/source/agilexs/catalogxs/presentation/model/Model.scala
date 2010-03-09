@@ -12,14 +12,15 @@ import scala.collection.jcl.{BufferWrapper,SetWrapper,IterableWrapper}
 import scala.collection.{mutable}
 import Conversions._
 import agilexs.catalogxs.presentation.util.LazyValue
+import agilexs.catalogxs.jpa
 
 object Model {
   
   val locales : Set[String] = Locale.getAvailableLocales map (_ toString) toSet
   
-  var webShopCache = new LazyValue(new WebShopCache) 
+  var shopCache = new LazyValue(new ShopCache) 
   
-  object webShop extends RequestVar[WebShop](webShopCache.get.webShopsById(S.attr("webShop") get)) 
+  object shop extends RequestVar[Shop](shopCache.get.shopsById(S.param("shop") get)) 
   
   lazy val entityMangerProperties = System.getProperties.entrySet.makeMap (entry => 
     entry.getKey.toString.parsePrefix("entitymanager.") match {
@@ -33,17 +34,17 @@ object Model {
   object entityManager extends RequestVar[EntityManager]( 
   	entityManagerFactory.createEntityManager)
   
- // exbject entityManager = Persistence.createEntityManagerFactory("AgileXS.CatalogXS.Jpa.PersistenceUnit").createEntityManager
+  object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
 
   def currentProductGroup : Option[ProductGroup] =
     S.param("group") match {
-      case Full(id) => webShop.productGroupsById.get(id.toLong) 
+      case Full(id) => shop.productGroupsById.get(id.toLong) 
       case _ => None
     }
 
   def currentProduct : Option[Product] =
     S.param("product") match {
-      case Full(id) => webShop.productsById.get(id.toLong) 
+      case Full(id) => shop.productsById.get(id.toLong) 
       case _ => None
     }
       
@@ -55,7 +56,7 @@ object Model {
 
   def currentSearchProducts : Iterable[Product] =
 	  S.param("search") match {
-	  case Full(searchString) => webShop.keywordMap.find(searchString) 
+	  case Full(searchString) => shop.keywordMap.find(searchString) 
 	  case _ => Seq.empty
   }
 }

@@ -1,9 +1,9 @@
 <lift:surround with="default" at="content">
   <head><title>CatalogXS Test Page</title></head>
 	<h1>Promotions</h1>
-  <lift:Catalog.catalog>
+  <lift:Shop.shop>
 	<h1>Promotions</h1>
-	<catalog:promotions>
+	<shop:promotions>
   	<h2>Promotion: <promotion:id/></h2>
   	<promotion:product template="small">
   		<h3>Promotion Product: <product:id/> (of promotion: <promotion:id/>)</h3>
@@ -14,6 +14,6 @@
 	  		</product:properties>
   		</product:properties>
   	</promotion:product>
-	</catalog:promotions>
-  </lift:Catalog.catalog>
+	</shop:promotions>
+  </lift:Shop.shop>
 </lift:surround>

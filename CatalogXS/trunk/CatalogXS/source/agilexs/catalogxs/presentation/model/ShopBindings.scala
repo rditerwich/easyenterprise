@@ -1,22 +1,25 @@
 package agilexs.catalogxs.presentation.model
 
 import Conversions._
+import net.liftweb.http.S
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers._
 import scala.xml.{Text, NodeSeq}
 import agilexs.catalogxs.presentation.util.Util
+import agilexs.catalogxs.presentation.snippet.ShoppingCart
 
-object CatalogBindings {
+object ShopBindings {
 
-  def webShopBinding(webShop : WebShop) = webShop bindWith params(   
-    "id" -> Text(webShop.id.toString),
+  def shopBinding(shop : Shop) = shop bindWith params(   
+    "id" -> Text(shop.id.toString),
     "currentProductGroup" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
     "currentProduct" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
     "currentSearchString" -> Text(Model.currentSearchString.getOrElse("")),
     "currentSearchProducts" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
-    "products" -> Complex(webShop.products map (productBinding _)) -> "product",
-    "top_level_groups" -> Complex(webShop.topLevelProductGroups map (productGroupBinding _)) -> "group",
-    "promotions" -> Complex(webShop.promotions map (promotionBinding _)) -> "promotion")
+    "products" -> Complex(shop.products map (productBinding _)) -> "product",
+    "top_level_groups" -> Complex(shop.topLevelProductGroups map (productGroupBinding _)) -> "group",
+    "promotions" -> Complex(shop.promotions map (promotionBinding _)) -> "promotion",
+    "shopping_cart" -> Complex(shoppingCartBinding(Model.shoppingCart)) -> "shopping_cart")
 
   def promotionBinding(promotion : Promotion) = promotion match {
     case p : VolumeDiscountPromotion => volumeDiscountPromotionBinding(p)
@@ -53,6 +56,10 @@ object CatalogBindings {
     "link" -> Link(group),
     "href" -> LinkAttr(group) -> "href")
     //    "name" -> Text(product.getName)
+
+  def shoppingCartBinding(order : Order) : Binding = order bindWith params(   
+    "link" -> Link("/shoppingcart"),
+    "href" -> LinkAttr("/shoppingcart") -> "href")
       
   def propertyBinding(property: Property) : Binding = property bindWith params(  
     "id" -> Text(property.id.toString),

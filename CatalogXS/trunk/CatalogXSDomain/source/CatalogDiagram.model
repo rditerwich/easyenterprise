@@ -92,28 +92,6 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 717
-                    y = -76
-                    width = 100
-                    height = 98
-                }
-            }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Promotion
-        }
-        DiagramClass {
-            bounds = {
-                Rectangle {
-                    x = 726
-                    y = 80
-                    width = -1
-                    height = -1
-                }
-            }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:VolumeDiscountPromotion
-        }
-        DiagramClass {
-            bounds = {
-                Rectangle {
                     x = 1012
                     y = -49
                     width = 140
@@ -156,24 +134,13 @@ DomainDiagram {
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelationType
         }
-        DiagramClass {
-            bounds = {
-                Rectangle {
-                    x = 82
-                    y = 39
-                    width = -1
-                    height = -1
-                }
-            }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:WebShop
-        }
     }
     enumerations = {
         DiagramEnum {
             bounds = {
                 Rectangle {
-                    x = 657
-                    y = 357
+                    x = 718
+                    y = -33
                     width = -1
                     height = -1
                 }
@@ -206,23 +173,11 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 814
-                    y = 290
-                }
-            }
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:VolumeDiscountPromotion/attributes:product
-        }
-        Reference {
-            bendPoints = {
-                Point {
                     x = 832
                     y = 44
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:templates
-        }
-        Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Promotion/attributes:templates
         }
         Reference {
             bendPoints = {
@@ -285,19 +240,7 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:EnumValue/attributes:labels
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:webShops
-        }
-        Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:WebShop/attributes:topLevelProductGroups
-        }
-        Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:WebShop/attributes:excludedProperties
-        }
-        Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:WebShop/attributes:promotions
-        }
-        Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:WebShop/attributes:excludedItems
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:shops
         }
     }
     superClassReferences = {
@@ -308,10 +251,6 @@ DomainDiagram {
         SuperClassReference {
             source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:ProductGroup
             target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
-        }
-        SuperClassReference {
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:VolumeDiscountPromotion
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Promotion
         }
     }
 }

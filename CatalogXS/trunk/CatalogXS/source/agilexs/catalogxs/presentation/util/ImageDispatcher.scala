@@ -33,7 +33,7 @@ object ImageDispatcher {
   }
   
   def get = {
-    Model.webShop.mediaValues.get(S.param("imageID").openOr("0").toLong) match {
+    Model.shop.mediaValues.get(S.param("imageID").openOr("0").toLong) match {
 	  case Some((mimeType, image)) => ImageResponse(mimeType, image)
       case _ =>  NotFoundResponse()
     }

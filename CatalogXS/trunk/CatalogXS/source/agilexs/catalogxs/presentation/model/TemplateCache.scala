@@ -3,27 +3,27 @@ package agilexs.catalogxs.presentation.model
 import scala.collection.{mutable, Set, Map}
 import scala.xml.NodeSeq 
 
-import agilexs.catalogxs.jpa.{catalog => jpa}
+import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import agilexs.catalogxs.presentation.model.Conversions._ 
 
-class TemplateCache private (val cacheData : WebShopCacheData, val catalog : jpa.Catalog, val shop : jpa.WebShop, val locale : String) {
+class TemplateCache private (val cacheData : ShopCacheData, val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop, val locale : String) {
 
-  type Templates = Map[String, jpa.Template]
+  type Templates = Map[String, jpa.catalog.Template]
   
-  val catalogTemplates : Set[jpa.Template] = 
+  val catalogTemplates : Set[jpa.catalog.Template] = 
     catalog.getTemplates toSet
   
-  val viewTemplates : Set[jpa.Template] = 
+  val viewTemplates : Set[jpa.catalog.Template] = 
     shop.getTemplates toSet
   
-  val productGroupTemplates : Map[jpa.ProductGroup, Templates] =
+  val productGroupTemplates : Map[jpa.catalog.ProductGroup, Templates] =
     mutable.Map((for (group <- cacheData.productGroups toSeq) 
       yield (group -> byName(group.getTemplates))):_*)
   
-  val productGroupTemplates2 : Map[jpa.ProductGroup, Templates] = 
-    cacheData.productGroups makeMapWithValues ((g : jpa.ProductGroup) => byName(g.getTemplates))
+  val productGroupTemplates2 : Map[jpa.catalog.ProductGroup, Templates] = 
+    cacheData.productGroups makeMapWithValues ((g : jpa.catalog.ProductGroup) => byName(g.getTemplates))
   
-  private def byName(templates : Iterable[jpa.Template]) : Templates =
+  private def byName(templates : Iterable[jpa.catalog.Template]) : Templates =
     templates mapBy (_.getName)
 }

@@ -1,5 +1,6 @@
 package agilexs.catalogxs.presentation.model
 
+import net.liftweb.http.S
 import net.liftweb.http.SHtml
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers.BindParam
@@ -9,7 +10,7 @@ import net.liftweb.util.Full
 import scala.xml.{NodeSeq, Text, Unparsed} 
 import scala.collection.mutable 
 import agilexs.catalogxs.presentation.util.Util
-import agilexs.catalogxs.jpa.{catalog => jpa}
+import agilexs.catalogxs.jpa
 
 object BindAttr {
   def apply(name : String) : String = 
@@ -54,14 +55,14 @@ object Value {
 class Value(property : => Option[Property]) extends Bindable {
   override def asHtml = property match { 
     case Some(property) => property.propertyType match {
-      case jpa.PropertyType.Media => 
+      case jpa.catalog.PropertyType.Media => 
         if (property.mediaValue == null) 
           <img src={"/images/image-"+property.valueId+".jpg"} />
 	      else if (property.mimeType.startsWith("image/")) 
 		      <img src={"image/" + property.valueId} />
 	       else
   		     Text(property.mediaValue.toString());
-      case jpa.PropertyType.Money =>
+      case jpa.catalog.PropertyType.Money =>
         Util.formatMoney(property.pvalue.getMoneyCurrency, property.pvalue.getMoneyValue.doubleValue)
       case _ => Text(property.valueAsString)
     }
@@ -73,13 +74,15 @@ class Value2(property : => Property) extends Value(if (property != null) Some(pr
 }
 
 object Link {
-  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={"/group/" + group.id}>{xml}</a>
-  def apply(product : Product) = (xml : NodeSeq) => <a href={"/product/" + product.id}>{xml}</a>
+  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/group/" + group.id}>{xml}</a>
+  def apply(product : Product) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/product/" + product.id}>{xml}</a>
+  def apply(path : String) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/" + path}>{xml}</a>
 }
 
 object LinkAttr {
-	def apply(group : ProductGroup) = new LinkAttr(Text("/group/" + group.id))
-	def apply(product : Product) = new LinkAttr(Text("/product/" + product.id))
+	def apply(group : ProductGroup) = new LinkAttr(Text(S.param("basePath").get + "/group/" + group.id))
+	def apply(product : Product) = new LinkAttr(Text(S.param("basePath").get + "/product/" + product.id))
+	def apply(path : String) = new LinkAttr(Text(S.param("basePath").get + "/" + path))
 }
 
 class LinkAttr(val value : NodeSeq) {
@@ -113,7 +116,7 @@ class Binding(obj : Object, params : Seq[BindParam])  {
   private def determineTemplate(obj : Object, default : NodeSeq) : NodeSeq = {
 	BindHelpers.attr("template") match { 
       case Some(explicitTag) => 
-        Model.webShop.cacheData.template(obj, explicitTag.toString) match {
+        Model.shop.cacheData.template(obj, explicitTag.toString) match {
           case Some(xml) => xml
           case None => default
         } 

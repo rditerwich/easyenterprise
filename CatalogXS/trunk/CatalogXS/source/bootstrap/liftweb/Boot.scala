@@ -92,16 +92,10 @@ class Boot {
     
     
     //User.sitemap
-    LiftRules.setSiteMap(SiteMap(entries:_*))
+    //LiftRules.setSiteMap(SiteMap(entries:_*))
 
-    /**
-     * Select webshop from url
-     */
-    object WebShopPath {
-      }
-      
-    LiftRules.rewrite.prepend(NamedPF("WebShopPathRewriter") {
-      case WebShopPathRewriter(response : RewriteResponse) => response 
+    LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
+      case ShopPathRewriter(response : RewriteResponse) => response 
     })
 
 //    /**
@@ -151,7 +145,10 @@ class Boot {
     LiftRules.ajaxEnd =
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
 
-    LiftRules.early.append(makeUtf8)
+  /**
+   * Force the request to be UTF-8
+   */
+    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
 // Set up a LoanWrapper to automatically instantiate and tear down the EntityManager on a per-request basis
     S.addAround(List(
@@ -168,50 +165,4 @@ class Boot {
 		}
       }))
   }
-
-  /**
-   * Force the request to be UTF-8
-   */
-  private def makeUtf8(req: HttpServletRequest) {
-    req.setCharacterEncoding("UTF-8")
-  }
-
-/*
-  def localeCalculator(request : Box[HttpServletRequest]): Locale = 
-	  request.flatMap(r => {
-		  def workOutLocale: Box[java.util.Locale] = 
-			  S.findCookie(localeCookieName) match {
-//			    case Full(cookie) => cookie.getValue() 
-			    case _ => Full(LiftRules.defaultLocaleCalculator(request))
-			  }
-		  tryo(r.getParameter("locale")) match {
-		    case Full(null) => workOutLocale
-		    case Empty => workOutLocale
-		    case Failure(_,_,_) => workOutLocale
-//		    case Full(selectedLocale) => {
-//		      setLocale(selectedLocale)
-//		      selectedLocale
-//		    }
-		  }
-	}).openOr(java.util.Locale.getDefault())
-*/
 }
-
-/**
-* Database connection calculation
-
-object DBVendor extends ConnectionManager {
-
-  def newConnection(name: ConnectionIdentifier): Can[Connection] = {
-    try {
-      Class.forName("org.postgresql.Driver")
-      val dm = DriverManager.getConnection("jdbc:postgresql://localhost/dbname","username", "password")
-      Full(dm)
-    } catch {
-      case e : Exception => e.printStackTrace; Empty
-    }
-  }
-
-  def releaseConnection(conn: Connection) {conn.close}
-}
-*/

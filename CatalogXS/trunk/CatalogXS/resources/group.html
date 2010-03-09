@@ -1,5 +1,5 @@
-<lift:Catalog.catalog eager_eval="true">
-  <catalog:currentProductGroup>
+<lift:Shop.shop eager_eval="true">
+  <shop:currentProductGroup>
 		<lift:surround with="default" at="content">
 		  <head><title>Group <group:group_value property="Name"/></title></head>
 		  <div class="contentheading"><group:group_value property="Name"/></div>
@@ -46,5 +46,5 @@
 		    </group:products>
 		  </table>
 		</lift:surround>
-  </catalog:currentProductGroup>
-</lift:Catalog.catalog>
+  </shop:currentProductGroup>
+</lift:Shop.shop>

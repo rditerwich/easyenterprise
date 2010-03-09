@@ -1,58 +1,68 @@
 package bootstrap.liftweb
 
 import agilexs.catalogxs.presentation.model.Model
-import agilexs.catalogxs.presentation.model.WebShop
+import agilexs.catalogxs.presentation.model.Shop
 
 import net.liftweb.http.{RewriteRequest,RewriteResponse}
 
 /**
  * Parse an http request, extract the webshop id, language and object to show.
  */
-object WebShopPathRewriter {
+object ShopPathRewriter {
 
   def unapply(request : RewriteRequest) : Option[RewriteResponse] = {
-    println("Web shop selector for request: " + request)
-  
-    getWebShop(request.httpRequest.getServerName, request.path.partPath) match {
+    
+    // make resilient to trailing slash
+    val path = request.path.partPath.dropRight(if (request.path.endSlash) 1 else 0)
+    
+    // extract webshop from url
+    getShop(request.httpRequest.getServerName, path) match {
       case None => None
-      case Some((webShop, path)) =>
-        getLanguage(webShop, path) match {
-          case None => None
-          case Some((language, path)) =>
-            path match {
-              case "product" :: product :: Nil => Some(RewriteResponse(Nil, Map("product" -> product, "language" -> language, "webShop" -> webShop.id.toString)))
-              case "group" :: group :: Nil => Some(RewriteResponse(Nil, Map("group" -> group, "language" -> language, "webShop" -> webShop.id.toString)))
-              case "image" :: image :: Nil => Some(RewriteResponse(Nil, Map("image" -> image, "language" -> language, "webShop" -> webShop.id.toString)))
-              case "search" :: search :: Nil => Some(RewriteResponse(Nil, Map("search" -> search, "language" -> language, "webShop" -> webShop.id.toString)))
-              case _ => Some(RewriteResponse(path, Map("language" -> language, "webShop" -> webShop.id.toString)))
-	        }
+      case Some((shop, basePath0, path0)) =>
+        
+        // extract language from url
+        val (language,basePath,path) = getLanguage(shop, basePath0, path0)
+        
+        // these are stored in S, to be read by Model class later
+        val map = Map("shop" -> shop.id.toString, "language" -> language, "basePath" -> basePath.mkString("/", "/", ""))
+        
+        path match {
+          case "product" :: product :: Nil => Some(RewriteResponse("product" :: Nil, map + ("product" -> product)))
+          case "group" :: group :: Nil => Some(RewriteResponse("group" :: Nil, map + ("group" -> group)))
+          case "image" :: image :: Nil => Some(RewriteResponse(Nil, map + ("image" -> image)))
+          case "search" :: search :: Nil => Some(RewriteResponse(Nil, map + ("search" -> search)))
+          
+          // handles default url without trailing slash 
+          case Nil => Some(RewriteResponse("index" :: Nil, map))
+          
+          case _ => None
         }
     }
   }
   
-  def getWebShop(serverName : String, path : List[String]) : Option[(WebShop, List[String])] = {
-    val cache = Model.webShopCache.get
+  def getShop(serverName : String, path : List[String]) : Option[(Shop,List[String],List[String])] = {
+    val cache = Model.shopCache.get
     if (serverName == "localhost" || serverName == "127.0.0.1") {
     	if (path.isEmpty) None
-        else cache.webShopsByName.get(path.head) match {
-          case Some(webShop) => Some((webShop, path.tail))
+        else cache.shopsByName.get(path.head) match {
+          case Some(shop) => Some((shop, path.head :: Nil, path.tail))
           case None => None
         }
     } else {
-      cache.webShopsByServerName(serverName).find(s => path.startsWith(s.prefixPath)) match {
-    	case Some(webShop) => Some((webShop, path.drop(webShop.prefixPath.length)))
+      cache.shopsByServerName(serverName).find(s => path.startsWith(s.prefixPath)) match {
+    	case Some(shop) => Some((shop, path.take(shop.prefixPath.length), path.drop(shop.prefixPath.length)))
     	case None => None
       }
     }
   }
 
         
-  def getLanguage(webShop : WebShop, path : List[String]) : Option[(String,List[String])] = {
+  def getLanguage(shop : Shop, basePath : List[String], path : List[String]) : (String,List[String],List[String]) = {
     path match {
-      case List() => Some((webShop.defaultLanguage, path))
+      case List() => (shop.defaultLanguage, basePath, path)
       case head :: tail => 
-        if (Model.locales.contains(head)) Some((head, tail))
-        else Some((webShop.defaultLanguage, path))
+        if (Model.locales.contains(head)) (head, basePath ::: List(head), tail)
+        else (shop.defaultLanguage, basePath, path)
     }
   }
 }

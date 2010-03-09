@@ -1,0 +1,128 @@
+root /domainDiagrams
+
+import Metaphor.Eclipse.Diagrams.Rectangle
+import Metaphor.Eclipse.DomainDiagrams.DiagramClass
+import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
+import Metaphor.Eclipse.DomainDiagrams.Reference
+import Metaphor.Eclipse.DomainDiagrams.SuperClassReference
+
+DomainDiagram {
+    name = AgileXS
+    package = /packages:AgileXS/packages:Domain/packages:Shop
+    classes = {
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 83
+                    y = 30
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 294
+                    y = 44
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 285
+                    y = 133
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 174
+                    y = 251
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Promotion
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 147
+                    y = 405
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:VolumeDiscountPromotion
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 420
+                    y = 32
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Order
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 412
+                    y = 212
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:ProductOrder
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 587
+                    y = 34
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Transport
+        }
+    }
+    references = {
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:promotions
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:ProductOrder/attributes:promotion
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:productOrders
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:transport
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:catalog
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:topLevelProductGroups
+        }
+    }
+    superClassReferences = {
+        SuperClassReference {
+            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:VolumeDiscountPromotion
+            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:Promotion
+        }
+    }
+}

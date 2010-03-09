@@ -5,24 +5,21 @@ import scala.xml.NodeSeq
 import scala.xml.Text 
 import scala.collection.{mutable, immutable, Set, Map}
 
-import agilexs.catalogxs.jpa.{catalog => jpa}
-import agilexs.catalogxs.jpa.{order => jpaOrder}
-import agilexs.catalogxs.jpa.order.ProductOrder
-import agilexs.catalogxs.jpa.catalog.PropertyType
+import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
 
-class Mapping(product : Option[Product], cacheData : WebShopCacheData) {
-  lazy val productGroups = ProjectionMap((g : jpa.ProductGroup) => new ProductGroup(g, product, cacheData, this))
-  lazy val products = ProjectionMap((p : jpa.Product) => new Product(p, cacheData, this))
-  lazy val properties = ProjectionMap((p : jpa.Property) => new Property(p, noPropertyValue, product, cacheData, this))
-  lazy val promotions = ProjectionMap( (p : jpa.Promotion) => p match { 
-    case p : jpa.VolumeDiscountPromotion => new VolumeDiscountPromotion(p, cacheData, this)
+class Mapping(product : Option[Product], cacheData : ShopCacheData) {
+  lazy val productGroups = ProjectionMap((g : jpa.catalog.ProductGroup) => new ProductGroup(g, product, cacheData, this))
+  lazy val products = ProjectionMap((p : jpa.catalog.Product) => new Product(p, cacheData, this))
+  lazy val properties = ProjectionMap((p : jpa.catalog.Property) => new Property(p, noPropertyValue, product, cacheData, this))
+  lazy val promotions = ProjectionMap( (p : jpa.shop.Promotion) => p match { 
+    case p : jpa.shop.VolumeDiscountPromotion => new VolumeDiscountPromotion(p, cacheData, this)
     case _ => new Promotion(p, cacheData, this)
   })
 }
 
-class WebShop (val cacheData : WebShopCacheData) extends Delegate(cacheData.catalog) {
+class Shop (val cacheData : ShopCacheData) extends Delegate(cacheData.catalog) {
 
   private val mapping = new Mapping(None, cacheData)
   
@@ -60,7 +57,7 @@ class WebShop (val cacheData : WebShopCacheData) extends Delegate(cacheData.cata
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product], cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(productGroup) {
+class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option[Product], cacheData : ShopCacheData, mapping : Mapping) extends Delegate(productGroup) {
 
   // terminate recursion
   mapping.productGroups += (productGroup -> this)
@@ -95,7 +92,7 @@ class ProductGroup(productGroup : jpa.ProductGroup, val product : Option[Product
   }
 }
 
-class Product(product : jpa.Product, cacheData : WebShopCacheData, var mapping : Mapping) extends Delegate(product) {
+class Product(product : jpa.catalog.Product, cacheData : ShopCacheData, var mapping : Mapping) extends Delegate(product) {
   
   // terminate recursion
   mapping.products += (product -> this)
@@ -119,12 +116,12 @@ class Product(product : jpa.Product, cacheData : WebShopCacheData, var mapping :
     properties mapBy (_.name)
 }
 
-class Property(property : jpa.Property, val value : jpa.PropertyValue, val product : Option[Product], cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : ShopCacheData, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
   val id : Long = property.getId.longValue
-  val propertyType : jpa.PropertyType = property.getType
+  val propertyType : jpa.catalog.PropertyType = property.getType
 
   val namesByLanguage : Map[Option[String], String] = 
     property.getLabels makeMap (l => Some((l.getLanguage asOption, l.getLabel ))) 
@@ -149,18 +146,18 @@ class Property(property : jpa.Property, val value : jpa.PropertyValue, val produ
     else ""
 }
 
-object noPropertyValue extends jpa.PropertyValue {
+object noPropertyValue extends jpa.catalog.PropertyValue {
   setId(-1l)
 }
 
-class Promotion(promotion : jpa.Promotion, cacheData : WebShopCacheData, mapping : Mapping) extends Delegate(promotion) {
+class Promotion(promotion : jpa.shop.Promotion, cacheData : ShopCacheData, mapping : Mapping) extends Delegate(promotion) {
   // terminate recursion
   mapping.promotions(promotion) = this
   val id = promotion.getId.longValue
   def products : Set[Product] = Set.empty
 }
 
-class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cacheData : WebShopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
+class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cacheData : ShopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
   val startDate = promotion.getStartDate
   val endDate = promotion.getEndDate
   val price = promotion.getPrice
@@ -171,21 +168,21 @@ class VolumeDiscountPromotion(promotion : jpa.VolumeDiscountPromotion, cacheData
 }
 
 //FIXME calculate promotion price when calculating new price
-class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
+class Order(order : jpa.shop.Order) extends Delegate(order) {
   def empty = delegate.getProductOrders.clear
 
   def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
     
-  def updateVolume(productOrder : jpaOrder.ProductOrder, v : Int) : Boolean = {
+  def updateVolume(productOrder : jpa.shop.ProductOrder, v : Int) : Boolean = {
     if (productOrder.getVolume != v) {
       productOrder.setVolume(v)
-      productOrder.setPrice(v * Model.webShop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
+      productOrder.setPrice(v * Model.shop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
       return true
     }
     return false
   }
 
-  def removeProductOrder(productOrder : jpaOrder.ProductOrder) = {
+  def removeProductOrder(productOrder : jpa.shop.ProductOrder) = {
     delegate.getProductOrders.remove(productOrder)
   }
 
@@ -208,10 +205,10 @@ class Order(jOrder : jpaOrder.Order) extends Delegate(jOrder) {
   def addProduct(product : Product, volume : Int) = {
     val arn = product.propertiesByName("ArticleNumber").pvalue.getStringValue
     delegate.getProductOrders find((po) =>
-      Model.webShop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
+      Model.shop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
           == arn) match {
         case None =>
-            val productOrder = new jpaOrder.ProductOrder()
+            val productOrder = new jpa.shop.ProductOrder
             //fake a productOrder Id, otherwise remove will fail, because equals
             //is implemented that if id == null the objects of same type are
             //always equal

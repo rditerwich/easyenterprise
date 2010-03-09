@@ -1,6 +1,6 @@
-<lift:Catalog.catalog eager_eval="true">
+<lift:Shop.shop eager_eval="true">
   <lift:surround with="default" at="content">
-  <catalog:currentProduct>
+  <shop:currentProduct>
      <head><title>Product Info</title></head>
      <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
      <product:value property="Description"/>
@@ -13,6 +13,6 @@
         <span style="float:right;padding: 8px 12px;font-size: 12px;text-decoration: none;white-space:nowrap;line-height:20px;border: 1px solid #999;color: #4D4D4D;background: #FC0 url(../images/bg_d01.gif) repeat-x 0px 50%;">Add to Cart</span>
       </lift:ShoppingCart.addToCart>
    
-   </catalog:currentProduct>
+   </shop:currentProduct>
   </lift:surround>
-</lift:Catalog.catalog>
+</lift:Shop.shop>
