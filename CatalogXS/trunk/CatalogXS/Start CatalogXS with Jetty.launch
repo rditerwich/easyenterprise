@@ -33,6 +33,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jetty.start.StartJetty"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="CatalogXS AgileXS.CatalogXS.Jpa.PersistenceUnit"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="CatalogXS 8082"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Jetty"/>
 </launchConfiguration>
