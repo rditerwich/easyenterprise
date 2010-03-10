@@ -18,6 +18,7 @@ import Helpers._
 import scala.xml.{NodeSeq, Text}
 
 import agilexs.catalogxs.presentation.model._
+import agilexs.catalogxs.presentation.model.WrapJs
 import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic.CatalogBean
 import agilexs.catalogxs.jpa
@@ -41,8 +42,9 @@ class ShoppingCart {
     def inner() : NodeSeq = {
       bind("os", xhtml,
          "empty" ->
-           {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
-               ("onclick" -> ajaxInvoke(emptyShoppingBasket _ )._2)},
+           {node : NodeSeq => a(WrapJs(emptyShoppingBasket _ ), node, ("style","text-decoration:none"))}, 
+//             <a href="#" style="text-decoration:none">{node}</a> %
+//               ("onclick" -> ajaxInvoke(emptyShoppingBasket _ )._2)},
          "total" -> Text(if (shoppingCart.isEmpty) "0" else shoppingCart.totalProducts.toString))
     }
     inner()
@@ -77,7 +79,7 @@ class ShoppingCart {
    */
   def addToCart(xhtml: NodeSeq) : NodeSeq = {
     val p = Model.currentProduct getOrNull
-
+    
     def addProduct : JsCmd = {
       shoppingCart.addProduct(p, 1)
       S.notice("Added product " + p.propertiesByName("ArticleNumber").pvalue.getStringValue +
@@ -86,9 +88,10 @@ class ShoppingCart {
     }
 
     def inner() : NodeSeq = {
-      <a href="#" style="text-decoration:none">{xhtml}</a> %
-        ("onclick" -> ajaxInvoke(addProduct _ )._2
-           /*FIXME: javascript should call: return false = JsExp("return false;")*/)
+        a(WrapJs(addProduct _ ), xhtml, ("style","text-decoration:none"))
+//      <a href="#" style="text-decoration:none">{xhtml}</a> %
+//        ("onclick" -> ajaxInvoke(WrapJs(addProduct _ ))._2
+//    		  /*FIXME: javascript should call: return false = JsExp("return false;")*/)
     }
     inner()
   }
@@ -109,7 +112,7 @@ class ShoppingCart {
    */
   private def redrawOrderStatus() : JsCmd = {
     SetHtml("order_status",
-       TemplateFinder.findAnyTemplate(List("templates-hidden", "order_status")) openOr NodeSeq.Empty)
+            new Shop().shop(TemplateFinder.findAnyTemplate(List("templates-hidden", "order_status")) openOr NodeSeq.Empty))
   }
 
   /**
@@ -162,8 +165,7 @@ class ShoppingCart {
 
     shoppingCart.delegate.getProductOrders.toSeq.flatMap(productOrder => {
       bind("shoppingcart", xhtml,
-          "deleteButton" -> {node : NodeSeq => <a href="#" style="text-decoration:none">{node}</a> %
-             ("onclick" -> ajaxInvoke(removeProduct(productOrder) _)._2)},
+          "deleteButton" -> {node : NodeSeq => a(WrapJs(removeProduct(productOrder) _ ), node, ("style","text-decoration:none"))}, 
           "product" ->
             ShopBindings.productBinding(
               Model.shop.productsById(productOrder.getProduct().getId().longValue())).bind("product", chooseTemplate("shoppingcart", "product", xhtml)),

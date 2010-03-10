@@ -12,10 +12,10 @@ object ShopBindings {
 
   def shopBinding(shop : Shop) = shop bindWith params(   
     "id" -> Text(shop.id.toString),
-    "currentProductGroup" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
-    "currentProduct" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
-    "currentSearchString" -> Text(Model.currentSearchString.getOrElse("")),
-    "currentSearchProducts" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
+    "current_product_group" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
+    "current_product" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
+    "current_search_string" -> Text(Model.currentSearchString.getOrElse("")),
+    "current_search_products" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
     "products" -> Complex(shop.products map (productBinding _)) -> "product",
     "top_level_groups" -> Complex(shop.topLevelProductGroups map (productGroupBinding _)) -> "group",
     "promotions" -> Complex(shop.promotions map (promotionBinding _)) -> "promotion",
@@ -57,7 +57,8 @@ object ShopBindings {
     "href" -> LinkAttr(group) -> "href")
     //    "name" -> Text(product.getName)
 
-  def shoppingCartBinding(order : Order) : Binding = order bindWith params(   
+  def shoppingCartBinding(order : Order) : Binding = order bindWith params(
+    "add" -> Text("add:" + BindAttr("product_tag", "product")),
     "link" -> Link("/shoppingcart"),
     "href" -> LinkAttr("/shoppingcart") -> "href")
       

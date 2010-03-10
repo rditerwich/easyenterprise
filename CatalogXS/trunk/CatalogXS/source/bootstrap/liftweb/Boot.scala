@@ -52,6 +52,9 @@ class Boot {
       case (_, Req(List("index"),_,_)) => 
           List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
                      "Pragma" -> "private") 
+      case (_, Req("ajax_request" :: rest,_,_)) => 
+          List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
+        		  "Pragma" -> "private") 
       case _ => 
           List("Expires" -> "Mon, 26 Jul 1997 05:00:00 GMT", 
                      "Cache-Control" -> 
@@ -94,9 +97,11 @@ class Boot {
     //User.sitemap
     //LiftRules.setSiteMap(SiteMap(entries:_*))
 
+    for (n <- List(1, 2, 3, 4, 5, 6,7, 8, 9)) {
     LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
       case ShopPathRewriter(response : RewriteResponse) => response 
     })
+    }
 
 //    /**
 //    * Parse language url entry

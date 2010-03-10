@@ -30,29 +30,32 @@ object ShopPathRewriter {
           case "product" :: product :: Nil => Some(RewriteResponse("product" :: Nil, map + ("product" -> product)))
           case "group" :: group :: Nil => Some(RewriteResponse("group" :: Nil, map + ("group" -> group)))
           case "image" :: image :: Nil => Some(RewriteResponse(Nil, map + ("image" -> image)))
-          case "search" :: search :: Nil => Some(RewriteResponse(Nil, map + ("search" -> search)))
+          case "search" :: search :: Nil => Some(RewriteResponse("search" :: Nil, map + ("search" -> search)))
           
           // handles default url without trailing slash 
           case Nil => Some(RewriteResponse("index" :: Nil, map))
           
-          case _ => None
+          case _ => Some(RewriteResponse(path, map))
         }
     }
   }
   
+  lazy val shopq = Model.shopCache.get.shopsByName.get("webshop").get
+  
   def getShop(serverName : String, path : List[String]) : Option[(Shop,List[String],List[String])] = {
     val cache = Model.shopCache.get
-    if (serverName == "localhost" || serverName == "127.0.0.1") {
-    	if (path.isEmpty) None
+    if (serverName == "qqqlocalhost" || serverName == "qqq127.0.0.1" || true) {
+    	if (path.isEmpty) Some((cache.shopsByName.get("webshop") get, Nil, path))
         else cache.shopsByName.get(path.head) match {
           case Some(shop) => Some((shop, path.head :: Nil, path.tail))
           case None => None
         }
     } else {
-      cache.shopsByServerName(serverName).find(s => path.startsWith(s.prefixPath)) match {
-    	case Some(shop) => Some((shop, path.take(shop.prefixPath.length), path.drop(shop.prefixPath.length)))
-    	case None => None
-      }
+      Some((shopq, Nil, path))
+//      cache.shopsByServerName(serverName).find(s => path.startsWith(s.prefixPath)) match {
+//    	case Some(shop) => Some((shop, path.take(shop.prefixPath.length), path.drop(shop.prefixPath.length)))
+//    	case None => Some((cache.shopsByName.get("webshop") get, Nil, path))
+//      }
     }
   }
 

@@ -25,7 +25,7 @@ class Shop {
       "searchString" -> SHtml.text(searchString, searchString = _, 
         "class" -> "formfield searchfield",
         "onclick" -> "javascript:this.value=(this.value == 'search' ? '' : this.value);"),
-      "submit" -> SHtml.submit("Search", () => S.redirectTo("/search/" + searchString),
+      "submit" -> SHtml.submit("Search", () => S.redirectTo(Model.basePath + "/search/" + searchString),
         "class" ->  "formbutton"))
   }
 }  

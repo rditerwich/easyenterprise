@@ -1,20 +1,20 @@
 <lift:Shop.shop eager_eval="true">
 		<lift:surround with="default" at="content">
 		  <head><title>Product Groups</title></head>
-		  <div class="contentheading">Search Results for '<shop:currentSearchString/>'</div>
+		  <div class="contentheading">Search Results for '<shop:current_search_string/>'</div>
 		  <table>
 		    <thead>
 		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>
 		      <th style="width:75%;text-align:center"><lift:loc>Description</lift:loc></th>
 		      <th style="width:15%"><lift:loc>Price</lift:loc></th>
 		    </thead>
-		  <shop:currentSearchProducts>
+		  <shop:current_search_products>
 		      <tr>
             <td><product:link><product:value property="ArticleNumber" /></product:link></td>
 		        <td><product:value property="Description"/></td>
 		        <td><product:value property="Price" /></td>
 		      </tr>
-		  </shop:currentSearchProducts>
+		  </shop:current_search_products>
 		  </table>
 		</lift:surround>
 </lift:Shop.shop>

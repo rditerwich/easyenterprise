@@ -21,6 +21,8 @@ object Model {
   var shopCache = new LazyValue(new ShopCache) 
   
   object shop extends RequestVar[Shop](shopCache.get.shopsById(S.param("shop") get)) 
+  object language extends RequestVar[String](S.param("language") get) 
+  object basePath extends RequestVar[String](S.param("basePath") get) 
   
   lazy val entityMangerProperties = System.getProperties.entrySet.makeMap (entry => 
     entry.getKey.toString.parsePrefix("entitymanager.") match {

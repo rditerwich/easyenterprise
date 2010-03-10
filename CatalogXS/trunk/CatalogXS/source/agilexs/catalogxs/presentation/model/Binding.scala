@@ -2,6 +2,7 @@ package agilexs.catalogxs.presentation.model
 
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
+import net.liftweb.http.js.JsCmd
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers.BindParam
 import net.liftweb.util.BindHelpers.FuncBindParam
@@ -74,15 +75,15 @@ class Value2(property : => Property) extends Value(if (property != null) Some(pr
 }
 
 object Link {
-  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/group/" + group.id}>{xml}</a>
-  def apply(product : Product) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/product/" + product.id}>{xml}</a>
-  def apply(path : String) = (xml : NodeSeq) => <a href={S.param("basePath").get + "/" + path}>{xml}</a>
+  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={Model.basePath + "/group/" + group.id}>{xml}</a>
+  def apply(product : Product) = (xml : NodeSeq) => <a href={Model.basePath + "/product/" + product.id}>{xml}</a>
+  def apply(path : String) = (xml : NodeSeq) => <a href={Model.basePath + path}>{xml}</a>
 }
 
 object LinkAttr {
-	def apply(group : ProductGroup) = new LinkAttr(Text(S.param("basePath").get + "/group/" + group.id))
-	def apply(product : Product) = new LinkAttr(Text(S.param("basePath").get + "/product/" + product.id))
-	def apply(path : String) = new LinkAttr(Text(S.param("basePath").get + "/" + path))
+	def apply(group : ProductGroup) = new LinkAttr(Text(Model.basePath + "/group/" + group.id))
+	def apply(product : Product) = new LinkAttr(Text(Model.basePath + "/product/" + product.id))
+	def apply(path : String) = new LinkAttr(Text(Model.basePath + path))
 }
 
 class LinkAttr(val value : NodeSeq) {
@@ -128,4 +129,18 @@ class Binding(obj : Object, params : Seq[BindParam])  {
 object NullBinding extends Binding(null, null) {
   override def bind(tag : String, xml: NodeSeq) = NodeSeq.Empty
 }
-  
+
+object WrapJs {
+  def apply(func: () => JsCmd) : () => JsCmd = {
+    val shop = Model.shop.get
+    val language = Model.language.get
+    val basePath = Model.basePath.get
+    () => {
+      Model.shop.set(shop)
+      Model.language.set(language)
+      Model.basePath.set(basePath)
+      func()
+    }
+  }
+}
+

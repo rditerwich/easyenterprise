@@ -127,12 +127,82 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202202, 1011, 2022, 'en', 'Products suitable for the He_idelberg Speedmaster XL 145');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202203, 1012, 2022, 'en', null);
 
+/* Product group Process */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2040,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204001, 1000, 2040, 'en', 'Process');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204002, 1011, 2040, 'en', 'Process Navigation');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204003, 1012, 2040, 'en', null);
+
+/* Product group PrePress */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2041,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204101, 1000, 2041, 'en', 'Pre-Press');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204102, 1011, 2041, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204103, 1012, 2041, 'en', null);
+
+/* Product group Press */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2042,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204201, 1000, 2042, 'en', 'Press');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204202, 1011, 2042, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204203, 1012, 2042, 'en', null);
+
+/* Product group PostPress */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2043,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204301, 1000, 2043, 'en', 'Post Press');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204302, 1011, 2043, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204303, 1012, 2043, 'en', null);
+
+/* Product group Prepress: Normalizing */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2044,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204401, 1000, 2044, 'en', 'Normalizing');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204402, 1011, 2044, 'en', 'Normalizing');
+
+/* Product group Prepress: Color Conversion */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2045,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204501, 1000, 2045, 'en', 'Color Conversion');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204502, 1011, 2045, 'en', 'Color Conversion');
+
+/* Product group Prepress: Page Proofing */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2046,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204601, 1000, 2046, 'en', 'Page Proofing');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204602, 1011, 2046, 'en', 'Page Proofing');
+
+/* Product group Press: Presetting */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2047,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204701, 1000, 2047, 'en', 'Presetting');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204702, 1011, 2047, 'en', 'Presetting');
+
+/* Product group Press: Image Control */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2048,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204801, 1000, 2048, 'en', 'Image Control');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204802, 1011, 2048, 'en', 'Image Control');
+
+/* Product group Press: Printing */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2049,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204901, 1000, 2049, 'en', 'Printing');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (204902, 1011, 2049, 'en', 'Printing');
+
+/* Product group Post Press: Cutting */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2050,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205001, 1000, 2050, 'en', 'Cutting');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205902, 1011, 2050, 'en', 'Cutting');
+
+/* Product group Post Press: Folding */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2051,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205101, 1000, 2051, 'en', 'Folding');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205102, 1011, 2051, 'en', 'Folding');
+
+/* Product group Post Press: Stiching */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2052,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205201, 1000, 2052, 'en', 'Stiching');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205202, 1011, 2052, 'en', 'Stiching');
+
 /* Product Group hierarchy */
 INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 
 /* Root */ 
 (2000,2001),
 (2000,2020),
+(2000,2040),
 
 /* Supplies */
 (2001,2002),
@@ -164,7 +234,27 @@ INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 
 /* Machines */
 (2020,2021),
-(2020,2022);
+(2020,2022),
+
+/* Process */
+(2040,2041),
+(2040,2042),
+(2040,2043),
+
+/* PrePress */
+(2041,2044),
+(2041,2045),
+(2041,2046),
+
+/* Press */
+(2042,2047),
+(2042,2048),
+(2042,2049),
+
+/* Press */
+(2043,2050),
+(2043,2051),
+(2043,2052);
 
 /* Product 5001 Property Values */
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10010, 1010, 5001, 'en', '188078');
@@ -252,6 +342,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue
 
 /* bShop */
 INSERT INTO catalogxs.shop (name,catalog_id,id) VALUES ('webshop',1,1);
+INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2040);
 INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2004);
 INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2008);
 INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_id) VALUES (1,2020);
