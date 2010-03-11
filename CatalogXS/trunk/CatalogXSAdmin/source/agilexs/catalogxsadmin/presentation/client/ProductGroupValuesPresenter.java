@@ -1,6 +1,7 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.ProductGroupValuesView.PGPRowView;
@@ -20,20 +21,12 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
 
   private String language = null;
   private final List<PropertyValueBinding> bindings = new ArrayList<PropertyValueBinding>();
-  private final BindingConverter<List<Label>, String> labelBindingConverter;
   private final BindingConverter<PropertyType, String> propertyTypeConverter;
+  private List<PropertyValue> curValues = new ArrayList<PropertyValue>();
+
+  private String name;
 
   public ProductGroupValuesPresenter() {
-    labelBindingConverter = new BindingConverter<List<Label>, String>() {
-      @Override
-      public List<Label> convertFrom(String data) {
-        return null;
-      }
-  
-      @Override
-      public String convertTo(List<Label> data) {
-        return Util.getLabel(data, language).getLabel();
-      }};
     propertyTypeConverter = new BindingConverter<PropertyType, String>() {
       @Override
       public PropertyType convertFrom(String data) {
@@ -46,38 +39,69 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
     };
   }
 
+  public Collection<PropertyValue> getPropertyValues() {
+    return curValues;
+  }
+
   @Override
   public ProductGroupValuesView getView() {
     return view;
   }
 
-  //also set data to update labels to show new lanugage version
-  public void setLanguage(String language) {
-    this.language = language;
-    for (PropertyValueBinding pb : bindings) {
-      pb.setData(true);
-    }
+  public void setValues(String name, List<PropertyValue> values) {
+    curValues.clear();
+    curValues.addAll(values);
+    this.name = name;
   }
 
-  public void show(String name, List<PropertyValue> pv) {
+  public void show(String lang) {
+    this.language = lang;
     view.setName(name);
-    view.resizeRows(pv.size());
     final int bindingSize = bindings.size();
 
-    for (int i = 0; i < pv.size(); i++) {
-      final PGPRowView rowView = view.setRow(i);
+    int i = 0;
+    for (PropertyValue pv : curValues) {
+      if (Util.matchLang(null, pv.getLanguage())) {
+        final PGPRowView rowView = view.setRow(i);
 
-      if (bindingSize <= i) {
-        final PropertyValueBinding pb = new PropertyValueBinding();
-        bindings.add(pb);
-        //name
-        HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), labelBindingConverter);
-        HasTextBinding.<PropertyType>bind(rowView.getType(), pb.property().type(), propertyTypeConverter);
-        //HasTextBinding.<PropertyValue>bind(rowView.getDevaultValue(), pb)
-        //HasTextBinding.<PropertyValue>bind(rowView.get)
+        if (bindingSize <= i) {
+          final PropertyValueBinding pb = new PropertyValueBinding();
+          bindings.add(pb);
+          //name
+          HasTextBinding.<List<Label>>bind(rowView.getName(), pb.property().labels(), new BindingConverter<List<Label>, String>() {
+            private List<Label> labels;
+
+            @Override
+            public List<Label> convertFrom(String data) {
+              for (Label label : labels) {
+                if (Util.matchLang(language, label.getLanguage())) {
+                  label.setLabel(data);
+                }
+              }
+              return labels;
+            }
+
+            @Override
+            public String convertTo(List<Label> data) {
+              labels = data;
+              return Util.getLabel(data, language, true).getLabel();
+            }});
+          HasTextBinding.<PropertyType>bind(rowView.getType(), pb.property().type(), propertyTypeConverter);
+          Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pv.getProperty().getType()), pb);
+        }
+        bindings.get(i).setData(pv);
+        i++;
       }
-      bindings.get(i).setData(pv.get(i));
-      rowView.setValueWidget(pv.get(i).getProperty().getType());
+    }
+    view.resizeRows(i);
+    i=0;
+    for (PropertyValue pv : curValues) {
+      if (!Util.isEmpty(pv) && Util.matchLang(language, pv.getLanguage())) {
+        //final PGPRowView rowView = view.setRow(i);
+        bindings.get(i).setData(pv);
+        //rowView.setValueWidget(pv.getProperty().getType());
+      }
+      i++;
     }
   }
 }

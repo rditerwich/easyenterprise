@@ -15,11 +15,11 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -30,7 +30,7 @@ public class ProductGroupView extends Composite implements View {
   final SplitLayoutPanel panel = new SplitLayoutPanel();
   final Tree tree = new Tree();
   final FlowPanel allPropertiesPanel = new FlowPanel();
-  final TextBox name = new TextBox();
+  final HTML name = new HTML();
   final ProductGroupBinding pgBinding = new ProductGroupBinding();
   final Button newButton = new Button("Add new product group");
   final Button saveButton = new Button("Save changes");
@@ -55,7 +55,9 @@ public class ProductGroupView extends Composite implements View {
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
 
     topBar.add(buttonBar);
+    topBar.add(new InlineHTML("<h2>"));
     topBar.add(name);
+    topBar.add(new InlineHTML("</h2>"));
     detailPanel.addNorth(topBar, 60);
     //top
     final ScrollPanel sp = new ScrollPanel(allPropertiesPanel);
@@ -110,7 +112,7 @@ public class ProductGroupView extends Composite implements View {
       }
     }
   }
-  
+
   public HasChangeHandlers getLanguageChangeHandler() {
     return languageList;
   }

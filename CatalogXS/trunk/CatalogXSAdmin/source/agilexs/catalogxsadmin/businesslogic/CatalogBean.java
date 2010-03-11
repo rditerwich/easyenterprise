@@ -9,14 +9,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
-import agilexs.catalogxsadmin.jpa.catalog.CatalogView;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
 import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
 import agilexs.catalogxsadmin.jpa.catalog.Property;
 import agilexs.catalogxsadmin.jpa.catalog.PropertyValue;
+import agilexs.catalogxsadmin.jpa.shop.Shop;
 
 @Stateless
-public class CatalogBean extends CatalogBeanBase implements Catalog {   
+public class CatalogBean extends CatalogBeanBase implements Catalog {
   /*
   @Override
   @SuppressWarnings("unchecked")
@@ -61,18 +61,16 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
-  
+
   @Override
   @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Product findProductById(Long id) {
     final Product p = super.findProductById(id);
 
-    if (p != null) {
-          final Query query = entityManager.createQuery("select a from PropertyValue a join fetch a.property where a.product = :product");
-
-          query.setParameter("product", p);
-          p.setPropertyValues(query.getResultList());
+    p.setCatalog(p.getCatalog());
+    for (PropertyValue pv : p.getPropertyValues()) {
+      pv.setProperty(pv.getProperty());
     }
     return p;
   }
@@ -80,28 +78,31 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
   @Override
   @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<ProductGroup> findAllProductGroupChildren(CatalogView view, ProductGroup parent) {
+    public Collection<ProductGroup> findAllProductGroupChildren(Shop shop, ProductGroup parent) {
       Query query;
       if (parent == null) {
         //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
         query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
-  
+
         //query.setParameter("view", view);
       } else {
-        //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache. 
+        //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
         //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
-        query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.parents) parent where parent = :parent"); 
-  
+        query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.parents) parent where parent = :parent");
+
         //query.setParameter("taxonomy", taxonomy);
         query.setParameter("parent", parent);
       }
       final List<ProductGroup> result = query.getResultList();
       if (result != null) {
         for (ProductGroup productGroup : result) {
+          productGroup.setCatalog(productGroup.getCatalog());
           for (Property property : productGroup.getProperties()) {
             property.setLabels(property.getLabels());
+            property.setItem(property.getItem());
           }
           for (PropertyValue value : productGroup.getPropertyValues()) {
+            value.setItem(value.getItem());
             value.setProperty(value.getProperty());
           }
         }

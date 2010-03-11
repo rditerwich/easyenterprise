@@ -1,25 +1,26 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.binding.Binding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
-import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
-import agilexs.catalogxsadmin.presentation.client.catalog.CatalogView;
+import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
-import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Util {
@@ -58,27 +59,40 @@ public class Util {
   public static final String NAME = "Name";
 
   private static final Label EMPTY_LABEL = new Label();
-  private static CatalogView catalogView;
+  private static Shop shop;
 
   static {
     EMPTY_LABEL.setLabel("UNKNOWN LABEL");
   }
 
-  public static CatalogView getCatalogView(final AsyncCallback<CatalogView> async) {
-    if (catalogView == null) {
-      CatalogServiceAsync.findCatalogViewById(1L, new AsyncCallback<CatalogView>(){
+  public static Shop getShop(final AsyncCallback<Shop> async) {
+    if (shop == null) {
+      ShopServiceAsync.findShopById(1L, new AsyncCallback<Shop>(){
         @Override
         public void onFailure(Throwable caught) {
           //TODO implement onFailure Util.getCatalogView
         }
 
         @Override
-        public void onSuccess(CatalogView result) {
-          catalogView = result;
+        public void onSuccess(Shop result) {
+          shop = result;
           if (async != null) async.onSuccess(result);
         }});
     }
-    return catalogView;
+    return shop;
+  }
+
+  /**
+   * Returns true if the matching languages are both null or if they have the
+   * same value.
+   *
+   * @param lang
+   * @param pvLang
+   * @return
+   */
+  public static boolean matchLang(String lang, String pvLang) {
+    return (lang == null && pvLang == null) ||
+        (lang != null && lang.equals(pvLang)); 
   }
 
   /**
@@ -99,9 +113,12 @@ public class Util {
     }
     for (String lang : allLangs) {
       for (Property property : pg.getProperties()) {
+        if (property.getItem() == null) {
+          property.setItem(pg);
+        }
         PropertyValue found = null;
         for (PropertyValue value : values) {
-          if (value.getProperty().getId() == property.getId() &&
+          if (value.getProperty().getId().equals(property.getId()) &&
               ((lang == null && value.getLanguage() ==  null) ||
               lang != null && lang.equals(value.getLanguage()))) {
             found = value;
@@ -154,24 +171,6 @@ public class Util {
     return null;
   }
 
-  /**
-   * Returns the property Label that matches the name and language given a list
-   * of propertyValues.
-   *
-   * @param values
-   * @param name
-   * @param lang
-   * @return
-   */
-  public static Label getLabel(List<PropertyValue> values, String name, String lang) {
-    for (PropertyValue propertyValue : values) {
-      final Label label = getLabel(propertyValue, name, lang);
-
-      if (label != null) return label;
-    }
-    return EMPTY_LABEL;
-  }
-
   public static Label getLabel(PropertyValue value, String name, String lang) {
     if (value == null) return EMPTY_LABEL;
     for (Label label : value.getProperty().getLabels()) {
@@ -184,6 +183,10 @@ public class Util {
     return EMPTY_LABEL;
   }
 
+  public static Label getLabel(List<Label> labels, String lang) {
+    return getLabel(labels, lang, false);
+  }
+
   /**
    * Returns the label matching the language. If lang is not null, but the list
    * of Labels contains a label with language null this label is returns. If no
@@ -193,40 +196,66 @@ public class Util {
    * @param lang
    * @return
    */
-  public static Label getLabel(List<Label> labels, String lang) {
+  public static Label getLabel(List<Label> labels, String lang, boolean fallback) {
     if (labels == null) return EMPTY_LABEL;
     for (Label label : labels) {
       if ((lang == null && label.getLanguage() == null) || 
-          (lang != null && lang.equals(label.getLanguage()))) {
+          (lang != null && lang.equals(label.getLanguage()) &&
+              (!fallback || (label.getLabel() != null && !"".equals(label.getLabel()))))) { 
         return label;
+      }
+    }
+    if (fallback) {
+      for (Label label : labels) {
+        if (label.getLanguage() == null) { 
+          return label;
+        }
       }
     }
     return EMPTY_LABEL;
   }
   
-  public static Binding bindPropertyValue(PropertyValue pv, Widget w, PropertyValueBinding pvb) {
+  public static List<PropertyValue> filterEmpty(Collection<PropertyValue> values) {
+    List<PropertyValue> nv = new ArrayList<PropertyValue>();
+    for (PropertyValue pv : values) {
+      if (!isEmpty(pv)) {
+        nv.add(pv);
+      }
+    }
+    return nv;
+  }
+
+  public static boolean isEmpty(PropertyValue pv) {
+    return pv.getStringValue() == null && pv.getIntegerValue() == null
+        && pv.getEnumValue() == null && pv.getRealValue() == null
+        && pv.getBooleanValue() == null && pv.getMoneyValue() == null
+        && pv.getMoneyCurrency() == null && pv.getMediaValue() == null
+        && pv.getMimeType() == null;
+  }
+
+  public static Binding bindPropertyValue(PropertyType pt, Widget w, PropertyValueBinding pvb) {
     Binding value = null;
-    switch (pv.getProperty().getType()) {
+    switch (pt) {
     case Enum:
       //value = new TextBox();
       break;
     case FormattedText:
-      value = HasTextBinding.bind((HasText)w, pvb.stringValue());
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
       break;
     case Media:
-      value = HasTextBinding.bind((HasText)w, pvb.stringValue());
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
       break;
     case String:
-      value = HasTextBinding.bind((HasText)w, pvb.stringValue());
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
       break;
     case Boolean:
       value = CheckBoxBinding.bind((CheckBox)w, pvb.booleanValue());
       break;
     case Real:
-      value = HasTextBinding.bind((HasText)w, pvb.realValue(), BindingConverters.DOUBLE_CONVERTER);
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.realValue(), BindingConverters.DOUBLE_CONVERTER);
       break;
     case Money:
-      value = HasTextBinding.bind((HasText)w, pvb.moneyValue(), BindingConverters.DOUBLE_CONVERTER);
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.moneyValue(), BindingConverters.DOUBLE_CONVERTER);
       break;
     case Acceleration:
     case AmountOfSubstance:
@@ -246,7 +275,7 @@ public class Util {
     case Voltage:
     case Volume:
     default:
-      value = HasTextBinding.bind((HasText)w, pvb.integerValue(), BindingConverters.INTEGER_CONVERTER);
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.integerValue(), BindingConverters.INTEGER_CONVERTER);
     }
     return value;
   }

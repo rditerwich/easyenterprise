@@ -14,7 +14,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
   public void onModuleLoad() {
     ResourceBundle rb = GWT.create(ResourceBundle.class);
 
-    Util.getCatalogView(null); //TODO init of catalogView should be made generic
+    Util.getShop(null); //TODO init of catalogView should be made generic
     final DockLayoutPanel dlp = new DockLayoutPanel(Unit.PX);
     final FlowPanel topPanel = new FlowPanel();
     final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);

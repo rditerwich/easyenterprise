@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import agilexs.catalogxsadmin.presentation.client.catalog.CatalogView;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroupBinding;
+import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -30,12 +30,11 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   private final HashMap<TreeItem, ProductGroup> treemap = new HashMap<TreeItem, ProductGroup>();
   private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
   private ProductGroup currentProductGroup;
+  private ProductGroup orgProductGroup;
   private String currentLanguage = "en";
-  private CatalogView catalogView;
+  private Shop shop;
   private ProductGroupPropertiesPresenter pgpp;
   private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
-  private final ProductGroupBinding pgBinding = new ProductGroupBinding();
-  private ProductGroup orgProductGroup;
 
   public ProductGroupPresenter() {
     final List<String> langs = new ArrayList<String>(2);
@@ -56,6 +55,58 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
       @Override
       public void onClick(ClickEvent event) {
+        //update properties
+        currentProductGroup.getProperties().clear();
+        currentProductGroup.setProperties(pgpp.getProperties());
+        for (Property np : pgpp.getProperties()) {
+          //TODO remove deleted properties 
+          boolean found = false;
+          for (Property op : orgProductGroup.getProperties()) {
+            if (np.getId() == op.getId()) {
+              found = true;
+//              CatalogServiceAsync.updateProperty(op, np, new AsyncCallback(){
+//                @Override public void onFailure(Throwable caught) {}
+//                @Override public void onSuccess(Object result) {}
+//              });
+              break;
+            }
+          }
+          if (!found) {
+//            CatalogServiceAsync.updateProperty(null, np, new AsyncCallback(){
+//              @Override public void onFailure(Throwable caught) {}
+//              @Override public void onSuccess(Object result) {}
+//            });
+          }
+        }
+        //update property values
+        currentProductGroup.getPropertyValues().clear();
+        currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
+        //update values
+        for (ProductGroupValuesPresenter presenter : valuesPresenters) {
+          currentProductGroup.getPropertyValues().addAll(Util.filterEmpty(presenter.getPropertyValues()));  
+        }
+/*
+        for (PropertyValue np : currentProductGroup.getPropertyValues()) {
+          //TODO remove deleted properties 
+          boolean found = false;
+          for (PropertyValue op : orgProductGroup.getPropertyValues()) {
+            if (np.getId() == op.getId() && !np.equals(op)) {
+              found = true;
+              CatalogServiceAsync.updatePropertyValue(op, np, new AsyncCallback(){
+                @Override public void onFailure(Throwable caught) {}
+                @Override public void onSuccess(Object result) {}
+              });
+              break;
+            }
+          }
+          if (!found) {
+            CatalogServiceAsync.updatePropertyValue(null, np, new AsyncCallback(){
+              @Override public void onFailure(Throwable caught) {}
+              @Override public void onSuccess(Object result) {}
+            });
+          }
+        }
+*/
         CatalogServiceAsync.updateProductGroup(orgProductGroup, currentProductGroup, new AsyncCallback(){
           @Override public void onFailure(Throwable caught) {}
           @Override public void onSuccess(Object result) {}
@@ -67,7 +118,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         final TreeItem item = event.getSelectedItem();
         //FIXME: handle nodes that have no children in the database anyway
         if (item.getChildCount() == 0) {
-          loadChildren(catalogView, item);
+          loadChildren(shop, item);
         }
         currentProductGroup = treemap.get(event.getSelectedItem());
         orgProductGroup = currentProductGroup.clone(new HashMap());  
@@ -78,17 +129,18 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           view.getName().setText(name==null?"":name.getStringValue());
           pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
           view.getParentPropertiesPanel().clear();
-          walkParents(valuesPresenters.iterator(), currentProductGroup);
+          walkParents(valuesPresenters.iterator(), currentProductGroup, currentProductGroup);
         }
       }
 
-      private void walkParents(Iterator<ProductGroupValuesPresenter> iterator, ProductGroup pg) {
+      private void walkParents(Iterator<ProductGroupValuesPresenter> iterator, ProductGroup pg, ProductGroup currentPG) {
         if (pg == null || !parentMap.containsKey(pg.getId())) return;
 
         for (ProductGroup parent : parentMap.get(pg.getId())) {
           if (parent == null) continue;
-          walkParents(iterator, parent);
-          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, pg.getPropertyValues());
+          walkParents(iterator, parent, currentPG);
+          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentPG.getPropertyValues());
+
           if (!pv.isEmpty()) {
             ProductGroupValuesPresenter presenter;
   
@@ -100,7 +152,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             }
             view.getParentPropertiesPanel().add(presenter.getView().getViewWidget());
             //FIXME: this should be a map of parent props to child values 
-            presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), pv);
+            presenter.setValues(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), pv);
+            presenter.show(currentLanguage);
           }
         }        
       }
@@ -124,14 +177,14 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         setLanguage(view.getSelectedLanguage());
       }});
 
-    Util.getCatalogView(new AsyncCallback<CatalogView>(){
+    Util.getShop(new AsyncCallback<Shop>(){
       @Override
       public void onFailure(Throwable caught) {
       }
 
       @Override
-      public void onSuccess(CatalogView result) {
-        catalogView = result;
+      public void onSuccess(Shop result) {
+        shop = result;
         loadChildren(result, null); //initial tree
       }});
   }
@@ -145,15 +198,15 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     currentLanguage = lang;
     pgpp.setLanguage(lang);
     for (ProductGroupValuesPresenter pgvp : valuesPresenters) {
-      pgvp.setLanguage(lang);
+      pgvp.show(lang);
     }
   }
 
-  private void loadChildren(CatalogView catalogView, final TreeItem parent) {
+  private void loadChildren(Shop shop, final TreeItem parent) {
     final ProductGroup parentPG = treemap.get(parent);
 
     CatalogServiceAsync.findAllProductGroupChildren(
-        catalogView, parentPG, new AsyncCallback<List<ProductGroup>>() {
+        shop, parentPG, new AsyncCallback<List<ProductGroup>>() {
           @Override
           public void onFailure(Throwable caught) {
             //FIXME implement handling failure

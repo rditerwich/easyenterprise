@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -20,6 +19,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
 class ProductGroupPropertiesView extends Composite implements View {
@@ -35,11 +35,11 @@ class ProductGroupPropertiesView extends Composite implements View {
     Widget value;
     final CheckBox pgOnly = new CheckBox();
 
-    public HasText getDefaultName() {
+    public TextBoxBase getDefaultName() {
       return defaultName;
     }
 
-    public HasText getName() {
+    public TextBoxBase getName() {
       return name;
     }
 

@@ -40,7 +40,7 @@ public class ProductGroupValuesView extends Composite implements View {
       return valueWrapper;
     }
 
-    public void setValueWidget(PropertyType type) {
+    public Widget setValueWidget(PropertyType type) {
       switch (type) {
       case Enum:
         value = new TextBox();
@@ -80,6 +80,7 @@ public class ProductGroupValuesView extends Composite implements View {
         value = new TextBox();
       }
       valueWrapper.setWidget(value);
+      return value;
     }
   }
 
@@ -117,6 +118,9 @@ public class ProductGroupValuesView extends Composite implements View {
       rowViews.add(rowView);
     }
     row = row + 1; //offset header
+    if (row >= grid.getRowCount()) {
+      grid.resizeRows(row + 1);
+    }
     grid.setWidget(row, 0, (Widget) rowView.getName());
     grid.setWidget(row, 1, (Widget) rowView.getType());
     grid.setWidget(row, 2, rowView.getValueWidget());

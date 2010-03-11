@@ -38,19 +38,34 @@ GwtPackage {
                             }
                             views = {
                                 JavaBeanPropertyView {
+                                    name = CatalogView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:catalog
+                                }
+                                JavaBeanPropertyView {
                                     name = PropertyValuesView
                                     kind = all
                                     referringProperties = catalog:Item/properties:propertyValues
                                 }
                                 JavaBeanPropertyView {
-                                    name = PropertiessView
+                                    name = PropertiesView
                                     kind = all
                                     referringProperties = catalog:Item/properties:properties
                                 }
                                 JavaBeanPropertyView {
-                                    name = PropertyItemView
+                                    name = PropertyValueItemView
+                                    kind = all
+                                    referringProperties = catalog:PropertyValue/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValuePropertyView
                                     kind = all
                                     referringProperties = catalog:PropertyValue/properties:property
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValueItemView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:item
                                 }
                                 JavaBeanPropertyView {
                                     name = LabelsView

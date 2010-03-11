@@ -1,6 +1,8 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.ProductGroupPropertiesView.PGPRowView;
@@ -10,7 +12,7 @@ import agilexs.catalogxsadmin.presentation.client.binding.BindingConverter;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingEvent;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingListener;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
-import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
+import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListBoxBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -26,11 +28,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * Presenter class for all properties on a specific ProductGroup. 
  */
 public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPropertiesView> {
-  
+
   private static class Tuple {
+    private static String curLang = null;
+
+    public static void setLanguage(String lang) {
+      curLang = lang;
+    }
+
+    private final HashMap<String, PropertyValue> langMap = new HashMap<String, PropertyValue>(3);
     private final PropertyValueBinding defaultBinding = new PropertyValueBinding();
     private final PropertyValueBinding binding = new PropertyValueBinding();
-    
+
+
     public PropertyValueBinding getBinding() {
       return binding;
     }
@@ -39,8 +49,16 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
       return defaultBinding;
     }
 
+    public Collection<PropertyValue> values() {
+      return langMap.values();
+    }
+
     public void refresh() {
-      getBinding().setData(getBinding().getData());
+      getBinding().setData(langMap.get(curLang));
+    }
+    
+    public void setPropertyValue(PropertyValue pv) {
+      langMap.put(pv.getLanguage(), pv);
     }
   }
 
@@ -48,9 +66,8 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
 
   private String language = null;
   private final List<Tuple> bindings = new ArrayList<Tuple>();
-  private final BindingConverter<List<Label>, String> labelBindingConverter;
-  private final BindingConverter<List<Label>, String> defaultLabelBindingConverter;
   private final BindingConverter<PropertyType, String> propertyTypeConverter;
+  private int activeBindingSize = 0;
 
   public ProductGroupPropertiesPresenter() {
     view.getNewPropertyButton().addClickHandler(new ClickHandler() {
@@ -66,26 +83,6 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
         rowView.setValueWidget(PropertyType.String);
       }
     });
-    labelBindingConverter = new BindingConverter<List<Label>, String>() {
-      @Override
-      public List<Label> convertFrom(String data) {
-        return null;
-      }
-
-      @Override
-      public String convertTo(List<Label> data) {
-        return Util.getLabel(data, language).getLabel();
-      }};
-    defaultLabelBindingConverter = new BindingConverter<List<Label>, String>() {
-      @Override
-      public List<Label> convertFrom(String data) {
-        return null;
-      }
-      
-      @Override
-      public String convertTo(List<Label> data) {
-        return Util.getLabel(data, null).getLabel();
-      }};
     propertyTypeConverter = new BindingConverter<PropertyType, String>() {
       @Override
       public PropertyType convertFrom(String data) {
@@ -98,6 +95,24 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     };
   }
 
+  public List<PropertyValue> getPropertyValues() {
+    final List<PropertyValue> values = new ArrayList<PropertyValue>();
+    for (int i = 0; i < activeBindingSize; i++) {
+      values.addAll(bindings.get(i).values());
+    }
+    return values;
+  }
+
+  public List<Property> getProperties() {
+    final List<Property> properties = new ArrayList<Property>();
+    for (int i = 0; i < activeBindingSize; i++) {
+      PropertyValue pv = (PropertyValue) bindings.get(i).getDefaultBinding().getData();
+
+      properties.add(pv.getProperty());
+    }
+    return properties;
+  }
+
   @Override
   public ProductGroupPropertiesView getView() {
     return view;
@@ -105,8 +120,9 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
 
   public void setLanguage(String language) {
     this.language = language;
-    for (Tuple pb : bindings) {
-      pb.refresh();
+    Tuple.setLanguage(language);
+    for (int i = 0; i < activeBindingSize; i++) {
+      bindings.get(i).refresh();
     }
   }
 
@@ -116,9 +132,11 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
    */
   public void show(String language, List<PropertyValue> values) {
     this.language = language;
+    Tuple.setLanguage(language);
     view.gridReset();
     final int bindingSize = bindings.size();
     int i = 0;
+    activeBindingSize = 0;
     for (PropertyValue pv : values) {
       if (pv.getLanguage() == null){
         final PGPRowView rowView = view.setRow(i);
@@ -127,33 +145,48 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
           createRow(rowView);
         }
         bindings.get(i).getDefaultBinding().setData(pv);
-        Util.bindPropertyValue(pv, rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
+        Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
         bindings.get(i).getDefaultBinding().setData(pv);
         //rowView.setDefaultValueWidget(pv.getProperty().getType());
         for (PropertyValue pvd : values) {
           if (pvd.getProperty().getId() == pv.getProperty().getId() &&
-              pvd.getLanguage() != null && pvd.getLanguage().equals(language)
-          ) {
-            bindings.get(i).getBinding().setData(pvd);
-            Util.bindPropertyValue(pv, rowView.setValueWidget(pvd.getProperty().getType()), bindings.get(i).getBinding());
-            bindings.get(i).getBinding().setData(pvd);
-            //rowView.setValueWidget(pvd.getProperty().getType());
-            break;
+              pvd.getLanguage() != null) {
+            bindings.get(i).setPropertyValue(pvd);
+            if (pvd.getLanguage().equals(language)) {
+              bindings.get(i).refresh();
+              Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pvd.getProperty().getType()), bindings.get(i).getBinding());
+              bindings.get(i).refresh();
+            }
           }
         }
         i++;
       }
     }
-    if (bindings.size() > 0) {
-      //lpb.setData(propertyTypeList);
-    }
+    activeBindingSize = i;
   }
 
   private Tuple createRow(final PGPRowView rowView) {
     final Tuple pb = new Tuple();
 
     bindings.add(pb);
-    HasTextBinding.<List<Label>>bind(rowView.getDefaultName(), pb.getDefaultBinding().property().labels(), defaultLabelBindingConverter);
+    TextBoxBaseBinding.<List<Label>>bind(rowView.getDefaultName(), pb.getDefaultBinding().property().labels(), new BindingConverter<List<Label>, String>() {
+      private List<Label> labels;
+
+      @Override
+      public List<Label> convertFrom(String data) {
+        for (Label label : labels) {
+          if (Util.matchLang(null, label.getLanguage())) {
+            label.setLabel(data);
+          }
+        }
+        return labels;
+      }
+      
+      @Override
+      public String convertTo(List<Label> data) {
+        labels = data;
+        return Util.getLabel(data, null).getLabel();
+      }});
     final ListPropertyTypeBinding lpb = new ListPropertyTypeBinding();
 
     ListBoxBinding.bind(rowView.getType(), lpb, pb.getDefaultBinding().property().type(), propertyTypeConverter);
@@ -163,9 +196,9 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
           @Override
           public void onBindingChangeEvent(BindingEvent event) {
             if (event instanceof BindingChangeStateEvent) {
-              Util.bindPropertyValue((PropertyValue) pb.getDefaultBinding().getData(),
+              Util.bindPropertyValue(((PropertyValue) pb.getDefaultBinding().getData()).getProperty().getType(),
                   rowView.setDefaultValueWidget(lpb.get(rowView.getType().getSelectedIndex())), pb.getDefaultBinding());
-              Util.bindPropertyValue((PropertyValue) pb.getBinding().getData(),
+              Util.bindPropertyValue(((PropertyValue) pb.getBinding().getData()).getProperty().getType(),
                   rowView.setValueWidget(lpb.get(rowView.getType().getSelectedIndex())), pb.getBinding());
               //Next line doesn't work because data not set at this point. Bug?
               //rowView.setValueWidget((PropertyType) pb.property().type().getData());
@@ -173,7 +206,24 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
           }
         });
     CheckBoxBinding.bind(rowView.getPGOnly(), pb.getDefaultBinding().property().productGroupProperty());
-    HasTextBinding.<List<Label>>bind(rowView.getName(), pb.getBinding().property().labels(), labelBindingConverter);
+    TextBoxBaseBinding.<List<Label>>bind(rowView.getName(), pb.getBinding().property().labels(), new BindingConverter<List<Label>, String>() {
+      private List<Label> labels;
+
+      @Override
+      public List<Label> convertFrom(String data) {
+        for (Label label : labels) {
+          if (Util.matchLang(language, label.getLanguage())) {
+            label.setLabel(data);
+          }
+        }
+        return labels;
+      }
+
+      @Override
+      public String convertTo(List<Label> data) {
+        labels = data;
+        return Util.getLabel(data, language).getLabel();
+      }});
     return pb;
   }
 }

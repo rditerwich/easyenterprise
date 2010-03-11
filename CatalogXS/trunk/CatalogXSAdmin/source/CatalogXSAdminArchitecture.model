@@ -14,6 +14,7 @@ import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
 
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
 
 JavaEEArchitectureJpaEjbGwt {
     name = CatalogXSAdminArchitecture
@@ -23,21 +24,24 @@ JavaEEArchitectureJpaEjbGwt {
     databaseVendor = postgresql
     generateBaseClasses = true
     aspects = {
-/*        Scala {
-            name = ScalaAspect
-            participants = {
-                /modules:agilexs.catalogxs.presentation
-            }
-        }
-*/
         Crud {
             name = CrudForAll
             participants = {
                 catalog:Catalog
-                catalog:Product
+                catalog:Item
                 catalog:ProductGroup
+                catalog:Product
                 catalog:Property                
-                catalog:CatalogView
+                catalog:Label
+                catalog:EnumValue
+                catalog:PropertyValue                
+                catalog:Relation
+                catalog:RelationType
+                shop:Shop
+                shop:Promotion
+                shop:VolumeDiscountPromotion
+//                catalog:Promotion
+//                catalog:VolumeDiscountPromotion
 /*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
             }
         }
@@ -48,8 +52,8 @@ JavaEEArchitectureJpaEjbGwt {
                 catalog:Catalog
                 catalog:Product
                 catalog:ProductGroup
-                catalog:Promotion
-                catalog:CatalogView
+//                catalog:Promotion
+//                catalog:CatalogView
             }
             paging = false
             view = {
