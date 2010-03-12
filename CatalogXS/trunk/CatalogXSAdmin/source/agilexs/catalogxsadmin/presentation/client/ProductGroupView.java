@@ -2,8 +2,6 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.List;
 
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroupBinding;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -31,7 +29,6 @@ public class ProductGroupView extends Composite implements View {
   final Tree tree = new Tree();
   final FlowPanel allPropertiesPanel = new FlowPanel();
   final HTML name = new HTML();
-  final ProductGroupBinding pgBinding = new ProductGroupBinding();
   final Button newButton = new Button("Add new product group");
   final Button saveButton = new Button("Save changes");
   final ListBox languageList = new ListBox();
@@ -121,10 +118,6 @@ public class ProductGroupView extends Composite implements View {
     return languageList.getValue(languageList.getSelectedIndex());
   }
   
-  public void setProductGroup(ProductGroup pg) {
-    pgBinding.setData(pg);
-  }
-
   public TreeItem addTreeItem(TreeItem parent, String text) {
     final TreeItem item = new TreeItem(text);
 

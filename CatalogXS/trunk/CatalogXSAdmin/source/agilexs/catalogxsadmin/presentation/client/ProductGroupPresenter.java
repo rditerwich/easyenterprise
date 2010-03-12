@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -42,10 +44,12 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     langs.add("de");
 
     view.getNewButtonClickHandler().addClickHandler(new ClickHandler() {
+
       @Override
       public void onClick(ClickEvent event) {
         orgProductGroup = null;
         currentProductGroup = new ProductGroup();
+        currentProductGroup.setCatalog(shop.getCatalog());
         view.getName().setText("");
         pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
         view.getParentPropertiesPanel().clear();
@@ -57,7 +61,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       public void onClick(ClickEvent event) {
         //update properties
         currentProductGroup.getProperties().clear();
-        currentProductGroup.setProperties(pgpp.getProperties());
+//        currentProductGroup.setProperties(pgpp.getProperties());
         for (Property np : pgpp.getProperties()) {
           //TODO remove deleted properties 
           boolean found = false;
@@ -80,11 +84,11 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         }
         //update property values
         currentProductGroup.getPropertyValues().clear();
-        currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
-        //update values
-        for (ProductGroupValuesPresenter presenter : valuesPresenters) {
-          currentProductGroup.getPropertyValues().addAll(Util.filterEmpty(presenter.getPropertyValues()));  
-        }
+//        currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
+//        //update values
+//        for (ProductGroupValuesPresenter presenter : valuesPresenters) {
+//          currentProductGroup.getPropertyValues().addAll(Util.filterEmpty(presenter.getPropertyValues()));  
+//        }
 /*
         for (PropertyValue np : currentProductGroup.getPropertyValues()) {
           //TODO remove deleted properties 
@@ -117,7 +121,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       public void onSelection(SelectionEvent<TreeItem> event) {
         final TreeItem item = event.getSelectedItem();
         //FIXME: handle nodes that have no children in the database anyway
-        if (item.getChildCount() == 0) {
+        if (item.getChildCount() == 0 && !treemap.get(item).getContainsProducts()) {
           loadChildren(shop, item);
         }
         currentProductGroup = treemap.get(event.getSelectedItem());
@@ -215,6 +219,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           @Override
           public void onSuccess(List<ProductGroup> result) {
             for (ProductGroup productGroup : result) {
+              CatalogCache.INSTANCE.put(productGroup);
               final PropertyValue value = Util.getPropertyValueByName(productGroup.getPropertyValues(), Util.NAME, null);
 
               if (!parentMap.containsKey(productGroup.getId())) {

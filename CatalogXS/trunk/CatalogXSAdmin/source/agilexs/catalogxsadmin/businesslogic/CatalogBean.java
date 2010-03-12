@@ -53,7 +53,7 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
         if (pageSize == null || pageSize < 1) {
             throw new IllegalArgumentException("pageSize < 1, page size must be 1 at least");
         }
-        final String queryString = "select p from Product p, IN(p.productGroups) pg where pg = :productgroup";
+        final String queryString = "select p from Product p, IN(p.parents) pg where pg = :productgroup";
         final Query query = entityManager.createQuery(queryString);
 
         query.setParameter("productgroup", filter);

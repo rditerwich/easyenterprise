@@ -35,6 +35,59 @@ GwtPackage {
                                 catalog:Item/properties:catalog
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
+                                catalog:ProductGroup/properties:containsProducts
+                            }
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = CatalogView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:catalog
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValuesView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:propertyValues
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertiesView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:properties
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValueItemView
+                                    kind = all
+                                    referringProperties = catalog:PropertyValue/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValuePropertyView
+                                    kind = all
+                                    referringProperties = catalog:PropertyValue/properties:property
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValueItemView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = LabelsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:labels
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
+                    name = findAllByProductGroupProducts
+                    view = {
+                        JavaBeanView {
+                            name = ProductView
+                            kind = none
+                            included = {
+                                catalog:Item/properties:id
+                                catalog:Item/properties:catalog
+                                catalog:Item/properties:propertyValues
+                                catalog:Item/properties:properties
                             }
                             views = {
                                 JavaBeanPropertyView {
