@@ -111,12 +111,12 @@ public class ProductPresenter implements Presenter<ProductView> {
   public void show(Shop shop, ProductGroup productGroup, ProductGroup root) {
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
-      if (currentProductGroup.getContainsProducts()) {
+//FIXME: if (currentProductGroup.getContainsProducts()) {
         this.root = root;
         loadProducts(shop, currentProductGroup);
-      } else {
-        show(SHOW.NO_PRODUCTS);
-      }
+//      } else {
+//        show(SHOW.NO_PRODUCTS);
+//      }
     } else {
       // FIXME ?? can this happen?
     }

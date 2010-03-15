@@ -85,7 +85,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
         currentProductGroup = treemap.get(item);
         if (currentProductGroup != null) {
-          if (item.getChildCount() == 0 && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+          if (item.getChildCount() == 0) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
             loadChildren(activeShop, item);
           }
           if (view.getSelectedTab() == 0) {
