@@ -1,0 +1,4 @@
+<!-- Includes the source files for the Catalogxs theme. -->
+<module>
+<stylesheet src="gwt/catalogxs/catalogxs.css"/>
+</module>
