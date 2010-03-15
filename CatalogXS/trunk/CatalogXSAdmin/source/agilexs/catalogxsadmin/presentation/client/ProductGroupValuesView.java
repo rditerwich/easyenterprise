@@ -100,7 +100,7 @@ public class ProductGroupValuesView extends Composite implements View {
   }
 
   @Override
-  public Widget getViewWidget() {
+  public Widget asWidget() {
     return this;
   }
 

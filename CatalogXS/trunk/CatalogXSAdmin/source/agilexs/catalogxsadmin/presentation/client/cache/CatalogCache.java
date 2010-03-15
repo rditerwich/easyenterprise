@@ -11,6 +11,8 @@ import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -18,14 +20,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 //Singleton
 public class CatalogCache {
 
-  public static CatalogCache INSTANCE = new CatalogCache();
+  private static CatalogCache instance = new CatalogCache();
+  public static CatalogCache get() {
+    return instance;
+  }
 
-  private final Map<Long, ProductGroup> productGroupCache = new HashMap<Long, ProductGroup>(); 
+  private final Map<Long, Shop> shopCache = new HashMap<Long, Shop>();
+  private final Map<Long, ProductGroup> productGroupCache = new HashMap<Long, ProductGroup>();
   private final Map<Long, Product> productCache = new HashMap<Long, Product>();
   private final Map<Long, Property> propertyCache = new HashMap<Long, Property>();
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
-  private final ArrayList<String> languages = new ArrayList<String>(2); 
+  private final ArrayList<String> languages = new ArrayList<String>(2);
+  private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
+  private final List<ProductGroup> emptyList = new ArrayList<ProductGroup>(0);
 
   private CatalogCache() {
     //TODO Calculate cache languages based on what is in database
@@ -37,13 +45,34 @@ public class CatalogCache {
     return languages;
   }
 
+  public Shop getShop(Long id) {
+    return shopCache.get(id);
+  }
+
+  public void getShop(Long id, final AsyncCallback callback) {
+    if (shopCache.containsKey(id)) {
+      callback.onSuccess(getShop(id));
+    } else {
+      ShopServiceAsync.findShopById(id, new AsyncCallback<Shop>(){
+        @Override public void onFailure(Throwable caught) {
+          callback.onFailure(caught);
+        }
+
+        @Override
+        public void onSuccess(Shop result) {
+          put(result);
+          callback.onSuccess(result);
+        }});
+    }
+  }
+
   public ProductGroup getProductGroup(Long id) {
     return productGroupCache.get(id);
   }
 
   public void getproductGroupCache(Long id, final AsyncCallback callback) {
     if (productGroupCache.containsKey(id)) {
-      callback.onSuccess(productGroupCache.get(id));
+      callback.onSuccess(getProductGroup(id));
     } else {
       CatalogServiceAsync.findProductGroupById(id, new AsyncCallback<ProductGroup>() {
         @Override public void onFailure(Throwable caught) {
@@ -55,11 +84,30 @@ public class CatalogCache {
         }});
     }
   }
-  
+
+  public boolean parentMapContains(ProductGroup productGroup) {
+    return parentMap.containsKey(productGroup.getId());
+  }
+
+  public List<ProductGroup> getParents(ProductGroup productGroup) {
+    return parentMapContains(productGroup) ? parentMap.get(productGroup.getId()) : emptyList;
+  }
+
+  public void putParent(ProductGroup productGroup, ProductGroup parent) {
+    if (parent != null) {
+      if (!parentMap.containsKey(productGroup.getId())) {
+        parentMap.put(productGroup.getId(), new ArrayList<ProductGroup>());
+      }
+      if (ProductGroup.findProductGroup(parentMap.get(productGroup.getId()), parent.getId()) == null) {
+        parentMap.get(productGroup.getId()).add(parent);
+      }
+    }
+  }
+
   public Product getProduct(Long id) {
     return productCache.get(id);
   }
-  
+
   public void getProduct(Long id, final AsyncCallback<Product> callback) {
     if (productCache.containsKey(id)) {
       callback.onSuccess(productCache.get(id));
@@ -74,11 +122,11 @@ public class CatalogCache {
         }});
     }
   }
-  
+
   public Property getProperty(Long id) {
     return propertyCache.get(id);
   }
-  
+
   public void getProperty(Long id, final AsyncCallback<Property> callback) {
     if (propertyCache.containsKey(id)) {
       callback.onSuccess(propertyCache.get(id));
@@ -93,11 +141,11 @@ public class CatalogCache {
         }});
     }
   }
-  
+
   public PropertyValue getPropertyValue(Long id) {
     return propertyValueCache.get(id);
   }
-  
+
   public void getPropertyValue(Long id, final AsyncCallback<PropertyValue> callback) {
     if (propertyValueCache.containsKey(id)) {
       callback.onSuccess(propertyValueCache.get(id));
@@ -112,11 +160,11 @@ public class CatalogCache {
         }});
     }
   }
-  
+
   public Label getLabel(Long id) {
     return labelCache.get(id);
   }
-  
+
   public void getLabel(Long id, final AsyncCallback<Label> callback) {
     if (labelCache.containsKey(id)) {
       callback.onSuccess(labelCache.get(id));
@@ -130,6 +178,10 @@ public class CatalogCache {
           callback.onSuccess(result);
         }});
     }
+  }
+
+  public void put(Shop shop) {
+    shopCache.put(shop.getId(), shop);
   }
 
   public void put(ProductGroup pg) {

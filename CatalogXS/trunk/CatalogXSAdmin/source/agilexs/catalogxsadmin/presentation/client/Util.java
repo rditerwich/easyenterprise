@@ -15,10 +15,8 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
-import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
-import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,27 +57,9 @@ public class Util {
   public static final String NAME = "Name";
 
   private static final Label EMPTY_LABEL = new Label();
-  private static Shop shop;
 
   static {
     EMPTY_LABEL.setLabel("UNKNOWN LABEL");
-  }
-
-  public static Shop getShop(final AsyncCallback<Shop> async) {
-    if (shop == null) {
-      ShopServiceAsync.findShopById(1L, new AsyncCallback<Shop>(){
-        @Override
-        public void onFailure(Throwable caught) {
-          //TODO implement onFailure Util.getCatalogView
-        }
-
-        @Override
-        public void onSuccess(Shop result) {
-          shop = result;
-          if (async != null) async.onSuccess(result);
-        }});
-    }
-    return shop;
   }
 
   /**
@@ -164,23 +144,19 @@ public class Util {
 
   public static PropertyValue getPropertyValueByName(List<PropertyValue> values, String name, String lang) {
     for (PropertyValue propertyValue : values) {
-      if(getLabel(propertyValue, name, lang) != null) {
+      if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
         return propertyValue;
       }
     }
     return null;
   }
 
-  public static Label getLabel(PropertyValue value, String name, String lang) {
-    if (value == null) return EMPTY_LABEL;
-    for (Label label : value.getProperty().getLabels()) {
-      if (name.equals(label.getLabel()) &&
-          ((lang == null && label.getLanguage() == null) || 
-           (lang != null && (label.getLanguage() == null || lang.equals(label.getLanguage()))))) {
-        return label;
-      }
-    }
-    return EMPTY_LABEL;
+  public static Label getLabel(PropertyValue value, String lang) {
+    return Util.getLabel(value.getProperty().getLabels(), lang);
+  }
+
+  public static Label getLabel(PropertyValue value, String lang, boolean fallback) {
+    return Util.getLabel(value.getProperty().getLabels(), lang, fallback);
   }
 
   public static Label getLabel(List<Label> labels, String lang) {
@@ -278,5 +254,13 @@ public class Util {
       value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.integerValue(), BindingConverters.INTEGER_CONVERTER);
     }
     return value;
+  }
+
+  public static String formatMoney(Double money) {
+    return money == null ? "" : NumberFormat.getCurrencyFormat("EUR").format(money / 100);
+  }
+
+  public static String stringValueOf(Object objectValue) {
+    return objectValue == null ? "" : String.valueOf(objectValue);
   }
 }

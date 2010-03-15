@@ -1,17 +1,12 @@
 package agilexs.catalogxsadmin.presentation.client;
 
-import java.util.List;
-
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -19,56 +14,33 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProductView extends Composite implements View {
 
   public enum SHOW {
-    PRODUCT_GROUP, PRODUCTS, PRODUCT
+    NO_PRODUCTS, PRODUCTS, PRODUCT
   }
 
+  final DockLayoutPanel panel = new DockLayoutPanel(Unit.PX);
   
-  final SplitLayoutPanel panel = new SplitLayoutPanel();
-  final Tree tree = new Tree();
-  final Button newButton = new Button("Add new product");
-  final Button saveButton = new Button("Save changes");
-  final ListBox languageList = new ListBox();
   final DeckPanel deck = new DeckPanel();
 
   final Anchor back = new Anchor();
-  final HTML name = new HTML();
+  final HTML pname = new HTML();
+  final HTML pgname = new HTML();
   final FlowPanel propertiesPanel = new FlowPanel();
 
   final Grid productTable = new Grid(); 
   private HTML productGroupName = new HTML();
 
   public ProductView() {
-    initWidget(panel);
+    initWidget(deck);
 
-    panel.addWest(tree, 300);
-    final DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);
-    panel.add(mainPanel);
-
-    final FlowPanel buttonBar = new FlowPanel();
-    buttonBar.add(newButton);
-    buttonBar.add(languageList);
-    buttonBar.add(saveButton);
-    //TODO auto enable save button on changes: saveButton.setEnabled(false);
-    //TODO build language listbox items dynamic instead of static 
-    languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
-    mainPanel.addNorth(buttonBar, 40);
-    mainPanel.add(deck);
-
-    //ProductGroup page
-    deck.add(new FlowPanel());
+    deck.add(new HTML("No products in this group"));
     //Overview table
     final DockLayoutPanel overviewPanel = new DockLayoutPanel(Unit.PX);
     deck.add(overviewPanel);
@@ -82,38 +54,43 @@ public class ProductView extends Composite implements View {
     deck.add(detailPanel);
     final VerticalPanel top = new VerticalPanel();
     back.setHTML("&laquo; Back to product overview");
-    back.addClickHandler(new ClickHandler() {
-      @Override public void onClick(ClickEvent event) {
-        showPage(SHOW.PRODUCTS);
-      }});
     top.add(back);
-    top.add(name);
+    top.add(pgname);
     detailPanel.addNorth(top, 40);
-    final ScrollPanel sp = new ScrollPanel(propertiesPanel);
-    //allPropertiesPanel.add(new HTML("<h3>Relations</h3>"));
-    //allPropertiesPanel..add(relations);
+    final FlowPanel productPanel = new FlowPanel();
+    final ScrollPanel sp = new ScrollPanel(productPanel);
     sp.getElement().getStyle().setPadding(10, Unit.PX);
     detailPanel.add(sp);
+
+    productPanel.add(pname);
+    productPanel.add(propertiesPanel);
   }
 
-  public Tree getTree() {
-    return tree;
+  public HasClickHandlers hasBackClickHandlers(ClickHandler handler) {
+    return back;
   }
 
   public FlowPanel getPropertiesPanel() {
     return propertiesPanel;
   }
 
-  public HasText getName() {
-    return name;
+  public void setProductName(String name) {
+    pname.setHTML("<h2>" + name + "</h2>");
   }
 
-  public HasText getProductGroupName() {
-    return name;
+  public void setProductGroupName(String name) {
+    pgname.setHTML("<h2>" + name + "</h2>");
   }
 
   public Grid getProductTable() {
     return productTable;
+  }
+
+  public void setProductTableHeader(int column, String text) {
+    if (column >= productTable.getColumnCount()) {
+      productTable.resizeColumns(column+1);
+    }
+    productTable.setWidget(0, column, new Label(text));
   }
 
   public void setProductTableCell(int row, int column, PropertyValue pv) {
@@ -123,62 +100,21 @@ public class ProductView extends Composite implements View {
     productTable.setWidget(row, column, getWidget(pv));
   }
 
-  public HasClickHandlers getNewButtonClickHandler() {
-    return newButton;
-  }
-
-  public HasClickHandlers getSaveButtonClickHandler() {
-    return saveButton;
-  }
-
   @Override
-  public Widget getViewWidget() {
+  public Widget asWidget() {
     return this;
   }
 
   public void showPage(SHOW show) {
     int i = 0;
     switch (show) {
-    case PRODUCT_GROUP: i = 0; break;
+    case NO_PRODUCTS: i = 0; break;
     case PRODUCTS: i = 1; break;
     case PRODUCT: i = 2; break;
     }
     deck.showWidget(i);
   }
 
-  /**
-   * Sets the languages on the Language ListBox
-   * @param languages
-   * @param selected
-   */
-  public void setLanguages(List<List<String>> languages, String selected) {
-    for (List<String> lang : languages) {
-      languageList.addItem(lang.get(1), lang.get(0));
-      if (lang.get(0).equals(selected)) {
-        languageList.setItemSelected(languageList.getItemCount()-1, true);
-      }
-    }
-  }
-
-  public HasChangeHandlers getLanguageChangeHandler() {
-    return languageList;
-  }
-
-  public String getSelectedLanguage() {
-    return languageList.getValue(languageList.getSelectedIndex());
-  }
-  
-  public TreeItem addTreeItem(TreeItem parent, String text) {
-    final TreeItem item = new TreeItem(text);
-
-    if (parent == null) {
-      tree.addItem(item);
-    } else {
-      parent.addItem(item);
-    }
-    return item;
-  }
-  
   private Widget getWidget(PropertyValue pv) {
     Widget value = null;
     switch (pv.getProperty().getType()) {
@@ -193,7 +129,7 @@ public class ProductView extends Composite implements View {
       break;
     case String:
       value = new Label();
-      ((Label) value).setText(String.valueOf(pv.getStringValue()));
+      ((Label) value).setText(Util.stringValueOf(pv.getStringValue()));
       break;
     case Boolean:
       value = new CheckBox();
@@ -201,12 +137,12 @@ public class ProductView extends Composite implements View {
       ((CheckBox)value).setValue(Boolean.valueOf(pv.getBooleanValue()));
       break;
     case Money:
-      value = new Label();
-      ((Label) value).setText(String.valueOf(pv.getMoneyValue()));
+      value = new HTML();
+      ((HTML) value).setHTML(Util.formatMoney(pv.getMoneyValue()));
       break;
     case Real:
       value = new Label();
-      ((Label) value).setText(String.valueOf(pv.getRealValue()));
+      ((Label) value).setText(Util.stringValueOf(pv.getRealValue()));
       break;
     case Acceleration:
     case AmountOfSubstance:
@@ -227,7 +163,7 @@ public class ProductView extends Composite implements View {
     case Volume:
     default:
       value = new Label();
-      ((Label) value).setText(String.valueOf(pv.getIntegerValue()));
+      ((Label) value).setText(Util.stringValueOf(pv.getIntegerValue()));
     }
     return value;
   }
