@@ -2,7 +2,6 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
@@ -33,6 +32,13 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   public ProductGroupPresenter() {
     pgpp = new ProductGroupPropertiesPresenter(); 
     view.setPropertiesPanel(pgpp.getView().asWidget());
+    view.containsProductsClickHandler().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (currentProductGroup != null) {
+          currentProductGroup.setContainsProducts(view.containsProducts.getValue());
+        }
+      }});
   }
 
   public ClickHandler getNewProductGroupClickHandler() {
@@ -42,7 +48,9 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         orgProductGroup = null;
         currentProductGroup = new ProductGroup();
         currentProductGroup.setCatalog(shop.getCatalog());
+        currentProductGroup.setContainsProducts(Boolean.FALSE);
         view.setName("");
+        view.containsProducts.setValue(currentProductGroup.getContainsProducts());
         pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
         view.getParentPropertiesPanel().clear();
         // view.getTree().setSelectedItem(null);
@@ -134,6 +142,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         final PropertyValue name = Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, null);
   
         view.setName(name==null?"":name.getStringValue());
+        view.containsProducts.setValue(currentProductGroup.getContainsProducts());
         pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
         view.getParentPropertiesPanel().clear();
         valuesPresenters.clear();

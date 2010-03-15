@@ -96,6 +96,10 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
       final List<ProductGroup> result = query.getResultList();
       if (result != null) {
         for (ProductGroup productGroup : result) {
+          //check, because db containsProduct table may be null
+          if (productGroup.getContainsProducts() == null) {
+            productGroup.setContainsProducts(Boolean.FALSE);
+          }
           productGroup.setCatalog(productGroup.getCatalog());
           for (Property property : productGroup.getProperties()) {
             property.setLabels(property.getLabels());

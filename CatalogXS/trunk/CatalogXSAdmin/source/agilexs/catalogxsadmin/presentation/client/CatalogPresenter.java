@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -42,7 +41,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     langs.add("en");
     langs.add("de");
 
-    view.addTab(pgp.getView(), "Product Groups");
+    view.addTab(pgp.getView(), "Product Group");
     view.addTab(pp.getView(), "Products");
 
     view.getNewProductButtonClickHandler().addClickHandler(pp.getNewProductClickHandler());
@@ -125,7 +124,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         shop, parentPG, new AsyncCallback<List<ProductGroup>>() {
           @Override
           public void onFailure(Throwable caught) {
-            //FIXME implement handling failure
+            StatusMessage.get().show(caught.getMessage(), 30);
           }
 
           @Override
