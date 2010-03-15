@@ -112,4 +112,8 @@ public class CatalogView extends Composite implements View {
   public void addTabSelectionHandler(SelectionHandler<Integer> selectionHandler) {
     tp.addSelectionHandler(selectionHandler);
   }
+
+  public void selectedTab(int i) {
+    tp.selectTab(i);
+  }
 }

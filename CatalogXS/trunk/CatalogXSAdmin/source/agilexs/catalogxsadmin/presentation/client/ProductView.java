@@ -4,7 +4,6 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -66,7 +65,7 @@ public class ProductView extends Composite implements View {
     productPanel.add(propertiesPanel);
   }
 
-  public HasClickHandlers hasBackClickHandlers(ClickHandler handler) {
+  public HasClickHandlers hasBackClickHandlers() {
     return back;
   }
 

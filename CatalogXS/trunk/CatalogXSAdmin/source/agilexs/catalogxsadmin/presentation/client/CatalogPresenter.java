@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -44,8 +46,20 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     view.addTab(pgp.getView(), "Product Group");
     view.addTab(pp.getView(), "Products");
 
-    view.getNewProductButtonClickHandler().addClickHandler(pp.getNewProductClickHandler());
-    view.getNewProductButtonClickHandler().addClickHandler(pgp.getNewProductGroupClickHandler());
+    view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        pgp.setNewProductGroup(activeShop);
+        view.getTree().setSelectedItem(null);
+        view.selectedTab(0);
+      }});
+    view.getNewProductButtonClickHandler().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        pp.setNewProduct(activeShop);
+        view.getTree().setSelectedItem(null);
+        view.selectedTab(1);
+      }});
     view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {

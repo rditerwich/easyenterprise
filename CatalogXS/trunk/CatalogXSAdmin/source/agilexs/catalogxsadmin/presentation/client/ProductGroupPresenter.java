@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -25,7 +26,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   private ProductGroup currentProductGroup;
   private ProductGroup orgProductGroup;
   private String currentLanguage = "en";
-  private Shop shop;
   private ProductGroupPropertiesPresenter pgpp;
   private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
 
@@ -41,21 +41,15 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       }});
   }
 
-  public ClickHandler getNewProductGroupClickHandler() {
-    return new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        orgProductGroup = null;
-        currentProductGroup = new ProductGroup();
-        currentProductGroup.setCatalog(shop.getCatalog());
-        currentProductGroup.setContainsProducts(Boolean.FALSE);
-        view.setName("");
-        view.containsProducts.setValue(currentProductGroup.getContainsProducts());
-        pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
-        view.getParentPropertiesPanel().clear();
-        // view.getTree().setSelectedItem(null);
-      }
-    };
+  public void setNewProductGroup(Shop shop) {
+      orgProductGroup = null;
+      currentProductGroup = new ProductGroup();
+      currentProductGroup.setCatalog(shop.getCatalog());
+      currentProductGroup.setContainsProducts(Boolean.FALSE);
+      view.setName("");
+      view.containsProducts.setValue(currentProductGroup.getContainsProducts());
+      pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
+      view.getParentPropertiesPanel().clear();
   }
 
   @Override
@@ -73,7 +67,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   public void save() {
     // update properties
-    currentProductGroup.getProperties().clear();
+    //currentProductGroup.getProperties().clear();
     // currentProductGroup.setProperties(pgpp.getProperties());
     for (Property np : pgpp.getProperties()) {
       // TODO remove deleted properties
@@ -96,7 +90,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       }
     }
     // update property values
-    currentProductGroup.getPropertyValues().clear();
+    //currentProductGroup.getPropertyValues().clear();
     // currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
     // //update values
     // for (ProductGroupValuesPresenter presenter : valuesPresenters) {
@@ -123,10 +117,13 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         currentProductGroup, new AsyncCallback() {
           @Override
           public void onFailure(Throwable caught) {
+            //TODO message on save fail
           }
 
           @Override
           public void onSuccess(Object result) {
+            final Label name = Util.getLabel(Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, null), currentLanguage);
+            StatusMessage.get().show("Product group "+ name.getLabel()+ " saved.", 15);
           }
         });
   }

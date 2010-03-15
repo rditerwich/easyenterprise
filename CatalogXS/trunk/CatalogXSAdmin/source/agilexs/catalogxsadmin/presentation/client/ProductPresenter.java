@@ -2,7 +2,6 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
@@ -44,22 +43,18 @@ public class ProductPresenter implements Presenter<ProductView> {
           show(SHOW.PRODUCT);
         }
       }});
-    view.hasBackClickHandlers(new ClickHandler() {
+    view.hasBackClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
         show(SHOW.PRODUCTS);
       }});
   }
 
-  public ClickHandler getNewProductClickHandler() {
-    return new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        orgProduct = null;
-        currentProduct = new Product();
-        view.setProductName("");
-        //TODO set tree correctly view.getTree().setSelectedItem(null);
-        show(SHOW.PRODUCT);
-      }};
+  public void setNewProduct(Shop shop) {
+    orgProduct = null;
+    currentProduct = new Product();
+    currentProduct.setCatalog(shop.getCatalog());
+    view.setProductName("");
+    show(SHOW.PRODUCT);
   }
 
   @Override
