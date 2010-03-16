@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -82,10 +80,11 @@ public class CatalogPresenter implements Presenter<CatalogView> {
       @Override
       public void onSelection(SelectionEvent<TreeItem> event) {
         final TreeItem item = event.getSelectedItem();
-
+        
+        item.setState(true); //when user clicks on item also open it.
         currentProductGroup = treemap.get(item);
         if (currentProductGroup != null) {
-          if (item.getChildCount() == 0) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+          if (view.isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
             loadChildren(activeShop, item);
           }
           if (view.getSelectedTab() == 0) {
@@ -111,7 +110,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     view.getLanguageChangeHandler().addChangeHandler(new ChangeHandler(){
       @Override
       public void onChange(ChangeEvent event) {
-        pgp.setLanguage(view.getSelectedLanguage());
+        pgp.show(view.getSelectedLanguage());
         pp.setLanguage(view.getSelectedLanguage());
       }});
     
@@ -143,13 +142,20 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
           @Override
           public void onSuccess(List<ProductGroup> result) {
+            if (result.size() == 0) {
+              view.setTreeItemAsEmpty(parent);
+            }
             for (ProductGroup productGroup : result) {
               final PropertyValue value = Util.getPropertyValueByName(productGroup.getPropertyValues(), Util.NAME, null);
 
-              if (root == null && "Root".equals(value.getStringValue())) {
+              if (root == null && Util.ROOT.equals(value.getStringValue())) {
                 root = productGroup;
               }
-              CatalogCache.get().putParent(productGroup, parentPG);
+              CatalogCache.get().put(productGroup);
+              for (ProductGroup pPG : productGroup.getParents()) {
+                CatalogCache.get().put(pPG);
+              }
+//              CatalogCache.get().putParent(productGroup, parentPG);
               treemap.put(
                   view.addTreeItem(parent, value != null ? value.getStringValue() : "<No Name>"), productGroup);
             }

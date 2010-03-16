@@ -23,20 +23,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   private final ProductGroupView view = new ProductGroupView();
+  private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
+  private ProductGroupPropertiesPresenter pgpp;
+
+  private String currentLanguage = "en";
   private ProductGroup currentProductGroup;
   private ProductGroup orgProductGroup;
-  private String currentLanguage = "en";
-  private ProductGroupPropertiesPresenter pgpp;
-  private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
+  private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
 
   public ProductGroupPresenter() {
-    pgpp = new ProductGroupPropertiesPresenter(); 
-    view.setPropertiesPanel(pgpp.getView().asWidget());
+    pgpp = new ProductGroupPropertiesPresenter();
+    view.setParentsPanel(parentsP.getView());
+    view.setPropertiesPanel(pgpp.getView());
     view.containsProductsClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         if (currentProductGroup != null) {
-          currentProductGroup.setContainsProducts(view.containsProducts.getValue());
+          currentProductGroup.setContainsProducts(view.containsProducts().getValue());
         }
       }});
   }
@@ -47,7 +50,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       currentProductGroup.setCatalog(shop.getCatalog());
       currentProductGroup.setContainsProducts(Boolean.FALSE);
       view.setName("");
-      view.containsProducts.setValue(currentProductGroup.getContainsProducts());
+      view.containsProducts().setValue(currentProductGroup.getContainsProducts());
       pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
       view.getParentPropertiesPanel().clear();
   }
@@ -57,15 +60,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     return view;
   }
 
-  public void setLanguage(String lang) {
-    currentLanguage = lang;
-    pgpp.setLanguage(lang);
-    for (ProductGroupValuesPresenter pgvp : valuesPresenters) {
-      pgvp.show(lang);
-    }
-  }
-
   public void save() {
+    //TODO store parent/child relations: parentsP.getValues()
     // update properties
     //currentProductGroup.getProperties().clear();
     // currentProductGroup.setProperties(pgpp.getProperties());
@@ -102,15 +98,15 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
      * orgProductGroup.getPropertyValues()) { if (np.getId() == op.getId() &&
      * !np.equals(op)) { found = true;
      * CatalogServiceAsync.updatePropertyValue(op, np, new AsyncCallback(){
-     * 
+     *
      * @Override public void onFailure(Throwable caught) {}
-     * 
+     *
      * @Override public void onSuccess(Object result) {} }); break; } } if
      * (!found) { CatalogServiceAsync.updatePropertyValue(null, np, new
      * AsyncCallback(){
-     * 
+     *
      * @Override public void onFailure(Throwable caught) {}
-     * 
+     *
      * @Override public void onSuccess(Object result) {} }); } }
      */
     CatalogServiceAsync.updateProductGroup(orgProductGroup,
@@ -128,44 +124,52 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         });
   }
 
+  public void show(String lang) {
+    currentLanguage = lang;
+    show(currentProductGroup);
+  }
+
   public void show(ProductGroup productGroup) {
     final List<String> langs = CatalogCache.get().getLanguages();
 
     if (currentProductGroup != productGroup) {
-      currentProductGroup = productGroup;
-      orgProductGroup = currentProductGroup.clone(new HashMap());  
-  
+      orgProductGroup = currentProductGroup = productGroup;
       if (currentProductGroup != null) {
+        orgProductGroup = currentProductGroup.clone(new HashMap());
         final PropertyValue name = Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, null);
-  
+
         view.setName(name==null?"":name.getStringValue());
-        view.containsProducts.setValue(currentProductGroup.getContainsProducts());
+        view.containsProducts().setValue(currentProductGroup.getContainsProducts());
+        //parents product groups
+        parentsP.show(currentProductGroup, currentLanguage, CatalogCache.get().getAllProductGroups());
+        //own properties with default values
         pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
+        //inherited properties from parents
         view.getParentPropertiesPanel().clear();
         valuesPresenters.clear();
         walkParents(langs, currentProductGroup, currentProductGroup, new ArrayList<Long>());
+      } else {
+
       }
     }
   }
 
   private void walkParents(List<String> langs, ProductGroup pg, ProductGroup currentPG, List<Long> traversed) {
-    if (pg == null || !CatalogCache.get().parentMapContains(pg)) return;
+    if (pg == null || pg.getParents() == null || pg.getParents().isEmpty()) return;
 
-    for (ProductGroup parent : CatalogCache.get().getParents(pg)) {
+    for (ProductGroup parent : pg.getParents()) {
       if (traversed.contains(parent.getId())) continue;
       traversed.add(parent.getId());
       walkParents(langs, parent, currentPG, traversed);
       final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentPG.getPropertyValues());
 
       if (!pv.isEmpty()) {
-        final ProductGroupValuesPresenter presenter = new ProductGroupValuesPresenter();
+        final ItemValuesPresenter presenter = new ItemValuesPresenter();
 
         valuesPresenters.add(presenter);
         view.getParentPropertiesPanel().add(presenter.getView().asWidget());
-        //FIXME: this should be a map of parent props to child values 
-        presenter.setValues(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), pv);
-        presenter.show(currentLanguage);
+        presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
       }
-    }        
+    }
   }
 }

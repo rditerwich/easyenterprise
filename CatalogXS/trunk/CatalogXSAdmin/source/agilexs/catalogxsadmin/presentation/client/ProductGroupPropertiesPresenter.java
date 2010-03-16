@@ -118,14 +118,6 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     return view;
   }
 
-  public void setLanguage(String language) {
-    this.language = language;
-    Tuple.setLanguage(language);
-    for (int i = 0; i < activeBindingSize; i++) {
-      bindings.get(i).refresh();
-    }
-  }
-
   /**
    * shows the property list.
    * @param values
@@ -133,7 +125,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
   public void show(String language, List<PropertyValue> values) {
     this.language = language;
     Tuple.setLanguage(language);
-    view.gridReset();
+    view.resetTable();
     final int bindingSize = bindings.size();
     int i = 0;
     activeBindingSize = 0;

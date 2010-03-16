@@ -27,7 +27,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
     CatalogPresenter cp = new CatalogPresenter();
 
-    tp.add(cp.getView().asWidget(), "Products");
+    tp.add(cp.getView().asWidget(), "Catalog");
     tp.add(new Label("To be implemented"), "Navigation");
     tp.add(new Label("To be implemented"), "Promotions");
     tp.add(new Label("To be implemented"), "Settings");

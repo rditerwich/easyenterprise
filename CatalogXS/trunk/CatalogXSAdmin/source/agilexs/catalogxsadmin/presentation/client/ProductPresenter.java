@@ -22,18 +22,21 @@ import com.google.gwt.user.client.ui.HTMLTable.Cell;
 public class ProductPresenter implements Presenter<ProductView> {
 
   private final ProductView view = new ProductView();
+  private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
+//  private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
+
   private String currentLanguage = "en";
   private ProductGroup currentProductGroup;
   private Product currentProduct;
   private Product orgProduct;
   private List<Product> currentProducts;
-  private final ArrayList<ProductGroupValuesPresenter> valuesPresenters = new ArrayList<ProductGroupValuesPresenter>();
   private Integer fromIndex = 0;
   private Integer pageSize = 50;
   private SHOW show = SHOW.PRODUCTS;
   private ProductGroup root;
 
   public ProductPresenter() {
+//    view.setParentsPanel(parentsP.getView());
     view.getProductTable().addClickHandler(new ClickHandler(){
       @Override
       public void onClick(ClickEvent event) {
@@ -141,6 +144,7 @@ public class ProductPresenter implements Presenter<ProductView> {
 //      final PropertyValue pname = Util.getPropertyValueByName(
 //          currentProduct.getPropertyValues(), Util.NAME, null);
 //      view.setProductName(Util.getLabel(pname, currentLanguage, true).getLabel());
+      //parentsP.show(CatalogCache.get().getParents(currentProductGroup), currentLanguage, CatalogCache.get().getAllProductGroups());
       view.getPropertiesPanel().clear();
       valuesPresenters.clear();
       walkParents(CatalogCache.get().getLanguages(), currentProductGroup, currentProduct, new ArrayList<Long>());
@@ -183,22 +187,21 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   private void walkParents(List<String> langs, ProductGroup pg, Item currentItem, List<Long> traversed) {
-    if (pg == null || !CatalogCache.get().parentMapContains(pg)) return;
+    if (pg == null || pg.getParents() == null || pg.getParents().isEmpty()) return;
 
-    for (ProductGroup parent : CatalogCache.get().getParents(pg)) {
+    for (ProductGroup parent : pg.getParents()) {
       if (traversed.contains(parent.getId())) continue;
       traversed.add(parent.getId());
       walkParents(langs, parent, currentItem, traversed);
       final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentItem.getPropertyValues());
 
       if (!pv.isEmpty()) {
-        final ProductGroupValuesPresenter presenter = new ProductGroupValuesPresenter();
+        final ItemValuesPresenter presenter = new ItemValuesPresenter();
 
         valuesPresenters.add(presenter);
         view.getPropertiesPanel().add(presenter.getView().asWidget());
         //FIXME: this should be a map of parent props to child values
-        presenter.setValues(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), pv);
-        presenter.show(currentLanguage);
+        presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
       }
     }
   }

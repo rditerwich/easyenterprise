@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -24,17 +25,18 @@ public class ProductView extends Composite implements View {
     NO_PRODUCTS, PRODUCTS, PRODUCT
   }
 
-  final DockLayoutPanel panel = new DockLayoutPanel(Unit.PX);
+  //private final DockLayoutPanel panel = new DockLayoutPanel(Unit.PX);
+  private final SimplePanel parentsPanel = new SimplePanel();
   
-  final DeckPanel deck = new DeckPanel();
+  private final DeckPanel deck = new DeckPanel();
 
-  final Anchor back = new Anchor();
-  final HTML pname = new HTML();
-  final HTML pgname = new HTML();
-  final FlowPanel propertiesPanel = new FlowPanel();
+  private final Anchor back = new Anchor();
+  private final HTML pname = new HTML();
+  private final HTML pgname = new HTML();
+  private final FlowPanel propertiesPanel = new FlowPanel();
 
-  final Grid productTable = new Grid(); 
-  private HTML productGroupName = new HTML();
+  private final Grid productTable = new Grid(); 
+  private final HTML productGroupName = new HTML();
 
   public ProductView() {
     initWidget(deck);
@@ -62,6 +64,7 @@ public class ProductView extends Composite implements View {
     detailPanel.add(sp);
 
     productPanel.add(pname);
+    productPanel.add(parentsPanel);
     productPanel.add(propertiesPanel);
   }
 
@@ -102,6 +105,10 @@ public class ProductView extends Composite implements View {
   @Override
   public Widget asWidget() {
     return this;
+  }
+
+  public void setParentsPanel(View view) {
+    parentsPanel.setWidget(view.asWidget());
   }
 
   public void showPage(SHOW show) {

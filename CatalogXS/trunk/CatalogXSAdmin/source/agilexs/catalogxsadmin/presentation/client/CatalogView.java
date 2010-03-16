@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -84,14 +85,28 @@ public class CatalogView extends Composite implements View {
     return tree;
   }
 
+  public boolean isTreeItemEmpty(TreeItem item) {
+    return item != null && item.getChild(0) != null && item.getChild(0).getWidget() != null;
+  }
+
+  public void setTreeItemAsEmpty(TreeItem item) {
+    if (item.getChildCount() == 1) {
+      item.removeItem(item.getChild(0));
+    }
+  }
+
   public TreeItem addTreeItem(TreeItem parent, String text) {
     final TreeItem item = new TreeItem(text);
-
     if (parent == null) {
       tree.addItem(item);
     } else {
+      if (isTreeItemEmpty(parent)) {
+        setTreeItemAsEmpty(parent);
+      }
       parent.addItem(item);
     }
+    //add dummy to always show +/- icons...
+    item.addItem(new InlineLabel("Loading..."));
     return item;
   }
 

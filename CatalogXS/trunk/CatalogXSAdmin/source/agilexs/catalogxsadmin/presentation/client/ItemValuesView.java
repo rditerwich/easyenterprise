@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProductGroupValuesView extends Composite implements View {
+public class ItemValuesView extends Composite implements View {
 
   public class PGPRowView {
     final Label name = new Label();
@@ -84,7 +84,7 @@ public class ProductGroupValuesView extends Composite implements View {
     }
   }
 
-  interface ProductGroupValuesUiBinder extends UiBinder<Widget, ProductGroupValuesView> {}
+  interface ProductGroupValuesUiBinder extends UiBinder<Widget, ItemValuesView> {}
   private static ProductGroupValuesUiBinder uiBinder = GWT.create(ProductGroupValuesUiBinder.class);
 
   @UiField Grid grid;
@@ -92,7 +92,7 @@ public class ProductGroupValuesView extends Composite implements View {
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
-  public ProductGroupValuesView() {
+  public ItemValuesView() {
     initWidget(uiBinder.createAndBindUi(this));
     grid.resize(1, 3);
     //addNew.setText("Add new property");

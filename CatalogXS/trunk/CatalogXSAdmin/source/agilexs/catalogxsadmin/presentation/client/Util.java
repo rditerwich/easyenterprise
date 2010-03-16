@@ -23,6 +23,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Util {
 
+  public static interface DeleteHandler {
+    void onDelete(int index);
+  }
+
   public static class ListPropertyTypeBinding extends ListPropertyBinding<PropertyType> {
     private static final List<PropertyType> PROPERTY_TYPE_LIST = new ArrayList<PropertyType>();
 
@@ -55,6 +59,7 @@ public class Util {
   }
   
   public static final String NAME = "Name";
+  public static final String ROOT = "Root";
 
   private static final Label EMPTY_LABEL = new Label();
 

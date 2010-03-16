@@ -6,6 +6,10 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
@@ -21,10 +25,13 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 class ProductGroupPropertiesView extends Composite implements View {
 
-  private final static ResourceBundle rb = GWT.create(ResourceBundle.class);
+  private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
+
+  private static final int DELETE_COLUMN = 6;
 
   public class PGPRowView {
     final TextBox defaultName = new TextBox();
@@ -119,9 +126,22 @@ class ProductGroupPropertiesView extends Composite implements View {
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
+  private ClickHandler deleteHandler;
+  private HasValueChangeHandlers<Integer> deleteEventHandler;
+  
   public ProductGroupPropertiesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    gridReset();
+    deleteHandler = new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        final Cell c = grid.getCellForEvent(event);
+        if (c.getCellIndex() == DELETE_COLUMN) {
+          ValueChangeEvent.fire(deleteEventHandler, Integer.valueOf(c.getRowIndex()));
+        }
+      }
+    };
+    grid.addClickHandler(deleteHandler);
+    resetTable();
     addNew.setText("Add new property");
     addHeader();
   }
@@ -149,8 +169,12 @@ class ProductGroupPropertiesView extends Composite implements View {
     return setRow(grid.getRowCount()-1);
   }
 
-  public void gridReset() {
+  public void resetTable() {
     grid.resize(1, 7);
+  }
+
+  public void setDeleteEventHandler(HasValueChangeHandlers<Integer> deleteEventHandler) {
+    this.deleteEventHandler = deleteEventHandler;
   }
 
   /**
@@ -178,7 +202,7 @@ class ProductGroupPropertiesView extends Composite implements View {
     grid.setWidget(row, 3, rowView.getPGOnly());
     grid.setWidget(row, 4, (Widget) rowView.getName());
     grid.setWidget(row, 5, rowView.getValueWidget());
-    grid.setWidget(row, 6, new Image(rb.deleteImage()));
+    grid.setWidget(row, DELETE_COLUMN, new Image(rb.deleteImage()));
 
     return rowView;
   }

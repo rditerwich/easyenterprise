@@ -1,6 +1,7 @@
 package agilexs.catalogxsadmin.presentation.client.cache;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class CatalogCache {
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
   private final ArrayList<String> languages = new ArrayList<String>(2);
-  private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
+  //private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
   private final List<ProductGroup> emptyList = new ArrayList<ProductGroup>(0);
 
   private CatalogCache() {
@@ -43,6 +44,10 @@ public class CatalogCache {
 
   public ArrayList<String> getLanguages() {
     return languages;
+  }
+
+  public Collection<ProductGroup> getAllProductGroups() {
+    return productGroupCache.values();
   }
 
   public Shop getShop(Long id) {
@@ -85,6 +90,7 @@ public class CatalogCache {
     }
   }
 
+/*
   public boolean parentMapContains(ProductGroup productGroup) {
     return parentMap.containsKey(productGroup.getId());
   }
@@ -103,6 +109,7 @@ public class CatalogCache {
       }
     }
   }
+*/
 
   public Product getProduct(Long id) {
     return productCache.get(id);

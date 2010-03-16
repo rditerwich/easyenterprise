@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import agilexs.catalogxsadmin.presentation.client.ProductGroupValuesView.PGPRowView;
+import agilexs.catalogxsadmin.presentation.client.ItemValuesView.PGPRowView;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverter;
 import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
@@ -16,8 +16,8 @@ import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 /**
  * 
  */
-public class ProductGroupValuesPresenter implements Presenter<ProductGroupValuesView> {
-  private final ProductGroupValuesView view = new ProductGroupValuesView();
+public class ItemValuesPresenter implements Presenter<ItemValuesView> {
+  private final ItemValuesView view = new ItemValuesView();
 
   private String language = null;
   private final List<PropertyValueBinding> bindings = new ArrayList<PropertyValueBinding>();
@@ -26,7 +26,7 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
 
   private String name;
 
-  public ProductGroupValuesPresenter() {
+  public ItemValuesPresenter() {
     propertyTypeConverter = new BindingConverter<PropertyType, String>() {
       @Override
       public PropertyType convertFrom(String data) {
@@ -44,18 +44,15 @@ public class ProductGroupValuesPresenter implements Presenter<ProductGroupValues
   }
 
   @Override
-  public ProductGroupValuesView getView() {
+  public ItemValuesView getView() {
     return view;
   }
 
-  public void setValues(String name, List<PropertyValue> values) {
+  public void show(String name, final String language, List<PropertyValue> values) {
     curValues.clear();
     curValues.addAll(values);
     this.name = name;
-  }
-
-  public void show(String lang) {
-    this.language = lang;
+    this.language = language;
     view.setName(name);
     final int bindingSize = bindings.size();
 

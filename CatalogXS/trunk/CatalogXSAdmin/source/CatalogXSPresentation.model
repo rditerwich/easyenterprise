@@ -33,6 +33,7 @@ GwtPackage {
                             included = {
                                 catalog:Item/properties:id
                                 catalog:Item/properties:catalog
+                                catalog:Item/properties:parents
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
                                 catalog:ProductGroup/properties:containsProducts
@@ -42,6 +43,11 @@ GwtPackage {
                                     name = CatalogView
                                     kind = all
                                     referringProperties = catalog:Item/properties:catalog
+                                }
+                                JavaBeanPropertyView {
+                                    name = ParentsView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:parents
                                 }
                                 JavaBeanPropertyView {
                                     name = PropertyValuesView

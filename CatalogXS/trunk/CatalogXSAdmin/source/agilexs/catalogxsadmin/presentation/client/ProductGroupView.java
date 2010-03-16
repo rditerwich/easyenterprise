@@ -18,12 +18,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ProductGroupView extends Composite implements View {
 
-  final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
-  final FlowPanel allPropertiesPanel = new FlowPanel();
-  final HTML name = new HTML();
-  final CheckBox containsProducts = new CheckBox();
-  final SimplePanel propertiesPanel = new SimplePanel();
-  final FlowPanel parentPropertiesPanel = new FlowPanel();
+  private final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
+  private final FlowPanel allPropertiesPanel = new FlowPanel();
+  private final HTML name = new HTML();
+  private final CheckBox containsProducts = new CheckBox();
+  private final SimplePanel propertiesPanel = new SimplePanel();
+  private final FlowPanel parentPropertiesPanel = new FlowPanel();
+  private final SimplePanel parentsPanel = new SimplePanel();
 
   public ProductGroupView() {
     initWidget(detailPanel);
@@ -37,6 +38,7 @@ public class ProductGroupView extends Composite implements View {
     detailPanel.addNorth(fp, 80);
     //top
     final ScrollPanel sp = new ScrollPanel(allPropertiesPanel);
+    allPropertiesPanel.add(parentsPanel);
     allPropertiesPanel.add(propertiesPanel);
     //allPropertiesPanel.add(new HTML("<h3>Relations</h3>"));
     //allPropertiesPanel..add(relations);
@@ -46,8 +48,8 @@ public class ProductGroupView extends Composite implements View {
     detailPanel.add(sp);
   }
 
-  public void setPropertiesPanel(Widget w) {
-    propertiesPanel.setWidget(w);
+  public void setPropertiesPanel(View w) {
+    propertiesPanel.setWidget(w.asWidget());
   }
 
   public HasValue<Boolean> containsProducts() {
@@ -69,5 +71,9 @@ public class ProductGroupView extends Composite implements View {
   @Override
   public Widget asWidget() {
     return this;
+  }
+
+  public void setParentsPanel(View view) {
+    parentsPanel.setWidget(view.asWidget());
   }
 }
