@@ -141,7 +141,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         view.setName(name==null?"":name.getStringValue());
         view.containsProducts().setValue(currentProductGroup.getContainsProducts());
         //parents product groups
-        parentsP.show(currentProductGroup, currentLanguage, CatalogCache.get().getAllProductGroups());
+        parentsP.show(currentProductGroup, currentProductGroup.getParents(), currentLanguage, CatalogCache.get().getAllProductGroups());
         //own properties with default values
         pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
         //inherited properties from parents

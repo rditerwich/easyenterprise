@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
@@ -18,6 +19,8 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
   private List<Long> currentParents = new ArrayList<Long>();
   private List<Long> allPossibleParents = new ArrayList<Long>();
   private String currentLang;
+  private DeleteHandler<Long> deleteHandler;
+  private AddHandler<Long> addHandler;
 
   public ItemParentsPresenter(final ItemParentsView view) {
     this.view = view;
@@ -30,34 +33,50 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
         currentParents.add(newPG);
         allPossibleParents.remove(newPG);
         show(currentLang);
+        if (addHandler != null) {
+          addHandler.onAdd(newPG);
+        }
       }});
-    view.setDeleteHandler(new DeleteHandler(){
+    view.setDeleteHandler(new DeleteHandler<Integer>(){
       @Override
-      public void onDelete(int index) {
-        final Long removed = currentParents.remove(index);
+      public void onDelete(Integer index) {
+        final Long removed = currentParents.remove(index.intValue());
 
         if (removed != null) {
           allPossibleParents.add(removed);
         }
         show(currentLang);
+        if (deleteHandler != null) {
+          deleteHandler.onDelete(removed);
+        }
       }
     });
   }
 
+  public void setAddHandler(AddHandler<Long> addHandler) {
+    this.addHandler = addHandler;
+  }
+
+  public void setDeleteHandler(DeleteHandler<Long> deleteHandler) {
+    this.deleteHandler = deleteHandler;
+  }
+  
   public List<Long> getValues() {
     return currentParents;
   }
 
-  public void show(ProductGroup productGroup, String lang, Collection<ProductGroup> allParents) {
+  public void show(ProductGroup productGroup, List<ProductGroup> parents, String lang, Collection<ProductGroup> allParents) {
     currentParents.clear();
-    for (ProductGroup pg : productGroup.getParents()) {
+    for (ProductGroup pg : parents) {
       currentParents.add(pg.getId());
     }
     allPossibleParents.clear();
     for (ProductGroup pg : allParents) {
       allPossibleParents.add(pg.getId());
     }
-    allPossibleParents.remove(productGroup.getId());
+    if (productGroup != null) {
+      allPossibleParents.remove(productGroup.getId());
+    }
     for (Long pg : currentParents) {
       allPossibleParents.remove(pg);
     }

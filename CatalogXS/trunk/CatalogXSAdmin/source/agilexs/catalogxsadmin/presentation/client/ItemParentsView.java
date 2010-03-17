@@ -26,8 +26,8 @@ public class ItemParentsView extends Composite implements View {
   private final FlowPanel panel = new FlowPanel();
   private final Grid parentGrid = new Grid(5, 2);
   private final ListBox allParentsListBox = new ListBox();
-  private final Button addButton = new Button("Add parent");
-  private DeleteHandler deleteHandler;
+  private final Button addButton = new Button("Add");
+  private DeleteHandler<Integer> deleteHandler;
 
   public ItemParentsView() {
     initWidget(panel);
@@ -39,7 +39,7 @@ public class ItemParentsView extends Composite implements View {
         final Cell c = parentGrid.getCellForEvent(event);
 
         if (c.getCellIndex() == DELETE_COLUMN) {
-          deleteHandler.onDelete(c.getRowIndex());
+          deleteHandler.onDelete(Integer.valueOf(c.getRowIndex()));
         }
       }
     });
@@ -78,7 +78,7 @@ public class ItemParentsView extends Composite implements View {
     return addButton;
   }
 
-  public void setDeleteHandler(DeleteHandler deleteHandler) {
+  public void setDeleteHandler(DeleteHandler<Integer> deleteHandler) {
     this.deleteHandler = deleteHandler;
   }
 }

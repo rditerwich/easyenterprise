@@ -23,8 +23,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Util {
 
-  public static interface DeleteHandler {
-    void onDelete(int index);
+  public static interface AddHandler<T> {
+    void onAdd(T data);
+  }
+
+  public static interface DeleteHandler<T> {
+    void onDelete(T data);
   }
 
   public static class ListPropertyTypeBinding extends ListPropertyBinding<PropertyType> {

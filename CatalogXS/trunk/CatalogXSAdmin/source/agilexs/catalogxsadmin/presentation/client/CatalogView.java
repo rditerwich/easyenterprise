@@ -3,6 +3,7 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.page.View;
+import agilexs.catalogxsadmin.presentation.client.widget.ExtendedTree;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -12,18 +13,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CatalogView extends Composite implements View {
 
   final SplitLayoutPanel panel = new SplitLayoutPanel();
-  final Tree tree = new Tree();
+  final ExtendedTree tree = new ExtendedTree();
   final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
   final Button newProductGroupButton = new Button("New Product Group");
   final Button newProductButton = new Button("New Product");
@@ -81,33 +79,8 @@ public class CatalogView extends Composite implements View {
     return languageList.getValue(languageList.getSelectedIndex());
   }
 
-  public Tree getTree() {
+  public ExtendedTree getTree() {
     return tree;
-  }
-
-  public boolean isTreeItemEmpty(TreeItem item) {
-    return item != null && item.getChild(0) != null && item.getChild(0).getWidget() != null;
-  }
-
-  public void setTreeItemAsEmpty(TreeItem item) {
-    if (item.getChildCount() == 1) {
-      item.removeItem(item.getChild(0));
-    }
-  }
-
-  public TreeItem addTreeItem(TreeItem parent, String text) {
-    final TreeItem item = new TreeItem(text);
-    if (parent == null) {
-      tree.addItem(item);
-    } else {
-      if (isTreeItemEmpty(parent)) {
-        setTreeItemAsEmpty(parent);
-      }
-      parent.addItem(item);
-    }
-    //add dummy to always show +/- icons...
-    item.addItem(new InlineLabel("Loading..."));
-    return item;
   }
 
   /**
