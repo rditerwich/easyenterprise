@@ -65,11 +65,6 @@ public class ProductPresenter implements Presenter<ProductView> {
     return view;
   }
 
-  public void setLanguage(String lang) {
-    currentLanguage = lang;
-    show(show);
-  }
-
   public void save() {
       //update properties
       currentProduct.getProperties().clear();
@@ -111,6 +106,11 @@ public class ProductPresenter implements Presenter<ProductView> {
       });
     }
 
+  public void show(String lang) {
+    currentLanguage = lang;
+    show(show);
+  }
+
   public void show(Shop shop, ProductGroup productGroup, ProductGroup root) {
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
@@ -141,16 +141,7 @@ public class ProductPresenter implements Presenter<ProductView> {
       if (orgProduct == null || orgProduct.getId() != currentProduct.getId()) {
         orgProduct = currentProduct.clone(new HashMap());
       }
-//      final PropertyValue pname = Util.getPropertyValueByName(
-//          currentProduct.getPropertyValues(), Util.NAME, null);
-//      view.setProductName(Util.getLabel(pname, currentLanguage, true).getLabel());
-      //parentsP.show(CatalogCache.get().getParents(currentProductGroup), currentLanguage, CatalogCache.get().getAllProductGroups());
-      view.getPropertiesPanel().clear();
-      valuesPresenters.clear();
-      walkParents(CatalogCache.get().getLanguages(), currentProductGroup, currentProduct, new ArrayList<Long>());
-//      for (ProductGroupValuesPresenter pgvp : valuesPresenters) {
-//        pgvp.show(currentLanguage);
-//      }
+      showProduct();
       break;
     }
     view.showPage(show); 
@@ -186,21 +177,25 @@ public class ProductPresenter implements Presenter<ProductView> {
     }
   }
 
-  private void walkParents(List<String> langs, ProductGroup pg, Item currentItem, List<Long> traversed) {
-    if (pg == null || pg.getParents() == null || pg.getParents().isEmpty()) return;
+  private void showProduct() {
+    //  final PropertyValue pname = Util.getPropertyValueByName(
+    //  currentProduct.getPropertyValues(), Util.NAME, null);
+    //view.setProductName(Util.getLabel(pname, currentLanguage, true).getLabel());
+    //parentsP.show(CatalogCache.get().getParents(currentProductGroup), currentLanguage, CatalogCache.get().getAllProductGroups());
+    view.getPropertiesPanel().clear();
+    valuesPresenters.clear();
+    final List<Long> parents = Util.findParents(currentProductGroup);
 
-    for (ProductGroup parent : pg.getParents()) {
-      if (traversed.contains(parent.getId())) continue;
-      traversed.add(parent.getId());
-      walkParents(langs, parent, currentItem, traversed);
-      final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentItem.getPropertyValues());
+    parents.add(currentProductGroup.getId());
+    for (Long pid : parents) {
+      final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
+      final List<PropertyValue> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), parent, currentProduct.getPropertyValues());
 
       if (!pv.isEmpty()) {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();
 
         valuesPresenters.add(presenter);
         view.getPropertiesPanel().add(presenter.getView().asWidget());
-        //FIXME: this should be a map of parent props to child values
         presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
       }
     }
@@ -213,8 +208,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         //FIXME implement handling failure
       }
 
-      @Override
-      public void onSuccess(List<Product> result) {
+      @Override public void onSuccess(List<Product> result) {
         currentProducts = result;
         show = SHOW.PRODUCTS;
         show(show);

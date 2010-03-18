@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
+import agilexs.catalogxsadmin.jpa.catalog.Catalog;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
 import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
 import agilexs.catalogxsadmin.jpa.catalog.Property;
@@ -16,7 +17,50 @@ import agilexs.catalogxsadmin.jpa.catalog.PropertyValue;
 import agilexs.catalogxsadmin.jpa.shop.Shop;
 
 @Stateless
-public class CatalogBean extends CatalogBeanBase implements Catalog {
+public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadmin.businesslogic.Catalog {
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public List<PropertyValue> findAllProductGroupNames(Catalog catalog) {
+    final Query query = entityManager.createQuery("select pv from PropertyValue pv, in(pv.property.labels) lbl where type(pv.item) in (ProductGroup) and lbl.label = 'Name' and pv.item.catalog = :catalog");
+
+    query.setParameter("catalog", catalog);
+    final List<PropertyValue> result = query.getResultList();
+
+    for (PropertyValue pv: result) {
+      pv.getProperty().setLabels(pv.getProperty().getLabels());
+    }
+    return result;
+  }
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public Catalog findCatalogById(Long id) {
+    final Catalog catalog = super.findCatalogById(id);
+
+    if (catalog != null) {
+      final Query query = entityManager.createQuery("select pg from ProductGroup pg where pg.catalog = :catalog");
+
+      query.setParameter("catalog", catalog);
+      final Collection result = query.getResultList();
+
+      catalog.setItems(result);
+      for (ProductGroup productGroup : (Collection<ProductGroup>)result) {
+        //check, because db containsProduct table may be null
+        if (productGroup.getContainsProducts() == null) {
+          productGroup.setContainsProducts(Boolean.FALSE);
+        }
+        productGroup.setCatalog(productGroup.getCatalog());
+        for (Property property : productGroup.getProperties()) {
+          property.setLabels(property.getLabels());
+          property.setItem(property.getItem());
+        }
+        for (PropertyValue value : productGroup.getPropertyValues()) {
+          value.setItem(value.getItem());
+          value.setProperty(value.getProperty());
+        }
+      }
+    }
+    return catalog;
+  }
   /*
   @Override
   @SuppressWarnings("unchecked")
@@ -33,10 +77,10 @@ public class CatalogBean extends CatalogBeanBase implements Catalog {
     final ArrayList<Product> products = new ArrayList<Product>();
 
     if (catalog != null) {
-          final Query query = entityManager.createQuery("select p from Product p where p.catalog = :catalog");
+      final Query query = entityManager.createQuery("select p from Product p where p.catalog = :catalog");
 
-          query.setParameter("catalog", catalog);
-          for (Product p : (Collection<Product>)query.getResultList()) {
+      query.setParameter("catalog", catalog);
+      for (Product p : (Collection<Product>)query.getResultList()) {
         products.add(findProductById(p.getId()));
       }
     }

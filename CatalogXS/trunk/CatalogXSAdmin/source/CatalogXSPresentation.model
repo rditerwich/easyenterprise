@@ -25,6 +25,38 @@ GwtPackage {
             name = CatalogService
             methods = {
                 GwtMethod {
+                    name = findAllProductGroupNames
+                    view = {
+                        JavaBeanView {
+                            name = ProductGroupNamesView
+                            kind = all
+                            views = {
+                                JavaBeanPropertyView {
+                                    name = ProductProductGroupView
+                                    kind = none
+                                    included = catalog:Item/properties:id
+                                    referringProperties = catalog:PropertyValue/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValuePropertyView
+                                    kind = all
+                                    referringProperties = catalog:PropertyValue/properties:property
+                                }
+                                JavaBeanPropertyView {
+                                    name = PropertyValueItemView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = LabelsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:labels
+                                }
+                            }
+                        }
+                    }
+                }
+                GwtMethod {
                     name = findAllProductGroupChildren
                     view = {
                         JavaBeanView {

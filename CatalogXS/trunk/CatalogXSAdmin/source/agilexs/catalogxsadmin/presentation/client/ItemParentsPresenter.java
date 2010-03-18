@@ -1,8 +1,9 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
@@ -16,9 +17,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class ItemParentsPresenter implements Presenter<ItemParentsView> {
 
   private ItemParentsView view;
-  private List<Long> currentParents = new ArrayList<Long>();
-  private List<Long> allPossibleParents = new ArrayList<Long>();
-  private String currentLang;
+  private final List<Long> currentParents = new ArrayList<Long>();
+  private final List<Map.Entry<Long, String>> allPossibleParents = new ArrayList<Map.Entry<Long, String>>();
+  private String currentLang = "en";
   private DeleteHandler<Long> deleteHandler;
   private AddHandler<Long> addHandler;
 
@@ -27,11 +28,10 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     view.buttonAddParentHasClickHandlers().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        final int i = view.getSelectedNewParent();
-        final Long newPG = allPossibleParents.get(i);
+        final Long newPG = Long.valueOf(view.getAllParentsListBox().getValue(view.getSelectedNewParent()));
 
         currentParents.add(newPG);
-        allPossibleParents.remove(newPG);
+        allPossibleParents.remove(CatalogCache.get().getProductGroupName(newPG, currentLang));
         show(currentLang);
         if (addHandler != null) {
           addHandler.onAdd(newPG);
@@ -43,7 +43,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
         final Long removed = currentParents.remove(index.intValue());
 
         if (removed != null) {
-          allPossibleParents.add(removed);
+          allPossibleParents.add(CatalogCache.get().getProductGroupName(removed, currentLang));
         }
         show(currentLang);
         if (deleteHandler != null) {
@@ -65,20 +65,19 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     return currentParents;
   }
 
-  public void show(ProductGroup productGroup, List<ProductGroup> parents, String lang, Collection<ProductGroup> allParents) {
+  public void show(ProductGroup productGroup, List<Map.Entry<Long, String>> parents, String lang, ArrayList<Map.Entry<Long, String>> allParents) {
+    currentLang = lang;
     currentParents.clear();
-    for (ProductGroup pg : parents) {
-      currentParents.add(pg.getId());
+    for (Entry<Long, String> pg : parents) {
+      currentParents.add(pg.getKey());
     }
     allPossibleParents.clear();
-    for (ProductGroup pg : allParents) {
-      allPossibleParents.add(pg.getId());
-    }
+    allPossibleParents.addAll(allParents);
     if (productGroup != null) {
-      allPossibleParents.remove(productGroup.getId());
+      allPossibleParents.remove(CatalogCache.get().getProductGroupName(productGroup.getId(), currentLang));
     }
     for (Long pg : currentParents) {
-      allPossibleParents.remove(pg);
+      allPossibleParents.remove(CatalogCache.get().getProductGroupName(pg, lang));
     }
     show(lang);
   }
@@ -87,11 +86,11 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     currentLang = lang;
     view.clearParentTable();
     for (Long pg : currentParents) {
-      view.addParentToList(Util.getPropertyValueByName(CatalogCache.get().getProductGroup(pg).getPropertyValues(), Util.NAME, currentLang).getStringValue());
+      view.addParentToList(CatalogCache.get().getProductGroupName(pg, lang).getValue());
     }
     view.getAllParentsListBox().clear();
-    for (Long pp : allPossibleParents) {
-      view.getAllParentsListBox().addItem(Util.getPropertyValueByName(CatalogCache.get().getProductGroup(pp).getPropertyValues(), Util.NAME, currentLang).getStringValue());
+    for (Map.Entry<Long, String> pp : allPossibleParents) {
+      view.getAllParentsListBox().addItem(pp.getValue(), pp.getKey() + "");
     }
   }
 

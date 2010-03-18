@@ -3,7 +3,9 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
@@ -141,34 +143,33 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         view.setName(name==null?"":name.getStringValue());
         view.containsProducts().setValue(currentProductGroup.getContainsProducts());
         //parents product groups
-        parentsP.show(currentProductGroup, currentProductGroup.getParents(), currentLanguage, CatalogCache.get().getAllProductGroups());
+        final List<Map.Entry<Long, String>> curParents = new ArrayList<Map.Entry<Long, String>>();
+
+        for (ProductGroup cp : currentProductGroup.getParents()) {
+          curParents.add(CatalogCache.get().getProductGroupName(cp.getId(), currentLanguage));
+        }
+        parentsP.show(currentProductGroup, curParents, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
         //own properties with default values
         pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
         //inherited properties from parents
         view.getParentPropertiesPanel().clear();
         valuesPresenters.clear();
-        walkParents(langs, currentProductGroup, currentProductGroup, new ArrayList<Long>());
+        final List<Long> parents = Util.findParents(currentProductGroup);
+
+        for (Long pid : parents) {
+          final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
+          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup.getPropertyValues());
+
+          if (!pv.isEmpty()) {
+            final ItemValuesPresenter presenter = new ItemValuesPresenter();
+
+            valuesPresenters.add(presenter);
+            view.getParentPropertiesPanel().add(presenter.getView().asWidget());
+            presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
+          }
+        }
       } else {
 
-      }
-    }
-  }
-
-  private void walkParents(List<String> langs, ProductGroup pg, ProductGroup currentPG, List<Long> traversed) {
-    if (pg == null || pg.getParents() == null || pg.getParents().isEmpty()) return;
-
-    for (ProductGroup parent : pg.getParents()) {
-      if (traversed.contains(parent.getId())) continue;
-      traversed.add(parent.getId());
-      walkParents(langs, parent, currentPG, traversed);
-      final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentPG.getPropertyValues());
-
-      if (!pv.isEmpty()) {
-        final ItemValuesPresenter presenter = new ItemValuesPresenter();
-
-        valuesPresenters.add(presenter);
-        view.getParentPropertiesPanel().add(presenter.getView().asWidget());
-        presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
       }
     }
   }

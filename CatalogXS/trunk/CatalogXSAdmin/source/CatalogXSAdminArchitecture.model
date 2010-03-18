@@ -32,7 +32,7 @@ JavaEEArchitectureJpaEjbGwt {
             }
             view = {
                 ClassView {
-                    name = CurdShopView
+                    name = CrudShopView
                     kind = all
                     views = {
                         ClassAttributeView {
@@ -44,6 +44,11 @@ JavaEEArchitectureJpaEjbGwt {
                             name = Promotions
                             kind = all
                             referringAttributes = shop:Shop/attributes:promotions
+                        }
+                        ClassAttributeView {
+                            name = ShopCatalogView
+                            kind = all
+                            referringAttributes = shop:Shop/attributes:catalog
                         }
                         ClassAttributeView {
                             name = CatalogView
@@ -90,9 +95,72 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Crud {
-            name = CrudForAll
+            name = CrudForCatalog
             participants = {
                 catalog:Catalog
+            }
+            view = {
+                ClassView {
+                    name = CrudCatalogView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ShopsView
+                            kind = all
+                            referringAttributes = catalog:Catalog/attributes:shops
+                        }
+                        ClassAttributeView {
+                            name = ItemsView
+                            kind = all
+                            referringAttributes =catalog:Catalog/attributes:items
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = ChildrenView
+                            kind = all
+                            referringAttributes = catalog:ProductGroup/attributes:children
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForAll
+            participants = {
                 catalog:Item
                 catalog:ProductGroup
                 catalog:Product

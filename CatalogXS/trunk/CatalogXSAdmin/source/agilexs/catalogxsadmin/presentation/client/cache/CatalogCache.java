@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
@@ -14,6 +16,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
+import agilexs.catalogxsadmin.presentation.client.util.Entry;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -26,6 +29,9 @@ public class CatalogCache {
     return instance;
   }
 
+  private Catalog activeCatalog;
+  private final Map<Long, Map<String, String>> productGroupNamesCache = new HashMap<Long, Map<String, String>>();
+
   private final Map<Long, Shop> shopCache = new HashMap<Long, Shop>();
   private final Map<Long, ProductGroup> productGroupCache = new HashMap<Long, ProductGroup>();
   private final Map<Long, Product> productCache = new HashMap<Long, Product>();
@@ -33,13 +39,82 @@ public class CatalogCache {
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
   private final ArrayList<String> languages = new ArrayList<String>(2);
-  //private final HashMap<Long, List<ProductGroup>> parentMap = new HashMap<Long, List<ProductGroup>>();
   private final List<ProductGroup> emptyList = new ArrayList<ProductGroup>(0);
 
   private CatalogCache() {
     //TODO Calculate cache languages based on what is in database
     languages.add("en");
     languages.add("de");
+  }
+
+  public Catalog getActiveCatalog() {
+    return activeCatalog;
+  }
+
+  public void loadProductGroupNames(final AsyncCallback callback) {
+    final Catalog c = new Catalog();
+    c.setId(activeCatalog.getId());
+    CatalogServiceAsync.findAllProductGroupNames(c, new AsyncCallback<List<PropertyValue>>() {
+      @Override public void onFailure(Throwable caught) {
+        callback.onFailure(caught);
+      }
+      @Override public void onSuccess(List<PropertyValue> result) {
+        for (PropertyValue pv : result) {
+          final String lang = pv.getLanguage() == null ? "" : pv.getLanguage();
+
+          updateProductGroupName(pv.getItem().getId(), lang, pv.getStringValue());
+        }
+        callback.onSuccess("loaded");
+      }
+    });
+  }
+
+  public Map.Entry<Long, String> getProductGroupName(ProductGroup pg, String lang) {
+    return getProductGroupName(pg.getId(), lang);
+  }
+
+  public Map.Entry<Long, String> getProductGroupName(Long pid, String lang) {
+    final Map.Entry<Long, String> tp = new Entry<Long, String>(pid);
+    if (productGroupNamesCache.containsKey(pid)) {
+      if (productGroupNamesCache.get(pid).containsKey(lang)) {
+        tp.setValue(productGroupNamesCache.get(pid).get(lang)); 
+      } else {
+        tp.setValue(productGroupNamesCache.get(pid).get("")); 
+      }
+    } 
+    return tp;
+  }
+
+  public ArrayList<Map.Entry<Long, String>> getProductGroupNamesByLang(String lang) {
+    final ArrayList<Map.Entry<Long, String>> list = new ArrayList<Map.Entry<Long, String>>();
+    for (Long pid : productGroupNamesCache.keySet()) {
+      list.add(getProductGroupName(pid, lang));
+    }
+    return list;
+  }
+
+  public void updateProductGroupName(Long pid, String lang, String name) {
+    if (!productGroupNamesCache.containsKey(pid)) {
+      productGroupNamesCache.put(pid, new HashMap<String, String>());
+    }
+    productGroupNamesCache.get(pid).put(lang, name);
+  }
+  
+  public void getCatalog(Long id, final AsyncCallback callback) {
+    if (shopCache.containsKey(id)) {
+      callback.onSuccess(getShop(id));
+    } else {
+      CatalogServiceAsync.findCatalogById(id, new AsyncCallback<Catalog>(){
+        @Override public void onFailure(Throwable caught) {
+          callback.onFailure(caught);
+        }
+
+        @Override
+        public void onSuccess(Catalog result) {
+          put(result);
+          callback.onSuccess(result);
+        }});
+    }
   }
 
   public ArrayList<String> getLanguages() {
@@ -66,6 +141,7 @@ public class CatalogCache {
         @Override
         public void onSuccess(Shop result) {
           put(result);
+          activeCatalog = result.getCatalog();
           callback.onSuccess(result);
         }});
     }
@@ -89,27 +165,6 @@ public class CatalogCache {
         }});
     }
   }
-
-/*
-  public boolean parentMapContains(ProductGroup productGroup) {
-    return parentMap.containsKey(productGroup.getId());
-  }
-
-  public List<ProductGroup> getParents(ProductGroup productGroup) {
-    return parentMapContains(productGroup) ? parentMap.get(productGroup.getId()) : emptyList;
-  }
-
-  public void putParent(ProductGroup productGroup, ProductGroup parent) {
-    if (parent != null) {
-      if (!parentMap.containsKey(productGroup.getId())) {
-        parentMap.put(productGroup.getId(), new ArrayList<ProductGroup>());
-      }
-      if (ProductGroup.findProductGroup(parentMap.get(productGroup.getId()), parent.getId()) == null) {
-        parentMap.get(productGroup.getId()).add(parent);
-      }
-    }
-  }
-*/
 
   public Product getProduct(Long id) {
     return productCache.get(id);
@@ -187,6 +242,16 @@ public class CatalogCache {
     }
   }
 
+  public void put(Catalog catalog) {
+    activeCatalog = catalog;
+    for (Shop shop : catalog.getShops()) {
+      put(shop);
+    }
+    for (Item item : catalog.getItems()) {
+      put(item);
+    }
+  }
+
   public void put(Shop shop) {
     shopCache.put(shop.getId(), shop);
   }
@@ -197,6 +262,14 @@ public class CatalogCache {
 
   public void put(Product p) {
     productCache.put(p.getId(), p);
+  }
+
+  public void put(Item item) {
+    if (item instanceof Product) {
+      put((Product)item);
+    } else if (item instanceof ProductGroup) {
+      put((ProductGroup)item);
+    }
   }
 
   public void put(Property p) {

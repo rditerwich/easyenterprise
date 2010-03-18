@@ -3,6 +3,7 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import agilexs.catalogxsadmin.presentation.client.binding.Binding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
@@ -210,12 +211,37 @@ public class Util {
     return nv;
   }
 
+  /**
+   * Returns true if all PropertyValue data fields all null.
+   *  
+   * @param pv PropertyValue
+   * @return
+   */
   public static boolean isEmpty(PropertyValue pv) {
     return pv.getStringValue() == null && pv.getIntegerValue() == null
         && pv.getEnumValue() == null && pv.getRealValue() == null
         && pv.getBooleanValue() == null && pv.getMoneyValue() == null
         && pv.getMoneyCurrency() == null && pv.getMediaValue() == null
         && pv.getMimeType() == null;
+  }
+
+  /**
+   * Returns all ID's of the parents of the given ProductGroup.
+   *
+   * @param productGroup
+   * @return
+   */
+  public static List<Long> findParents(ProductGroup productGroup) {
+    final List<Long> parents = new ArrayList<Long>();
+
+    for (ProductGroup parent : productGroup.getParents()) {
+      if (parent == null || parents.contains(parent.getId())) continue;
+      parents.add(parent.getId());
+      if (parent.getParents() != null || !parent.getParents().isEmpty()) {
+        parents.addAll(findParents(parent));
+      }
+    }
+    return parents;
   }
 
   public static Binding bindPropertyValue(PropertyType pt, Widget w, PropertyValueBinding pvb) {

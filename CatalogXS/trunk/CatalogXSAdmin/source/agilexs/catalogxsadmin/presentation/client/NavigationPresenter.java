@@ -3,12 +3,13 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
-import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
@@ -33,7 +34,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
   private final NavigationView view;
   private final ItemParentsPresenter pp;
   private String currentLanguage = "en";
-  private List<ProductGroup> topLevelProductGroups = new ArrayList<ProductGroup>();
+  private List<Map.Entry<Long, String>> topLevelProductGroups = new ArrayList<Map.Entry<Long, String>>();
   private Shop activeShop;
 
   //private ProductGroup currentProductGroup;
@@ -48,7 +49,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
 
         if (item.getState()) {
           final Long pgId = treemap.get(item);
-          
+
           if (pgId != null) {
             //currentProductGroup = CatalogCache.get().getProductGroup(pgId);
             if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
@@ -66,42 +67,53 @@ public class NavigationPresenter implements Presenter<NavigationView> {
     });
     pp.setAddHandler(new AddHandler<Long>() {
       @Override
-      public void onAdd(Long data) {
-        final TreeItem ti = findTreeItem(data);
+      public void onAdd(Long pid) {
+        final TreeItem ti = findTreeItem(pid);
 
         if (ti == null) {
-          final ProductGroup pg = CatalogCache.get().getProductGroup(data);
-          
-          addTreeItem(null, pg);
-          topLevelProductGroups.add(pg);
+          final Map.Entry<Long, String> productGroupEntry = CatalogCache.get().getProductGroupName(pid, currentLanguage);
+
+          addTreeItem(null, productGroupEntry);
+          topLevelProductGroups.add(productGroupEntry);
         }
       }
     });
     pp.setDeleteHandler(new DeleteHandler<Long>() {
       @Override
-      public void onDelete(Long data) {
-        final TreeItem ti = findTreeItem(data);
+      public void onDelete(Long pid) {
+        final TreeItem ti = findTreeItem(pid);
 
         if (ti != null) {
           treemap.remove(ti);
           view.getTree().removeItem(ti);
         }
-        topLevelProductGroups.remove(CatalogCache.get().getProductGroup(data));
+        topLevelProductGroups.remove(CatalogCache.get().getProductGroupName(pid, currentLanguage));
       }
     });
     view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         final Shop oldShop = activeShop.clone(new HashMap());
-        activeShop.setTopLevelProductGroups(topLevelProductGroups);
-        
+        final List<ProductGroup> p = new ArrayList<ProductGroup>();
+
+        for (Entry<Long, String> pge : topLevelProductGroups) {
+          ProductGroup pg = CatalogCache.get().getProductGroup(pge.getKey());
+          if (pg == null) {
+            pg = new ProductGroup();
+            pg.setId(pge.getKey());
+          }
+          p.add(pg);
+        }
+        activeShop.setTopLevelProductGroups(p);
+
         ShopServiceAsync.updateShop(oldShop, activeShop, new AsyncCallback<Shop>() {
           @Override public void onFailure(Throwable caught) {
             // TODO Auto-generated method stub
           }
 
           @Override public void onSuccess(Shop result) {
-            StatusMessage.get().show("New Navigation hierarchy saved.", 15);
+            CatalogCache.get().put(result);
+            StatusMessage.get().show("Navigation changes saved.", 15);
           }});
     }});
   }
@@ -119,21 +131,21 @@ public class NavigationPresenter implements Presenter<NavigationView> {
     currentLanguage  = lang;
     activeShop = CatalogCache.get().getShop(1L);
     topLevelProductGroups.clear();
-    topLevelProductGroups.addAll(activeShop.getTopLevelProductGroups());
-    pp.show(null, topLevelProductGroups, currentLanguage, CatalogCache.get().getAllProductGroups());
+    for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
+      topLevelProductGroups.add(CatalogCache.get().getProductGroupName(pg.getId(), currentLanguage));
+    }
+    pp.show(null, topLevelProductGroups, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
     for (ProductGroup topLPG : activeShop.getTopLevelProductGroups()) {
       final TreeItem ti = findTreeItem(topLPG.getId());
 
       if (ti == null) {
-        addTreeItem(null, topLPG);
+        addTreeItem(null, CatalogCache.get().getProductGroupName(topLPG.getId(), currentLanguage));
       }
     }
   }
 
-  private void addTreeItem(TreeItem parent, ProductGroup pg) {
-    final PropertyValue value = Util.getPropertyValueByName(pg.getPropertyValues(), Util.NAME, null);
-
-    treemap.put(view.getTree().addItem(parent, value != null ? value.getStringValue() : "<No Name>"), pg.getId());
+  private void addTreeItem(TreeItem parent, Map.Entry<Long, String> productGroup) {
+    treemap.put(view.getTree().addItem(parent, productGroup.getValue()), productGroup.getKey());
   }
 
   private TreeItem findTreeItem(Long pgId) {
@@ -169,7 +181,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
                 CatalogCache.get().put(pPG);
               }
 //              CatalogCache.get().putParent(productGroup, parentPG);
-              addTreeItem(parent, productGroup);
+              addTreeItem(parent, CatalogCache.get().getProductGroupName(productGroup.getId(), currentLanguage));
             }
           }
         });

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -39,11 +40,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
   final ProductPresenter pp = new ProductPresenter();
 
   public CatalogPresenter() {
-    final List<String> langs = new ArrayList<String>(2);
-    langs.add("en");
-    langs.add("de");
-
-    view.addTab(pgp.getView(), "Product Group");
+    view.addTab(pgp.getView(), "Properties");
     view.addTab(pp.getView(), "Products");
 
     view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
@@ -129,21 +126,42 @@ public class CatalogPresenter implements Presenter<CatalogView> {
       @Override
       public void onChange(ChangeEvent event) {
         pgp.show(view.getSelectedLanguage());
-        pp.setLanguage(view.getSelectedLanguage());
+        pp.show(view.getSelectedLanguage());
       }});
 
+//    CatalogCache.get().getCatalog(1L, new AsyncCallback<Catalog>() {
+//      @Override public void onFailure(Throwable caught) {
+//      }
+//
+//      @Override public void onSuccess(Catalog result) {
+//        activeShop = result.getShops().get(0);
+//        CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>(){
+//          @Override public void onFailure(Throwable caught) {
+//          }
+//
+//          @Override public void onSuccess(String result) {
+//            loadChildren(activeShop, null); //initial tree
+//          }
+//        });
+//      }});
     CatalogCache.get().getShop(1L, new AsyncCallback<Shop>() {
       @Override public void onFailure(Throwable caught) {
       }
 
-      @Override
-      public void onSuccess(Shop result) {
+      @Override public void onSuccess(Shop result) {
         activeShop = result;
-        loadChildren(result, null); //initial tree
-        for (ProductGroup pg : result.getTopLevelProductGroups()) {
-          CatalogCache.get().put(pg);
+        CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>(){
+        @Override public void onFailure(Throwable caught) {
         }
-      }});
+  
+        @Override public void onSuccess(String result) {
+          loadChildren(activeShop, null); //initial tree
+          for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
+            CatalogCache.get().put(pg);
+          }
+        }
+      });
+    }});
   }
 
   @Override

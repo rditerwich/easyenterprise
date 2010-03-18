@@ -22,15 +22,15 @@ public class NavigationView extends Composite implements View {
   
   public NavigationView() {
     initWidget(panel);
-    final DockLayoutPanel west = new DockLayoutPanel(Unit.PX);
+    final DockLayoutPanel topLevelPGPanel = new DockLayoutPanel(Unit.PX);
     
-    west.addNorth(new Label("The list below are the top level product groups used as the starting point for the navigation structure in the webshop."), 70);
+    topLevelPGPanel.addNorth(new Label("The list below are the top level product groups used as the starting point for the navigation structure in the webshop."), 70);
     final FlowPanel fp = new FlowPanel();
     fp.add(top.asWidget());
     fp.add(saveButton);
-    west.add(fp);
-    panel.addWest(west, 300);
-    panel.add(tree);
+    topLevelPGPanel.add(fp);
+    panel.addWest(tree, 300);
+    panel.add(topLevelPGPanel);
   }
 
   ItemParentsView getItemParentsView() {
