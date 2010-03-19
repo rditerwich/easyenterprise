@@ -37,4 +37,16 @@ public class BindingConverters {
       return data != null ? data.toString().trim() : "";
     }
   };
+
+  public static final BindingConverter<String, String> STRING_CONVERTER = new BindingConverter<String, String>() {
+    @Override
+    public String convertFrom(String data) {
+      return data.trim();
+    }
+
+    @Override
+    public String convertTo(String data) {
+      return data != null ? data.trim() : "";
+    }
+  };
 }

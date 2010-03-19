@@ -63,6 +63,7 @@ JavaEEArchitectureJpaEjbGwt {
                         ClassAttributeView {
                             name = PropertyValuesView
                             kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
                             referringAttributes = catalog:Item/attributes:propertyValues
                         }
                         ClassAttributeView {
@@ -127,6 +128,7 @@ JavaEEArchitectureJpaEjbGwt {
                         ClassAttributeView {
                             name = PropertyValuesView
                             kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
                             referringAttributes = catalog:Item/attributes:propertyValues
                         }
                         ClassAttributeView {
@@ -159,6 +161,19 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Crud {
+            name = CrudForAllPropertyValue
+            participants = {
+                catalog:PropertyValue                
+            }
+            view = {
+                ClassView {
+                    name = CrudForAllPropertyValueView
+                    kind = all
+                    excluded = catalog:PropertyValue/attributes:mediaValue 
+                }
+            }
+        }
+        Crud {
             name = CrudForAll
             participants = {
                 catalog:Item
@@ -167,7 +182,6 @@ JavaEEArchitectureJpaEjbGwt {
                 catalog:Property                
                 catalog:Label
                 catalog:EnumValue
-                catalog:PropertyValue                
                 catalog:Relation
                 catalog:RelationType
                 shop:Promotion

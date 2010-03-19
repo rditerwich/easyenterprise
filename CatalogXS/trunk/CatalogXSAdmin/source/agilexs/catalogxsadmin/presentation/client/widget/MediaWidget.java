@@ -27,17 +27,16 @@ public class MediaWidget extends Composite {
   final InputHidden itemId = new InputHidden();
   final InputHidden pvId = new InputHidden();
   final InputHidden propertyId = new InputHidden();
+  final InputHidden language = new InputHidden();
   private PropertyValueBinding pvb;
 
   private String id;
-  private String pId;
-  private String fileName;
 
   public MediaWidget() {
     initWidget(panel);
     panel.add(image);
     image.setVisible(false);
-    image.setSize("20px", "20px");
+    image.setSize("70px", "70px");
     panel.add(a);
     a.setTarget("_blank");
     a.setVisible(false);
@@ -49,6 +48,8 @@ public class MediaWidget extends Composite {
     up.addParam(pvId);
     propertyId.setName("propertyId");
     up.addParam(propertyId);
+    language.setName("language");
+    up.addParam(language);
     up.addSubmitCompleteHandler(new SubmitCompleteHandler() {
       @Override public void onSubmitComplete(SubmitCompleteEvent event) {
         if (pvb != null) {
@@ -59,6 +60,7 @@ public class MediaWidget extends Composite {
               }
 
               @Override public void onSuccess(PropertyValue result) {
+                up.hide();
                 if (result != null) {
                   pvb.setData(result);
                   StatusMessage.get().show(
@@ -72,36 +74,41 @@ public class MediaWidget extends Composite {
 
   public Binding bind(final PropertyValueBinding pvb) {
     this.pvb = pvb;
-    final Binding b = HasTextBinding.<String>bind(new HasText() {
-      //private String text;
-
-      @Override public String getText() {
-        return fileName;
-      }
-
-      @Override public void setText(String text) {
-        fileName = text;
-        show(id, (String)getData(pvb.mimeType(), ""), fileName);
-        //show((Long)getData(pvb.id(), null), text, (String)getData(pvb.stringValue(), ""));
-      }
-    }, pvb.mimeType());
-    HasTextBinding.<Long>bind(new HasText() {
-//      private String id;
-
+    final Binding b = HasTextBinding.<Long>bind(new HasText() {
       @Override public String getText() {
         return id;
       }
-
+      
       @Override public void setText(String text) {
         id = text;
-        show(id, (String)getData(pvb.mimeType(), ""), fileName);
-//        show(id,
-//          (String)getData(pvb.mimeType(), ""), (String)getData(pvb.stringValue(), ""));
+        show(id, (String)getData(pvb.mimeType(), ""), 
+          (String)getData(pvb.stringValue(), ""));
       }
     }, pvb.id(), BindingConverters.LONG_CONVERTER);
+    HasTextBinding.<String>bind(new HasText() {
+      private String mimeType;
+      @Override public String getText() {
+        return mimeType;
+      }
+
+      @Override public void setText(String text) {
+        mimeType = text;
+      }
+    }, pvb.mimeType(), BindingConverters.STRING_CONVERTER);
+    HasTextBinding.<String>bind(new HasText() {
+      private String fileName;
+      @Override public String getText() {
+        return fileName;
+      }
+      
+      @Override public void setText(String text) {
+        fileName = text;
+      }
+    }, pvb.stringValue(), BindingConverters.STRING_CONVERTER);
     HasTextBinding.<Long>bind(itemId, pvb.item().id(), BindingConverters.LONG_CONVERTER);
     HasTextBinding.<Long>bind(propertyId, pvb.property().id(), BindingConverters.LONG_CONVERTER);
     HasTextBinding.<Long>bind(pvId, pvb.id(), BindingConverters.LONG_CONVERTER);
+    HasTextBinding.bind(language, pvb.language(), BindingConverters.STRING_CONVERTER);
     return b;
   }
 
@@ -109,7 +116,9 @@ public class MediaWidget extends Composite {
     final Long id = Long.valueOf(idS == null || "".equals(idS.trim()) ? "0" : idS.trim());
 
     text = text.trim();
-    filename = filename.trim();
+    if (filename != null) {
+      filename = filename.trim();
+    }
     if (text == null || "".equals(text) || "\u00a0".equals(text) ) {
       image.setVisible(false);
       a.setVisible(false);
@@ -120,7 +129,7 @@ public class MediaWidget extends Composite {
     } else if (text.startsWith("image")) {
       image.setVisible(true);
       a.setVisible(false);
-      image.setUrl(GWT.getModuleBaseURL() + "DownloadMed?pvId=" + id);
+      image.setUrl(GWT.getModuleBaseURL() + "DownloadMedia?pvId=" + id);
       image.setTitle(filename);
       a.setHref("");
       a.setText("");
@@ -129,7 +138,7 @@ public class MediaWidget extends Composite {
       image.setVisible(false);
       image.setUrl("");
       image.setTitle("");
-      a.setHref(GWT.getModuleBaseURL() + "DownloadMed?pvId=" + id);
+      a.setHref(GWT.getModuleBaseURL() + "DownloadMedia?pvId=" + id);
       a.setText(filename);
     }
   }

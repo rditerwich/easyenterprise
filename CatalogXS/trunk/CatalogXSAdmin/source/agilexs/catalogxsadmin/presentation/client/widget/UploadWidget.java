@@ -59,6 +59,10 @@ public class UploadWidget extends Composite {
     fp.add(ih);
   }
 
+  public void hide() {
+    popup.hide();
+  }
+
   public void setParam(String name, String value) {
     final InputElement ie = inputElements.containsKey(name) ? inputElements
             .get(name) : Document.get().createHiddenInputElement();

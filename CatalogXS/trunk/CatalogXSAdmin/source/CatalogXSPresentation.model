@@ -92,6 +92,7 @@ GwtPackage {
                                 JavaBeanPropertyView {
                                     name = PropertyValuesView
                                     kind = all
+                                    excluded = catalog:PropertyValue/properties:mediaValue
                                     referringProperties = catalog:Item/properties:propertyValues
                                 }
                                 JavaBeanPropertyView {
@@ -144,6 +145,7 @@ GwtPackage {
                                 JavaBeanPropertyView {
                                     name = PropertyValuesView
                                     kind = all
+                                    excluded = catalog:PropertyValue/properties:mediaValue
                                     referringProperties = catalog:Item/properties:propertyValues
                                 }
                                 JavaBeanPropertyView {

@@ -139,7 +139,6 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
         bindings.get(i).getDefaultBinding().setData(pv);
         Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
         bindings.get(i).getDefaultBinding().setData(pv);
-        //rowView.setDefaultValueWidget(pv.getProperty().getType());
         for (PropertyValue pvd : values) {
           if (pvd.getProperty().getId() == pv.getProperty().getId() &&
               pvd.getLanguage() != null) {

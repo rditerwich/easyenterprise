@@ -50,6 +50,7 @@ method ISessionBean GetSessionBean(IRepository repository, String sessionBeanNam
         final [Type("java.lang.Long")] pvId = "".equals(pvIdS) ? null : Long.valueOf(pvIdS);
         final [Type("java.lang.Long")] propertyId = [Type("java.lang.Long")].valueOf(new [Type("java.lang.String")](map.get("propertyId").get()));
         final [Type("java.lang.Long")] itemId = [Type("java.lang.Long")].valueOf(new [Type("java.lang.String")](map.get("itemId").get()));
+        final [Type("java.lang.String")] lang = new [Type("java.lang.String")](map.get("language").get());
         final FileItem file = map.get("fileupload");
         final [Type("agilexs.catalogxsadmin.jpa.catalog.PropertyValue")] pv = new [Type("agilexs.catalogxsadmin.jpa.catalog.PropertyValue")]();
         final String fileName = file.getName();
@@ -57,11 +58,18 @@ method ISessionBean GetSessionBean(IRepository repository, String sessionBeanNam
             fileName.lastIndexOf('/') > -1 ? fileName.lastIndexOf('/') :
             (fileName.lastIndexOf('\\') > -1 ? fileName.lastIndexOf('\\') : 0);
         final [Type("agilexs.catalogxsadmin.jpa.catalog.PropertyValue")] oldPv = pvId == null ? null : [SessionBeanField(catalogBean)].findPropertyValueById(pvId);
-
-        pv.setItem([SessionBeanField(catalogBean)].findItemById(itemId));
-        pv.setProperty([SessionBeanField(catalogBean)].findPropertyById(propertyId));
+        final [Type("agilexs.catalogxsadmin.jpa.catalog.Item")] item = new [Type("agilexs.catalogxsadmin.jpa.catalog.Item")]();
+        item.setId(itemId);
+        pv.setItem(item);
+        
+        final [Type("agilexs.catalogxsadmin.jpa.catalog.Property")] property = new [Type("agilexs.catalogxsadmin.jpa.catalog.Property")]();
+        property.setId(propertyId);
+        pv.setProperty(property);
         pv.setMimeType(file.getContentType());
-        pv.setStringValue(fileName.substring(0));
+        if (!"".equals(lang)) {
+            pv.setLanguage(lang);
+        }
+        pv.setStringValue(fileName.substring(li));
         pv.setMediaValue(file.get());
         if (itemId != null) {
             [SessionBeanField(catalogBean)].updatePropertyValue(oldPv, pv);
