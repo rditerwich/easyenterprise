@@ -161,23 +161,11 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Crud {
-            name = CrudForAllPropertyValue
-            participants = {
-                catalog:PropertyValue                
-            }
-            view = {
-                ClassView {
-                    name = CrudForAllPropertyValueView
-                    kind = all
-                    excluded = catalog:PropertyValue/attributes:mediaValue 
-                }
-            }
-        }
-        Crud {
             name = CrudForAll
             participants = {
                 catalog:Item
                 catalog:ProductGroup
+                catalog:PropertyValue                
                 catalog:Product
                 catalog:Property                
                 catalog:Label

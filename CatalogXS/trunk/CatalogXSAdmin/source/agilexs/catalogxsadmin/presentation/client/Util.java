@@ -7,9 +7,9 @@ import java.util.List;
 import agilexs.catalogxsadmin.presentation.client.binding.Binding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
-import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -20,7 +20,6 @@ import agilexs.catalogxsadmin.presentation.client.widget.MediaWidget;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -96,7 +95,8 @@ public class Util {
    * @return
    */
   public static List<PropertyValue> getProductGroupPropertyValues(
-      List<String> langs, ProductGroup pg, List<PropertyValue> values) {
+      List<String> langs, ProductGroup pg, Item item) {
+    final List<PropertyValue> values = item.getPropertyValues();
     final List<PropertyValue> pgValues = new ArrayList<PropertyValue>();
     final ArrayList<String> allLangs = new ArrayList<String>(langs);
 
@@ -121,7 +121,7 @@ public class Util {
           found = new PropertyValue();
           found.setProperty(property);
           found.setLanguage(lang);
-          found.setItem(pg);
+          found.setItem(item);
         }
         pgValues.add(found);
         boolean foundLabel = false;

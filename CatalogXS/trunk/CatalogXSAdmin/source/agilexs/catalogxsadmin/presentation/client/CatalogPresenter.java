@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -32,7 +31,9 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
   private final CatalogView view = new CatalogView();
   private final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
-
+  private final int TAB_PRODUCT = 0;
+  private final int TAB_GROUP = 1;
+  
   private Shop activeShop;
   private ProductGroup currentProductGroup;
   private ProductGroup root;
@@ -40,15 +41,15 @@ public class CatalogPresenter implements Presenter<CatalogView> {
   final ProductPresenter pp = new ProductPresenter();
 
   public CatalogPresenter() {
-    view.addTab(pgp.getView(), "Properties");
     view.addTab(pp.getView(), "Products");
+    view.addTab(pgp.getView(), "Group");
 
     view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         pgp.setNewProductGroup(activeShop);
         view.getTree().deSelectItem();
-        view.selectedTab(0);
+        view.selectedTab(TAB_PRODUCT);
       }});
     view.getNewProductButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
@@ -60,7 +61,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        if (view.getSelectedTab() == 0) {
+        if (view.getSelectedTab() == TAB_GROUP) {
           pgp.save();
         } else {
           pp.save();
@@ -69,7 +70,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     view.addTabSelectionHandler(new SelectionHandler<Integer>() {
       @Override
       public void onSelection(SelectionEvent<Integer> event) {
-        if (event.getSelectedItem().intValue() == 0) {
+        if (event.getSelectedItem().intValue() == TAB_GROUP) {
           pgp.show(currentProductGroup);
         } else {
           pp.show(activeShop, currentProductGroup, root);
@@ -102,7 +103,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
           if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
             loadChildren(activeShop, item);
           }
-          if (view.getSelectedTab() == 0) {
+          if (view.getSelectedTab() == TAB_GROUP) {
             pgp.show(currentProductGroup);
           } else {
             pp.show(activeShop, currentProductGroup, root);
@@ -181,7 +182,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
           @Override
           public void onSuccess(List<ProductGroup> result) {
-            if (result.size() == 0) {
+            if (result.isEmpty()) {
               view.getTree().setTreeItemAsEmpty(parent);
             }
             for (ProductGroup productGroup : result) {
@@ -194,7 +195,6 @@ public class CatalogPresenter implements Presenter<CatalogView> {
               for (ProductGroup pPG : productGroup.getParents()) {
                 CatalogCache.get().put(pPG);
               }
-//              CatalogCache.get().putParent(productGroup, parentPG);
               treemap.put(
                   view.getTree().addItem(parent, value != null ? value.getStringValue() : "<No Name>"), productGroup.getId());
             }

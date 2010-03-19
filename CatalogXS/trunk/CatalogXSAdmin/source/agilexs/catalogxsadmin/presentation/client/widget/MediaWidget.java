@@ -53,6 +53,14 @@ public class MediaWidget extends Composite {
     up.addSubmitCompleteHandler(new SubmitCompleteHandler() {
       @Override public void onSubmitComplete(SubmitCompleteEvent event) {
         if (pvb != null) {
+          if (((PropertyValue) pvb.getData()).getId() == null) {
+             final String idS = event.getResults();
+             
+             if (idS != null && !"".equals(idS.trim())) {
+                ((PropertyValue) pvb.getData()).setId(Long.valueOf(idS.trim())); 
+             }
+          }
+          up.hide();
           CatalogCache.get().getPropertyValue((Long)pvb.id().getData(),
             new AsyncCallback<PropertyValue>() {
               @Override public void onFailure(Throwable caught) {
@@ -60,7 +68,6 @@ public class MediaWidget extends Composite {
               }
 
               @Override public void onSuccess(PropertyValue result) {
-                up.hide();
                 if (result != null) {
                   pvb.setData(result);
                   StatusMessage.get().show(
@@ -78,10 +85,10 @@ public class MediaWidget extends Composite {
       @Override public String getText() {
         return id;
       }
-      
+
       @Override public void setText(String text) {
         id = text;
-        show(id, (String)getData(pvb.mimeType(), ""), 
+        show(id, (String)getData(pvb.mimeType(), ""),
           (String)getData(pvb.stringValue(), ""));
       }
     }, pvb.id(), BindingConverters.LONG_CONVERTER);
@@ -100,7 +107,7 @@ public class MediaWidget extends Composite {
       @Override public String getText() {
         return fileName;
       }
-      
+
       @Override public void setText(String text) {
         fileName = text;
       }
@@ -142,7 +149,7 @@ public class MediaWidget extends Composite {
       a.setText(filename);
     }
   }
-  
+
   private <T> T getData(PropertyBinding<T> data, T dv) {
     return (T) (data == null || data.getData() == null ? dv : data.getData());
   }

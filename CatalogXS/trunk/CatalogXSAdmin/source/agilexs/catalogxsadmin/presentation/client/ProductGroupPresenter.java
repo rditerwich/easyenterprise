@@ -151,7 +151,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         }
         parentsP.show(currentProductGroup, curParents, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
         //own properties with default values
-        pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup.getPropertyValues()));
+        pgpp.show(currentLanguage, Util.getProductGroupPropertyValues(langs, currentProductGroup, currentProductGroup));
         //inherited properties from parents
         view.getParentPropertiesPanel().clear();
         valuesPresenters.clear();
@@ -159,7 +159,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
         for (Long pid : parents) {
           final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup.getPropertyValues());
+          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup);
 
           if (!pv.isEmpty()) {
             final ItemValuesPresenter presenter = new ItemValuesPresenter();

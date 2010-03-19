@@ -10,7 +10,7 @@ import metaphor.psm.javaee.deploy.WebXml
     </servlet-mapping>
     <servlet>
         <servlet-name>CatalogXSUploadMedia</servlet-name>
-        <servlet-class>agilexs.catalogxsadmin.presentation.server.UploadMediaServlet</servlet-class>
+        <servlet-class>agilexs.catalogxsadmin.presentation.server.UploadMediaServlet2</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CatalogXSDownloadMedia</servlet-name>

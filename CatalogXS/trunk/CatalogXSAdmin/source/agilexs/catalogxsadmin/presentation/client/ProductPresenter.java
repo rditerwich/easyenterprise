@@ -6,7 +6,6 @@ import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -152,7 +151,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.getProductTable().clear();
     if (currentProducts.size() > 0) {
       view.getProductTable().resizeRows(currentProducts.size() + 1);
-      final List<PropertyValue> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, currentProducts.get(0).getPropertyValues());
+      final List<PropertyValue> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, currentProducts.get(0));
 
       int h = 0;
       for (PropertyValue pvh : header) {
@@ -165,7 +164,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         final Product product = currentProducts.get(i);
 
         CatalogCache.get().put(product);
-        final List<PropertyValue> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, product.getPropertyValues());
+        final List<PropertyValue> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, product);
 
         int j = 0;
         for (PropertyValue pv : pvl) {
@@ -190,7 +189,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     parents.add(currentProductGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-      final List<PropertyValue> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), parent, currentProduct.getPropertyValues());
+      final List<PropertyValue> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), parent, currentProduct);
 
       if (!pv.isEmpty()) {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();
