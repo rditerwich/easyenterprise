@@ -1,4 +1,4 @@
-package agilexs.catalogxsadmin.presentation.client;
+package agilexs.catalogxsadmin.presentation.client.widget;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -27,7 +27,7 @@ public class StatusMessage {
       }
     });
   }
-  
+
   public void show(String message, int durationSeconds) {
     new Timer() {
       @Override

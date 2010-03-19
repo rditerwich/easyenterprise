@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.page.View;
+import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasText;
@@ -16,8 +16,6 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ItemValuesView extends Composite implements View {
@@ -26,7 +24,6 @@ public class ItemValuesView extends Composite implements View {
     final Label name = new Label();
     final Label type = new Label();
     final SimplePanel valueWrapper = new SimplePanel();
-    Widget value;
 
     public HasText getName() {
       return name;
@@ -41,46 +38,7 @@ public class ItemValuesView extends Composite implements View {
     }
 
     public Widget setValueWidget(PropertyType type) {
-      switch (type) {
-      case Enum:
-        value = new TextBox();
-        break;
-      case FormattedText:
-        value = new TextBox();
-        break;
-      case Media:
-        value = new TextBox();
-        break;
-      case String:
-        value = new TextArea();
-        break;
-      case Boolean:
-        value = new CheckBox();
-        break;
-      case Acceleration:
-      case AmountOfSubstance:
-      case Angle:
-      case Area:
-      case ElectricCurrent:
-      case Energy:
-      case Frequency:
-      case Integer:
-      case Length:
-      case LuminousIntensity:
-      case Money:
-      case Power:
-      case Real:
-      case Mass:
-      case Temperature:
-      case Time:
-      case Velocity:
-      case Voltage:
-      case Volume:
-      default:
-        value = new TextBox();
-      }
-      valueWrapper.setWidget(value);
-      return value;
+      return CatalogWidgetUtil.setPropertyTypeWidget(valueWrapper, type);
     }
   }
 

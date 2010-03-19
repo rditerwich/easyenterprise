@@ -20,6 +20,14 @@ path catalog = /packages:AgileXS/packages:CatalogXSAdmin/packages:Presentation/p
 
 GwtPackage {
     name = Presentation
+    specialPurposeServlets = {
+        GwtFileDownloadServlet {
+            name = DownloadMedia
+        }
+        GwtFileUploadServlet {
+            name = UploadMedia
+        }
+    }
     servlets = {
        GwtService {
             name = CatalogService
@@ -1358,14 +1366,6 @@ GwtPackage {
                     }
                 }
             }
-        }
-    }
-    specialPurposeServlets = {
-        GwtFileDownloadServlet {
-            name = DownloadVerosIIConfig
-        }
-        GwtFileUploadServlet {
-            name = UploadVerosIIConfig
         }
     }
 */

@@ -253,15 +253,21 @@ public class CatalogCache {
   }
 
   public void put(Shop shop) {
-    shopCache.put(shop.getId(), shop);
+    if (shop != null) {
+      shopCache.put(shop.getId(), shop);
+    }
   }
 
   public void put(ProductGroup pg) {
-    productGroupCache.put(pg.getId(), pg);
+    if (pg != null) {
+      productGroupCache.put(pg.getId(), pg);
+    }
   }
 
   public void put(Product p) {
-    productCache.put(p.getId(), p);
+    if (p != null) {
+      productCache.put(p.getId(), p);
+    }
   }
 
   public void put(Item item) {
@@ -273,14 +279,20 @@ public class CatalogCache {
   }
 
   public void put(Property p) {
-    propertyCache.put(p.getId(), p);
+    if (p != null) {
+      propertyCache.put(p.getId(), p);
+    }
   }
 
   public void put(PropertyValue pv) {
-    propertyValueCache.put(pv.getId(), pv);
+    if (pv != null) {
+      propertyValueCache.put(pv.getId(), pv);
+    }
   }
 
   public void put(Label l) {
-    labelCache.put(l.getId(), l);
+    if (l != null) {
+      labelCache.put(l.getId(), l);
+    }
   }
 }

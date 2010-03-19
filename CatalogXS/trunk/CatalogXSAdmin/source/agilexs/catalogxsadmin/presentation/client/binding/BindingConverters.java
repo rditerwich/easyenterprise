@@ -10,8 +10,7 @@ public class BindingConverters {
 
     @Override
     public String convertTo(Integer data) {
-      final String stringData = data != null ? data.toString().trim() : "";
-      return stringData.isEmpty() ? "\u00a0" : stringData;
+      return data != null ? data.toString().trim() : "";
     }
   };
 
@@ -23,8 +22,19 @@ public class BindingConverters {
 
     @Override
     public String convertTo(Double data) {
-      final String stringData = data != null ? data.toString().trim() : "";
-      return stringData.isEmpty() ? "\u00a0" : stringData;
+      return data != null ? data.toString().trim() : "";
+    }
+  };
+
+  public static final BindingConverter<Long, String> LONG_CONVERTER = new BindingConverter<Long, String>() {
+    @Override
+    public Long convertFrom(String data) {
+      return Long.valueOf(data.trim());
+    }
+    
+    @Override
+    public String convertTo(Long data) {
+      return data != null ? data.toString().trim() : "";
     }
   };
 }

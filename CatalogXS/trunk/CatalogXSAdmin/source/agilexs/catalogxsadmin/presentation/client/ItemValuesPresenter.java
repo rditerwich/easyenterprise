@@ -12,6 +12,9 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
+import agilexs.catalogxsadmin.presentation.client.widget.MediaWidget;
+
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -87,6 +90,7 @@ public class ItemValuesPresenter implements Presenter<ItemValuesView> {
           Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pv.getProperty().getType()), pb);
         }
         bindings.get(i).setData(pv);
+
         i++;
       }
     }

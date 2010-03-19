@@ -3,11 +3,11 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import agilexs.catalogxsadmin.presentation.client.binding.Binding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
+import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
@@ -16,9 +16,11 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
+import agilexs.catalogxsadmin.presentation.client.widget.MediaWidget;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -119,6 +121,7 @@ public class Util {
           found = new PropertyValue();
           found.setProperty(property);
           found.setLanguage(lang);
+          found.setItem(pg);
         }
         pgValues.add(found);
         boolean foundLabel = false;
@@ -254,7 +257,7 @@ public class Util {
       value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
       break;
     case Media:
-      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
+      value = ((MediaWidget)w).bind(pvb);
       break;
     case String:
       value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
