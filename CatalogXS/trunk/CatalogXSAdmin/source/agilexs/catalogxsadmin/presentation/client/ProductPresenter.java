@@ -66,41 +66,14 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   public void save() {
-      //update properties
-      currentProduct.getProperties().clear();
-//      currentProductGroup.setProperties(pgpp.getProperties());
-      //update property values
-      currentProduct.getPropertyValues().clear();
-//      currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
-//      //update values
-//      for (ProductGroupValuesPresenter presenter : valuesPresenters) {
-//        currentProductGroup.getPropertyValues().addAll(Util.filterEmpty(presenter.getPropertyValues()));
-//      }
-/*
-      for (PropertyValue np : currentProductGroup.getPropertyValues()) {
-        //TODO remove deleted properties
-        boolean found = false;
-        for (PropertyValue op : orgProductGroup.getPropertyValues()) {
-          if (np.getId() == op.getId() && !np.equals(op)) {
-            found = true;
-            CatalogServiceAsync.updatePropertyValue(op, np, new AsyncCallback(){
-              @Override public void onFailure(Throwable caught) {}
-              @Override public void onSuccess(Object result) {}
-            });
-            break;
-          }
-        }
-        if (!found) {
-          CatalogServiceAsync.updatePropertyValue(null, np, new AsyncCallback(){
-            @Override public void onFailure(Throwable caught) {}
-            @Override public void onSuccess(Object result) {}
-          });
-        }
-      }
-*/
-      CatalogServiceAsync.updateProduct(orgProduct, currentProduct, new AsyncCallback(){
+      //clear properties because these don't need to be saved. Relation
+      orgProduct.getProperties().clear();
+      final Product saveProduct = currentProduct.clone(new HashMap());
+
+      saveProduct.getProperties().clear();
+      CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
         @Override public void onFailure(Throwable caught) {}
-        @Override public void onSuccess(Object result) {
+        @Override public void onSuccess(Product result) {
           StatusMessage.get().show("Product saved", 10);
         }
       });

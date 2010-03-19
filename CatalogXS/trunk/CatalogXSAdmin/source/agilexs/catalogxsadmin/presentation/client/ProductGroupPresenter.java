@@ -8,6 +8,7 @@ import java.util.Map;
 import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -64,56 +65,13 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   public void save() {
-    //TODO store parent/child relations: parentsP.getValues()
-    // update properties
-    //currentProductGroup.getProperties().clear();
-    // currentProductGroup.setProperties(pgpp.getProperties());
-    for (Property np : pgpp.getProperties()) {
-      // TODO remove deleted properties
-      boolean found = false;
-      for (Property op : orgProductGroup.getProperties()) {
-        if (np.getId() == op.getId()) {
-          found = true;
-          // CatalogServiceAsync.updateProperty(op, np, new AsyncCallback(){
-          // @Override public void onFailure(Throwable caught) {}
-          // @Override public void onSuccess(Object result) {}
-          // });
-          break;
-        }
-      }
-      if (!found) {
-        // CatalogServiceAsync.updateProperty(null, np, new AsyncCallback(){
-        // @Override public void onFailure(Throwable caught) {}
-        // @Override public void onSuccess(Object result) {}
-        // });
-      }
-    }
-    // update property values
-    //currentProductGroup.getPropertyValues().clear();
-    // currentProductGroup.setPropertyValues(Util.filterEmpty(pgpp.getPropertyValues()));
-    // //update values
-    // for (ProductGroupValuesPresenter presenter : valuesPresenters) {
-    // currentProductGroup.getPropertyValues().addAll(Util.filterEmpty(presenter.getPropertyValues()));
-    // }
-    /*
-     * for (PropertyValue np : currentProductGroup.getPropertyValues()) { //TODO
-     * remove deleted properties boolean found = false; for (PropertyValue op :
-     * orgProductGroup.getPropertyValues()) { if (np.getId() == op.getId() &&
-     * !np.equals(op)) { found = true;
-     * CatalogServiceAsync.updatePropertyValue(op, np, new AsyncCallback(){
-     *
-     * @Override public void onFailure(Throwable caught) {}
-     *
-     * @Override public void onSuccess(Object result) {} }); break; } } if
-     * (!found) { CatalogServiceAsync.updatePropertyValue(null, np, new
-     * AsyncCallback(){
-     *
-     * @Override public void onFailure(Throwable caught) {}
-     *
-     * @Override public void onSuccess(Object result) {} }); } }
-     */
+    //
+    orgProductGroup.getChildren().clear();
+    final ProductGroup saveProductGroup = currentProductGroup.clone(new HashMap());
+
+    saveProductGroup.getChildren().clear();
     CatalogServiceAsync.updateProductGroup(orgProductGroup,
-        currentProductGroup, new AsyncCallback() {
+        saveProductGroup, new AsyncCallback() {
           @Override
           public void onFailure(Throwable caught) {
             //TODO message on save fail
