@@ -97,11 +97,9 @@ class Boot {
     //User.sitemap
     //LiftRules.setSiteMap(SiteMap(entries:_*))
 
-    for (n <- List(1, 2, 3, 4, 5, 6,7, 8, 9)) {
-    LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
-      case ShopPathRewriter(response : RewriteResponse) => response 
-    })
-    }
+//    LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
+//      case ShopPathRewriter(response : RewriteResponse) => response 
+//    })
 
 //    /**
 //    * Parse language url entry
@@ -138,6 +136,10 @@ class Boot {
 //    })
 
     LiftRules.dispatch.prepend(ImageDispatcher.dispatch)
+    ShopComponent
+    claro.cms.CMS.boot
+    claro.cms.test.Test.boot
+    
     /*
      * Show the spinny image when an Ajax call starts
      */

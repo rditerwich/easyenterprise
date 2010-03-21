@@ -1,7 +1,7 @@
-package agilexs.catalogxs.presentation.util
+package claro.common.util
 
 import scala.collection.{mutable, Set, Map}
-import agilexs.catalogxs.presentation.model.Conversions._
+import claro.common.util.Conversions._
 
 object KeywordMap {
   def apply[A](keywordMappings : Iterable[(Iterable[String], A)]) = {

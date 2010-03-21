@@ -23,6 +23,7 @@ import agilexs.catalogxs.presentation.model.Conversions._
 import agilexs.catalogxs.businesslogic.CatalogBean
 import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.Util
+import claro.common.util.Conversions._
 
 //TODO correctly calculate promotion prices, currently the original product price is calculated.
 //TODO add button "next step"

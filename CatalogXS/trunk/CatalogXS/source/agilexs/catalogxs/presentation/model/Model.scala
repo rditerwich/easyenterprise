@@ -10,15 +10,15 @@ import net.liftweb.util.Box
 import net.liftweb.util.Full
 import scala.collection.jcl.{BufferWrapper,SetWrapper,IterableWrapper} 
 import scala.collection.{mutable}
-import Conversions._
-import agilexs.catalogxs.presentation.util.LazyValue
+import claro.common.util.Conversions._
+import claro.common.util.Lazy
 import agilexs.catalogxs.jpa
 
 object Model {
   
   val locales : Set[String] = Locale.getAvailableLocales map (_ toString) toSet
   
-  var shopCache = new LazyValue(new ShopCache) 
+  var shopCache = Lazy(new ShopCache) 
   
   object shop extends RequestVar[Shop](shopCache.get.shopsById(S.param("shop") get)) 
   object language extends RequestVar[String](S.param("language") get) 

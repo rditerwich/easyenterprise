@@ -5,7 +5,7 @@ import scala.xml.NodeSeq
 
 import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.ProjectionMap
-import Conversions._ 
+import claro.common.util.Conversions._
 
 class ShopCache {
 

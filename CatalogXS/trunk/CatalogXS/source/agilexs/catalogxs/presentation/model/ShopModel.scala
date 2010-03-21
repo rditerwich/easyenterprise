@@ -7,7 +7,9 @@ import scala.collection.{mutable, immutable, Set, Map}
 
 import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.model.Conversions._
-import agilexs.catalogxs.presentation.util.{Delegate, ProjectionMap, KeywordMap}
+import agilexs.catalogxs.presentation.util.{Delegate,ProjectionMap}
+import claro.common.util.KeywordMap
+import claro.common.util.Conversions._
 
 class Mapping(product : Option[Product], cacheData : ShopCacheData) {
   lazy val productGroups = ProjectionMap((g : jpa.catalog.ProductGroup) => new ProductGroup(g, product, cacheData, this))
@@ -24,6 +26,7 @@ class Shop (val cacheData : ShopCacheData) extends Delegate(cacheData.catalog) {
   private val mapping = new Mapping(None, cacheData)
   
   val shop = cacheData.shop
+  val catalogId = shop.getCatalog.getId
   val id = shop.getId.longValue
   val serverName : String = (shop.getUrlPrefix getOrElse ("") split ("/"))(0)
   val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)

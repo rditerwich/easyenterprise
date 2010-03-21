@@ -7,6 +7,7 @@ import net.liftweb.util.BindHelpers._
 import scala.xml.{Text, NodeSeq}
 import agilexs.catalogxs.presentation.util.Util
 import agilexs.catalogxs.presentation.snippet.ShoppingCart
+import claro.common.util.Conversions._
 
 object ShopBindings {
 
