@@ -24,6 +24,7 @@ public class ItemValuesView extends Composite implements View {
     final Label name = new Label();
     final Label type = new Label();
     final SimplePanel valueWrapper = new SimplePanel();
+    final SimplePanel defaultValueWrapper = new SimplePanel();
 
     public HasText getName() {
       return name;
@@ -33,8 +34,16 @@ public class ItemValuesView extends Composite implements View {
       return type;
     }
 
+    public Widget getDefaultValueWidget() {
+      return defaultValueWrapper;
+    }
+
     public Widget getValueWidget() {
       return valueWrapper;
+    }
+
+    public Widget setDefaultValueWidget(PropertyType type) {
+      return CatalogWidgetUtil.setPropertyTypeWidget(defaultValueWrapper, type);
     }
 
     public Widget setValueWidget(PropertyType type) {
@@ -52,8 +61,7 @@ public class ItemValuesView extends Composite implements View {
 
   public ItemValuesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    grid.resize(1, 3);
-    //addNew.setText("Add new property");
+    grid.resize(1, 4);
     addHeader();
   }
 
@@ -81,7 +89,8 @@ public class ItemValuesView extends Composite implements View {
     }
     grid.setWidget(row, 0, (Widget) rowView.getName());
     grid.setWidget(row, 1, (Widget) rowView.getType());
-    grid.setWidget(row, 2, rowView.getValueWidget());
+    grid.setWidget(row, 2, rowView.getDefaultValueWidget());
+    grid.setWidget(row, 3, rowView.getValueWidget());
 
     return rowView;
   }
@@ -93,6 +102,7 @@ public class ItemValuesView extends Composite implements View {
   private void addHeader() {
     grid.setWidget(0, 0, new InlineLabel("Name"));
     grid.setWidget(0, 1, new InlineLabel("Type"));
-    grid.setWidget(0, 2, new InlineLabel("Value"));
+    grid.setWidget(0, 2, new InlineLabel("Default Value"));
+    grid.setWidget(0, 3, new InlineLabel("Value"));
   }
 }

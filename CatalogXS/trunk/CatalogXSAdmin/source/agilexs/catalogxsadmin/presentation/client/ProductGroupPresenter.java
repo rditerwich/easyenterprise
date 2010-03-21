@@ -55,7 +55,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       currentProductGroup.setContainsProducts(Boolean.FALSE);
       view.setName("");
       view.containsProducts().setValue(currentProductGroup.getContainsProducts());
-      pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
+      //FIXME:pgpp.show(currentLanguage, currentProductGroup.getPropertyValues());
       view.getParentPropertiesPanel().clear();
   }
 
@@ -117,7 +117,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
         for (Long pid : parents) {
           final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-          final List<PropertyValue> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup);
+          final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup);
 
           if (!pv.isEmpty()) {
             final ItemValuesPresenter presenter = new ItemValuesPresenter();

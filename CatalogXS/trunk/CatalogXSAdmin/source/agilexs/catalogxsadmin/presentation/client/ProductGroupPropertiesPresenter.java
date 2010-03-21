@@ -122,36 +122,33 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
    * shows the property list.
    * @param values
    */
-  public void show(String language, List<PropertyValue> values) {
+  public void show(String language, List<PropertyValue[]> values) {
     this.language = language;
     Tuple.setLanguage(language);
     view.resetTable();
     final int bindingSize = bindings.size();
     int i = 0;
     activeBindingSize = 0;
-    for (PropertyValue pv : values) {
-      if (pv.getLanguage() == null){
-        final PGPRowView rowView = view.setRow(i);
+    for (PropertyValue[] pvl : values) {
+      final PGPRowView rowView = view.setRow(i);
 
-        if (bindingSize <= i) {
-          createRow(rowView);
-        }
-        bindings.get(i).getDefaultBinding().setData(pv);
-        Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
-        bindings.get(i).getDefaultBinding().setData(pv);
-        for (PropertyValue pvd : values) {
-          if (pvd.getProperty().getId() == pv.getProperty().getId() &&
-              pvd.getLanguage() != null) {
-            bindings.get(i).setPropertyValue(pvd);
-            if (pvd.getLanguage().equals(language)) {
-              bindings.get(i).refresh();
-              Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pvd.getProperty().getType()), bindings.get(i).getBinding());
-              bindings.get(i).refresh();
-            }
-          }
-        }
-        i++;
+      if (bindingSize <= i) {
+        createRow(rowView);
       }
+      for (PropertyValue pv : pvl) {
+        if (pv.getLanguage() == null){
+          bindings.get(i).getDefaultBinding().setData(pv);
+          Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
+          bindings.get(i).getDefaultBinding().setData(pv);
+        }
+        if (pv.getLanguage().equals(language)) {
+          bindings.get(i).setPropertyValue(pv);
+          bindings.get(i).refresh();
+          Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pv.getProperty().getType()), bindings.get(i).getBinding());
+          bindings.get(i).refresh();
+        }
+      }
+      i++;
     }
     activeBindingSize = i;
   }

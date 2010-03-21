@@ -89,25 +89,30 @@ public class Util {
   /**
    * Returns a list of all PropertyValues based on all properties in a 
    * ProductGroup. If no propertyValue is present, a new one is created.
-   *   
+   * The newly created propertyValues are added to the current productGroup.
+   * 
    * @param pg
    * @param values
    * @return
    */
-  public static List<PropertyValue> getProductGroupPropertyValues(
+  public static List<PropertyValue[]> getProductGroupPropertyValues(
       List<String> langs, ProductGroup pg, Item item) {
     final List<PropertyValue> values = item.getPropertyValues();
-    final List<PropertyValue> pgValues = new ArrayList<PropertyValue>();
+    final List<PropertyValue[]> pgValues = new ArrayList<PropertyValue[]>();
     final ArrayList<String> allLangs = new ArrayList<String>(langs);
 
     if (!langs.contains(null)) {
       allLangs.add(null);
     }
-    for (String lang : allLangs) {
-      for (Property property : pg.getProperties()) {
-        if (property.getItem() == null) {
-          property.setItem(pg);
-        }
+    for (Property property : pg.getProperties()) {
+      if (property.getItem() == null) {
+        property.setItem(pg);
+      }
+      final PropertyValue[] pgValue = new PropertyValue[allLangs.size()];
+
+      pgValues.add(pgValue);
+      for (int i = 0; i < allLangs.size(); i++) {
+        final String lang = allLangs.get(i);
         PropertyValue found = null;
         for (PropertyValue value : values) {
           if (value.getProperty().getId().equals(property.getId()) &&
@@ -122,8 +127,9 @@ public class Util {
           found.setProperty(property);
           found.setLanguage(lang);
           found.setItem(item);
+          pg.getPropertyValues().add(found);
         }
-        pgValues.add(found);
+        pgValue[i] = found;
         boolean foundLabel = false;
         for (Label pl : property.getLabels()) {
           if ((lang == null && pl.getLanguage() == null) ||
@@ -155,10 +161,21 @@ public class Util {
    return null;
   }
 
+  public static PropertyValue getPropertyValueByLangByName(List<List<PropertyValue>> values, String name, String lang) {
+    for (List<PropertyValue> propertyValues : values) {
+      for (PropertyValue propertyValue : propertyValues) {
+        if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
+          return propertyValue;
+        }
+      }
+    }
+    return null;
+  }
+
   public static PropertyValue getPropertyValueByName(List<PropertyValue> values, String name, String lang) {
     for (PropertyValue propertyValue : values) {
-      if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
-        return propertyValue;
+        if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
+          return propertyValue;
       }
     }
     return null;

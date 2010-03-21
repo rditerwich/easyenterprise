@@ -70,6 +70,7 @@ public class UploadMediaServlet2 extends HttpServlet {
             final Property property = new Property();
             property.setId(propertyId);
             pv.setProperty(property);
+            pv.setId(pvId);
             pv.setMimeType(file.getContentType());
             if (!"".equals(lang)) {
                 pv.setLanguage(lang);

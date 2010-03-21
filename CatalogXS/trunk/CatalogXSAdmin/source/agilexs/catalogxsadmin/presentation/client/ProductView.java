@@ -32,11 +32,9 @@ public class ProductView extends Composite implements View {
 
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
-  private final HTML pgname = new HTML();
   private final FlowPanel propertiesPanel = new FlowPanel();
 
   private final Grid productTable = new Grid(); 
-  private final HTML productGroupName = new HTML();
 
   public ProductView() {
     initWidget(deck);
@@ -45,7 +43,6 @@ public class ProductView extends Composite implements View {
     //Overview table
     final DockLayoutPanel overviewPanel = new DockLayoutPanel(Unit.PX);
     deck.add(overviewPanel);
-    overviewPanel.addNorth(productGroupName, 20);
     final ScrollPanel spo = new ScrollPanel(productTable);
     spo.getElement().getStyle().setPadding(10, Unit.PX);
     overviewPanel.add(spo);
@@ -56,7 +53,7 @@ public class ProductView extends Composite implements View {
     final VerticalPanel top = new VerticalPanel();
     back.setHTML("&laquo; Back to product overview");
     top.add(back);
-    top.add(pgname);
+    top.add(pname);
     detailPanel.addNorth(top, 40);
     final FlowPanel productPanel = new FlowPanel();
     final ScrollPanel sp = new ScrollPanel(productPanel);
@@ -78,10 +75,6 @@ public class ProductView extends Composite implements View {
 
   public void setProductName(String name) {
     pname.setHTML("<h2>" + name + "</h2>");
-  }
-
-  public void setProductGroupName(String name) {
-    pgname.setHTML("<h2>" + name + "</h2>");
   }
 
   public Grid getProductTable() {

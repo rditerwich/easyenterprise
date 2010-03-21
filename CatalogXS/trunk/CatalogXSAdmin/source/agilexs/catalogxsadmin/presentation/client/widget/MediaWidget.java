@@ -5,6 +5,8 @@ import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
 import agilexs.catalogxsadmin.presentation.client.binding.HasTextBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.PropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
+import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
 
@@ -55,7 +57,7 @@ public class MediaWidget extends Composite {
         if (pvb != null) {
           if (((PropertyValue) pvb.getData()).getId() == null) {
              final String idS = event.getResults();
-             
+
              if (idS != null && !"".equals(idS.trim())) {
                 ((PropertyValue) pvb.getData()).setId(Long.valueOf(idS.trim())); 
              }
@@ -69,6 +71,12 @@ public class MediaWidget extends Composite {
 
               @Override public void onSuccess(PropertyValue result) {
                 if (result != null) {
+                  if (result.getItem() == null) {
+                    result.setItem((Item) pvb.item().getData());
+                  }
+                  if (result.getProperty() == null) {
+                    result.setProperty((Property) pvb.property().getData());
+                  }
                   pvb.setData(result);
                   StatusMessage.get().show(
                     "File '" + result.getStringValue() + "' uploaded.", 15);
