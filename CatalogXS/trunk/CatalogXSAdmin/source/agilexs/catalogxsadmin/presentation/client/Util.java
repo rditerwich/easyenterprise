@@ -127,7 +127,7 @@ public class Util {
           found.setProperty(property);
           found.setLanguage(lang);
           found.setItem(item);
-          pg.getPropertyValues().add(found);
+          item.getPropertyValues().add(found);
         }
         pgValue[i] = found;
         boolean foundLabel = false;
@@ -222,7 +222,8 @@ public class Util {
   }
   
   public static List<PropertyValue> filterEmpty(Collection<PropertyValue> values) {
-    List<PropertyValue> nv = new ArrayList<PropertyValue>();
+    final List<PropertyValue> nv = new ArrayList<PropertyValue>();
+
     for (PropertyValue pv : values) {
       if (!isEmpty(pv)) {
         nv.add(pv);

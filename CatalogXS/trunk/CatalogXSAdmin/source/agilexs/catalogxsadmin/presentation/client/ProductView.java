@@ -3,9 +3,11 @@ package agilexs.catalogxsadmin.presentation.client;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -13,6 +15,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -30,11 +33,13 @@ public class ProductView extends Composite implements View {
   
   private final DeckPanel deck = new DeckPanel();
 
+  final Button newProductButton = new Button("New Product");
+  final Button saveButton = new Button("Save changes"); 
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
   private final FlowPanel propertiesPanel = new FlowPanel();
 
-  private final Grid productTable = new Grid(); 
+  private final Grid productTable = new Grid();
 
   public ProductView() {
     initWidget(deck);
@@ -42,17 +47,26 @@ public class ProductView extends Composite implements View {
     deck.add(new HTML("No products in this group"));
     //Overview table
     final DockLayoutPanel overviewPanel = new DockLayoutPanel(Unit.PX);
+
     deck.add(overviewPanel);
+    final HorizontalPanel tophp = new HorizontalPanel();
+    tophp.add(newProductButton);
+    overviewPanel.addNorth(tophp, 30);
     final ScrollPanel spo = new ScrollPanel(productTable);
+
     spo.getElement().getStyle().setPadding(10, Unit.PX);
     overviewPanel.add(spo);
 
     //Detail page
     final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
     deck.add(detailPanel);
-    final VerticalPanel top = new VerticalPanel();
+    final HorizontalPanel toph = new HorizontalPanel(); 
     back.setHTML("&laquo; Back to product overview");
-    top.add(back);
+    toph.add(back);
+    saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
+    toph.add(saveButton);
+    final VerticalPanel top = new VerticalPanel();
+    top.add(toph);
     top.add(pname);
     detailPanel.addNorth(top, 40);
     final FlowPanel productPanel = new FlowPanel();
@@ -65,10 +79,18 @@ public class ProductView extends Composite implements View {
     productPanel.add(propertiesPanel);
   }
 
-  public HasClickHandlers hasBackClickHandlers() {
+  public HasClickHandlers backClickHandlers() {
     return back;
   }
 
+  public HasClickHandlers newProductButtonClickHandlers() {
+    return newProductButton;
+  }
+
+  public HasClickHandlers saveButtonClickHandlers() {
+    return saveButton;
+  }
+  
   public FlowPanel getPropertiesPanel() {
     return propertiesPanel;
   }
@@ -89,6 +111,8 @@ public class ProductView extends Composite implements View {
   }
 
   public void setProductTableCell(int row, int column, PropertyValue pv) {
+    productTable.getRowFormatter().getElement(row).getStyle().setCursor(Cursor.POINTER);
+
     if (column >= productTable.getColumnCount()) {
       productTable.resizeColumns(column+1);
     }

@@ -24,8 +24,6 @@ public class CatalogView extends Composite implements View {
   final ExtendedTree tree = new ExtendedTree();
   final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
   final Button newProductGroupButton = new Button("New Product Group");
-  final Button newProductButton = new Button("New Product");
-  final Button saveButton = new Button("Save changes");
   final ListBox languageList = new ListBox();
 
   public CatalogView() {
@@ -36,11 +34,8 @@ public class CatalogView extends Composite implements View {
 
     final FlowPanel buttonBar = new FlowPanel();
     buttonBar.add(newProductGroupButton);
-    buttonBar.add(newProductButton);
     buttonBar.add(languageList);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
-    //TODO auto enable save button on changes: saveButton.setEnabled(false);
-    buttonBar.add(saveButton);
     detailPanel.addNorth(buttonBar, 40);
     detailPanel.add(tp);
 
@@ -63,16 +58,8 @@ public class CatalogView extends Composite implements View {
     return newProductGroupButton;
   }
 
-  public HasClickHandlers getNewProductButtonClickHandler() {
-    return newProductButton;
-  }
-
   public int getSelectedTab() {
     return tp.getSelectedIndex();
-  }
-
-  public HasClickHandlers getSaveButtonClickHandler() {
-    return saveButton;
   }
 
   public String getSelectedLanguage() {

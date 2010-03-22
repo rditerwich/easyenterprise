@@ -161,12 +161,113 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Crud {
+            name = CrudForProduct
+            participants = {
+                catalog:Product
+            }
+            view = {
+                ClassView {
+                    name = CrudProductView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = CatalogView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:catalog
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForProductGroup
+            participants = {
+                catalog:ProductGroup
+            }
+            view = {
+                ClassView {
+                    name = CrudProductGroupView
+                    kind = all
+                    excluded = catalog:ProductGroup/attributes:children
+                    views = {
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
             name = CrudForAll
             participants = {
                 catalog:Item
-                catalog:ProductGroup
                 catalog:PropertyValue                
-                catalog:Product
                 catalog:Property                
                 catalog:Label
                 catalog:EnumValue

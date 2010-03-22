@@ -51,22 +51,6 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         view.getTree().deSelectItem();
         view.selectedTab(TAB_PRODUCT);
       }});
-    view.getNewProductButtonClickHandler().addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        pp.setNewProduct(activeShop);
-        view.getTree().deSelectItem();
-        view.selectedTab(1);
-      }});
-    view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (view.getSelectedTab() == TAB_GROUP) {
-          pgp.save();
-        } else {
-          pp.save();
-        }
-      }});
     view.addTabSelectionHandler(new SelectionHandler<Integer>() {
       @Override
       public void onSelection(SelectionEvent<Integer> event) {

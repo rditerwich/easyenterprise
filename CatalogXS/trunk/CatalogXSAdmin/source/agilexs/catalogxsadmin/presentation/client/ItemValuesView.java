@@ -102,7 +102,7 @@ public class ItemValuesView extends Composite implements View {
   private void addHeader() {
     grid.setWidget(0, 0, new InlineLabel("Name"));
     grid.setWidget(0, 1, new InlineLabel("Type"));
-    grid.setWidget(0, 2, new InlineLabel("Default Value"));
-    grid.setWidget(0, 3, new InlineLabel("Value"));
+    grid.setWidget(0, 2, new InlineLabel("Value"));
+    grid.setWidget(0, 3, new InlineLabel("Language Specific Value"));
   }
 }

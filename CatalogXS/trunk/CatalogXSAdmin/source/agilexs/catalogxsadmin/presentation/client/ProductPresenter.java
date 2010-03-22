@@ -23,7 +23,6 @@ public class ProductPresenter implements Presenter<ProductView> {
 
   private final ProductView view = new ProductView();
   private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
-//  private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
 
   private String currentLanguage = "en";
   private ProductGroup currentProductGroup;
@@ -36,7 +35,6 @@ public class ProductPresenter implements Presenter<ProductView> {
   private ProductGroup root;
 
   public ProductPresenter() {
-//    view.setParentsPanel(parentsP.getView());
     view.getProductTable().addClickHandler(new ClickHandler(){
       @Override
       public void onClick(ClickEvent event) {
@@ -46,18 +44,24 @@ public class ProductPresenter implements Presenter<ProductView> {
           show(SHOW.PRODUCT);
         }
       }});
-    view.hasBackClickHandlers().addClickHandler(new ClickHandler() {
+    view.backClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
         show(SHOW.PRODUCTS);
       }});
-  }
-
-  public void setNewProduct(Shop shop) {
-    orgProduct = null;
-    currentProduct = new Product();
-    currentProduct.setCatalog(shop.getCatalog());
-    view.setProductName("");
-    show(SHOW.PRODUCT);
+    view.saveButtonClickHandlers().addClickHandler(new ClickHandler() {
+      @Override public void onClick(ClickEvent event) {
+        save();
+      }});
+    view.newProductButtonClickHandlers().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        orgProduct = null;
+        currentProduct = new Product();
+        currentProduct.setCatalog(currentProductGroup.getCatalog());
+        currentProduct.setParents(new ArrayList<ProductGroup>());
+        currentProduct.getParents().add(currentProductGroup);
+        show(SHOW.PRODUCT);
+      }});
   }
 
   @Override
@@ -66,28 +70,26 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   public void save() {
-      //clear properties because these don't need to be saved. Relation
+    //clear field not needed to be stored: properties and empty property value
+    // field
+    if (orgProduct != null) {
       orgProduct.setProperties(null);
-      final Product saveProduct = currentProduct.clone(new HashMap());
-
-      saveProduct.setProperties(null);
-      final List<PropertyValue> spv = saveProduct.getPropertyValues(); 
-
-      saveProduct.setPropertyValues(new ArrayList<PropertyValue>());
-      currentProduct.setPropertyValues(new ArrayList<PropertyValue>());
-      for (PropertyValue pv : spv) {
-        if (!Util.isEmpty(pv)) {
-          saveProduct.getPropertyValues().add(pv);
-          currentProduct.getPropertyValues().add(pv);
+      orgProduct.setPropertyValues(Util.filterEmpty(orgProduct.getPropertyValues()));
+    }
+    final Product saveProduct = currentProduct.clone(new HashMap());
+    
+    saveProduct.setProperties(null);
+    saveProduct.setPropertyValues(Util.filterEmpty(saveProduct.getPropertyValues()));
+    CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
+      @Override public void onFailure(Throwable caught) {}
+      @Override public void onSuccess(Product result) {
+        StatusMessage.get().show("Product saved", 10);
+        if (result != null) {
+          CatalogCache.get().put(result);
         }
       }
-      CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
-        @Override public void onFailure(Throwable caught) {}
-        @Override public void onSuccess(Product result) {
-          StatusMessage.get().show("Product saved", 10);
-        }
-      });
-    }
+    });
+  }
 
   public void show(String lang) {
     currentLanguage = lang;
@@ -117,13 +119,14 @@ public class ProductPresenter implements Presenter<ProductView> {
       showProducts();
       break;
     case PRODUCT:
-      if (orgProduct == null || orgProduct.getId() != currentProduct.getId()) {
+      if ((orgProduct == null || orgProduct.getId() != currentProduct.getId())
+          && currentProduct.getId() != null) {
         orgProduct = currentProduct.clone(new HashMap());
       }
       showProduct();
       break;
     }
-    view.showPage(show); 
+    view.showPage(show);
   }
 
   private void showProducts() {
@@ -143,18 +146,22 @@ public class ProductPresenter implements Presenter<ProductView> {
       }
       for (int i = 0; i < currentProducts.size(); i++) {
         final Product product = currentProducts.get(i);
-
-        CatalogCache.get().put(product);
         final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, product);
 
         int j = 0;
         for (PropertyValue[] pvlangs : pvl) {
+          PropertyValue dpv = null;
+          PropertyValue lpv = null;
+          
           for (PropertyValue pv : pvlangs) {
             if (currentLanguage.equals(pv.getLanguage())) {
-              view.setProductTableCell(i+1, j, pv);
-              j++;
+              lpv = pv;
+            } else if (pv.getLanguage() ==  null){
+              dpv = pv;
             }
           }
+          view.setProductTableCell(i+1, j, Util.isEmpty(lpv) ? dpv : lpv);
+          j++;
         }
       }
     }
@@ -193,6 +200,9 @@ public class ProductPresenter implements Presenter<ProductView> {
 
       @Override public void onSuccess(List<Product> result) {
         currentProducts = result;
+        for (Product p : result) {
+          CatalogCache.get().put(p);
+        }
         show = SHOW.PRODUCTS;
         show(show);
       }

@@ -5,7 +5,11 @@ public class BindingConverters {
   public static final BindingConverter<Integer, String> INTEGER_CONVERTER = new BindingConverter<Integer, String>() {
     @Override
     public Integer convertFrom(String data) {
-      return Integer.valueOf(data.trim());
+      try {
+        return Integer.valueOf(data.trim());  
+      } catch(NumberFormatException e) {
+        return null;
+      }
     }
 
     @Override
@@ -17,7 +21,11 @@ public class BindingConverters {
   public static final BindingConverter<Double, String> DOUBLE_CONVERTER = new BindingConverter<Double, String>() {
     @Override
     public Double convertFrom(String data) {
-      return Double.valueOf(data.trim());
+      try {
+        return Double.valueOf(data.trim());
+      } catch(NumberFormatException e) {
+        return null;
+      }
     }
 
     @Override
@@ -29,7 +37,11 @@ public class BindingConverters {
   public static final BindingConverter<Long, String> LONG_CONVERTER = new BindingConverter<Long, String>() {
     @Override
     public Long convertFrom(String data) {
-      return Long.valueOf(data.trim());
+      try {
+        return Long.valueOf(data.trim());
+      } catch(NumberFormatException e) {
+        return null;
+      }
     }
     
     @Override
