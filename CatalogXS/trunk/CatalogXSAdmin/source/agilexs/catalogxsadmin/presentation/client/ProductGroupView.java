@@ -4,6 +4,7 @@ import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -21,6 +22,7 @@ public class ProductGroupView extends Composite implements View {
   private final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
   private final FlowPanel allPropertiesPanel = new FlowPanel();
   private final HTML name = new HTML();
+  final Button saveButton = new Button("Save changes"); 
   private final CheckBox containsProducts = new CheckBox();
   private final SimplePanel propertiesPanel = new SimplePanel();
   private final FlowPanel parentPropertiesPanel = new FlowPanel();
@@ -28,11 +30,16 @@ public class ProductGroupView extends Composite implements View {
 
   public ProductGroupView() {
     initWidget(detailPanel);
-    FlowPanel fp = new FlowPanel();
-    HorizontalPanel hp = new HorizontalPanel();
+    final FlowPanel fp = new FlowPanel();
+    final HorizontalPanel hpname = new HorizontalPanel();
+
+    saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
+    hpname.add(name);
+    hpname.add(saveButton);
+    fp.add(hpname);
+    final HorizontalPanel hp = new HorizontalPanel();
     hp.add(new Label("Product group contains products: "));
     hp.add(containsProducts);
-    fp.add(name);
     fp.add(hp);
     //top
     detailPanel.addNorth(fp, 80);
@@ -60,6 +67,10 @@ public class ProductGroupView extends Composite implements View {
     return containsProducts;
   }
 
+  public HasClickHandlers saveButtonClickHandlers() {
+    return saveButton;
+  }
+  
   public FlowPanel getParentPropertiesPanel() {
     return parentPropertiesPanel;
   }

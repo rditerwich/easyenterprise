@@ -69,7 +69,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     return view;
   }
 
-  public void save() {
+  private void save() {
     //clear field not needed to be stored: properties and empty property value
     // field
     if (orgProduct != null) {
@@ -77,7 +77,7 @@ public class ProductPresenter implements Presenter<ProductView> {
       orgProduct.setPropertyValues(Util.filterEmpty(orgProduct.getPropertyValues()));
     }
     final Product saveProduct = currentProduct.clone(new HashMap());
-    
+
     saveProduct.setProperties(null);
     saveProduct.setPropertyValues(Util.filterEmpty(saveProduct.getPropertyValues()));
     CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
@@ -86,12 +86,14 @@ public class ProductPresenter implements Presenter<ProductView> {
         StatusMessage.get().show("Product saved", 10);
         if (result != null) {
           CatalogCache.get().put(result);
+          currentProduct = result;
+          show(SHOW.PRODUCT);
         }
       }
     });
   }
 
-  public void show(String lang) {
+  public void switchLanguage(String lang) {
     currentLanguage = lang;
     show(show);
   }
@@ -99,12 +101,12 @@ public class ProductPresenter implements Presenter<ProductView> {
   public void show(Shop shop, ProductGroup productGroup, ProductGroup root) {
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
-//FIXME: if (currentProductGroup.getContainsProducts()) {
-        this.root = root;
+      this.root = root;
+      if (currentProductGroup != null) {
         loadProducts(shop, currentProductGroup);
-//      } else {
-//        show(SHOW.NO_PRODUCTS);
-//      }
+      } else {
+        show(SHOW.NO_PRODUCTS);
+      }
     } else {
       // FIXME ?? can this happen?
     }

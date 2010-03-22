@@ -2,6 +2,7 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
 
+import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
@@ -9,8 +10,6 @@ import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
@@ -27,7 +26,7 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
-class ProductGroupPropertiesView extends Composite implements View {
+class ItemPropertiesView extends Composite implements View {
 
   private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
 
@@ -74,29 +73,29 @@ class ProductGroupPropertiesView extends Composite implements View {
     }
   }
 
-  interface ProductGroupPropertiesUiBinder extends UiBinder<Widget, ProductGroupPropertiesView> {}
-  private static ProductGroupPropertiesUiBinder uiBinder = GWT.create(ProductGroupPropertiesUiBinder.class);
+  interface ItemPropertiesUiBinder extends UiBinder<Widget, ItemPropertiesView> {}
+  private static ItemPropertiesUiBinder uiBinder = GWT.create(ItemPropertiesUiBinder.class);
 
   @UiField Button addNew;
   @UiField Grid grid;
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
-  private ClickHandler deleteHandler;
-  private HasValueChangeHandlers<Integer> deleteEventHandler;
-  
-  public ProductGroupPropertiesView() {
+  private DeleteHandler<Integer> deleteHandler;
+
+  public ItemPropertiesView() {
     initWidget(uiBinder.createAndBindUi(this));
-    deleteHandler = new ClickHandler() {
+    grid.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
+        if (deleteHandler == null) return;
         final Cell c = grid.getCellForEvent(event);
+
         if (c.getCellIndex() == DELETE_COLUMN) {
-          ValueChangeEvent.fire(deleteEventHandler, Integer.valueOf(c.getRowIndex()));
+          deleteHandler.onDelete(Integer.valueOf(c.getRowIndex()));
         }
       }
-    };
-    grid.addClickHandler(deleteHandler);
+    });
     resetTable();
     addNew.setText("Add new property");
     addHeader();
@@ -129,8 +128,8 @@ class ProductGroupPropertiesView extends Composite implements View {
     grid.resize(1, 7);
   }
 
-  public void setDeleteEventHandler(HasValueChangeHandlers<Integer> deleteEventHandler) {
-    this.deleteEventHandler = deleteEventHandler;
+  public void setDeleteHandler(DeleteHandler<Integer> deleteHandler) {
+    this.deleteHandler = deleteHandler;
   }
 
   /**

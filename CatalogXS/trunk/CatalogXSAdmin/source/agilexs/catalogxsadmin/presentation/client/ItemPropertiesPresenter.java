@@ -5,16 +5,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import agilexs.catalogxsadmin.presentation.client.ProductGroupPropertiesView.PGPRowView;
+import agilexs.catalogxsadmin.presentation.client.ItemPropertiesView.PGPRowView;
+import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.ListPropertyTypeBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingChangeStateEvent;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverter;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingEvent;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingListener;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
-import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListBoxBinding;
+import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
+import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -25,9 +29,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
- * Presenter class for all properties on a specific ProductGroup. 
+ * Presenter class for all properties on a specific ProductGroup.
  */
-public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPropertiesView> {
+public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
 
   private static class Tuple {
     private static String curLang = null;
@@ -40,11 +44,10 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     private final PropertyValueBinding defaultBinding = new PropertyValueBinding();
     private final PropertyValueBinding binding = new PropertyValueBinding();
 
-
     public PropertyValueBinding getBinding() {
       return binding;
     }
-    
+
     public PropertyValueBinding getDefaultBinding() {
       return defaultBinding;
     }
@@ -54,35 +57,71 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
     }
 
     public void refresh() {
+      if (langMap.get("") != null) {
+        getDefaultBinding().setData(langMap.get(""));
+      }
       getBinding().setData(langMap.get(curLang));
     }
-    
-    public void setPropertyValue(PropertyValue pv) {
-      langMap.put(pv.getLanguage(), pv);
+
+    public void setData(PropertyValue pv) {
+      if (pv.getLanguage() == null) {
+        defaultBinding.setData(pv);
+        langMap.put("", pv);
+      } else {
+        binding.setData(pv);
+        langMap.put(pv.getLanguage(), pv);
+      }
     }
   }
 
-  private final ProductGroupPropertiesView view = new ProductGroupPropertiesView();
+  private final ItemPropertiesView view = new ItemPropertiesView();
 
-  private String language = null;
+  private Item currentItem;
+  private String language = "en";
   private final List<Tuple> bindings = new ArrayList<Tuple>();
   private final BindingConverter<PropertyType, String> propertyTypeConverter;
   private int activeBindingSize = 0;
 
-  public ProductGroupPropertiesPresenter() {
+  public ItemPropertiesPresenter(String lang) {
+    language = lang;
     view.getNewPropertyButton().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         final PGPRowView rowView = view.addRow();
+        final PropertyValue dpv = new PropertyValue();
         final PropertyValue pv = new PropertyValue();
+
+        currentItem.getPropertyValues().add(dpv);
+        currentItem.getPropertyValues().add(pv);
+        pv.setLanguage(language);
         final Property p = new Property();
+        
+        p.setType(PropertyType.String);
         p.setProductGroupProperty(Boolean.FALSE);
+        currentItem.getProperties().add(p);
+        p.setProductGroupProperty(Boolean.FALSE);
+        p.setLabels(new ArrayList<Label>(3));
+        final Tuple tuple = createRow(rowView);
+
+        dpv.setProperty(p);
+        tuple.setData(dpv);
+        rowView.setDefaultValueWidget(PropertyType.String);
         pv.setProperty(p);
-        createRow(rowView).getDefaultBinding().setData(pv);
-        createRow(rowView).getBinding().setData(pv);
+        tuple.setData(pv);
         rowView.setValueWidget(PropertyType.String);
       }
     });
+    view.setDeleteHandler(new DeleteHandler<Integer>(){
+      @Override
+      public void onDelete(Integer index) {
+        final Tuple b = bindings.get(index.intValue());
+        
+        currentItem.getProperties().remove(b.getBinding().getData());
+        currentItem.getProperties().remove(b.getDefaultBinding().getData());
+        show(CatalogCache.get().getLanguages(), language, currentItem);
+      }
+    });
+
     propertyTypeConverter = new BindingConverter<PropertyType, String>() {
       @Override
       public PropertyType convertFrom(String data) {
@@ -97,6 +136,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
 
   public List<PropertyValue> getPropertyValues() {
     final List<PropertyValue> values = new ArrayList<PropertyValue>();
+
     for (int i = 0; i < activeBindingSize; i++) {
       values.addAll(bindings.get(i).values());
     }
@@ -114,7 +154,7 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
   }
 
   @Override
-  public ProductGroupPropertiesView getView() {
+  public ItemPropertiesView getView() {
     return view;
   }
 
@@ -122,9 +162,12 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
    * shows the property list.
    * @param values
    */
-  public void show(String language, List<PropertyValue[]> values) {
+  public void show(List<String> langs, String language, Item productGroup) {
+    currentItem = productGroup;
     this.language = language;
     Tuple.setLanguage(language);
+    final List<PropertyValue[]> values = Util.getProductGroupPropertyValues(langs, (ProductGroup)productGroup, productGroup);
+
     view.resetTable();
     final int bindingSize = bindings.size();
     int i = 0;
@@ -136,16 +179,14 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
         createRow(rowView);
       }
       for (PropertyValue pv : pvl) {
+        bindings.get(i).setData(pv);
         if (pv.getLanguage() == null){
-          bindings.get(i).getDefaultBinding().setData(pv);
           Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
-          bindings.get(i).getDefaultBinding().setData(pv);
-        }
-        if (pv.getLanguage().equals(language)) {
-          bindings.get(i).setPropertyValue(pv);
           bindings.get(i).refresh();
+        } else if (language.equals(pv.getLanguage())) {
+//          bindings.get(i).refresh();
           Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pv.getProperty().getType()), bindings.get(i).getBinding());
-          bindings.get(i).refresh();
+          bindings.get(i).refresh();          
         }
       }
       i++;
@@ -162,14 +203,20 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
 
       @Override
       public List<Label> convertFrom(String data) {
+        Label foundLabel = null;
         for (Label label : labels) {
           if (Util.matchLang(null, label.getLanguage())) {
-            label.setLabel(data);
+            foundLabel = label;
           }
         }
+        if (foundLabel == null) {
+          foundLabel = new Label();
+          labels.add(foundLabel);
+        }
+        foundLabel.setLabel(data);
         return labels;
       }
-      
+
       @Override
       public String convertTo(List<Label> data) {
         labels = data;
@@ -199,11 +246,17 @@ public class ProductGroupPropertiesPresenter implements Presenter<ProductGroupPr
 
       @Override
       public List<Label> convertFrom(String data) {
+        Label foundLabel = null;
         for (Label label : labels) {
           if (Util.matchLang(language, label.getLanguage())) {
-            label.setLabel(data);
+            foundLabel = label;
           }
         }
+        if (foundLabel == null) {
+          foundLabel = new Label();
+          labels.add(foundLabel);
+        }
+        foundLabel.setLabel(data);
         return labels;
       }
 

@@ -67,11 +67,11 @@ public class Util {
   public static final String NAME = "Name";
   public static final String ROOT = "Root";
 
-  private static final Label EMPTY_LABEL = new Label();
+  //private static final Label EMPTY_LABEL = new Label();
 
-  static {
-    EMPTY_LABEL.setLabel("UNKNOWN LABEL");
-  }
+//  static {
+//    EMPTY_LABEL.setLabel("UNKNOWN LABEL");
+//  }
 
   /**
    * Returns true if the matching languages are both null or if they have the
@@ -130,6 +130,7 @@ public class Util {
           item.getPropertyValues().add(found);
         }
         pgValue[i] = found;
+/*
         boolean foundLabel = false;
         for (Label pl : property.getLabels()) {
           if ((lang == null && pl.getLanguage() == null) ||
@@ -143,6 +144,7 @@ public class Util {
           l.setLanguage(lang);
           property.getLabels().add(l);
         }
+ */
       }
     }
     return pgValues;
@@ -173,20 +175,27 @@ public class Util {
   }
 
   public static PropertyValue getPropertyValueByName(List<PropertyValue> values, String name, String lang) {
+    PropertyValue dpv = null;
+    PropertyValue pv = null;
+
     for (PropertyValue propertyValue : values) {
         if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
-          return propertyValue;
+          if (propertyValue.getLanguage() == null) {
+            dpv = propertyValue;
+          } else if (lang != null && lang.equals(propertyValue.getLanguage())){
+            pv = propertyValue;
+          }
       }
     }
-    return null;
+    return pv == null ? dpv : pv;
   }
 
   public static Label getLabel(PropertyValue value, String lang) {
-    return Util.getLabel(value.getProperty().getLabels(), lang);
+    return value == null ? null : Util.getLabel(value.getProperty().getLabels(), lang);
   }
 
   public static Label getLabel(PropertyValue value, String lang, boolean fallback) {
-    return Util.getLabel(value.getProperty().getLabels(), lang, fallback);
+    return value == null ? null : Util.getLabel(value.getProperty().getLabels(), lang, fallback);
   }
 
   public static Label getLabel(List<Label> labels, String lang) {
@@ -203,24 +212,42 @@ public class Util {
    * @return
    */
   public static Label getLabel(List<Label> labels, String lang, boolean fallback) {
-    if (labels == null) return EMPTY_LABEL;
-    for (Label label : labels) {
-      if ((lang == null && label.getLanguage() == null) || 
-          (lang != null && lang.equals(label.getLanguage()) &&
-              (!fallback || (label.getLabel() != null && !"".equals(label.getLabel()))))) { 
-        return label;
-      }
-    }
-    if (fallback) {
+    if (labels != null) {
       for (Label label : labels) {
-        if (label.getLanguage() == null) { 
+        if ((lang == null && label.getLanguage() == null) || 
+            (lang != null && lang.equals(label.getLanguage()) &&
+                (!fallback || (label.getLabel() != null && !"".equals(label.getLabel()))))) { 
           return label;
         }
       }
+      if (fallback) {
+        for (Label label : labels) {
+          if (label.getLanguage() == null) { 
+            return label;
+          }
+        }
+      }
     }
-    return EMPTY_LABEL;
+    final Label lbl = new Label();
+    lbl.setLanguage(lang);
+
+    return lbl;
   }
   
+  public static List<Property> filterEmpty(List<Property> properties) {
+    for (Property property : properties) {
+      final List<Label> nl = new ArrayList<Label>();
+
+      for (Label lbl : property.getLabels()) {
+         if (lbl.getLabel() != null || !"".equals(lbl.getLabel()))  {
+           nl.add(lbl);
+         }
+      }
+      property.setLabels(nl);
+    }
+    return properties;
+  }
+
   public static List<PropertyValue> filterEmpty(Collection<PropertyValue> values) {
     final List<PropertyValue> nv = new ArrayList<PropertyValue>();
 
@@ -239,9 +266,11 @@ public class Util {
    * @return
    */
   public static boolean isEmpty(PropertyValue pv) {
-    return pv.getStringValue() == null && pv.getIntegerValue() == null
+    return (pv.getStringValue() == null || "".equals(pv.getStringValue())) 
+        && pv.getIntegerValue() == null
         && pv.getEnumValue() == null && pv.getRealValue() == null
-        && pv.getBooleanValue() == null && pv.getMoneyValue() == null
+        && pv.getBooleanValue() == null
+        && (pv.getMoneyValue() == null || "".equals(pv.getMoneyValue()))
         && pv.getMoneyCurrency() == null && pv.getMediaValue() == null
         && pv.getMimeType() == null;
   }
@@ -255,14 +284,19 @@ public class Util {
   public static List<Long> findParents(ProductGroup productGroup) {
     final List<Long> parents = new ArrayList<Long>();
 
-    for (ProductGroup parent : productGroup.getParents()) {
-      if (parent == null || parents.contains(parent.getId())) continue;
-      parents.add(parent.getId());
-      if (parent.getParents() != null || !parent.getParents().isEmpty()) {
-        parents.addAll(findParents(parent));
+    findParents(productGroup, parents);
+    return parents;
+  }
+
+  private static void findParents(ProductGroup productGroup, List<Long> parents) {
+    if (productGroup != null && productGroup.getParents() != null) {
+      for (ProductGroup parent : productGroup.getParents()) {
+        if (!parents.contains(parent.getId())) {
+          parents.add(parent.getId());
+          findParents(parent, parents);
+        }
       }
     }
-    return parents;
   }
 
   public static Binding bindPropertyValue(PropertyType pt, Widget w, PropertyValueBinding pvb) {
@@ -272,13 +306,13 @@ public class Util {
       //value = new TextBox();
       break;
     case FormattedText:
-      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue(), BindingConverters.STRING_CONVERTER);
       break;
     case Media:
       value = ((MediaWidget)w).bind(pvb);
       break;
     case String:
-      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue());
+      value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue(), BindingConverters.STRING_CONVERTER);
       break;
     case Boolean:
       value = CheckBoxBinding.bind((CheckBox)w, pvb.booleanValue());

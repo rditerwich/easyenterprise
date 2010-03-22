@@ -6,8 +6,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 
@@ -32,8 +32,8 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
     tp.add(cp.getView().asWidget(), "Catalog");
     tp.add(np.getView().asWidget(), "Navigation");
-    tp.add(new Label("To be implemented"), "Promotions");
-    tp.add(new Label("To be implemented"), "Settings");
+    tp.add(new HTML("<h3>To be Configured. Pending Customer Requirements.</h3>"), "Promotions");
+    tp.add(new HTML("<h3>To be Configured. Pending Customer Requirements.</h3>"), "Settings");
     tp.addSelectionHandler(new SelectionHandler<Integer>() {
       @Override
       public void onSelection(SelectionEvent<Integer> event) {

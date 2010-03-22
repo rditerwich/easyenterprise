@@ -39,7 +39,6 @@ public class CatalogCache {
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
   private final ArrayList<String> languages = new ArrayList<String>(2);
-  private final List<ProductGroup> emptyList = new ArrayList<ProductGroup>(0);
 
   private CatalogCache() {
     //TODO Calculate cache languages based on what is in database

@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -24,17 +25,20 @@ public class CatalogView extends Composite implements View {
   final ExtendedTree tree = new ExtendedTree();
   final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
   final Button newProductGroupButton = new Button("New Product Group");
+  private final HTML name = new HTML();
   final ListBox languageList = new ListBox();
 
   public CatalogView() {
     initWidget(panel);
     panel.addWest(tree, 300);
     final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
-    panel.add(detailPanel);
 
+    panel.add(detailPanel);
     final FlowPanel buttonBar = new FlowPanel();
+
     buttonBar.add(newProductGroupButton);
     buttonBar.add(languageList);
+    buttonBar.add(name);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
     detailPanel.addNorth(buttonBar, 40);
     detailPanel.add(tp);
@@ -68,6 +72,10 @@ public class CatalogView extends Composite implements View {
 
   public ExtendedTree getTree() {
     return tree;
+  }
+
+  public void setName(String name) {
+    this.name.setHTML("<h2>" + name + "</h2>");
   }
 
   /**

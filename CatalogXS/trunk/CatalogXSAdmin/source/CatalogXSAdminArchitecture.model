@@ -223,19 +223,25 @@ JavaEEArchitectureJpaEjbGwt {
                     excluded = catalog:ProductGroup/attributes:children
                     views = {
                         ClassAttributeView {
+                            name = CatalogView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:catalog
+                        }
+                        ClassAttributeView {
                             name = ParentsView
                             kind = all
-                            forceComposite = true
                             referringAttributes = catalog:Item/attributes:parents
                         }
                         ClassAttributeView {
                             name = PropertiesView
                             kind = all
+                            forceComposite = true
                             referringAttributes = catalog:Item/attributes:properties
                         }
                         ClassAttributeView {
                             name = PropertyValuesView
                             kind = all
+                            forceComposite = true
                             excluded = catalog:PropertyValue/attributes:mediaValue 
                             referringAttributes = catalog:Item/attributes:propertyValues
                         }
@@ -257,6 +263,7 @@ JavaEEArchitectureJpaEjbGwt {
                         ClassAttributeView {
                             name = LabelsView
                             kind = all
+                            forceComposite = true
                             referringAttributes = catalog:Property/attributes:labels
                         }
                     }
