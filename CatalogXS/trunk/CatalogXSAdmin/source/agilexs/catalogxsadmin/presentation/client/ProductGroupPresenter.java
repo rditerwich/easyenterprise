@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
+import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -33,6 +35,36 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   public ProductGroupPresenter() {
     pgpp = new ItemPropertiesPresenter(currentLanguage);
+    parentsP.setDeleteHandler(new DeleteHandler<Long>() {
+      @Override public void onDelete(Long data) {
+        for (ProductGroup parent : currentProductGroup.getParents()) {
+          if (data.equals(parent.getId())) {
+            currentProductGroup.getParents().remove(parent);
+            break;
+          }
+        }
+      }
+    });
+    parentsP.setAddHandler(new AddHandler<Long>(){
+      @Override public void onAdd(Long pid) {
+        boolean present = false;
+
+        for (ProductGroup parent : currentProductGroup.getParents()) {
+          if (pid.equals(parent.getId())) {
+            present = true;
+          }
+        }
+        if (!present) {
+          ProductGroup pg = CatalogCache.get().getProductGroup(pid);
+
+          if (pg == null) {
+            pg = new ProductGroup();
+            pg.setId(pid);
+          }
+          currentProductGroup.getParents().add(pg);
+        }
+      }
+    });
     view.setParentsPanel(parentsP.getView());
     view.setPropertiesPanel(pgpp.getView());
     view.containsProductsClickHandler().addClickHandler(new ClickHandler() {
