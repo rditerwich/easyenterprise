@@ -1,5 +1,6 @@
 package claro.cms.test
 
+import claro.common.util.ParseXML
 import claro.common.util.Conversions._
 import claro.cms.Conversions._
 import claro.cms.CMS
@@ -11,11 +12,11 @@ object Test {
     title = "Welcome to my Blog"
     blogEntries ::= new BlogEntry { 
       title = "Another Blog Entry"
-      text = xml.XML.loadString("<div>What else do I have to say?</div>")
+      text = "What else do I have to say?"
     }
     blogEntries ::= new BlogEntry { 
       title = "My First Blog Entry!"
-      text = xml.XML.loadString("<div>This is the <i>content</i> of my blog entry.</div>")
+      text = "This is the <i>content</ul> of my blog entry."
       comments ::= new Comment() {
         author = "barak"
       }
@@ -32,7 +33,7 @@ object Test {
     CMS.bindings.append("test" -> Some(Test))
     CMS.objectBindings.append {
       case Test => Bindings(
-        "blog" -> testBlog2 -> "blog"
+        "blog" -> testBlog -> "blog"
       )
       case blog : Blog => Bindings(
         "title" -> blog.title,
@@ -41,7 +42,7 @@ object Test {
       case entry : BlogEntry => Bindings(
         "title" -> entry.title,
         "date" -> entry.date,
-        "text" -> entry.text,
+        "text" -> ParseXML(entry.text),
         "comments" -> entry.comments -> "comment"
       )
       case comment: Comment => Bindings(

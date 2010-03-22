@@ -1,15 +1,34 @@
 package claro.cms
 
 import scala.xml.{NodeSeq,Text}
-import net.liftweb.util.BindHelpers
+import net.liftweb.util.{BindHelpers,ThreadGlobal}
 import net.liftweb.util.BindHelpers.{BindParam,TheBindParam,TheStrBindParam,IntBindParam,FuncBindParam}
 
 import CMS.{Namespace,Tag}
 
+object Binder {
+  val _currentBinder = new ThreadGlobal[Binder]
+}
+
 trait Binder {
   val parent : Binder
-  def bind(current : Binder, xml : NodeSeq) : NodeSeq
-  def bindAll(current : Binder, xml : NodeSeq) : NodeSeq = parent.bindAll(current, bind(current, xml)) 
+  val par = Binder._currentBinder.value
+  def bind(current : Binder, xml : NodeSeq) : NodeSeq 
+  
+  def bindAll(xml : NodeSeq) : NodeSeq = {
+    val current = Binder._currentBinder.value
+	Binder._currentBinder.doWith(this)(bindAll(current, xml))
+  }
+  
+  def bindAll(current : Binder, xml : NodeSeq) : NodeSeq = {
+    var result = xml
+    var parent = this
+    while (parent != null) {
+      result = parent.bind(current, result)
+      parent = parent.par
+    }
+    result
+  }
 }
 
 trait ConstBinder extends Binder {
@@ -18,7 +37,7 @@ trait ConstBinder extends Binder {
 }
 
 object NullBinder extends ConstBinder {
-  def bind(current : Binder, xml : NodeSeq) : NodeSeq = NodeSeq.Empty
+  def bind(current : Binder, xml : NodeSeq) : NodeSeq = xml
 }
 
 class StrBinder(s : String) extends ConstBinder {
@@ -35,16 +54,16 @@ class XmlBinder(val parent : Binder, f : NodeSeq => NodeSeq) extends Binder {
 class ComplexBinder(val parent : Binder, bindings : Bindings, defaultNamespace : Namespace) extends Binder {
 
   val namespace = BindAttr("tag", defaultNamespace)
-
+  
   val params = bindings.bindings map (_.param(this) )
 
   def bind(current : Binder, xml : NodeSeq) : NodeSeq = {
-	BindHelpers.bind(namespace, xml, params:_*)
+    BindHelpers.bind(namespace, xml, params:_*)
   }
 }
 
 class ObjectBinder(parent : Binder, obj : Any, defaultNamespace : Namespace) 
-	extends ComplexBinder(parent, Binding.findObjectBindings(obj), defaultNamespace) {
+	extends ComplexBinder(parent, BindingCache.findObjectBindings(obj), defaultNamespace) {
 }
 	  
 class CollectionBinder(val parent : Binder, objs : Collection[Any], objBinder : Any => Binder) extends Binder {
@@ -65,7 +84,7 @@ class CollectionBinder(val parent : Binder, objs : Collection[Any], objBinder : 
   }
 
   def bind(current : Binder, xml : NodeSeq) : NodeSeq = {
-    binders flatMap (_.bindAll(current, xml))
+    binders flatMap (_.bindAll(xml))
   }
 }
 
@@ -118,14 +137,18 @@ class CollectionItemBinder(val parent : Binder, namespace : String, index : Int,
 
 object SuperRootBinder extends Binder {
   val parent = null
+  
+  lazy val rootBinders = Binder._currentBinder.doWith(this) {
+    CMS.bindings.toList map (_.createBinder(parent))
+  }
+  
   def bind(current : Binder, xml : NodeSeq) : NodeSeq = {
-    var result = xml
-    var parent : Binder = this
-    for (binding <- CMS.bindings.toList) {
-      parent = binding.createBinder(parent)
-    }
-    parent.bind(null,xml)
-
+	  Binder._currentBinder.set(parent)
+      var result = xml
+      for (binder <- rootBinders) {
+        result = binder.bind(current, result)
+      }
+      result;
   }
   override def bindAll(current : Binder, xml : NodeSeq) : NodeSeq = xml
 }

@@ -1,6 +1,6 @@
 package claro.cms
 
-import scala.xml.{NodeSeq,XML}
+import scala.xml.{NodeSeq,XML,Text}
 import scala.collection.{mutable}
 import java.io.File
 import java.util.Locale
@@ -12,16 +12,16 @@ import claro.common.util.Conversions._
 object TemplateComponent {
   
   def boot = {
-    CMS.bindings.append("template" -> Bindings(
-      "include" -> (includeTemplate _),
-      "include" -> TemplateComponent -> "tpl",
-      "include" -> Bindings("sett"->"")-> "tpl")
-    )
-    CMS.bindings.append("template" -> TemplateComponent)
+    CMS.bindings.append("template" -> new Bindings(
+      "include" -> includeTemplate))
   }
   
-  def includeTemplate(template : String): Any  = {
-    "INCLUDED: " + template
+  def includeTemplate : NodeSeq  = {
+    val template = BindAttr("template")
+    TemplateCache.findTemplate(Template(template), CMS.locale.get) match {
+      case Some(template) => template.xml
+      case None => Text("Error: Template not found: " + template) 
+    }
   }
 }
 
@@ -56,9 +56,9 @@ object TemplateCache {
   private val objectTemplateCache = new ConcurrentHashMap[(Template,Locale),Option[ConcreteTemplate]]()
 
   def findTemplate(template : Template, locale : Locale) : Option[ConcreteTemplate] = {
-    objectTemplateCache getOrElseUpdate ((template,locale), 
+//    objectTemplateCache getOrElseUpdate ((template,locale), 
       locate(templateLocator(template), Locales.getAlternatives(locale))
-    )
+//    )
   }
   
   private def templateLocator(template : Template) : TemplateLocator = {
@@ -135,7 +135,6 @@ object ClasspathTemplateStore extends TemplateStore {
 
   def storeTemplate(name : String, scope : Scope, locale : Locale, xml : Option[NodeSeq]) = {
   }
-
 
   def isReadOnly = true
 

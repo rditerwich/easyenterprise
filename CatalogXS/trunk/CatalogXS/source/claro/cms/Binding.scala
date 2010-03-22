@@ -1,6 +1,6 @@
 package claro.cms
 
-import scala.xml.NodeSeq
+import scala.xml.{NodeSeq,Text}
 import CMS.{Namespace,Tag}
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.BindHelpers.{AttrBindParam,BindParam,TheBindParam,TheStrBindParam,FuncBindParam}
@@ -14,6 +14,7 @@ class Attr private (val xml : NodeSeq) {
 }
 
 case class Bindings(val bindings : Binding*) {
+  override def toString = "Bindings(" + (bindings mkString (",")) + ")"
 }
 
 class BindingCtor(name : Tag) {
@@ -59,7 +60,7 @@ trait RootBinding {
   def createBinder(parent : Binder) : Binder
 }
 
-class ComplexRootBinding(bindings : => Bindings, namespace : Namespace) extends RootBinding {
+class ComplexRootBinding(bindings : Bindings, namespace : Namespace) extends RootBinding {
   def createBinder(parent : Binder) = new ComplexBinder(parent, bindings, namespace)
 }
 
@@ -70,28 +71,10 @@ class ObjectRootBinding(expr : => Any, namespace : Namespace) extends RootBindin
   }
 }
 
-object Binding {
-    // TODO: Use google maps mapmaker to have weak keys
-  private val objectBindingCache = new ConcurrentHashMap[Any,Bindings]()
-  
-  // Don't care that method is not thread safe: the same binding might be
-  // created multiple times, which only impacts performance, and only slightly.
-  private[cms] def findObjectBindings(obj : Any) = {
-    var result = objectBindingCache.get(obj)
-    if (result == null) {
-      result = CMS.objectBindings.toList.find (_.isDefinedAt(obj)) match {
-		case Some(objectBindings) => objectBindings(obj)
-		case None => Bindings()
-      }
-      objectBindingCache.put(obj, result)
-    }
-    result
-  }
-}
-
 trait Binding {
   def name : Tag
   def param(parent : Binder) : BindParam 
+  override def toString = name
 }
 
 class ParamBinding(param : BindParam) extends Binding {
@@ -103,39 +86,46 @@ class AttrBinding(param : AttrBindParam) extends ParamBinding(param) {
 }
 
 class XmlBinding(val name : Tag, f : => NodeSeq) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, xml => new XmlBinder(parent, _ => f).bindAll(null, xml))
+  def param(parent : Binder) = FuncBindParam(name, xml => { 
+    val current = Binder._currentBinder.value
+    new XmlBinder(parent, _ => f).bindAll(parent, xml)
+  })
 }
 
 class XmlFunBinding(val name : Tag, f : NodeSeq => NodeSeq) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, new XmlBinder(parent, f).bindAll(null, _))
+  def param(parent : Binder) = FuncBindParam(name, new XmlBinder(parent, f).bindAll(_))
 }
 
 class ExprBinding(val name : Tag, expr : => Any) extends Binding {
-  def param(parent : Binder) = TheStrBindParam(name, expr match { case null => "" case expr => expr.toString})
+  def param(parent : Binder) = FuncBindParam(name, { xml => 
+    val value : Any = expr
+    if (value == null) NodeSeq.Empty
+    else Text(value.toString)
+  })
 }
 
 class ComplexBinding(val name : Tag, f : => Bindings, defaultNamespace : Namespace) extends Binding {
   def param(parent : Binder) = {
-    FuncBindParam(name, xml => new ComplexBinder(parent, f, defaultNamespace).bindAll(null, xml))
+    FuncBindParam(name, xml => new ComplexBinder(parent, f, defaultNamespace).bindAll(xml))
   }
 }
 
 class ObjectBinding(val name : Tag, expr : => Any, defaultNamespace : Namespace) extends Binding {
   def param(parent : Binder) = {
     val value : Any = expr
-    if (value != null) FuncBindParam(name, xml => new ObjectBinder(parent, expr, defaultNamespace).bindAll(null, xml))
+    if (value != null) FuncBindParam(name, xml => new ObjectBinder(parent, expr, defaultNamespace).bindAll(xml))
     else TheBindParam(name, NodeSeq.Empty)
   }
 }
 
 class CollectionBinding(val name : Tag, expr : => Collection[Any]) extends Binding {
   def param(parent : Binder) = FuncBindParam(name, xml => new CollectionBinder(parent, expr, 
-		  obj => new StrBinder(obj.toString)).bindAll(null, xml))
+		  obj => new StrBinder(obj.toString)).bindAll(xml))
 }
 
 class ObjectCollectionBinding(val name : Tag, expr : => Collection[Any], defaultNamespace : Namespace) extends Binding {
   def param(parent : Binder) = FuncBindParam(name, xml => new CollectionBinder(parent, expr, 
-		  new ObjectBinder(parent, _, defaultNamespace)).bindAll(null, xml))
+		  new ObjectBinder(parent, _, defaultNamespace)).bindAll(xml))
 }
 
 object BindAttr {
@@ -158,4 +148,23 @@ object IfAttr {
       case Some(attr) => if (attr.toString.toLowerCase == "yes") yes else no 
       case None => no
     }
+}
+
+object BindingCache {
+    // TODO: Use google maps mapmaker to have weak keys
+  private val objectBindingCache = new ConcurrentHashMap[Any,Bindings]()
+  
+  // Don't care that method is not thread safe: the same binding might be
+  // created multiple times, which only impacts performance, and only slightly.
+  private[cms] def findObjectBindings(obj : Any) = {
+    var result = objectBindingCache.get(obj)
+    if (result == null) {
+      result = CMS.objectBindings.toList.find (_.isDefinedAt(obj)) match {
+		case Some(objectBindings) => objectBindings(obj)
+		case None => Bindings()
+      }
+      objectBindingCache.put(obj, result)
+    }
+    result
+  }
 }

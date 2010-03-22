@@ -15,11 +15,11 @@ class Blog {
 class BlogEntry {
   var title = ""
   var date = new Date
-  var text : NodeSeq = NodeSeq.Empty
+  var text = ""
   var comments = List[Comment]()
 }
 
 class Comment {
   var author = ""
-  var text : NodeSeq = NodeSeq.Empty
+  var text = ""
 }
