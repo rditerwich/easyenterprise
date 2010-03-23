@@ -55,12 +55,11 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           }
         }
         if (!present) {
-          ProductGroup pg = CatalogCache.get().getProductGroup(pid);
+          //Create an empty product group, so only this group is send to the
+          //server which will then not be checked for changes.
+          final ProductGroup pg = new ProductGroup();
 
-          if (pg == null) {
-            pg = new ProductGroup();
-            pg.setId(pid);
-          }
+          pg.setId(pid);
           currentProductGroup.getParents().add(pg);
         }
       }
