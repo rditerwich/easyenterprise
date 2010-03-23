@@ -9,11 +9,11 @@ import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
 
 DeploymentConfiguration {
     id = agilexs.catalogxsadmin.deployment.local
-    name = "CatalogXSAdmin Deployment Local Hilbrand"
+    name = "CatalogXSAdmin Deployment Local"
     productConfigurations = {
         Glassfish2Configuration {
-            installDir = "E:/tools/glassfish"
-            domain = domain1
+            ideIntegration = true
+            installDir = "E:/tools/GlassFish-Tools-Bundle-For-Eclipse-1.2/glassfishv3/glassfish"
 
             webConfiguration = GwtWebConfiguration {
                 userAgent = All
@@ -21,14 +21,7 @@ DeploymentConfiguration {
             }
 
             dbConfiguration = PostgreSQLConfiguration {
-                installDir = "c:/Program Files/PostgreSQL/8.3"
-                server = localhost
-                port = 5432
-                databaseName = CatalogXSDatabase
-                username = postgres
-                password = postgres
-                schemaUpdateKind = none
-                jdbcDriverClasspath = "E:/libraries/psqlJDBC/postgresql-8.3-603.jdbc4.jar"
+                loggingLevel = FINE
             }
 
             jpaConfiguration = EclipseLinkConfiguration {

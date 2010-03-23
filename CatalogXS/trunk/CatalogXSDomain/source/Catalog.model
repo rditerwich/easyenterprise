@@ -44,6 +44,12 @@ Package {
                     lower = 0
                     upper = {}
                 }
+                Attribute {
+                    name = languages
+                    type = catalog:Language
+                    lower = 0
+                    upper = {}
+                }
             }
         }
         Class {
@@ -381,6 +387,19 @@ Package {
                 }
             }
         }
+        Class {
+            name = Language
+            attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                }
+                Attribute {
+                    name = displayName
+                    type = primitive:String
+                }
+            }
+        }
          /**
          * See http://en.wikipedia.org/wiki/International_System_of_Units
          * and http://en.wikipedia.org/wiki/SI_derived_unit
@@ -572,6 +591,19 @@ Package {
         }
     }
     operations = {
+        Operation {
+            name = findAllProductGroupNames
+            type = catalog:PropertyValue
+            isOrdered = true
+            lower = 0
+            upper = {}
+            parameters = {
+                Parameter {
+                    name = catalog
+                    type = catalog:Catalog
+                }
+            }
+        }
         Operation {
             name = findProductsByProductGroup
             type = catalog:Product

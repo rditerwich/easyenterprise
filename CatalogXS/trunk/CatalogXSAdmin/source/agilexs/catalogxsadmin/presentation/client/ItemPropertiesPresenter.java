@@ -118,7 +118,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         
         currentItem.getProperties().remove(b.getBinding().getData());
         currentItem.getProperties().remove(b.getDefaultBinding().getData());
-        show(CatalogCache.get().getLanguages(), language, currentItem);
+        show(CatalogCache.get().getLangNames(), language, currentItem);
       }
     });
 

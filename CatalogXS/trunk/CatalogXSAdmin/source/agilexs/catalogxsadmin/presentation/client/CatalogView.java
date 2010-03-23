@@ -2,9 +2,12 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.List;
 
+import agilexs.catalogxsadmin.presentation.client.catalog.Language;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.widget.ExtendedTree;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -21,12 +24,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CatalogView extends Composite implements View {
 
-  final SplitLayoutPanel panel = new SplitLayoutPanel();
-  final ExtendedTree tree = new ExtendedTree();
-  final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
-  final Button newProductGroupButton = new Button("New Product Group");
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
+  private final SplitLayoutPanel panel = new SplitLayoutPanel();
+  private final ExtendedTree tree = new ExtendedTree();
+  private final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
+  private final Button newProductGroupButton = new Button(i18n.newGroup());
   private final HTML name = new HTML();
-  final ListBox languageList = new ListBox();
+  private final ListBox languageList = new ListBox();
 
   public CatalogView() {
     initWidget(panel);
@@ -38,20 +43,25 @@ public class CatalogView extends Composite implements View {
 
     buttonBar.add(newProductGroupButton);
     buttonBar.add(languageList);
-    buttonBar.add(name);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
-    detailPanel.addNorth(buttonBar, 40);
+    buttonBar.add(name);
+    detailPanel.addNorth(buttonBar, 75);
+    buttonBar.getElement().getStyle().setMargin(10, Unit.PX);
     detailPanel.add(tp);
 
+  }
+
+  public void addTab(View view, String text) {
+    tp.add(view.asWidget(), text);
+  }
+
+  public void addTabSelectionHandler(SelectionHandler<Integer> selectionHandler) {
+    tp.addSelectionHandler(selectionHandler);
   }
 
   @Override
   public Widget asWidget() {
     return this;
-  }
-
-  public void addTab(View view, String text) {
-    tp.add(view.asWidget(), text);
   }
 
   public HasChangeHandlers getLanguageChangeHandler() {
@@ -62,20 +72,20 @@ public class CatalogView extends Composite implements View {
     return newProductGroupButton;
   }
 
-  public int getSelectedTab() {
-    return tp.getSelectedIndex();
-  }
-
   public String getSelectedLanguage() {
     return languageList.getValue(languageList.getSelectedIndex());
+  }
+
+  public int getSelectedTab() {
+    return tp.getSelectedIndex();
   }
 
   public ExtendedTree getTree() {
     return tree;
   }
 
-  public void setName(String name) {
-    this.name.setHTML("<h2>" + name + "</h2>");
+  public void selectedTab(int i) {
+    tp.selectTab(i);
   }
 
   /**
@@ -83,20 +93,20 @@ public class CatalogView extends Composite implements View {
    * @param languages
    * @param selected
    */
-  public void setLanguages(List<List<String>> languages, String selected) {
-    for (List<String> lang : languages) {
-      languageList.addItem(lang.get(1), lang.get(0));
-      if (lang.get(0).equals(selected)) {
+  public void setLanguages(List<Language> languages, String selected) {
+    for (Language lang : languages) {
+      languageList.addItem(lang.getDisplayName(), lang.getName());
+      if (lang.getName().equals(selected)) {
         languageList.setItemSelected(languageList.getItemCount()-1, true);
       }
     }
   }
 
-  public void addTabSelectionHandler(SelectionHandler<Integer> selectionHandler) {
-    tp.addSelectionHandler(selectionHandler);
+  public void setName(String name) {
+    this.name.setHTML(i18n.h2(name));
   }
 
-  public void selectedTab(int i) {
-    tp.selectTab(i);
+  public void setTabVisible(int index, boolean visible) {
+    tp.getTabWidget(index).getParent().setVisible(visible);
   }
 }

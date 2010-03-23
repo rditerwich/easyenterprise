@@ -1,7 +1,9 @@
 package agilexs.catalogxsadmin.presentation.client;
 
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
@@ -19,10 +21,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ProductGroupView extends Composite implements View {
 
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
   private final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
   private final FlowPanel allPropertiesPanel = new FlowPanel();
-  private final HTML name = new HTML();
-  final Button saveButton = new Button("Save changes"); 
+  final Button saveButton = new Button(i18n.saveChanges()); 
   private final CheckBox containsProducts = new CheckBox();
   private final SimplePanel propertiesPanel = new SimplePanel();
   private final FlowPanel parentPropertiesPanel = new FlowPanel();
@@ -34,11 +37,10 @@ public class ProductGroupView extends Composite implements View {
     final HorizontalPanel hpname = new HorizontalPanel();
 
     saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
-    hpname.add(name);
     hpname.add(saveButton);
     fp.add(hpname);
     final HorizontalPanel hp = new HorizontalPanel();
-    hp.add(new Label("Product group contains products: "));
+    hp.add(new Label(i18n.containsProducts()));
     hp.add(containsProducts);
     fp.add(hp);
     //top
@@ -49,34 +51,10 @@ public class ProductGroupView extends Composite implements View {
     allPropertiesPanel.add(propertiesPanel);
     //allPropertiesPanel.add(new HTML("<h3>Relations</h3>"));
     //allPropertiesPanel..add(relations);
-    allPropertiesPanel.add(new HTML("<h3>Inherited Properties</h3>"));
+    allPropertiesPanel.add(new HTML(i18n.h3(i18n.inheritedProperties())));
     allPropertiesPanel.add(parentPropertiesPanel);
     sp.getElement().getStyle().setPadding(10, Unit.PX);
     detailPanel.add(sp);
-  }
-
-  public void setPropertiesPanel(View w) {
-    propertiesPanel.setWidget(w.asWidget());
-  }
-
-  public HasValue<Boolean> containsProducts() {
-    return containsProducts;
-  }
-
-  public HasClickHandlers containsProductsClickHandler() {
-    return containsProducts;
-  }
-
-  public HasClickHandlers saveButtonClickHandlers() {
-    return saveButton;
-  }
-  
-  public FlowPanel getParentPropertiesPanel() {
-    return parentPropertiesPanel;
-  }
-
-  public void setName(String name) {
-    this.name.setHTML("<h2>" + name + "</h2>");
   }
 
   @Override
@@ -84,7 +62,27 @@ public class ProductGroupView extends Composite implements View {
     return this;
   }
 
+  public HasValue<Boolean> containsProducts() {
+    return containsProducts;
+  }
+
+  public HasClickHandlers containsProductsClickHandlers() {
+    return containsProducts;
+  }
+  
+  public FlowPanel getParentPropertiesPanel() {
+    return parentPropertiesPanel;
+  }
+
+  public HasClickHandlers saveButtonClickHandlers() {
+    return saveButton;
+  }
+
   public void setParentsPanel(View view) {
     parentsPanel.setWidget(view.asWidget());
+  }
+
+  public void setPropertiesPanel(View w) {
+    propertiesPanel.setWidget(w.asWidget());
   }
 }

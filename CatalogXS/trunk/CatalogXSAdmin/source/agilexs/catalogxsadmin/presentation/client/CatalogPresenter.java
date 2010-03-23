@@ -1,16 +1,18 @@
 package agilexs.catalogxsadmin.presentation.client;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,35 +27,38 @@ import com.google.gwt.user.client.ui.TreeItem;
 //binds
 public class CatalogPresenter implements Presenter<CatalogView> {
 
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
   public enum SHOW {
     PRODUCT_GROUP, PRODUCT
   }
 
   private final CatalogView view = new CatalogView();
   private final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
-//  private final int TAB_PRODUCT = 0;
+  private final int TAB_PRODUCT = 0;
   private final int TAB_GROUP = 1;
-  
+
   private Shop activeShop;
   private ProductGroup currentProductGroup;
   private ProductGroup root;
-  private  String currentLanguage = "en";
+  private String currentLanguage = "en";
   final ProductGroupPresenter pgp = new ProductGroupPresenter();
   final ProductPresenter pp = new ProductPresenter();
 
   public CatalogPresenter() {
-    view.addTab(pp.getView(), "Products");
-    view.addTab(pgp.getView(), "Group");
+    view.addTab(pp.getView(), i18n.products());
+    view.addTab(pgp.getView(), i18n.group());
 
     view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         final Long lastPG = treemap.get(view.getTree().getSelectedItem());
-
+        
+        view.setName("&lt;" + i18n.newGroup() + "&gt;");
         currentProductGroup =
           pgp.setNewProductGroup(activeShop, lastPG != null ? CatalogCache.get().getProductGroup(lastPG) : null);
         pp.show(activeShop, currentProductGroup, null);
-        
+
         //view.getTree().deSelectItem();
         view.selectedTab(TAB_GROUP);
       }});
@@ -73,7 +78,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
         if (item.getState()) {
           final Long pgId = treemap.get(item);
-          
+
           if (pgId != null) {
             if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
               loadChildren(activeShop, item);
@@ -87,9 +92,20 @@ public class CatalogPresenter implements Presenter<CatalogView> {
       public void onSelection(SelectionEvent<TreeItem> event) {
         final TreeItem item = event.getSelectedItem();
         final Long pgId = treemap.get(item);
-        
+
         if (pgId != null) {
+          final Entry<Long, String> name =
+              CatalogCache.get().getProductGroupName(pgId, currentLanguage);
+
+          view.setName(name==null ? "" : name.getValue());
           currentProductGroup = CatalogCache.get().getProductGroup(pgId);
+
+          if (Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+            view.setTabVisible(TAB_PRODUCT, false);
+            view.selectedTab(TAB_GROUP);
+          } else {
+            view.setTabVisible(TAB_PRODUCT, true);
+          }
           if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
             loadChildren(activeShop, item);
           }
@@ -103,16 +119,8 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         }
       }
     });
-    final List<List<String>> l2 = new ArrayList<List<String>>(2);
-    final List<String> en = new ArrayList<String>(2);
-    en.add("en");
-    en.add("English");
-    l2.add(en);
-    final List<String> de = new ArrayList<String>(2);
-    de.add("de");
-    de.add("Deutsch");
-    l2.add(de);
-    view.setLanguages(l2, "en");
+
+    view.setLanguages(CatalogCache.get().getLanguages(), "en");
     view.getLanguageChangeHandler().addChangeHandler(new ChangeHandler(){
       @Override
       public void onChange(ChangeEvent event) {
@@ -129,7 +137,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>(){
         @Override public void onFailure(Throwable caught) {
         }
-  
+
         @Override public void onSuccess(String result) {
           loadChildren(activeShop, null); //initial tree
           for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {

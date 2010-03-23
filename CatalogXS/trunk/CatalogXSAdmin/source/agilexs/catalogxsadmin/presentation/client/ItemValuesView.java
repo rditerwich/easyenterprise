@@ -3,6 +3,7 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
 
@@ -19,6 +20,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ItemValuesView extends Composite implements View {
+
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   public class PGPRowView {
     final Label name = new Label();
@@ -100,9 +103,9 @@ public class ItemValuesView extends Composite implements View {
   }
 
   private void addHeader() {
-    grid.setWidget(0, 0, new InlineLabel("Name"));
-    grid.setWidget(0, 1, new InlineLabel("Type"));
-    grid.setWidget(0, 2, new InlineLabel("Value"));
-    grid.setWidget(0, 3, new InlineLabel("Language Specific Value"));
+    grid.setWidget(0, 0, new InlineLabel(i18n.name()));
+    grid.setWidget(0, 1, new InlineLabel(i18n.type()));
+    grid.setWidget(0, 2, new InlineLabel(i18n.value()));
+    grid.setWidget(0, 3, new InlineLabel(i18n.languageSpecificValue()));
   }
 }

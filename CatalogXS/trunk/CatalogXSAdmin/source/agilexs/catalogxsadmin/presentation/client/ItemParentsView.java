@@ -1,6 +1,7 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
 import com.google.gwt.core.client.GWT;
@@ -20,13 +21,14 @@ import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 public class ItemParentsView extends Composite implements View {
 
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
   private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
   private static final int DELETE_COLUMN = 1;
 
   private final FlowPanel panel = new FlowPanel();
   private final Grid parentGrid = new Grid(5, 2);
   private final ListBox allParentsListBox = new ListBox();
-  private final Button addButton = new Button("Add");
+  private final Button addButton = new Button(i18n.add());
   private DeleteHandler<Integer> deleteHandler;
 
   public ItemParentsView() {

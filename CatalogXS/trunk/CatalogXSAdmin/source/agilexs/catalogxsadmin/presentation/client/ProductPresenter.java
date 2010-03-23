@@ -135,7 +135,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.getProductTable().clear();
     if (currentProducts.size() > 0) {
       view.getProductTable().resizeRows(currentProducts.size() + 1);
-      final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, currentProducts.get(0));
+      final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), root, currentProducts.get(0));
 
       int h = 0;
       for (PropertyValue[] pvhlangs : header) {
@@ -148,7 +148,7 @@ public class ProductPresenter implements Presenter<ProductView> {
       }
       for (int i = 0; i < currentProducts.size(); i++) {
         final Product product = currentProducts.get(i);
-        final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), root, product);
+        final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), root, product);
 
         int j = 0;
         for (PropertyValue[] pvlangs : pvl) {
@@ -181,7 +181,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     parents.add(currentProductGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-      final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLanguages(), parent, currentProduct);
+      final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), parent, currentProduct);
 
       if (!pv.isEmpty()) {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();

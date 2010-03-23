@@ -1,8 +1,10 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -23,6 +25,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProductView extends Composite implements View {
+  
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   public enum SHOW {
     NO_PRODUCTS, PRODUCTS, PRODUCT
@@ -33,8 +37,8 @@ public class ProductView extends Composite implements View {
   
   private final DeckPanel deck = new DeckPanel();
 
-  final Button newProductButton = new Button("New Product");
-  final Button saveButton = new Button("Save changes"); 
+  final Button newProductButton = new Button(i18n.newProduct());
+  final Button saveButton = new Button(i18n.saveChanges()); 
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
   private final FlowPanel propertiesPanel = new FlowPanel();
@@ -44,7 +48,7 @@ public class ProductView extends Composite implements View {
   public ProductView() {
     initWidget(deck);
 
-    deck.add(new HTML("No products in this group"));
+    deck.add(new HTML(i18n.noProductsInGroup()));
     //Overview table
     final DockLayoutPanel overviewPanel = new DockLayoutPanel(Unit.PX);
 
@@ -61,7 +65,7 @@ public class ProductView extends Composite implements View {
     final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
     deck.add(detailPanel);
     final HorizontalPanel toph = new HorizontalPanel(); 
-    back.setHTML("&laquo; Back to product overview");
+    back.setHTML(i18n.backToProductOverview());
     toph.add(back);
     saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
     toph.add(saveButton);
@@ -96,7 +100,7 @@ public class ProductView extends Composite implements View {
   }
 
   public void setProductName(String name) {
-    pname.setHTML("<h2>" + name + "</h2>");
+    pname.setHTML(i18n.h2(name));
   }
 
   public Grid getProductTable() {

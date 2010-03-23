@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
 
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 class ItemPropertiesView extends Composite implements View {
 
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
   private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
 
   private static final int DELETE_COLUMN = 6;
@@ -107,12 +109,12 @@ class ItemPropertiesView extends Composite implements View {
   }
 
   private void addHeader() {
-    grid.setWidget(0, 0, new InlineLabel("Name"));
-    grid.setWidget(0, 1, new InlineLabel("Type"));
-    grid.setWidget(0, 2, new InlineLabel("Default value"));
-    grid.setWidget(0, 3, new InlineLabel("ProductGroup Only"));
-    grid.setWidget(0, 4, new InlineLabel("Language Specific Name"));
-    grid.setWidget(0, 5, new InlineLabel("Language Default value"));
+    grid.setWidget(0, 0, new InlineLabel(i18n.name()));
+    grid.setWidget(0, 1, new InlineLabel(i18n.type()));
+    grid.setWidget(0, 2, new InlineLabel(i18n.value()));
+    grid.setWidget(0, 3, new InlineLabel(i18n.groupOnly()));
+    grid.setWidget(0, 4, new InlineLabel(i18n.languageSpecificName()));
+    grid.setWidget(0, 5, new InlineLabel(i18n.languageSpecificValue()));
     grid.setWidget(0, 6, new InlineHTML("&nbsp;"));
   }
 

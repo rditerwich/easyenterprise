@@ -1,8 +1,10 @@
 package agilexs.catalogxsadmin.presentation.client;
 
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.widget.ExtendedTree;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
@@ -15,16 +17,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class NavigationView extends Composite implements View {
 
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
   final SplitLayoutPanel panel = new SplitLayoutPanel();
   final ExtendedTree tree = new ExtendedTree();
   final ItemParentsView top = new ItemParentsView();
-  final Button saveButton = new Button("Save changes");
+  final Button saveButton = new Button(i18n.saveChanges());
   
   public NavigationView() {
     initWidget(panel);
     final DockLayoutPanel topLevelPGPanel = new DockLayoutPanel(Unit.PX);
     
-    topLevelPGPanel.addNorth(new Label("The list below are the top level product groups used as the starting point for the navigation structure in the webshop."), 70);
+    topLevelPGPanel.addNorth(new Label(i18n.explainNavigationList()), 70);
     final FlowPanel fp = new FlowPanel();
     fp.add(top.asWidget());
     fp.add(saveButton);

@@ -66,7 +66,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     });
     view.setParentsPanel(parentsP.getView());
     view.setPropertiesPanel(pgpp.getView());
-    view.containsProductsClickHandler().addClickHandler(new ClickHandler() {
+    view.containsProductsClickHandlers().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         if (currentProductGroup != null) {
@@ -89,13 +89,11 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       if (parent != null) {
         final List<ProductGroup> parents = new ArrayList<ProductGroup>();
 
-        //parents.addAll(parent.getParents());
         parents.add(parent);
         newPG.setParents(parents);
       } else {
         newPG.setParents(new ArrayList<ProductGroup>());
       }
-      view.setName("");
       view.containsProducts().setValue(newPG.getContainsProducts());
       show(newPG);
       return newPG;
@@ -149,7 +147,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   public void show(ProductGroup productGroup) {
-    final List<String> langs = CatalogCache.get().getLanguages();
+    final List<String> langs = CatalogCache.get().getLangNames();
 
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
@@ -161,9 +159,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       }
     }
       if (currentProductGroup != null) {
-        final PropertyValue name = Util.getPropertyValueByName(currentProductGroup.getPropertyValues(),Util.NAME, currentLanguage);
-
-        view.setName(name==null?"":name.getStringValue());
         view.containsProducts().setValue(currentProductGroup.getContainsProducts());
         //parents product groups
         final List<Map.Entry<Long, String>> curParents = new ArrayList<Map.Entry<Long, String>>();
