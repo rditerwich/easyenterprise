@@ -16,7 +16,7 @@ object Test {
     }
     blogEntries ::= new BlogEntry { 
       title = "My First Blog Entry!"
-      text = "This is the <i>content</ul> of my blog entry."
+      text = "This is \nthe <i>content</i> of my blog entry."
       comments ::= new Comment() {
         author = "barak"
       }
