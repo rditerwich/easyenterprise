@@ -591,22 +591,12 @@ Package {
         }
     }
     operations = {
+        @comment "Returns all PropertyValues for Property 'Name' for all
+                  ProductGroup entries." 
         Operation {
             name = findAllProductGroupNames
             type = catalog:PropertyValue
             isOrdered = true
-            lower = 0
-            upper = {}
-            parameters = {
-                Parameter {
-                    name = catalog
-                    type = catalog:Catalog
-                }
-            }
-        }
-        Operation {
-            name = findProductsByProductGroup
-            type = catalog:Product
             lower = 0
             upper = {}
             parameters = {

@@ -7,11 +7,11 @@ public interface I18NCatalogXS extends Messages {
   @DefaultMessage("<h2>{0}</h2>")
   String h2(String text);
 
-  @DefaultMessage("<<h3>{0}</h3>")
+  @DefaultMessage("<h3>{0}</h3>")
   String h3(String text);
 
   String inheritedProperties();
-  
+
   @DefaultMessage("Today {0} products in promotion")
   @PluralText({"none", "Today no promotions",
     "one", "Today 1 product in promotion"})

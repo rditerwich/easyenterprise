@@ -37,7 +37,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
     tp.add(cp.getView(), i18n.catalog());
     tp.add(np.getView(), i18n.navigation());
-    tp.add(p.getView().asWidget(), i18n.promotions());
+    tp.add(p.getView(), i18n.promotions());
     tp.add(s.getView().asWidget(), i18n.settings());
     tp.addSelectionHandler(new SelectionHandler<Integer>() {
       @Override

@@ -54,8 +54,8 @@ public class ItemValuesView extends Composite implements View {
     }
   }
 
-  interface ProductGroupValuesUiBinder extends UiBinder<Widget, ItemValuesView> {}
-  private static ProductGroupValuesUiBinder uiBinder = GWT.create(ProductGroupValuesUiBinder.class);
+  interface ItemValuesUiBinder extends UiBinder<Widget, ItemValuesView> {}
+  private static ItemValuesUiBinder uiBinder = GWT.create(ItemValuesUiBinder.class);
 
   @UiField Grid grid;
   @UiField InlineHTML name;

@@ -154,7 +154,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         for (PropertyValue[] pvlangs : pvl) {
           PropertyValue dpv = null;
           PropertyValue lpv = null;
-          
+
           for (PropertyValue pv : pvlangs) {
             if (currentLanguage.equals(pv.getLanguage())) {
               lpv = pv;
@@ -170,10 +170,6 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   private void showProduct() {
-    //  final PropertyValue pname = Util.getPropertyValueByName(
-    //  currentProduct.getPropertyValues(), Util.NAME, null);
-    //view.setProductName(Util.getLabel(pname, currentLanguage, true).getLabel());
-    //parentsP.show(CatalogCache.get().getParents(currentProductGroup), currentLanguage, CatalogCache.get().getAllProductGroups());
     view.getPropertiesPanel().clear();
     valuesPresenters.clear();
     final List<Long> parents = Util.findParents(currentProductGroup);

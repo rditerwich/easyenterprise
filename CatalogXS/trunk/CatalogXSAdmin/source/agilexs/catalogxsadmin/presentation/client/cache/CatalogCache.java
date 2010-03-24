@@ -62,7 +62,7 @@ public class CatalogCache {
 
   public void loadProductGroupNames(final AsyncCallback callback) {
     final Catalog c = new Catalog();
-    c.setId(activeCatalog.getId());
+    c.setId(getActiveCatalog().getId());
     CatalogServiceAsync.findAllProductGroupNames(c, new AsyncCallback<List<PropertyValue>>() {
       @Override public void onFailure(Throwable caught) {
         callback.onFailure(caught);
@@ -154,7 +154,8 @@ public class CatalogCache {
         @Override
         public void onSuccess(Shop result) {
           put(result);
-          activeCatalog = result.getCatalog();
+          put(result.getCatalog());
+          getActiveCatalog().getShops().add(result);
           callback.onSuccess(result);
         }});
     }

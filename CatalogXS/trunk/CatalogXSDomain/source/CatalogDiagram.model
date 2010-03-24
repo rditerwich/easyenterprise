@@ -134,6 +134,9 @@ DomainDiagram {
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelationType
         }
+        DiagramClass {
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Language
+        }
     }
     enumerations = {
         DiagramEnum {
@@ -241,6 +244,9 @@ DomainDiagram {
         }
         Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:shops
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:languages
         }
     }
     superClassReferences = {

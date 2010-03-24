@@ -174,6 +174,15 @@ public class Util {
     return null;
   }
 
+  /**
+   * Returns the PropertyValue with a Property with the name in the given
+   * language or if no Property for that language for the null language.
+   *
+   * @param values List of PropertyValues to look through.
+   * @param name Name of the Property
+   * @param lang Language to select
+   * @return
+   */
   public static PropertyValue getPropertyValueByName(List<PropertyValue> values, String name, String lang) {
     PropertyValue dpv = null;
     PropertyValue pv = null;
@@ -346,10 +355,23 @@ public class Util {
     return value;
   }
 
+  /**
+   * Formats money to a euro format.
+   *
+   * @param money
+   * @return
+   */
   public static String formatMoney(Double money) {
     return money == null ? "" : NumberFormat.getCurrencyFormat("EUR").format(money / 100);
   }
 
+  /**
+   * Converts the objectValue to a String and if objectValue == null return an
+   * empty String.
+   *  
+   * @param objectValue
+   * @return
+   */
   public static String stringValueOf(Object objectValue) {
     return objectValue == null ? "" : String.valueOf(objectValue);
   }

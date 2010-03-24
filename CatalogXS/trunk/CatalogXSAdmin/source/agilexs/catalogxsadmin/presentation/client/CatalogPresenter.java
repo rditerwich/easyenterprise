@@ -24,7 +24,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 
-//binds
 public class CatalogPresenter implements Presenter<CatalogView> {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);

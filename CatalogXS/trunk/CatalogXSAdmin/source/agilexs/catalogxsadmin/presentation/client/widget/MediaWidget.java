@@ -33,8 +33,19 @@ public class MediaWidget extends Composite {
   private PropertyValueBinding pvb;
 
   private String id;
-
+  
   public MediaWidget() {
+    this(true);
+  }
+
+  /**
+   * Creates MediaWidget if showUploadButton is false no upload button will be
+   * displayed, meaning the value can't be changed. Use when only view status
+   * needed.
+   *
+   * @param showUploadButton
+   */
+  public MediaWidget(boolean showUploadButton) {
     initWidget(panel);
     panel.add(image);
     image.setVisible(false);
@@ -42,51 +53,58 @@ public class MediaWidget extends Composite {
     panel.add(a);
     a.setTarget("_blank");
     a.setVisible(false);
-    panel.add(up);
-
-    itemId.setName("itemId");
-    up.addParam(itemId);
-    pvId.setName("propertyValueId");
-    up.addParam(pvId);
-    propertyId.setName("propertyId");
-    up.addParam(propertyId);
-    language.setName("language");
-    up.addParam(language);
-    up.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-      @Override public void onSubmitComplete(SubmitCompleteEvent event) {
-        if (pvb != null) {
-          if (((PropertyValue) pvb.getData()).getId() == null) {
-             final String idS = event.getResults();
-
-             if (idS != null && !"".equals(idS.trim())) {
-                ((PropertyValue) pvb.getData()).setId(Long.valueOf(idS.trim())); 
-             }
-          }
-          up.hide();
-          CatalogCache.get().getPropertyValue((Long)pvb.id().getData(),
-            new AsyncCallback<PropertyValue>() {
-              @Override public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-              }
-
-              @Override public void onSuccess(PropertyValue result) {
-                if (result != null) {
-                  if (result.getItem() == null) {
-                    result.setItem((Item) pvb.item().getData());
-                  }
-                  if (result.getProperty() == null) {
-                    result.setProperty((Property) pvb.property().getData());
-                  }
-                  pvb.setData(result);
-                  StatusMessage.get().show(
-                    "File '" + result.getStringValue() + "' uploaded.", 15);
+    if (showUploadButton) {
+      panel.add(up);
+  
+      itemId.setName("itemId");
+      up.addParam(itemId);
+      pvId.setName("propertyValueId");
+      up.addParam(pvId);
+      propertyId.setName("propertyId");
+      up.addParam(propertyId);
+      language.setName("language");
+      up.addParam(language);
+      up.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+        @Override public void onSubmitComplete(SubmitCompleteEvent event) {
+          if (pvb != null) {
+            if (((PropertyValue) pvb.getData()).getId() == null) {
+               final String idS = event.getResults();
+  
+               if (idS != null && !"".equals(idS.trim())) {
+                  ((PropertyValue) pvb.getData()).setId(Long.valueOf(idS.trim())); 
+               }
+            }
+            up.hide();
+            CatalogCache.get().getPropertyValue((Long)pvb.id().getData(),
+              new AsyncCallback<PropertyValue>() {
+                @Override public void onFailure(Throwable caught) {
+                  // TODO Auto-generated method stub
                 }
-              }});
+  
+                @Override public void onSuccess(PropertyValue result) {
+                  if (result != null) {
+                    if (result.getItem() == null) {
+                      result.setItem((Item) pvb.item().getData());
+                    }
+                    if (result.getProperty() == null) {
+                      result.setProperty((Property) pvb.property().getData());
+                    }
+                    pvb.setData(result);
+                    StatusMessage.get().show(
+                      "File '" + result.getStringValue() + "' uploaded.", 15);
+                  }
+                }});
+          }
         }
-      }
-    });
+      });
+    }
   }
 
+  /**
+   * 
+   * @param pvb
+   * @return
+   */
   public Binding bind(final PropertyValueBinding pvb) {
     this.pvb = pvb;
     final Binding b = HasTextBinding.<Long>bind(new HasText() {
@@ -127,7 +145,13 @@ public class MediaWidget extends Composite {
     return b;
   }
 
-  private void show(String idS, String text, String filename) {
+  /**
+   * 
+   * @param idS
+   * @param text
+   * @param filename
+   */
+  public void show(String idS, String text, String filename) {
     final Long id = Long.valueOf(idS == null || "".equals(idS.trim()) ? "0" : idS.trim());
 
     text = text.trim();

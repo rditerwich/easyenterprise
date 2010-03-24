@@ -3,6 +3,7 @@ package agilexs.catalogxsadmin.presentation.client;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
+import agilexs.catalogxsadmin.presentation.client.widget.PropertyValueWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -10,7 +11,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -32,13 +32,10 @@ public class ProductView extends Composite implements View {
     NO_PRODUCTS, PRODUCTS, PRODUCT
   }
 
-  //private final DockLayoutPanel panel = new DockLayoutPanel(Unit.PX);
   private final SimplePanel parentsPanel = new SimplePanel();
-  
   private final DeckPanel deck = new DeckPanel();
-
-  final Button newProductButton = new Button(i18n.newProduct());
-  final Button saveButton = new Button(i18n.saveChanges()); 
+  private final Button newProductButton = new Button(i18n.newProduct());
+  private final Button saveButton = new Button(i18n.saveChanges()); 
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
   private final FlowPanel propertiesPanel = new FlowPanel();
@@ -120,7 +117,7 @@ public class ProductView extends Composite implements View {
     if (column >= productTable.getColumnCount()) {
       productTable.resizeColumns(column+1);
     }
-    productTable.setWidget(row, column, getWidget(pv));
+    productTable.setWidget(row, column, new PropertyValueWidget(pv));
   }
 
   @Override
@@ -140,58 +137,5 @@ public class ProductView extends Composite implements View {
     case PRODUCT: i = 2; break;
     }
     deck.showWidget(i);
-  }
-
-  private Widget getWidget(PropertyValue pv) {
-    Widget value = null;
-    switch (pv.getProperty().getType()) {
-    case Enum:
-      value = new Label();
-      break;
-    case FormattedText:
-      value = new Label();
-      break;
-    case Media:
-      value = new Label();//FIXME: media should be different
-      break;
-    case String:
-      value = new Label();
-      ((Label) value).setText(Util.stringValueOf(pv.getStringValue()));
-      break;
-    case Boolean:
-      value = new CheckBox();
-      ((CheckBox)value).setEnabled(false);
-      ((CheckBox)value).setValue(Boolean.valueOf(pv.getBooleanValue()));
-      break;
-    case Money:
-      value = new HTML();
-      ((HTML) value).setHTML(Util.formatMoney(pv.getMoneyValue()));
-      break;
-    case Real:
-      value = new Label();
-      ((Label) value).setText(Util.stringValueOf(pv.getRealValue()));
-      break;
-    case Acceleration:
-    case AmountOfSubstance:
-    case Angle:
-    case Area:
-    case ElectricCurrent:
-    case Energy:
-    case Frequency:
-    case Integer:
-    case Length:
-    case LuminousIntensity:
-    case Power:
-    case Mass:
-    case Temperature:
-    case Time:
-    case Velocity:
-    case Voltage:
-    case Volume:
-    default:
-      value = new Label();
-      ((Label) value).setText(Util.stringValueOf(pv.getIntegerValue()));
-    }
-    return value;
   }
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'
+    >
+  <ui:with field='res' type='agilexs.catalogxsadmin.presentation.client.ResourceBundle'/>
+  <ui:style>
+    .promo { border-bottom:1px solid #EFEFEF; }
+    .buttons img { display:block;margin:7px;valign:middle;text-align:center;cursor:pointer; }
+  </ui:style>
+  <g:HorizontalPanel styleName="{style.promo}">
+	  <g:FlowPanel styleName="{style.buttons}" >
+	    <g:Image ui:field="editButton" resource="{res.editImage}" />
+	    <g:Image ui:field="deleteButton" resource="{res.deleteImage}" />
+	  </g:FlowPanel>
+	  <g:HTMLPanel><b><g:InlineHTML ui:field="name" /></b>
+	    <p>Starts: <b><g:InlineHTML ui:field="startDate" /></b>, Ends: <b><g:InlineHTML ui:field="endDate" /></b><br/>
+	    Promotion Price: <b><g:InlineHTML ui:field="price" /></b> per <b><g:InlineHTML ui:field="volume" /></b></p>
+	  </g:HTMLPanel>
+  </g:HorizontalPanel>
+</ui:UiBinder>

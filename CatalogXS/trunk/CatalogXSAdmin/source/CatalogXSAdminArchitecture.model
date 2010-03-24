@@ -13,6 +13,8 @@ import Metaphor.PSM.JavaEEAspects.Query
 import Metaphor.PSM.Rdbms.Column
 import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
 
+
+path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
@@ -282,41 +284,63 @@ JavaEEArchitectureJpaEjbGwt {
                 catalog:RelationType
                 shop:Promotion
                 shop:VolumeDiscountPromotion
-//                catalog:Promotion
-//                catalog:VolumeDiscountPromotion
-/*                /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductRelation*/
+                shop:Promotion
+                shop:VolumeDiscountPromotion
             }
         }
         Query {
-            name = "Query for all"
-            methodNamePrefix = findAll
+            name = "Query for Promotions"
+            methodNamePrefix = findActual
             participants = { 
-                catalog:Catalog
-                catalog:Product
-                catalog:ProductGroup
-//                catalog:Promotion
-//                catalog:CatalogView
+                shop:Promotion
             }
-            paging = false
+            filter = shop:Promotion
+            paging = true
             view = {
-                 ClassView {
-                     name = QueryForAllView
-                     kind = all
-                 }
-             }
-        }
-        Query {
-            name = "Query for all non paged"
-            methodNamePrefix = findAllNonPaged
-            participants = { 
-                catalog:Label
+                ClassView {
+                    name = QueryForAllPromotionsView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ShopView
+                            kind = all
+                            referringAttributes = shop:Promotion/attributes:shop
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:VolumeDiscountPromotion/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
             }
-            view = {
-                 ClassView {
-                     name = QueryForAllNonPagedView
-                     kind = all
-                 }
-             }
         }
         Query {
             name = "Query for all products by ProductGroup"
@@ -330,51 +354,6 @@ JavaEEArchitectureJpaEjbGwt {
             view = {
                  ClassView {
                      name = QueryForAllByProductGroupView
-                     kind = all
-                 }
-             }
-        }
-        Query {
-            name = "Query for all ProductGroup children"
-            methodNamePrefix = findAllChildren
-            filter = domain:Query/types:ProductGroupQuery
-            participants = { 
-                catalog:ProductGroup
-            }
-            paging = true
-            view = {
-                 ClassView {
-                     name = QueryForAllChildrenView
-                     kind = all
-                 }
-             }
-        }
-        Query {
-            name = "Query for all Properties for a ProductGroup"
-            methodNamePrefix = findAllProperties
-            filter = domain:Query/types:PropertyQuery
-            participants = { 
-                catalog:Property
-            }
-            paging = true
-            view = {
-                 ClassView {
-                     name = QueryForAllPropertiesView
-                     kind = all
-                 }
-             }
-        }
-        Query {
-            name = "Query for all groups within a "
-            methodNamePrefix = findAllGroups
-            filter = domain:Query/types:PropertyQuery
-            participants = { 
-                catalog:Property
-            }
-            paging = true
-            view = {
-                 ClassView {
-                     name = QueryForAllGroupsView
                      kind = all
                  }
              }
