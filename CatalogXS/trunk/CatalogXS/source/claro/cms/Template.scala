@@ -5,7 +5,7 @@ import scala.collection.{mutable}
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.{ConcurrentHashMap,TimeUnit}
-import claro.common.util.Locales
+import claro.common.util.{Locales,ParseHtml}
 import claro.cms.Conversions._
 import claro.common.util.Conversions._
 
@@ -56,9 +56,9 @@ object TemplateCache {
   private val objectTemplateCache = new ConcurrentHashMap[(Template,Locale),Option[ConcreteTemplate]]()
 
   def findTemplate(template : Template, locale : Locale) : Option[ConcreteTemplate] = {
-//    objectTemplateCache getOrElseUpdate ((template,locale), 
+    objectTemplateCache getOrElseUpdate ((template,locale), 
       locate(templateLocator(template), Locales.getAlternatives(locale))
-//    )
+    )
   }
   
   private def templateLocator(template : Template) : TemplateLocator = {
@@ -124,10 +124,10 @@ object ClasspathTemplateStore extends TemplateStore {
     builder.append(".html")
     for (pkg <- CMS.templateClasspath.toList) {
       val resource = pkg.replace('.', '/') + "/" + builder.toString
-      println("Looking for template: " + resource)
+//      println("Looking for template: " + resource)
       readTemplate(resource) match {
-        case null =>
-        case xml => return Some(xml)
+        case None =>
+        case Some(xml) => return Some(xml)
       }
     }
     None
@@ -138,14 +138,10 @@ object ClasspathTemplateStore extends TemplateStore {
 
   def isReadOnly = true
 
-  private def readTemplate(resource : String) : NodeSeq = {
-      try {
-    	  getClass.getClassLoader.getResourceAsStream(resource) match {
-    	    case null => null
-            case is => XML.load(is)
-    	  }
-      } catch {
-        case e => println("Error reading resource: " + e); throw e
-      }
+  private def readTemplate(resource : String) : Option[NodeSeq] = {
+    ParseHtml(getClass.getClassLoader.getResourceAsStream(resource), resource) match {
+      case (_,Some(ParseHtml.NoInput)) => None
+      case (xml,_) => Some(xml)
+    } 
   }
 }

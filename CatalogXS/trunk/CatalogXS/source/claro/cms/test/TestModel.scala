@@ -1,6 +1,6 @@
 package claro.cms.test
 
-import claro.common.util.ParseXML
+import claro.common.util.ParseHtml
 import claro.common.util.Conversions._
 import claro.cms.Conversions._
 import claro.cms.CMS
@@ -42,7 +42,7 @@ object Test {
       case entry : BlogEntry => Bindings(
         "title" -> entry.title,
         "date" -> entry.date,
-        "text" -> ParseXML(entry.text),
+        "text" -> ParseHtml(entry.text),
         "comments" -> entry.comments -> "comment"
       )
       case comment: Comment => Bindings(
