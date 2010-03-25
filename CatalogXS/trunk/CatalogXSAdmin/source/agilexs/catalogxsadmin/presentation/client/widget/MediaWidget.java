@@ -9,6 +9,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -21,6 +22,8 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class MediaWidget extends Composite {
+
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   final FlowPanel panel = new FlowPanel();
   final Image image = new Image();
@@ -90,8 +93,7 @@ public class MediaWidget extends Composite {
                       result.setProperty((Property) pvb.property().getData());
                     }
                     pvb.setData(result);
-                    StatusMessage.get().show(
-                      "File '" + result.getStringValue() + "' uploaded.", 15);
+                    StatusMessage.get().show(i18n.fileUploaded(result.getStringValue()));
                   }
                 }});
           }

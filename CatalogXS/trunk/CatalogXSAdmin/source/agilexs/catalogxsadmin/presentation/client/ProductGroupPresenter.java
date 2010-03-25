@@ -11,11 +11,13 @@ import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 import agilexs.catalogxsadmin.presentation.client.widget.StatusMessage;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,6 +26,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Presenter for the ProductGroup page
  */
 public class ProductGroupPresenter implements Presenter<ProductGroupView> {
+
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   private final ProductGroupView view = new ProductGroupView();
   private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
@@ -133,7 +137,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             if (result != null) {
               final PropertyValue name = Util.getPropertyValueByName(result.getPropertyValues(), Util.NAME, currentLanguage);
               
-              StatusMessage.get().show("Group "+ (name==null?"":name.getStringValue()) + " saved.", 15);
+              StatusMessage.get().show(i18n.productGroupSaved(name==null?"":name.getStringValue()));
               CatalogCache.get().put(result);
               show(result);
             }

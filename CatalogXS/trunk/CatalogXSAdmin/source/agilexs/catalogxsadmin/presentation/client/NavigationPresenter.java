@@ -10,12 +10,14 @@ import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 import agilexs.catalogxsadmin.presentation.client.widget.StatusMessage;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -26,10 +28,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class NavigationPresenter implements Presenter<NavigationView> {
-//TODO add save button
-//TODO add add handler
-//TODO add delete handler
-//TODO show tree
+
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
   private final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
 
   private final NavigationView view;
@@ -114,7 +115,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
 
           @Override public void onSuccess(Shop result) {
             CatalogCache.get().put(result);
-            StatusMessage.get().show("Navigation changes saved.", 15);
+            StatusMessage.get().show(i18n.navigationSaved());
           }});
     }});
   }

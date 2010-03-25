@@ -7,14 +7,17 @@
     .promo { border-bottom:1px solid #EFEFEF; }
     .buttons img { display:block;margin:7px;valign:middle;text-align:center;cursor:pointer; }
   </ui:style>
-  <g:HorizontalPanel styleName="{style.promo}">
-	  <g:FlowPanel styleName="{style.buttons}" >
-	    <g:Image ui:field="editButton" resource="{res.editImage}" />
-	    <g:Image ui:field="deleteButton" resource="{res.deleteImage}" />
-	  </g:FlowPanel>
-	  <g:HTMLPanel><b><g:InlineHTML ui:field="name" /></b>
-	    <p>Starts: <b><g:InlineHTML ui:field="startDate" /></b>, Ends: <b><g:InlineHTML ui:field="endDate" /></b><br/>
-	    Promotion Price: <b><g:InlineHTML ui:field="price" /></b> per <b><g:InlineHTML ui:field="volume" /></b></p>
-	  </g:HTMLPanel>
-  </g:HorizontalPanel>
+  <g:FlowPanel>
+	  <g:HorizontalPanel styleName="{style.promo}">
+		  <g:FlowPanel styleName="{style.buttons}" >
+		    <g:Image ui:field="editButton" resource="{res.editImage}" />
+		    <g:Image ui:field="deleteButton" resource="{res.deleteImage}" />
+		  </g:FlowPanel>
+		  <g:HTMLPanel><b><g:InlineHTML ui:field="name" /></b>
+		    <p>Starts: <b><g:InlineHTML ui:field="startDate" /></b>, Ends: <b><g:InlineHTML ui:field="endDate" /></b><br/>
+		    Promotion Price: <b><g:InlineHTML ui:field="price" /></b> per <b><g:InlineHTML ui:field="volume" /></b></p>
+		  </g:HTMLPanel>
+	  </g:HorizontalPanel>
+	  <g:SimplePanel ui:field="editPanel"/>
+  </g:FlowPanel>
 </ui:UiBinder>

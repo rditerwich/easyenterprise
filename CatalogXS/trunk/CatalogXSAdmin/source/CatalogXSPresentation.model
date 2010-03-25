@@ -20,6 +20,12 @@ path catalog = /packages:AgileXS/packages:CatalogXSAdmin/packages:Presentation/p
 
 GwtPackage {
     name = Presentation
+    modules = {
+        GwtModule {
+            name = CatalogXSAdmin
+            inherits = "com.google.gwt.user.datepicker.DatePicker"
+        }
+    }
 /*
     specialPurposeServlets = {
         GwtFileDownloadServlet {

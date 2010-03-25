@@ -58,4 +58,14 @@ public interface I18NCatalogXS extends Messages {
   String settings();
 
   String todo();
+
+  String promotionSaved();
+
+  String productSaved();
+
+  String productGroupSaved(String groupName);
+
+  String fileUploaded(String fileName);
+
+  String navigationSaved();
 }

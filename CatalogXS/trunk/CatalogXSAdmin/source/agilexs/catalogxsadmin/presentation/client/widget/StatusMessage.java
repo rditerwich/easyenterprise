@@ -2,18 +2,27 @@ package agilexs.catalogxsadmin.presentation.client.widget;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
+/**
+ * Displays a status message at the top of the page.
+ * 
+ * Use:
+ *     StatusMessage.get().show("message");
+ */
 public class StatusMessage {
+
+  private static final int DEFAULT_TIMEOUT = 15;
 
   private static StatusMessage instance = new StatusMessage();
   public static StatusMessage get() {
     return instance;
   }
 
-  private PopupPanel status = new PopupPanel(false, false);
+  private DecoratedPopupPanel status = new DecoratedPopupPanel(false, false);
   private HTML message = new HTML();
 
   private StatusMessage() {
@@ -26,6 +35,10 @@ public class StatusMessage {
         status.setPopupPosition(left, 0);
       }
     });
+  }
+
+  public void show(String message) {
+    show(message, DEFAULT_TIMEOUT);
   }
 
   public void show(String message, int durationSeconds) {

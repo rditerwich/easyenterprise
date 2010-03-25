@@ -9,17 +9,21 @@ import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 import agilexs.catalogxsadmin.presentation.client.widget.StatusMessage;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 public class ProductPresenter implements Presenter<ProductView> {
+
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   private final ProductView view = new ProductView();
   private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
@@ -29,8 +33,8 @@ public class ProductPresenter implements Presenter<ProductView> {
   private Product currentProduct;
   private Product orgProduct;
   private List<Product> currentProducts;
-  private Integer fromIndex = 0;
-  private Integer pageSize = 50;
+  private int fromIndex = 0;
+  private int pageSize = 1000;
   private SHOW show = SHOW.PRODUCTS;
   private ProductGroup root;
 
@@ -83,7 +87,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
       @Override public void onFailure(Throwable caught) {}
       @Override public void onSuccess(Product result) {
-        StatusMessage.get().show("Product saved", 10);
+        StatusMessage.get().show(i18n.productSaved());
         if (result != null) {
           CatalogCache.get().put(result);
           currentProduct = result;

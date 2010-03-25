@@ -11,6 +11,7 @@ import Metaphor.PIM.Domain.Parameter
 
 path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
 path query = /packages:AgileXS/packages:Domain/packages:Query/types
 
 Package {
@@ -21,15 +22,20 @@ Package {
             isAbstract = true
         }
         Class {
-            name = ProductGroupQuery
+            name = ProductShopQuery
             superClass = query:Query
             attributes = {
                 Attribute {
-                    name = productGroup
-                    type = catalog:ProductGroup 
+                    name = stringValue
+                    type = primitive:String 
+                }
+                Attribute {
+                    name = shop
+                    type = shop:Shop 
                 }
             }
         }
+/*
         Class {
             name = PropertyQuery
             superClass = query:Query
@@ -40,5 +46,6 @@ Package {
                 }
             }
         }
+*/
     }
 }

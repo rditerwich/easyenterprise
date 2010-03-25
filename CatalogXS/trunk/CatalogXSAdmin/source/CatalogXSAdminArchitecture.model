@@ -345,7 +345,6 @@ JavaEEArchitectureJpaEjbGwt {
         Query {
             name = "Query for all products by ProductGroup"
             methodNamePrefix = findAllByProductGroup
-            //filter = domain:Query/types:ProductGroupQuery
             filter = catalog:ProductGroup
             participants = { 
                 catalog:Product
@@ -354,6 +353,21 @@ JavaEEArchitectureJpaEjbGwt {
             view = {
                  ClassView {
                      name = QueryForAllByProductGroupView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for products"
+            methodNamePrefix = findByStringValueShop
+            filter = domain:Query/types:ProductShopQuery
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForFindProductsView
                      kind = all
                  }
              }

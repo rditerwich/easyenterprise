@@ -16,6 +16,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.services.ShopServiceAsync;
+import agilexs.catalogxsadmin.presentation.client.shop.Promotion;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
 import agilexs.catalogxsadmin.presentation.client.util.Entry;
 
@@ -38,6 +39,7 @@ public class CatalogCache {
   private final Map<Long, Product> productCache = new HashMap<Long, Product>();
   private final Map<Long, Property> propertyCache = new HashMap<Long, Property>();
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
+  private final Map<Long, Promotion> promotionCache = new HashMap<Long, Promotion>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
   private final ArrayList<String> langs = new ArrayList<String>(2);
   private final ArrayList<Language> languages = new ArrayList<Language>(2);
@@ -237,6 +239,10 @@ public class CatalogCache {
     }
   }
 
+  public Promotion getPromotion(Long id) {
+    return promotionCache.get(id);
+  }
+  
   public Label getLabel(Long id) {
     return labelCache.get(id);
   }
@@ -295,6 +301,12 @@ public class CatalogCache {
   public void put(Property p) {
     if (p != null) {
       propertyCache.put(p.getId(), p);
+    }
+  }
+
+  public void put(Promotion p) {
+    if (p != null) {
+      promotionCache.put(p.getId(), p);
     }
   }
 
