@@ -2,6 +2,8 @@ package agilexs.catalogxsadmin.presentation.client.widget;
 
 import java.util.HashMap;
 
+import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
@@ -21,13 +23,15 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class UploadWidget extends Composite {
 
-  private final Button b = new Button("Upload");
+  private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+
+  private final Button b = new Button(i18n.upload());
   private final PopupPanel popup = new PopupPanel(true, true);
   private final FileUpload fileUpload = new FileUpload();
   private final FormPanel formPanel = new FormPanel();
   final FlowPanel fp = new FlowPanel();
   private final HashMap<String, InputElement> inputElements = new HashMap<String, InputElement>();
-  private final SubmitButton submitButton = new SubmitButton("Upload file");
+  private final SubmitButton submitButton = new SubmitButton(i18n.uploadFile());
 
   public UploadWidget() {
     initWidget(b);

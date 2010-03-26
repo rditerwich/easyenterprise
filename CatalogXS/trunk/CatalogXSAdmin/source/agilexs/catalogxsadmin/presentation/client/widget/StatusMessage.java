@@ -4,14 +4,15 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
 /**
  * Displays a status message at the top of the page.
  * 
- * Use:
+ * Use with default timeout of 15 seconds:
  *     StatusMessage.get().show("message");
+ * Or with custom timeout (in seconds):
+ *     StatusMessage.get().show("message", 20);
  */
 public class StatusMessage {
 
@@ -27,6 +28,7 @@ public class StatusMessage {
 
   private StatusMessage() {
     status.setStyleName("statusmessage");
+    //Method NOT publicly visible: status.setAnimationType(AnimationType.ROLL_DOWN);
     status.add(message);
     status.setPopupPositionAndShow(new PositionCallback() {
       @Override
@@ -35,12 +37,26 @@ public class StatusMessage {
         status.setPopupPosition(left, 0);
       }
     });
+   status.hide();
+   //set animation after initial show+hide
+   status.setAnimationEnabled(true);
   }
 
+  /**
+   * Displays message for 15 seconds.
+   *
+   * @param message
+   */
   public void show(String message) {
     show(message, DEFAULT_TIMEOUT);
   }
 
+  /**
+   * Displays message for the duration of given seconds.
+   *
+   * @param message
+   * @param durationSeconds
+   */
   public void show(String message, int durationSeconds) {
     new Timer() {
       @Override

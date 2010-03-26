@@ -1,8 +1,10 @@
 package agilexs.catalogxsadmin.businesslogic;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,6 +12,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import agilexs.catalogxsadmin.jpa.catalog.Catalog;
+import agilexs.catalogxsadmin.jpa.catalog.Language;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
 import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
 import agilexs.catalogxsadmin.jpa.catalog.Property;
@@ -61,16 +64,22 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     }
     return catalog;
   }
-  /*
-  @Override
-  @SuppressWarnings("unchecked")
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<Catalog> listCatalogs() {
-        final Query query = entityManager.createQuery("select c from Catalog c");
 
-        return query.getResultList();
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public List<Language> getAllLanguages() {
+    final Locale list[] = SimpleDateFormat.getAvailableLocales();
+    final List<Language> languages = new ArrayList<Language>();
+    
+    for (int i = 0; i < list.length; i++) {
+      final Language lang = new Language();
+      
+      lang.setId(Long.valueOf(i));
+      lang.setName(list[i].getLanguage());
+      lang.setDisplayName(list[i].getDisplayName());
     }
-*/
+    return languages;
+  }
+
   @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Collection<Product> findProductsByCatalogId(agilexs.catalogxsadmin.jpa.catalog.Catalog catalog) {

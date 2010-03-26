@@ -39,8 +39,6 @@ public class NavigationPresenter implements Presenter<NavigationView> {
   private List<Map.Entry<Long, String>> topLevelProductGroups = new ArrayList<Map.Entry<Long, String>>();
   private Shop activeShop;
 
-  //private ProductGroup currentProductGroup;
-
   public NavigationPresenter() {
     view = new NavigationView();
     pp = new ItemParentsPresenter(view.getItemParentsView());
@@ -53,8 +51,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
           final Long pgId = treemap.get(item);
 
           if (pgId != null) {
-            //currentProductGroup = CatalogCache.get().getProductGroup(pgId);
-            if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+            if (view.getTree().isTreeItemEmpty(item)) {
               loadChildren(activeShop, item);
             }
           } else {

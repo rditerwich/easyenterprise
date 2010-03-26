@@ -39,7 +39,6 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
   private Shop activeShop;
   private ProductGroup currentProductGroup;
-  private ProductGroup root;
   private String currentLanguage = "en";
   final ProductGroupPresenter pgp = new ProductGroupPresenter();
   final ProductPresenter pp = new ProductPresenter();
@@ -56,7 +55,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         view.setName("&lt;" + i18n.newGroup() + "&gt;");
         currentProductGroup =
           pgp.setNewProductGroup(activeShop, lastPG != null ? CatalogCache.get().getProductGroup(lastPG) : null);
-        pp.show(activeShop, currentProductGroup, null);
+        pp.show(activeShop, currentProductGroup);
 
         //view.getTree().deSelectItem();
         view.selectedTab(TAB_GROUP);
@@ -67,7 +66,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         if (event.getSelectedItem().intValue() == TAB_GROUP) {
           pgp.show(currentProductGroup);
         } else {
-          pp.show(activeShop, currentProductGroup, root);
+          pp.show(activeShop, currentProductGroup);
         }
       }});
     view.getTree().addOpenHandler(new OpenHandler<TreeItem>() {
@@ -79,7 +78,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
           final Long pgId = treemap.get(item);
 
           if (pgId != null) {
-            if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+            if (view.getTree().isTreeItemEmpty(item)) {
               loadChildren(activeShop, item);
             }
           }
@@ -105,13 +104,13 @@ public class CatalogPresenter implements Presenter<CatalogView> {
           } else {
             view.setTabVisible(TAB_PRODUCT, true);
           }
-          if (view.getTree().isTreeItemEmpty(item)) { //FIXME: && Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
+          if (view.getTree().isTreeItemEmpty(item)) {
             loadChildren(activeShop, item);
           }
           if (view.getSelectedTab() == TAB_GROUP) {
             pgp.show(currentProductGroup);
           } else {
-            pp.show(activeShop, currentProductGroup, root);
+            pp.show(activeShop, currentProductGroup);
           }
         } else {
           //FIXME ?? can this happen?
@@ -170,8 +169,9 @@ public class CatalogPresenter implements Presenter<CatalogView> {
             for (ProductGroup productGroup : result) {
               final PropertyValue value = Util.getPropertyValueByName(productGroup.getPropertyValues(), Util.NAME, currentLanguage);
 
-              if (root == null && Util.ROOT.equals(value.getStringValue())) {
-                root = productGroup;
+              if (CatalogCache.get().getProductGroupName() == null && value != null && productGroup.getId().equals(value.getProperty().getItem().getId())) {
+                CatalogCache.get().setProductGroupName(productGroup);
+                CatalogCache.get().setProductGroupProduct(productGroup);
               }
               CatalogCache.get().put(productGroup);
               for (ProductGroup pPG : productGroup.getParents()) {

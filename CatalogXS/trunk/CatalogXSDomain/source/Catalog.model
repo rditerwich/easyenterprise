@@ -44,12 +44,14 @@ Package {
                     lower = 0
                     upper = {}
                 }
+/*TODO HSB: Language support, remove comments
                 Attribute {
                     name = languages
                     type = catalog:Language
                     lower = 0
                     upper = {}
                 }
+*/
             }
         }
         Class {
@@ -624,6 +626,13 @@ Package {
                     type = catalog:ProductGroup
                 }
             }
+        }
+        Operation {
+            name = getAllLanguages
+            type = catalog:Language
+            lower = 0
+            upper = {}
+            isOrdered = true
         }
     }
 }

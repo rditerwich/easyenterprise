@@ -4,18 +4,20 @@
     >
   <ui:with field='res' type='agilexs.catalogxsadmin.presentation.client.ResourceBundle'/>
   <ui:style>
+    .name { overflow:hidden;font-size:16px; }
     .promo { border-bottom:1px solid #EFEFEF; }
+    .data { margin:10px; } 
     .buttons img { display:block;margin:7px;valign:middle;text-align:center;cursor:pointer; }
   </ui:style>
-  <g:FlowPanel>
-	  <g:HorizontalPanel styleName="{style.promo}">
+  <g:FlowPanel styleName="{style.promo}">
+	  <g:HorizontalPanel>
 		  <g:FlowPanel styleName="{style.buttons}" >
 		    <g:Image ui:field="editButton" resource="{res.editImage}" />
 		    <g:Image ui:field="deleteButton" resource="{res.deleteImage}" />
 		  </g:FlowPanel>
-		  <g:HTMLPanel><b><g:InlineHTML ui:field="name" /></b>
-		    <p>Starts: <b><g:InlineHTML ui:field="startDate" /></b>, Ends: <b><g:InlineHTML ui:field="endDate" /></b><br/>
-		    Promotion Price: <b><g:InlineHTML ui:field="price" /></b> per <b><g:InlineHTML ui:field="volume" /></b></p>
+		  <g:HTMLPanel styleName="{style.data}"><b><g:InlineHTML styleName="{style.name}" ui:field="name" /></b>
+		    <p>Starts: <b><g:InlineHTML ui:field="startDate" /></b>, Ends: <b><g:InlineHTML ui:field="endDate" /></b></p>
+		    <p>Promotion Price: <b><g:InlineHTML ui:field="price" /></b> per <b><g:InlineHTML ui:field="volume" /></b></p>
 		  </g:HTMLPanel>
 	  </g:HorizontalPanel>
 	  <g:SimplePanel ui:field="editPanel"/>

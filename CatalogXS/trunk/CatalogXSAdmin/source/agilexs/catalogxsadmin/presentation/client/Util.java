@@ -9,8 +9,10 @@ import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
 import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
+import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
@@ -65,7 +67,6 @@ public class Util {
   }
   
   public static final String NAME = "Name";
-  public static final String ROOT = "Root";
 
   //private static final Label EMPTY_LABEL = new Label();
 
@@ -163,8 +164,8 @@ public class Util {
    return null;
   }
 
-  public static PropertyValue getPropertyValueByLangByName(List<List<PropertyValue>> values, String name, String lang) {
-    for (List<PropertyValue> propertyValues : values) {
+  public static PropertyValue getPropertyValueByLangByName(List<PropertyValue[]> values, String name, String lang) {
+    for (PropertyValue[] propertyValues : values) {
       for (PropertyValue propertyValue : propertyValues) {
         if (name.equals(getLabel(propertyValue, lang, true).getLabel())) {
           return propertyValue;
@@ -355,6 +356,86 @@ public class Util {
     return value;
   }
 
+  /**
+   * Returns a string with all the generic Product properties appended.
+   *
+   * @param product
+   * @param language
+   * @return
+   */
+  public static String productToString(Product product, String language) {
+    final List<PropertyValue[]> pvs = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), product);
+    final StringBuffer s = new StringBuffer();
+
+    for (PropertyValue[] pvhlangs : pvs) {
+      PropertyValue dpv = null;
+      PropertyValue lpv = null;
+      for (PropertyValue propv : pvhlangs) {
+        if (language.equals(propv.getLanguage())) {
+          lpv = propv;
+        } else if (propv.getLanguage() == null) {
+          dpv = propv;
+        }
+      }
+      final String v = Util.propertyValueToString(lpv != null && !Util.isEmpty(lpv) ? lpv : dpv);
+
+      s.append(v);
+      if (!"".equals(v)) {
+        s.append(" ");
+      }
+    }
+    return s.toString();
+  }
+
+  public static String propertyValueToString(PropertyValue pv) {
+    if (pv == null) return "";
+    Object value = null;
+
+    switch (pv.getProperty().getType()) {
+    case Enum:
+      value = "";
+      break;
+    case FormattedText:
+      value = pv.getStringValue();
+      break;
+    case Media:
+      value = "";//pv.getStringValue();
+      break;
+    case String:
+      value = pv.getStringValue();
+      break;
+    case Boolean:
+      value = pv.getBooleanValue();
+      break;
+    case Real:
+      value = pv.getRealValue();
+      break;
+    case Money:
+      value = Util.formatMoney(pv.getMoneyValue());
+      break;
+    case Acceleration:
+    case AmountOfSubstance:
+    case Angle:
+    case Area:
+    case ElectricCurrent:
+    case Energy:
+    case Frequency:
+    case Integer:
+    case Length:
+    case LuminousIntensity:
+    case Power:
+    case Time:
+    case Mass:
+    case Temperature:
+    case Velocity:
+    case Voltage:
+    case Volume:
+      value = pv.getIntegerValue();
+    default:
+      value = pv.getStringValue();
+    }
+    return Util.stringValueOf(value);
+  }
   /**
    * Formats money to a euro format.
    *

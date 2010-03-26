@@ -43,6 +43,8 @@ public class CatalogCache {
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
   private final ArrayList<String> langs = new ArrayList<String>(2);
   private final ArrayList<Language> languages = new ArrayList<Language>(2);
+  private ProductGroup productGroupName;
+  private ProductGroup productGroupProduct;
 
   private CatalogCache() {
     //TODO Calculate cache languages based on what is in database
@@ -60,6 +62,35 @@ public class CatalogCache {
 
   public Catalog getActiveCatalog() {
     return activeCatalog;
+  }
+
+  /**
+   * Returns the ProductGroup that contains the Property with the label 'Name'.
+   * 
+   * @return
+   */
+  public ProductGroup getProductGroupName() {
+    return productGroupName;
+  }
+
+  /**
+   * Returns the ProductGroup that contains the general product properties, like
+   * article number, description, price and image. These properties are required
+   * for every product and these properties are used to display a product in a
+   * table, etc. 
+   *
+   * @return
+   */
+  public ProductGroup getProductGroupProduct() {
+    return productGroupProduct;
+  }
+
+  public void setProductGroupName(ProductGroup productGroupName) {
+    this.productGroupName = productGroupName;
+  }
+
+  public void setProductGroupProduct(ProductGroup productGroupProduct) {
+    this.productGroupProduct = productGroupProduct;
   }
 
   public void loadProductGroupNames(final AsyncCallback callback) {

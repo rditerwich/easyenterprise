@@ -68,4 +68,14 @@ public interface I18NCatalogXS extends Messages {
   String fileUploaded(String fileName);
 
   String navigationSaved();
+
+  String loading();
+
+  String upload();
+
+  String uploadFile();
+
+  String deletePromotionQuestion();
+
+  String promotionDeleted();
 }

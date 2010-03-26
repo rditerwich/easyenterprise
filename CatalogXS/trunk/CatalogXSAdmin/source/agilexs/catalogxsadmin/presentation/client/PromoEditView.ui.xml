@@ -5,16 +5,17 @@
     >
   <ui:with field='res' type='agilexs.catalogxsadmin.presentation.client.ResourceBundle'/>
   <ui:style>
-    .promo { border-bottom:1px solid #EFEFEF; }
-    .buttons { margin:0 auto; }
-    .button { margin:7px;valign:middle;text-align:center; }
+    .promo { padding:10px;background-color:#DDD; }
+    .buttons { margin-left:auto;margin-right:auto;valign:middle;text-align:center;  }
+    .buttons button { margin:7px;valign:middle;text-align:center; }
+    .buttons a { margin-left:20px;cursor:pointer; }
   </ui:style>
-  <g:FlowPanel>
+  <g:FlowPanel styleName="{style.promo}">
     <g:HTMLPanel>
 	    <table>
 	      <tr>
 		     <td colspan="2">Product:</td>
-		     <td><g:SuggestBox ui:field="productFilter" /></td>
+		     <td><g:SimplePanel ui:field="productFilterWrapper" /></td>
 		    </tr>
 		    <tr>
 		     <td colspan="2">Start Date:</td>
@@ -35,6 +36,6 @@
 		    </tr>
 	    </table>
     </g:HTMLPanel> 
-    <g:FlowPanel styleName="buttons" ><g:Button styleName="button" ui:field="saveButton" >Save</g:Button><g:Anchor styleName="button" ui:field="cancelButton" >Cancel</g:Anchor></g:FlowPanel>
+    <g:FlowPanel styleName="{style.buttons}" ><g:Button ui:field="saveButton" >Save</g:Button><g:Anchor ui:field="cancelButton" >Cancel</g:Anchor></g:FlowPanel>
   </g:FlowPanel>
 </ui:UiBinder>

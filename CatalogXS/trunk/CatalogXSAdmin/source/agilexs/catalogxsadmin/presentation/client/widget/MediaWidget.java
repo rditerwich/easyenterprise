@@ -21,6 +21,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
+/**
+ * Widget to display an PropertyType.MediaType value. If the mimeType is an
+ * image an img tag is show else an url with the name (stringValue). When set
+ * the widget will display the UploadWidget which enables the user to upload
+ * files to the server.    
+ */
 public class MediaWidget extends Composite {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
@@ -43,7 +49,7 @@ public class MediaWidget extends Composite {
 
   /**
    * Creates MediaWidget if showUploadButton is false no upload button will be
-   * displayed, meaning the value can't be changed. Use when only view status
+   * displayed, meaning the value can't be changed. Use when only display status
    * needed.
    *
    * @param showUploadButton

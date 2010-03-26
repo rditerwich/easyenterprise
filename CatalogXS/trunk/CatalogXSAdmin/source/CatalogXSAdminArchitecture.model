@@ -57,6 +57,13 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Item/attributes:catalog
                         }
+/*TODO HSB: Language support, remove comments
+                        ClassAttributeView {
+                            name = LanguageView
+                            kind = all
+                            referringAttributes = catalog:Catalog/attributes:languages
+                        }
+*/
                         ClassAttributeView {
                             name = ParentsView
                             kind = all
@@ -112,6 +119,13 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Catalog/attributes:shops
                         }
+/*TODO HSB: Language support, remove comments
+                        ClassAttributeView {
+                            name = LanguageView
+                            kind = all
+                            referringAttributes = catalog:Catalog/attributes:languages
+                        }
+*/
                         ClassAttributeView {
                             name = ItemsView
                             kind = all
@@ -282,6 +296,7 @@ JavaEEArchitectureJpaEjbGwt {
                 catalog:EnumValue
                 catalog:Relation
                 catalog:RelationType
+                catalog:Language
                 shop:Promotion
                 shop:VolumeDiscountPromotion
                 shop:Promotion
@@ -369,6 +384,35 @@ JavaEEArchitectureJpaEjbGwt {
                  ClassView {
                      name = QueryForFindProductsView
                      kind = all
+                     views = {
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    } 
                  }
              }
         }
