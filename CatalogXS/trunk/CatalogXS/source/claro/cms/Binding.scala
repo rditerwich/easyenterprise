@@ -1,170 +1,151 @@
 package claro.cms
 
-import scala.xml.{NodeSeq,Text}
-import CMS.{Namespace,Tag}
-import net.liftweb.util.BindHelpers
-import net.liftweb.util.BindHelpers.{AttrBindParam,BindParam,TheBindParam,TheStrBindParam,FuncBindParam}
-import java.util.concurrent.ConcurrentHashMap
+import claro.common.util.Conversions._
+import xml.{Elem,Group,Node,NodeSeq,Text}
+import collection.mutable
+import java.util.concurrent.ConcurrentMap
 
-object Attr {
-  def apply(xml : NodeSeq) = new Attr(xml)
+class BindingCtor(label : String) {
+  def -> (f : NodeSeq => NodeSeq) = (label, new XmlBinding(f))
+  def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
+  def -> (f : => Any) = new AnyBindingCtor(label, f)
 }
 
-class Attr private (val xml : NodeSeq) {
+class CollectionBindingCtor(label : String, f : => Collection[Any]) {
+  def -> (targetPrefix : String) = (label, new CollectionBinding(f, new ComplexBinding(_, targetPrefix)))
+  def toLabeledBinding : Tuple2[String,Binding] = (label, new CollectionBinding(f, new AnyBinding(_)))
 }
 
-case class Bindings(val bindings : Binding*) {
-  override def toString = "Bindings(" + (bindings mkString (",")) + ")"
+class AnyBindingCtor(label : String, f : => Any) {
+  def -> (targetPrefix : String) = (label, new ComplexBinding(f, targetPrefix))
+  def toLabeledBinding = (label, new AnyBinding(f))
 }
 
-class BindingCtor(name : Tag) {
-  def -> (attr : Attr) = new AttrBindingCtor2(name, attr) 
-  def -> (f : => NodeSeq) = new XmlBinding(name, f) 
-  def -> (f : NodeSeq => NodeSeq) = new XmlFunBinding(name, f) 
-  def -> (f : => Bindings) = new ComplexBindingCtor2(name, f) 
-  def -> (f : => Collection[Any]) = new CollectionBindingCtor2(name, f) 
-  def -> (f : => Option[Any]) = new OptionBindingCtor2(name, f) 
-  def -> (f : => Any) = new BindingCtor2(name, f) 
+trait Bindings {
+  val childBindings : Map[String,Binding]
 }
 
-class AttrBindingCtor2(name : Tag, attr : Attr) {
-  def -> (targetName : Tag) = new ParamBinding(AttrBindParam(name, attr.xml, targetName))
+class BindingContext(val root : RootBinding, val parent : BindingContext, val bindings : Map[String,Bindings]) {
+  def findTemplate(template : String) : Option[NodeSeq] = None
+  def apply(bindings : Map[String,Bindings]) = new BindingContext(root, this, bindings)
 }
 
-class ComplexBindingCtor2(name : Tag, f : => Bindings) {
-  def -> (defaultNamespace : Namespace) = new ComplexBinding(name, f, defaultNamespace)
-  def toRootBinding = new ComplexRootBinding(f, name)
-  def toBinding = new ComplexBinding(name, f, "") // tag attribute obliged!
-}
-
-class CollectionBindingCtor2[A](name : Tag, f : => Collection[A]) {
-  def -> (defaultNamespace : Namespace) = new ObjectCollectionBinding(name, f, defaultNamespace)  
-  def toBinding = new CollectionBinding(name, f)
-}
-
-class OptionBindingCtor2(name : Tag, f : => Option[Any]) {
-  def -> (defaultNamespace : Namespace) = new ObjectBinding(name, f getOrElse null, defaultNamespace)  
-  def toRootBinding = new ObjectRootBinding(f getOrElse null, name)
-  def toBinding = new ExprBinding(name, f getOrElse null)
-  def toTuple = (name,f)
-}
-
-class BindingCtor2(name : Tag, f : => Any) {
-  def -> (defaultNamespace : Namespace) = new ObjectBinding(name, f, defaultNamespace)  
-  def toRootBinding = new ObjectRootBinding(f, name)
-  def toBinding = new ExprBinding(name, f)
-  def toTuple = (name,f)
-}
-
-trait RootBinding {
-  def createBinder(parent : Binder) : Binder
-}
-
-class ComplexRootBinding(bindings : Bindings, namespace : Namespace) extends RootBinding {
-  def createBinder(parent : Binder) = new ComplexBinder(parent, bindings, namespace)
-}
-
-class ObjectRootBinding(expr : => Any, namespace : Namespace) extends RootBinding {
-  def createBinder(parent : Binder) = {
-    if (expr != null) new ObjectBinder(parent, expr, namespace)
-    else NullBinder
-  }
-}
-
-trait Binding {
-  def name : Tag
-  def param(parent : Binder) : BindParam 
-  override def toString = name
-}
-
-class ParamBinding(param : BindParam) extends Binding {
-  def name = param.name
-  def param(parent : Binder) : BindParam = param
-}
-
-class AttrBinding(param : AttrBindParam) extends ParamBinding(param) {
-}
-
-class XmlBinding(val name : Tag, f : => NodeSeq) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, xml => { 
-    val current = Binder._currentBinder.value
-    new XmlBinder(parent, _ => f).bindAll(parent, xml)
-  })
-}
-
-class XmlFunBinding(val name : Tag, f : NodeSeq => NodeSeq) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, new XmlBinder(parent, f).bindAll(_))
-}
-
-class ExprBinding(val name : Tag, expr : => Any) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, { xml => 
-    val value : Any = expr
-    if (value == null) NodeSeq.Empty
-    else Text(value.toString)
-  })
-}
-
-class ComplexBinding(val name : Tag, f : => Bindings, defaultNamespace : Namespace) extends Binding {
-  def param(parent : Binder) = {
-    FuncBindParam(name, xml => new ComplexBinder(parent, f, defaultNamespace).bindAll(xml))
-  }
-}
-
-class ObjectBinding(val name : Tag, expr : => Any, defaultNamespace : Namespace) extends Binding {
-  def param(parent : Binder) = {
-    val value : Any = expr
-    if (value != null) FuncBindParam(name, xml => new ObjectBinder(parent, expr, defaultNamespace).bindAll(xml))
-    else TheBindParam(name, NodeSeq.Empty)
-  }
-}
-
-class CollectionBinding(val name : Tag, expr : => Collection[Any]) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, xml => new CollectionBinder(parent, expr, 
-		  obj => new StrBinder(obj.toString)).bindAll(xml))
-}
-
-class ObjectCollectionBinding(val name : Tag, expr : => Collection[Any], defaultNamespace : Namespace) extends Binding {
-  def param(parent : Binder) = FuncBindParam(name, xml => new CollectionBinder(parent, expr, 
-		  new ObjectBinder(parent, _, defaultNamespace)).bindAll(xml))
-}
-
-object BindAttr {
-  def apply(name : String) : String = 
-	BindHelpers.attr(name) match { 
-      case Some(attr) => attr.toString 
-      case None => error("Missing required tag: " + name)
+abstract class Binding {
+  def bind(elem : Elem, xml : NodeSeq, context : BindingContext) : NodeSeq = {
+    xml flatMap {
+      case s : Elem =>
+        val bindings = if (s.prefix == null) None else context.bindings.get(s.prefix)  
+        bindings match {
+          case Some(bindings) => bindings.childBindings.get(s.label) match {
+            case Some(binding) => binding.bind(s, s.child, context)
+            case None => NodeSeq.Empty
+          }
+          case None => Elem(s.prefix, s.label, s.attributes, s.scope, bind(s, s.child, context) :_*)
+        }
+      case Group(nodes) => Group(bind(null, nodes, context))
+      case n => n
     }
-
-  def apply(name : String, default : => String) : String = 
-	  BindHelpers.attr(name) match { 
-	  case Some(attr) => attr.toString 
-	  case None => default
   }
 }
 
-object IfAttr {
-  def apply[A](name : String, yes : => A, no : => A) = 
-    BindHelpers.attr(name) match { 
-      case Some(attr) => if (attr.toString.toLowerCase == "yes") yes else no 
-      case None => no
-    }
+object XmlBinding {
+  val ident = new XmlBinding(xml => xml)
+  val empty = new XmlBinding(_ => NodeSeq.Empty)
+  def apply(identNotEmpty : Boolean) = if (identNotEmpty) ident else empty 
 }
 
-object BindingCache {
-    // TODO: Use google maps mapmaker to have weak keys
-  private val objectBindingCache = new ConcurrentHashMap[Any,Bindings]()
-  
-  // Don't care that method is not thread safe: the same binding might be
-  // created multiple times, which only impacts performance, and only slightly.
-  private[cms] def findObjectBindings(obj : Any) = {
-    var result = objectBindingCache.get(obj)
-    if (result == null) {
-      result = CMS.objectBindings.toList.find (_.isDefinedAt(obj)) match {
-		case Some(objectBindings) => objectBindings(obj)
-		case None => Bindings()
+class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
+  override def bind(elem : Elem, xml : NodeSeq, context : BindingContext) : NodeSeq = {
+    super.bind(elem, f(xml), context)
+  }
+}
+
+class ComplexBinding(f : => Any, targetPrefix : String) extends Binding with Bindings {
+  override def bind(elem : Elem, xml : NodeSeq, context : BindingContext) : NodeSeq = {
+    super.bind(elem, xml, context(context.bindings + (targetPrefix -> this)))
+  }
+  lazy val childBindings = RootBinding().cache(f)
+}
+
+class CollectionBinding(f : => Collection[Any], eltBinding : Any => Binding) extends Binding {
+  override def bind(elem : Elem, xml : NodeSeq, context: BindingContext) : NodeSeq = {
+    val collection : Collection[Any] = f
+    val size = collection.size
+    if (!collection.isEmpty) {
+      var index = 1
+      var iterator = collection.elements
+      val result = new mutable.ArrayBuffer[Node]
+      while (iterator.hasNext) {
+        val binding = eltBinding(iterator.next)
+        result ++= binding.bind(elem, xml, context(context.bindings + ("list" -> new Bindings{
+		  lazy val childBindings = Map(
+		    "first" -> XmlBinding(index == 1),
+		    "last" -> XmlBinding(index == size),
+		    "skip-first" -> XmlBinding(index > 1),
+		    "skip-last" -> XmlBinding(index < size),
+		    "once" -> XmlBinding(index == 1),
+		    "single" -> XmlBinding(size == 1),
+		    "plural" -> XmlBinding(size != 1),
+		    "index" -> new AnyBinding(index),
+		    "size" -> new AnyBinding(size))
+        })))
+        index += 1
       }
-      objectBindingCache.put(obj, result)
+      result
+    } else {
+      super.bind(elem, xml, context(context.bindings + ("list" -> EmptyBindings)))
     }
-    result
+  } 
+}
+
+object EmptyBindings extends Bindings {
+  val childBindings = Map(
+	"first" -> XmlBinding.empty,
+	"last" -> XmlBinding.empty,
+	"skip-first" -> XmlBinding.empty,
+	"skip-last" -> XmlBinding.empty,
+	"once" -> XmlBinding.ident,
+	"single" -> XmlBinding.empty,
+	"plural" -> XmlBinding.ident,
+	"index" -> new AnyBinding(""),
+	"size" -> new AnyBinding(0))
+}
+
+class AnyBinding(f : => Any) extends Binding {
+  override def bind(elem : Elem, xml : NodeSeq, context: BindingContext) : NodeSeq = {
+    Text(f.toString)
   }
+}
+
+object RootBinding {
+  private val current = new ThreadLocal[RootBinding]
+  def apply() = current.get
+}
+
+class RootBinding(site : Site) extends Binding {
+
+  val cache = new BindingCache(site)
+  
+  def componentBindings = site.components map (component => (component.prefix, new Bindings {
+    val childBindings = cache(component)
+  }))
+  
+  val context = new BindingContext(this, null, Map(componentBindings:_*))
+  
+  def bind(xml : NodeSeq) : NodeSeq = {
+    RootBinding.current.set(this)
+    bind(null, xml, context)
+  }
+}
+
+class BindingCache(site : Site) {
+  
+  def apply(obj : Any) : Map[String,Binding] = objectBindings.get(obj)
+  
+  private val objectBindings : ConcurrentMap[Any,Map[String,Binding]] = 
+    new com.google.common.collect.MapMaker().concurrencyLevel(32).weakKeys().makeComputingMap[Any,Map[String,Binding]](
+       new com.google.common.base.Function[Any,Map[String,Binding]] {
+         def apply(obj : Any) : Map[String,Binding] = {
+           site.bindings findFirst(obj) getOrElse Map()
+         }});
 }

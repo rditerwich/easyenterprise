@@ -13,5 +13,8 @@ Module {
         Dependency {
             module = metaphor.models
         }
+        Dependency {
+            module = claro.cms
+        }
     }
 }

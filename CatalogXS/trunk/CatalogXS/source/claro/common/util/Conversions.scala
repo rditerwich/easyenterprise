@@ -14,6 +14,7 @@ object Conversions {
   implicit def convertSortedMap[T,E](map : java.util.SortedMap[T,E]) = jcl.SortedMap(map)
   implicit def convertIterable[A](it : java.util.Collection[A]) = new scala.collection.jcl.IterableWrapper[A] { override def underlying = it }
   implicit def convertCollection[A](collection : java.util.Collection[A]) = new RichCollection[A](collection)
+  implicit def convertProperties(properties : java.util.Properties) = new RichProperties(properties)
   
   implicit def richOption[A](option : Option[A]) = new RichOption(option)
   implicit def richString(s: String) = new RichString(s)
@@ -24,4 +25,6 @@ object Conversions {
   implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
   implicit def richMap[A,B](map : Map[A,B]) = new RichMap[A,B](map)
   implicit def richArray[A](array : Array[A]) = new RichArray[A](array)
+  implicit def richPartialFunctionIterable[A,B](it : Iterable[PartialFunction[A,B]]) = new RichPartialFunctionIterable[A,B](it)
+  implicit def richUri(uri : java.net.URI) = new RichUri(uri)
 }

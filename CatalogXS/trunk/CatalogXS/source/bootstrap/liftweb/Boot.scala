@@ -28,6 +28,7 @@ class Boot {
   //val localeCookieName = "cookie.agilexs.catalogxs.locale"
 
   def boot {
+    claro.cms.test.CmsTest.boot
     
 //    Catalog.catalogs.clear()
 //    CatalogCache.viewCaches.clear()
@@ -52,6 +53,9 @@ class Boot {
       case (_, Req(List("index"),_,_)) => 
           List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
                      "Pragma" -> "private") 
+      case (_, Req(List("favicon.ico"),_,_)) => 
+          List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
+        		  "Pragma" -> "private") 
       case (_, Req("ajax_request" :: rest,_,_)) => 
           List("Cache-Control" -> "public, max-age=10800, pre-check=10800", 
         		  "Pragma" -> "private") 
@@ -136,9 +140,9 @@ class Boot {
 //    })
 
     LiftRules.dispatch.prepend(ImageDispatcher.dispatch)
-    ShopComponent
-    claro.cms.CMS.boot
-    claro.cms.test.Test.boot
+    claro.cms.Cms.components.append(() => new claro.cms.shop.ShopComponent)
+    claro.cms.Cms.boot
+    claro.cms.test.CmsTest.boot
     
     /*
      * Show the spinny image when an Ajax call starts

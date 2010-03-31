@@ -1,4 +1,4 @@
-package claro.common.util
+package claro.cms.util
 
 import java.io.InputStream
 import xml.{NodeSeq,XML,Text}
@@ -11,31 +11,26 @@ import org.xml.sax.{SAXParseException,InputSource}
  */
 object ParseHtml {
   
-  object NoInput extends Exception
-  
-  def apply(input : => InputStream, publicId : String) : (NodeSeq,Option[Throwable]) = {
-    input match {
-      case null => (NodeSeq.Empty,Some(NoInput))
-      case is =>
+  def apply(input : InputStream, publicId : String) : (NodeSeq,Option[Throwable]) = {
+    try {
+      val source = new InputSource(input)
+      source.setPublicId(publicId)
+      val adapter = new NoBindingFactoryAdapter() {
+          override def printError(errtype: String, ex: SAXParseException) = {}
+          override def resolveEntity (publicId : String, systemId : String) = new InputSource
+      }
+      (adapter.loadXML(source),None)
+    } catch {
+      case e : SAXParseException =>
+        val is2 = input
         try {
-          val source = new InputSource(is)
-          source.setPublicId(publicId)
-          val adapter = new NoBindingFactoryAdapter() {
-              override def printError(errtype: String, ex: SAXParseException) = {}
-          }
-          (adapter.loadXML(source),None)
-        } catch {
-          case e : SAXParseException =>
-            val is2 = input
-            try {
-            (mkError(io.Source.fromInputStream(is2), e, 0),Some(e))
-          } finally {
-            is2.close
-          }
-          case e  => (Text("Error in " + publicId + ": " + e.getMessage),Some(e))
-        } finally {
-          is.close
-        }
+        (mkError(io.Source.fromInputStream(is2), e, 0),Some(e))
+      } finally {
+        is2.close
+      }
+      case e  => (Text("Error in " + publicId + ": " + e.getMessage),Some(e))
+    } finally {
+      input.close
     }
   }
   

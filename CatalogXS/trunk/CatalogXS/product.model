@@ -11,6 +11,7 @@ JavaEEProduct {
     modules = {
         agilexs.catalogxs
         agilexs.catalogxs.domain
+        claro.cms
     }
     domain = /packages:AgileXS/packages:Domain
     architecture = /architecture:CatalogXSArchitecture

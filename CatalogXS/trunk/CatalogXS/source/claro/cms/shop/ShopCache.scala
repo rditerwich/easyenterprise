@@ -1,4 +1,4 @@
-package agilexs.catalogxs.presentation.model
+package claro.cms.shop
 
 import scala.collection.mutable
 import scala.xml.NodeSeq 
@@ -15,7 +15,7 @@ class ShopCache {
   val shopsByServerName : Map[String, Seq[Shop]] = shops groupBy (_.serverName)
   
   def findAllShops : Seq[jpa.shop.Shop] =
-    Model.entityManager.is.createQuery("select shop from Shop shop").getResultList.asInstanceOf[java.util.List[jpa.shop.Shop]]
+    Cms.entityManager("AgileXS.CatalogXS.Jpa.PersistenceUnit").createQuery("select shop from Shop shop").getResultList.asInstanceOf[java.util.List[jpa.shop.Shop]]
 }
 
 class ShopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop) {
