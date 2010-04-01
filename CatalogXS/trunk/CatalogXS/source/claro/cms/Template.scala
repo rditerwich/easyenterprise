@@ -69,20 +69,18 @@ class TemplateComponent extends Component {
   class IncludeBinding(currentTemplates : Map[String,Seq[Node]]) extends Binding {
     def bind(node : Node, context : BindingContext) : Seq[Node] = {
       val name = @@("template")
-      val template : Seq[Node] = currentTemplates.get(name) getOrElse (site.templateCache(name, locale) match {
-        case Some(template) => template.xml
-        case None => throw new Exception("SDfsdf")
-      })
-	  Binding.bind(template, context + (prefix -> bindings(node))) 
-    }
-                                               
-    def bindings(node : Node) = new Bindings {
       val (templateNodes,contentNodes) = node.child.partition(node => node.prefix == prefix && node.label == "define")
       val templateMap : Map[String,Seq[Node]] = Map(templateNodes.toSeq map(n => (attr(n, "template"), n.child)):_*)
       val content = contentNodes.toSeq
-      val childBindings = Map(
-        "include" -> new IncludeBinding(currentTemplates ++ templateMap),
-        "content" -> content)
+      val template : Seq[Node] = currentTemplates.get(name) getOrElse (site.templateCache(name, locale) match {
+        case Some(template) => template.xml
+        case None => content
+      })
+	  Binding.bind(template, context + (prefix -> new Bindings {
+        val childBindings = Map(
+          "include" -> new IncludeBinding(currentTemplates ++ templateMap),
+          "content" -> content)
+        })) 
     }
   }
 }

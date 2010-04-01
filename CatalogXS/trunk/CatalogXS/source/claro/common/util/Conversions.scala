@@ -18,6 +18,8 @@ object Conversions {
   
   implicit def richOption[A](option : Option[A]) = new RichOption(option)
   implicit def richString(s: String) = new RichString(s)
+  implicit def richStringSeq(ss: Seq[String]) = new RichStringSeq(ss)
+  implicit def richStringList(ss: List[String]) = new RichStringList(ss)
   implicit def richObject[A](value : A) = new RichObject(value)
   implicit def richIterable[A](it : Iterable[A]) = new RichIterable[A](it)
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)

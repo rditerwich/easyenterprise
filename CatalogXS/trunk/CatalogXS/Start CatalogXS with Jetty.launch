@@ -36,5 +36,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jetty.start.StartJetty"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="CatalogXS 8082"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Jetty"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dsites=..,classpath:/claro/cms/showcase/"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dsites=..,classpath:/claro/cms/showcase/,classpath:/claro/cms/shop/site,classpath:agilexs.cms.shop.tetterode.site,classpath:claro.cms.documentation"/>
 </launchConfiguration>

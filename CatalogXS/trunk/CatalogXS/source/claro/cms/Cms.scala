@@ -1,7 +1,7 @@
 package claro.cms
 
 import net.liftweb.http.{Req,LiftRules,LiftSession,RulesSeq,RequestVar,S}
-import net.liftweb.util.{Full,Empty}
+import net.liftweb.util.{Full,Empty,Log}
 import java.util.Locale
 import javax.persistence.{EntityManager,EntityManagerFactory}
 import javax.servlet.http.HttpServletRequest
@@ -21,12 +21,7 @@ object Cms {
   def entityManager(name : String) = site.entityManagerFactory(name).createEntityManager
 
   def boot = {
-//    templateClasspath.append("claro.cms.templates")
     
-    components.append(() => new TemplateComponent)
-    components.append(() => new claro.cms.components.MenuComponent)
-    Site
-
     LiftRules.calculateContextPath = request => {
       val cmsRequest = new RequestData(request)
       Cms.requestData.set(cmsRequest)
@@ -36,6 +31,11 @@ object Cms {
 	LiftRules.viewDispatch.append {
 	  case ViewDispatch(template) => Left(() => Full(site.rootBinding.bind(template.xml)))
     }
+
+    components.append(() => new TemplateComponent)
+    components.append(() => new claro.cms.components.MenuComponent)
+    Site
+    Log.info("CMS Configuration:" + Site.sites.map(CmsInfo.siteInfo(_, "  ")).mkString("\n"))
   }
 
   object ViewDispatch {
@@ -47,10 +47,10 @@ object Cms {
   class RequestData(request : HttpServletRequest) {
     val fullPath = request.getServletPath
     val site = Site.findSite(request.getServerName,fullPath)
-    println("Found site: " + site.location)
     val path = fullPath.substring(site.contextPath.size) match { case "" => "index" case path => path }
     val contextPath = site.contextPath
     val template = site.templateCache(Template(path), Cms.locale.get)
+    Log.info("Selecting site: " + site.config.id)
   }
 }
 

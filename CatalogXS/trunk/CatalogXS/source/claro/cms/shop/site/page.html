@@ -4,10 +4,12 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     
-    <title>Tetterode.nl :: Webshop</title>
-    <link rel="stylesheet" type="text/css" href="/general.css" />
-    <link rel="stylesheet" type="text/css" href="/menutheme.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="/images/icon.jpg" />
+    <template:include template="page-head">
+      <title>Webshop</title>
+	  <link rel="stylesheet" type="text/css" href="/general.css" />
+	  <link rel="stylesheet" type="text/css" href="/menutheme.css" />
+	  <link rel="shortcut icon" type="image/x-icon" href="/images/icon.jpg" />
+    </template:include>
     
     <script id="jquery" src="/classpath/jquery.js" type="text/javascript"/>
     <script id="json" src="/classpath/json.js" type="text/javascript"/>
@@ -26,11 +28,11 @@
     <table id="site_table" class="page_content">
       <tr valign="top"> 
         <td class="page_left"> 
-          <liftembed what="left_bar" eager_eval="true"/>
+          <template-include template="left-bar"/>
         </td>
         <td class="page_middle"> 
           <div class="homepage_nieuws_midden"> 
-            <liftbind name="content" />
+            <template:content/>
           </div> 
         </td>
         <td class="page_right"> 
@@ -62,20 +64,8 @@
         </td> 
       </tr> 
       <tr>
-        <td class="page_footer" colspan="3"> 
-          <table> 
-            <tr> 
-              <td>Tetterode</td> 
-              <td>Willem de Zwijgerlaan 334</td> 
-              <td>1055 RD Amsterdam</td> 
-              <td>Postbus 61500</td> 
-              <td>1005 HM Amsterdam</td> 
-              <td>Telefoon 020 58 68 131</td> 
-              <td>Fax 020 58 68 401</td> 
-              <td><a href="/Contact/">Contact</a></td> 
-              <td><a href="/Disclaimer/">Disclaimer</a></td> 
-            </tr> 
-          </table> 
+        <td class="page_footer" colspan="3">
+          <template:include template="page-footer">Place your footer here</template:include> 
         </td> 
       </tr> 
     </table> 

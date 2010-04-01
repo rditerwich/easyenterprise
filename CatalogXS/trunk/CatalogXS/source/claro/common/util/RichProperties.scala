@@ -21,6 +21,8 @@ class RichProperties(properties : Properties) {
   
   def apply(name : String, default : String) = properties.getProperty(name, default)
   
+  def list(name : String) : List[String] = properties.getProperty(name, "").split(",").toList.trim
+  
   def load(uri : URI) : Properties = {
     try {
       val is = uri.open.get

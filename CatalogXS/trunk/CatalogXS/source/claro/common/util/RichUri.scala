@@ -22,8 +22,8 @@ class RichUri(u : URI) {
 
   val uri = u.getScheme match {
     case null => new File(u.getPath).getCanonicalFile.toURI
-    case "classpath" => if (u.isOpaque) new URI("classpath", "/" + u.getPath, null) else u
-    case _ => u
+//    case "classpath" => new URI("classpath", if (u.isOpaque) "/" + u.getSchemeSpecificPart.replace('.','/') else u.getPath, null) 
+    case scheme => if (u.isOpaque) new URI(scheme, "/" + u.getSchemeSpecificPart.replace('.','/'), null) else u
   }
   
   def canonical = uri
@@ -34,7 +34,7 @@ class RichUri(u : URI) {
   
   def parent : URI = uri.resolve(if (path.endsWith("/")) ".." else ".")
   
-  def child(childPath : String) = uri.resolve(if (path.endsWith("/")) childPath.dropPrefix("/") else childPath.ensurePrefix("/")) 
+  def child(childPath : String) = uri.resolve(if (path.endsWith("/")) childPath.dropPrefix("/") else name + childPath.ensurePrefix("/")) 
 
   def find(pred : URI => Boolean) : Seq[URI] = find(0, pred)
   

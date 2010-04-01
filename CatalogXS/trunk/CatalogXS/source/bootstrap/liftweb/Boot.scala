@@ -28,8 +28,6 @@ class Boot {
   //val localeCookieName = "cookie.agilexs.catalogxs.locale"
 
   def boot {
-    claro.cms.test.CmsTest.boot
-    
 //    Catalog.catalogs.clear()
 //    CatalogCache.viewCaches.clear()
 
@@ -46,7 +44,7 @@ class Boot {
 	}
 */
     // where to search snippet
-    LiftRules.addToPackages("agilexs.catalogxs.presentation");
+//    LiftRules.addToPackages("agilexs.catalogxs.presentation");
     
     LiftRules.defaultHeaders = {
       // Permit caching of our home page 
@@ -140,9 +138,7 @@ class Boot {
 //    })
 
     LiftRules.dispatch.prepend(ImageDispatcher.dispatch)
-    claro.cms.Cms.components.append(() => new claro.cms.shop.ShopComponent)
     claro.cms.Cms.boot
-    claro.cms.test.CmsTest.boot
     
     /*
      * Show the spinny image when an Ajax call starts

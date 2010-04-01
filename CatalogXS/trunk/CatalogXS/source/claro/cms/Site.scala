@@ -11,14 +11,14 @@ import net.liftweb.util.Log
 
 object Site {
   val defaultSite = new Site(new File(System.getProperty("user.home") + "/sites/default/site.config").toURI)
-  val sites : List[Site] = findSites(System.getProperty("sites") getOrElse (""))
+  val unsortedSites : List[Site] = findSites(System.getProperty("sites") getOrElse (""))
+  val sites : List[Site] = unsortedSites.sort((s1,s2) => s1.config.path.length > s2.config.path.length)
   val sitesByServer : Map[String,Seq[Site]] = sites groupBy (_.server)
-  val sitesByPath : Map[String,Seq[Site]] = sites groupBy (_.contextPath)
   
   def findSites(path : String) : List[Site] = {
     val uris : List[URI] = path split(",") filter(!_.trim.isEmpty) map(new URI(_).canonical) toList 
     val siteFiles : List[URI] = uris flatMap (_.find(4, _.name == "site.config"))
-    val siteFiles2 : List[URI] = uris map (_.resolve("site.config")) filter(!siteFiles.contains(_)) filter(_.exists)
+    val siteFiles2 : List[URI] = uris map (_.child("site.config")) filter(!siteFiles.contains(_)) filter(_.exists)
     (siteFiles ++ siteFiles2) map (uri => new Site(uri)) match { 
       case Nil => defaultSite :: Nil
       case list => list
@@ -40,14 +40,14 @@ object Site {
   }
 }
 
-class Site(val siteFile : URI) {
-  val location = siteFile.resolve(".")
+class Site(siteFile : URI) {
   val config = new SiteConfig(siteFile)
+  val locations : List[URI] = config.extent.flatMap(_.locations)
   val properties = new Properties(System.getProperties).load(siteFile)
   val name = config.name
   val server = config.server
   val contextPath = config.path.mkString("/", "/", "")
-  val templateStore = new UriStore(Seq(location))
+  val templateStore = new UriStore(locations)
   val templateCache = new TemplateCache(this)
   val caching = false
   
@@ -76,17 +76,21 @@ class Site(val siteFile : URI) {
 	  Persistence.createEntityManagerFactory(name, emProperties toJava)
   
   override def toString = {
-    "Site location " + location.toString
+    siteFile + List(server.emptyOrPrefix("server "), contextPath.emptyOrPrefix("path ")).trim.mkString(" (",", ", ")")
   }
-  
-  Log.info("Found site: " + this)
 }
 
-
-class SiteConfig(val siteFile : URI) {
+class SiteConfig(siteFile : URI) {
+  val configFile = siteFile.canonical
   val properties = new Properties(System.getProperties).load(siteFile)
   val name = properties("site.name")
   val server = properties("site.server")
-  val path : List[String] = properties("site.path") getOrElse ("/") split("/") filter(!_.isEmpty) toList 
-  val components : List[String] = properties("site.components") split(",") filter(!_.trim.isEmpty) toList
+  val parents : List[SiteConfig] = properties.list("site.parents").map(new URI(_).child("site.config")).filter(_.exists).map(new SiteConfig(_))
+  val explicitLocations : List[URI] = properties.list("site.locations").map(new URI(_))
+  val path : List[String] = properties("site.path").getOrElse("/").split("/").trim.toList 
+  val components : List[String] = properties("site.components").split(",").trim.toList
+  val location = configFile.parent
+  val locations = if (!explicitLocations.isEmpty) explicitLocations else List(location)
+  def id : String = name getOrElse location.toString
+  def extent : List[SiteConfig] = this :: parents.flatMap(_.extent)
 }

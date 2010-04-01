@@ -4,9 +4,27 @@ package claro.common.util
  * Extensions to the String class
  */
 class RichString(s: String) {
+
+  def asOption = {
+	if (s == null || s.trim() == "") None 
+    else Some(s)
+  } 
+  
   def getOrElse (s2: String) = {
 	if (s == null || s.trim() == "") s2 
     else s
+  }
+  def emptyOrPrefix(s1 : String) = {
+	if (s == null || s.trim() == "") "" 
+	else s1 + s 
+  }
+  def emptyOrPostfix(s1 : String) = {
+	if (s == null || s.trim() == "") "" 
+	else s + s1  
+  }
+  def emptyOrSurround(s1 : String, s2 : String) = {
+	if (s == null || s.trim() == "") "" 
+    else s1 + s + s2
   }
   def parsePrefix (prefix : String) : Option[String] = {
     if (s.startsWith(prefix)) Some(s.substring(prefix.length))
@@ -46,7 +64,12 @@ class RichString(s: String) {
     if (s.endsWith(suffix)) s
     else s + suffix
   }
-
-  
 }
 
+class RichStringSeq(ss : Seq[String]) {
+  def trim : Seq[String] = ss map (_.trim) filter(!_.isEmpty) 
+}
+
+class RichStringList(ss : List[String]) {
+  def trim : List[String] = ss map (_.trim) filter(!_.isEmpty) 
+}
