@@ -7,6 +7,7 @@ import java.net.URI
 import javax.persistence.Persistence
 import claro.common.util.SubDirs
 import claro.common.util.Conversions._
+import net.liftweb.util.Log
 
 object Site {
   val defaultSite = new Site(new File(System.getProperty("user.home") + "/sites/default/site.config").toURI)
@@ -78,8 +79,8 @@ class Site(val siteFile : URI) {
     "Site location " + location.toString
   }
   
+  Log.info("Found site: " + this)
 }
-
 
 
 class SiteConfig(val siteFile : URI) {

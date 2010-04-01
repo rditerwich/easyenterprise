@@ -35,6 +35,7 @@ class RichIterable[A](it : Iterable[A]) {
     for (a <- it) {
       f(a) match {
         case Some(b) => return Some(b)
+        case _ =>
       }
     }
     None

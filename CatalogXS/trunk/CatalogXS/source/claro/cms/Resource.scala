@@ -10,17 +10,20 @@ import claro.common.util.Conversions._
 object Scope {
   def apply(id : Any) = new Scope("", id)
   def apply(t : (String,Any)) = new Scope(t._1,t._2)
-  def apply() = global
-  private val global = new Scope("",null) 
+  val global = new Scope("",null) 
 }
 
 case class Scope (name : String, id : Any) {
+}
+
+object ResourceLocator {
 }
 
 /**
  * Note the implicit conversion from a single scope to a scope list
  */
 case class ResourceLocator(name : String, kind : String, scopes : Iterable[Scope]*) {
+
 }
 
 class Resource(val name : String, val kind : String, val scope : Scope, val locale : Locale, read : () => InputStream, write : () => OutputStream) {

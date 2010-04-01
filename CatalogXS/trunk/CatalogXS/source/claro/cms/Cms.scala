@@ -23,7 +23,7 @@ object Cms {
   def boot = {
 //    templateClasspath.append("claro.cms.templates")
     
-    components.append(() => new claro.cms.components.TemplateComponent)
+    components.append(() => new TemplateComponent)
     components.append(() => new claro.cms.components.MenuComponent)
     Site
 

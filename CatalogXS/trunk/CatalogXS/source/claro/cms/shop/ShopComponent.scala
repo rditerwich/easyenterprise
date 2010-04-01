@@ -2,7 +2,6 @@ package claro.cms.shop
 
 import net.liftweb.http.{RequestVar,Req,S,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope,Bindings}
-import claro.cms.Conversions._
 import scala.xml.{NodeSeq,Text}
 import agilexs.catalogxs.presentation.util.Util
 import agilexs.catalogxs.presentation.snippet.ShoppingCart
