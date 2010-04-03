@@ -1,7 +1,8 @@
 package claro.cms
 
 import net.liftweb.http.{Req,LiftRules,LiftSession,RulesSeq,RequestVar,S}
-import net.liftweb.util.{Full,Empty,Log}
+import net.liftweb.util.{Box,Full,Empty,Log}
+import xml.Node
 import java.util.Locale
 import javax.persistence.{EntityManager,EntityManagerFactory}
 import javax.servlet.http.HttpServletRequest
@@ -13,23 +14,25 @@ object Cms {
   val locales = Set(Locale.getAvailableLocales map (_ toString) :_*) 
 
   object locale extends RequestVar[Locale](Locale.getDefault)
-  object requestData extends RequestVar[RequestData](null)
-  def site = requestData.get.site
-  def path = requestData.get.path
-  def contextPath = requestData.get.contextPath
 
-  def entityManager(name : String) = site.entityManagerFactory(name).createEntityManager
+  def entityManager(name : String) = Request.site.entityManagerFactory(name).createEntityManager
 
   def boot = {
     
-    LiftRules.calculateContextPath = request => {
-      val cmsRequest = new RequestData(request)
-      Cms.requestData.set(cmsRequest)
-      Full(cmsRequest.contextPath)
+    LiftRules.calculateContextPath = httpRequest => {
+      Request.process(httpRequest) match {
+        case Some(request) => Full(request.site.contextPath)
+        case None => Empty
+      }
     } 
     
 	LiftRules.viewDispatch.append {
-	  case ViewDispatch(template) => Left(() => Full(site.rootBinding.bind(template.xml)))
+	  case ViewDispatch(template) => Left(() => {
+		Request.site.rootBinding.bind(template.xml) match {
+		  case xml if (xml.first.label == "html") => Full(xml)
+		  case _ => Empty
+		}
+      })
     }
 
     components.append(() => new TemplateComponent)
@@ -39,18 +42,10 @@ object Cms {
   }
 
   object ViewDispatch {
-    def unapply(path : List[String]) : Option[ConcreteTemplate] = {
-      requestData.get.template
+    def unapply(path : List[String]) : Option[ConcreteTemplate] = Request.get match {
+      case null => None
+      case request => Some(request.template)
     }
-  }
-
-  class RequestData(request : HttpServletRequest) {
-    val fullPath = request.getServletPath
-    val site = Site.findSite(request.getServerName,fullPath)
-    val path = fullPath.substring(site.contextPath.size) match { case "" => "index" case path => path }
-    val contextPath = site.contextPath
-    val template = site.templateCache(Template(path), Cms.locale.get)
-    Log.info("Selecting site: " + site.config.id)
   }
 }
 

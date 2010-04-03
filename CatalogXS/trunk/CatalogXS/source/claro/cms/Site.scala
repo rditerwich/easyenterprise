@@ -25,7 +25,7 @@ object Site {
     }
   }
 
-  def findSite(server : String, contextPath : String) : Site = {
+  def findSite(server : String, path : List[String]) : Option[(Site, List[String])] = {
     val sites = sitesByServer get(server) match {
       case Some(sites) => sites
       case None => sitesByServer get("") match {
@@ -33,9 +33,9 @@ object Site {
         case None => Seq()
       }
     }
-    sites find (site => contextPath.startsWith (site.contextPath)) match {
-      case Some(site) => site
-      case None => defaultSite
+    sites find (site => path.startsWith (site.path)) match {
+      case Some(site) => Some(site,path.drop(site.path.length))
+      case None => None
     }
   }
 }
@@ -46,13 +46,27 @@ class Site(siteFile : URI) {
   val properties = new Properties(System.getProperties).load(siteFile)
   val name = config.name
   val server = config.server
+  val path = config.path
   val contextPath = config.path.mkString("/", "/", "")
-  val templateStore = new UriStore(locations)
-  val templateCache = new TemplateCache(this)
+  val resourceStore = new UriStore(locations)
+  val templateStore = new TemplateStore(this, resourceStore)
   val caching = false
+  val components : Seq[Component] = createComponents
+  val templateLocators = components flatMap (_.templateLocators.toList)
+  val bindings = components flatMap (_.bindings.toList)
+
+  val rootBinding = new RootBinding(this)
   
-  // components
-  val components : Seq[Component] = {
+  lazy val emProperties = properties.parseAll("entitymanager.")
+  
+  def entityManagerFactory(name : String) =  
+	  Persistence.createEntityManagerFactory(name, emProperties toJava)
+
+  override def toString = {
+    siteFile + List(server.emptyOrPrefix("server "), contextPath.emptyOrPrefix("path ")).trim.mkString(" (",", ", ")")
+  }
+  
+  private def createComponents : Seq[Component] = {
     val comps = Cms.components.toList map (_())
     val compNames = Set(comps.map(_.getClass.getName):_*)
     val comps2 = config.components filter(!compNames.contains(_)) map {  
@@ -64,20 +78,6 @@ class Site(siteFile : URI) {
     } filter (_ != null)
     comps ++ comps2
   } 
-  
-  val templateLocators = components flatMap (_.templateLocators.toList)
-  val bindings = components flatMap (_.bindings.toList)
-
-  val rootBinding = new RootBinding(this)
-  
-  lazy val emProperties = properties.parseAll("entitymanager.")
-  
-  def entityManagerFactory(name : String) =  
-	  Persistence.createEntityManagerFactory(name, emProperties toJava)
-  
-  override def toString = {
-    siteFile + List(server.emptyOrPrefix("server "), contextPath.emptyOrPrefix("path ")).trim.mkString(" (",", ", ")")
-  }
 }
 
 class SiteConfig(siteFile : URI) {

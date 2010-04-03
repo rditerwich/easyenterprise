@@ -21,7 +21,7 @@ case class MenuItem(link : String) {
   
   def getClass(s : String) : String = {
     val elts = s.split(';')
-    if (Cms.path.startsWith(link)) 
+    if (Request.path.startsWith(link)) 
       if (elts.size > 0) elts(0)
       else ""
     else 

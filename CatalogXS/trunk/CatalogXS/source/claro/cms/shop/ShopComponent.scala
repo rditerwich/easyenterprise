@@ -6,7 +6,7 @@ import scala.xml.{NodeSeq,Text}
 import agilexs.catalogxs.presentation.util.Util
 import agilexs.catalogxs.presentation.snippet.ShoppingCart
 
-class ShopComponent extends Component {
+class ShopComponent extends Component with ShopBindingHelpers {
   
   val prefix = "shop"
 
@@ -34,7 +34,7 @@ class ShopComponent extends Component {
       "id" -> product.id.toString,
       "properties" -> product.properties -> "property",
       "property" -> product.propertiesByName.get(@@("name")) -> "property",
-      "value" -> Value(product.propertiesByName.get(@@("property"))),
+      "value" -> value(product.propertiesByName.get(@@("property"))),
       "groups" -> product.productGroups -> "group",
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
@@ -45,7 +45,7 @@ class ShopComponent extends Component {
       "parent_groups" -> group.parents -> "group",
       "group_properties" -> group.groupProperties -> "property",
       "group_property" -> group.groupPropertiesByName.get(@@("name")) -> "property",
-      "group_value" -> Value(group.groupPropertiesByName.get(@@("property"))),
+      "group_value" -> value(group.groupPropertiesByName.get(@@("property"))),
       "properties" -> group.properties -> "property",
 //      "products" -> IfAttr("include_sub_groups", group.productExtent, group.products) -> "product",
       "promotions" -> group.productExtentPromotions -> "promotion",
@@ -62,7 +62,7 @@ class ShopComponent extends Component {
       "id" -> property.id.toString,
       "name" -> property.name,
       "label" -> property.name,
-      "value" -> Value(property))
+      "value" -> value(property))
   }
   
   templateLocators.append {

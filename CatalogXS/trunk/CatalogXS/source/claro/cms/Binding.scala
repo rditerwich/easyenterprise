@@ -24,7 +24,7 @@ class AnyBindingCtor(label : String, f : => Any) {
   def toLabeledBinding = (label, new AnyBinding(f))
 }
 
-trait Bindings {
+trait Bindings extends BindingHelpers {
   val childBindings : Map[String,Binding]
 }
 
@@ -72,8 +72,9 @@ class XmlBinding(f : Seq[Node] => Seq[Node]) extends Binding {
   }
 }
 
-class ComplexBinding(f : => Any, targetPrefix : String) extends Binding with Bindings {
+class ComplexBinding(f : => Any, defaultTargetPrefix : String) extends Binding with Bindings {
   def bind(node : Node, context : BindingContext) : Seq[Node] = {
+    val targetPrefix = attr(node, "prefix", defaultTargetPrefix)
     Binding.bind(node.child, context + (targetPrefix -> this))
   }
   lazy val childBindings = RootBinding().cache(f)

@@ -11,17 +11,17 @@ import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.{ProjectionMap}
 import claro.common.util.{Delegate,Lazy,KeywordMap}
 import claro.common.util.Conversions._
-import claro.cms.Cms
+import claro.cms.Request
 
 object ShopModel {
 
   var shopCache = Lazy(new ShopCache) 
-  object shop extends RequestVar[Shop](shopCache.get.shopsById(Cms.site.properties("shop.id", "1"))) 
+  object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.site.properties("shop.id", "1"))) 
   object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
 
   def currentProductGroup : Option[ProductGroup] =
-    S.param("group") match {
-      case Full(id) => shop.productGroupsById.get(id.toLong) 
+    Request.pathTail match {
+      case id :: rest => shop.productGroupsById.get(id.toLong) 
       case _ => None
     }
 

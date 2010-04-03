@@ -27,7 +27,7 @@ case class ConcreteTemplate(resource : Resource, xml : Seq[Node]) {
   private def isNested(node : Node) = node.prefix == "template" && node.label == "define"
 }
 
-class TemplateCache(site : Site) {
+class TemplateStore(site : Site, resourceStore : ResourceStore) {
 
   private val objectTemplateCache = new ConcurrentHashMap[(Template,Locale),Option[ConcreteTemplate]]()
 
@@ -38,7 +38,7 @@ class TemplateCache(site : Site) {
     else objectTemplateCache getOrElseUpdate ((template,locale), find(template, locale))
   
   private def find(template : Template, locale : Locale) : Option[ConcreteTemplate] = 
-    site.templateStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
+    resourceStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
       case Some(resource) => Some(ConcreteTemplate(resource, resource.readHtml))
       case None => None
     }
@@ -72,7 +72,7 @@ class TemplateComponent extends Component {
       val (templateNodes,contentNodes) = node.child.partition(node => node.prefix == prefix && node.label == "define")
       val templateMap : Map[String,Seq[Node]] = Map(templateNodes.toSeq map(n => (attr(n, "template"), n.child)):_*)
       val content = contentNodes.toSeq
-      val template : Seq[Node] = currentTemplates.get(name) getOrElse (site.templateCache(name, locale) match {
+      val template : Seq[Node] = currentTemplates.get(name) getOrElse (site.templateStore(name, locale) match {
         case Some(template) => template.xml
         case None => content
       })

@@ -4,7 +4,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import net.liftweb.util.{Bindable,Box,Full,Empty}
 import net.liftweb.http.{S}
-import scala.xml.{NodeSeq, Text, Unparsed} 
+import scala.xml.{NodeSeq, Node, Text, Unparsed} 
 import agilexs.catalogxs.jpa
 
 object ShopUtil {
@@ -58,8 +58,8 @@ object Value {
   def apply(property : => Property) = new Value2(property)
 }
 
-class Value(property : => Option[Property]) extends Bindable {
-  override def asHtml = property match { 
+class Value(property : => Option[Property]) extends Function0[Seq[Node]]{
+  override def apply : Seq[Node] = property match { 
     case Some(property) => property.propertyType match {
       case jpa.catalog.PropertyType.Media => 
         if (property.mediaValue == null) 
