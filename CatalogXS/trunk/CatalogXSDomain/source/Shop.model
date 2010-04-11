@@ -73,6 +73,7 @@ Package {
                     type = catalog:Template
                     lower = 0
                     upper = {}
+                    isComposite = true
                 }
             }
         }
