@@ -10,14 +10,22 @@ There are three commands that deal with template inclusion:
 </table>
 
 <h2>Usage</h2>
-Use <code>template:include</code> to include another template:
+Use <code>template:include</code> to include another template.
 
 <pre>&lt;div&gt;
-  &lt;template:include template="other-template" /&gt;
-&lt;/div&gt;</pre><pre></pre>
+  &lt;template:include template="other-template"&gt;
+    <i>content</i>
+  &lt;/template:include&gt;
+&lt;/div&gt;</pre>
+
+The content body is optional. It is rendered when the included template was not found, or when 
+<code>template:content</code> is used inside the included template.
 
 <h2>Default template content</h2>
-When an included template is not found, the body the <code>template:include</code> element is rendered. 
+
+An <code>template:include</code> element can have content. This content is rendered when the included template
+was not found.  
+
 This way, one can use <code>template:include</code> as an extension mechanism:
 <pre>&lt;head&gt;
   &lt;template:include template="custom-scripts"&gt;

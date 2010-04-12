@@ -4,7 +4,7 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     
-    <template:include template="page-head">
+    <template:include template="page_head">
       <title>Webshop</title>
 	  <link rel="stylesheet" type="text/css" href="/general.css" />
 	  <link rel="stylesheet" type="text/css" href="/menutheme.css" />
@@ -35,32 +35,8 @@
             <template:content/>
           </div> 
         </td>
-        <td class="page_right"> 
-          <div class="page_menu" id="page_right"> 
-            <div class="page_searchbox">
-              <lift:Shop.search form="POST"> 
-                <table> 
-                  <tr> 
-                    <td><search:searchString /></td> 
-                    <td><search:submit /></td> 
-                  </tr> 
-                </table> 
-              </lift:Shop.search> 
-              <form method="post" action="http://nieuwsbrief.netrex.eu/netrexmail/form.php?form=23" id="frmSS23" onSubmit="return CheckForm23(this);"> 
-                <table style="margin-top:5px;"> 
-                  <tr> 
-                    <td><input type="text" class="formfield newsfield" value="Nieuwsbrief" name="email" onclick="javascript:this.value=(this.value == 'Nieuwsbrief' ? '' : this.value);" /></td> 
-                    <td><input type="submit" class="formbutton newsbutton" value="Aanmelden" /></td> 
-                  </tr> 
-                </table> 
-              </form> 
-            </div> 
-            <div class="page_menu_artgrp"> 
-              <div class="description">Order status</div>
-              <div id="order_status"><liftembed what="order_status" /></div>
-            </div> 
-            <div class="page_menu_footer"></div> 
-          </div>
+        <td class="page_right">
+          <template:include template="right_bar"/> 
         </td> 
       </tr> 
       <tr>

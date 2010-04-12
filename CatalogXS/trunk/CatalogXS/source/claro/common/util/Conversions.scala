@@ -24,6 +24,7 @@ object Conversions {
   implicit def richIterable[A](it : Iterable[A]) = new RichIterable[A](it)
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def richSeq[A](seq : Seq[A]) = new RichSeq[A](seq)
+  implicit def richList[A](list : List[A]) = new RichList[A](list)
   implicit def richSet[A](set : Set[A]) = new RichSet[A](set)
   implicit def richMap[A,B](map : Map[A,B]) = new RichMap[A,B](map)
   implicit def richArray[A](array : Array[A]) = new RichArray[A](array)

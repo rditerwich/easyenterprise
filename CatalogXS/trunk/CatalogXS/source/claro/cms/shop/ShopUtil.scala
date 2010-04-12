@@ -4,7 +4,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import net.liftweb.util.{Bindable,Box,Full,Empty}
 import net.liftweb.http.{S}
-import scala.xml.{NodeSeq, Node, Text, Unparsed} 
+import scala.xml.{NodeSeq, Node, Text, Unparsed, Elem, UnprefixedAttribute, TopScope} 
 import agilexs.catalogxs.jpa
 
 object ShopUtil {
@@ -78,10 +78,14 @@ class Value(property : => Option[Property]) extends Function0[Seq[Node]]{
 class Value2(property : => Property) extends Value(if (property != null) Some(property) else None){
 }
 
-object Link {
-  def apply(group : ProductGroup) = (xml : NodeSeq) => <a href={"/group/" + group.id}>{xml}</a>
-  def apply(product : Product) = (xml : NodeSeq) => <a href={"/product/" + product.id}>{xml}</a>
-  def apply(path : String) = (xml : NodeSeq) => <a href={path}>{xml}</a>
+object Link extends BindingHelpers {
+  def apply(group : ProductGroup) = (xml : Seq[Node]) => 
+    new Elem(null, "a", new UnprefixedAttribute("href", "/group/" + group.id, current.attributes), TopScope, xml:_*);
+  
+  def apply(product : Product) = (xml : Seq[Node]) => 
+    new Elem(null, "a", new UnprefixedAttribute("href", "/product/" + product.id, current.attributes), TopScope, xml:_*);
+  
+  def apply(path : String) = (xml : Seq[Node]) => <a href={path}>{xml}</a>
 }
 
 object LinkAttr {

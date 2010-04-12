@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<h2>Lists</h2>
+<table>
+  <tr><th>element</th><th>description</th></tr>
+  <tr><td><code>&lt;list:first&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:last&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:skip-first&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:skip-last&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:once&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:single&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:plural&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:index&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:size&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... list-prefix="<i>list</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... group-size="<i>1</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... group-count="<i>-1</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... group-scatter="<i>false</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:group list-prefix="group"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:fill&gt;</code></td><td></td></tr> 
+</table>
+
+<table border="0">
+<tr colspan="2"><td><h4>First, Skip First, Last</h4></td></tr>
+<tr><td>
+<pre>&lt;world:continents>
+  &lt;list:first>&amp;#8658;&lt;/list:first>
+  &lt;list:skip-first>&amp;#8226;&lt;/list:skip-first>
+  &lt;continent:name/>
+  &lt;list:last>&amp;#8656;&lt;/list:last>
+&lt;/world:continents></pre>
+</td>
+<td>
+<world:continents>
+  <list:first>&#8658;</list:first>
+  <list:skip-first>&#8226;</list:skip-first>
+  <continent:name/>
+  <list:last>&#8656;</list:last>
+</world:continents>
+</td>
+</tr>
+
+<tr colspan="2"><td><h4>Size, Once, Plural</h4></td></tr>
+<tr><td>
+<pre>&lt;world:continents>
+  &lt;continent:name/> has
+    &lt;continent:countries>
+      &lt;list:once>
+         &lt;list:size/> 
+         &lt;list:single>country&lt;/list:single>
+         &lt;list:plural>countries&lt;/list:plural>
+      &lt;/list:once>
+      &lt;list:first>&amp;#8658;&lt;/list:first>
+      &lt;list:skip-first>&amp;#8226;&lt;/list:skip-first>
+      &lt;country:name/>
+    &lt;/continent:countries>&lt;br/>
+&lt;/world:continents></pre>
+</td>
+<td>
+<world:continents>
+  <continent:name/> has
+    <continent:countries>
+      <list:once>
+         <list:size/> 
+         <list:single>country</list:single>
+         <list:plural>countries</list:plural>
+      </list:once>
+      <list:first>&#8658;</list:first>
+      <list:skip-first>&#8226;</list:skip-first>
+      <country:name/>
+    </continent:countries><br/>
+</world:continents>
+</td>
+</tr>
+
+<tr colspan="2"><td><h4>Colums</h4></td></tr>
+<tr><td>
+<pre>
+&lt;table>
+&lt;world:continents group-size="2">
+  &lt;tr>
+  &lt;list:group>
+    &lt;td>&lt;group:first>&lt;u>&lt;continent:name/>&lt;/u>&lt;/group:first>
+    &lt;group:skip-first>&lt;continent:name/>&lt;/group:skip-first>&lt;/td>
+  &lt;/list:group>
+  &lt;/tr>
+&lt;/world:continents>
+&lt;/table>
+</pre>
+</td>
+<td>
+<table>
+<world:continents group-size="2">
+<tr>
+  <list:group>
+  	<td><group:first><u><continent:name/></u></group:first>
+  	<group:skip-first><continent:name/></group:skip-first></td>
+  </list:group>
+</tr>
+</world:continents>
+</table>
+</td>
+</tr>
+</table>
+</html>

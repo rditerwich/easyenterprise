@@ -47,9 +47,13 @@ class RichIterable[A](it : Iterable[A]) {
 }
 
 class RichCollection[A](col : Collection[A]) extends RichIterable[A](col) {
+  
 }
 
-class RichSeq[A](seq : Seq[A]) extends RichIterable[A](seq) {
+class RichSeq[A](seq : Seq[A]) extends RichCollection[A](seq) {
+}
+
+class RichList[A](list : List[A]) extends RichSeq[A](list) {
 }
 
 class RichSet[A](set : Set[A]) {

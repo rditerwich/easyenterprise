@@ -76,11 +76,9 @@ class TemplateComponent extends Component {
         case Some(template) => template.xml
         case None => content
       })
-	  Binding.bind(template, context + (prefix -> new Bindings {
-        val childBindings = Map(
-          "include" -> new IncludeBinding(currentTemplates ++ templateMap),
-          "content" -> content)
-        })) 
+	  Binding.bind(template, context + (prefix -> Map(
+        "include" -> new IncludeBinding(currentTemplates ++ templateMap),
+        "content" -> content))) 
     }
   }
 }

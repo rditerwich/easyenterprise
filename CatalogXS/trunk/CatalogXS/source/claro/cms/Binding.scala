@@ -7,10 +7,11 @@ import java.util.concurrent.ConcurrentMap
 
 class BindingCtor(label : String) {
   def -> (binding : Binding) = (label, binding)
-  def -> (bindings : Bindings) = (label, bindings)
+  def -> (bindings : Map[String,Binding]) = (label, bindings)
   def -> (f : Seq[Node] => Seq[Node]) = (label, new XmlBinding(f))
   def -> (f : => Seq[Node]) = (label, new XmlBinding(_ => f))
   def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
+  def -> (f : => Option[Any]) = new OptionBindingCtor(label, f)
   def -> (f : => Any) = new AnyBindingCtor(label, f)
 }
 
@@ -19,17 +20,18 @@ class CollectionBindingCtor(label : String, f : => Collection[Any]) {
   def toLabeledBinding : Tuple2[String,Binding] = (label, new CollectionBinding(f, new AnyBinding(_)))
 }
 
+class OptionBindingCtor(label : String, f : => Option[Any]) {
+	def -> (targetPrefix : String) = (label, new ComplexBinding(f getOrNull, targetPrefix))
+	def toLabeledBinding = (label, new OptionBinding(f))
+}
+
 class AnyBindingCtor(label : String, f : => Any) {
   def -> (targetPrefix : String) = (label, new ComplexBinding(f, targetPrefix))
   def toLabeledBinding = (label, new AnyBinding(f))
 }
 
-trait Bindings extends BindingHelpers {
-  val childBindings : Map[String,Binding]
-}
-
-class BindingContext(val root : RootBinding, val parent : BindingContext, val bindings : Map[String,Bindings]) {
-  def +(binding: (String,Bindings)) = new BindingContext(root, this, bindings + binding)
+class BindingContext(val root : RootBinding, val parent : BindingContext, val bindings : Map[String,Map[String,Binding]]) {
+  def +(binding: (String,Map[String,Binding])) = new BindingContext(root, this, bindings + binding)
 }
 
 object Binding {
@@ -41,7 +43,7 @@ object Binding {
           context.root.currentElement = s
           val bindings = if (s.prefix == null) None else context.bindings.get(s.prefix)  
           bindings match {
-            case Some(bindings) => bindings.childBindings.get(s.label) match {
+            case Some(bindings) => bindings.get(s.label) match {
               case Some(binding) => binding.bind(s, context)
               case None => Seq.empty
             }
@@ -56,7 +58,7 @@ object Binding {
   }
 }
 
-trait Binding {
+trait Binding extends BindingHelpers {
   def bind(node : Node, context : BindingContext) : Seq[Node]
 }
 
@@ -72,16 +74,24 @@ class XmlBinding(f : Seq[Node] => Seq[Node]) extends Binding {
   }
 }
 
-class ComplexBinding(f : => Any, defaultTargetPrefix : String) extends Binding with Bindings {
+class ComplexBinding(f : => Any, defaultTargetPrefix : String) extends Binding {
   def bind(node : Node, context : BindingContext) : Seq[Node] = {
     val targetPrefix = attr(node, "prefix", defaultTargetPrefix)
-    Binding.bind(node.child, context + (targetPrefix -> this))
+    val childBindings = f match {
+      case null => Map[String,Binding]()
+      case obj => RootBinding().cache(f)
+    }
+    Binding.bind(node.child, context + (targetPrefix -> childBindings))
   }
-  lazy val childBindings = RootBinding().cache(f)
 }
 
-class CollectionBinding(f : => Collection[Any], eltBinding : Any => Binding) extends Binding {
+class CollectionBindingBase(f : => Collection[Any], eltBinding : Any => Binding) extends Binding {
+
+  def defaultTargetPrefix : String = "list"
+  def groupBinding(elt : Any) : Binding = new CollectionBindingBase(List(elt), _ => XmlBinding.ident)
+  
   def bind(node : Node, context: BindingContext) : Seq[Node] = {
+    val targetPrefix = attr(node, "list-prefix", defaultTargetPrefix)
     val collection : Collection[Any] = f
     val size = collection.size
     if (!collection.isEmpty) {
@@ -89,30 +99,63 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Any => Binding) ext
       var iterator = collection.elements
       val result = new mutable.ArrayBuffer[Node]
       while (iterator.hasNext) {
-        val binding = eltBinding(iterator.next)
-        result ++= binding.bind(node, context + ("list" -> new Bindings{
-		  lazy val childBindings = Map(
-		    "first" -> XmlBinding(index == 1),
-		    "last" -> XmlBinding(index == size),
-		    "skip-first" -> XmlBinding(index > 1),
-		    "skip-last" -> XmlBinding(index < size),
-		    "once" -> XmlBinding(index == 1),
-		    "single" -> XmlBinding(size == 1),
-		    "plural" -> XmlBinding(size != 1),
-		    "index" -> new AnyBinding(index),
-		    "size" -> new AnyBinding(size))
-        }))
+        val elt = iterator.next
+        val binding = eltBinding(elt)
+        result ++= binding.bind(node, context + (targetPrefix -> Map(
+          "first" -> XmlBinding(index == 1),
+          "last" -> XmlBinding(index == size),
+		  "skip-first" -> XmlBinding(index > 1),
+		  "skip-last" -> XmlBinding(index < size),
+		  "once" -> XmlBinding(index == 1),
+		  "single" -> XmlBinding(size == 1),
+		  "plural" -> XmlBinding(size != 1),
+		  "index" -> new AnyBinding(index),
+		  "size" -> new AnyBinding(size),
+		  "group" -> groupBinding(elt))
+        ))
         index += 1
       }
       result
     } else {
-      Binding.bind(node.child, context + ("list" -> EmptyBindings))
+      Binding.bind(node.child, context + ("list" -> EmptyBindings.bindings))
     }
   } 
 }
 
-object EmptyBindings extends Bindings {
-  val childBindings = Map(
+class CollectionBinding(f : => Collection[Any], eltBinding : Any => Binding) extends CollectionBindingBase(f, eltBinding) {
+	
+  override def bind(node : Node, context: BindingContext) : Seq[Node] = {
+	val collection : Collection[Any] = f
+	val size = collection.size
+	
+	val groupSize = attr(node, "group-size", "1").toInt
+	var groupCount = attr(node, "group-count", "-1").toInt
+	if (groupCount < 0) {
+		groupCount = Math.ceil(size / groupSize.asInstanceOf[Double]).round.toInt
+	}
+	
+	if (groupSize > 1) {
+		var pair : (List[Any],List[Any]) = collection.toList.splitAt(groupSize)
+		val groups = new mutable.ArrayBuffer[List[Any]]
+		while (!pair._1.isEmpty) {
+		  groups += pair._1 
+		  pair = pair._2.splitAt(groupSize)
+		}
+		
+		val binding = new CollectionBindingBase(groups, _ => XmlBinding.ident) {
+		  override def groupBinding(elt : Any) = new CollectionBinding(elt.asInstanceOf[Collection[Any]], eltBinding) {
+		    override val defaultTargetPrefix = "group"
+		  }
+		}
+		binding.bind(node, context)
+	} else {
+		super.bind(node, context)
+	}
+  }
+}
+
+object EmptyBindings {
+  val bindings = Map(
 	"first" -> XmlBinding.empty,
 	"last" -> XmlBinding.empty,
 	"skip-first" -> XmlBinding.empty,
@@ -121,7 +164,17 @@ object EmptyBindings extends Bindings {
 	"single" -> XmlBinding.empty,
 	"plural" -> XmlBinding.ident,
 	"index" -> new AnyBinding(""),
-	"size" -> new AnyBinding(0))
+	"size" -> new AnyBinding(0),
+	"group" -> new CollectionBindingBase(Seq.empty, _ => XmlBinding.empty))
+}
+
+class OptionBinding(f : => Option[Any]) extends Binding {
+	def bind(node : Node, context: BindingContext) : Seq[Node] = {
+	  f match { 
+	    case Some(x) => Text(x.toString) 
+	    case None => Seq.empty 
+	  }
+	}
 }
 
 class AnyBinding(f : => Any) extends Binding {
@@ -129,7 +182,6 @@ class AnyBinding(f : => Any) extends Binding {
     Text(f.toString)
   }
 }
-
 
 object RootBinding {
   private val current = new ThreadLocal[RootBinding]
@@ -145,9 +197,7 @@ class RootBinding(val site : Site) {
   
   var currentElement : Elem = null
   
-  def componentBindings = site.components map (component => (component.prefix, new Bindings {
-    val childBindings = cache(component)
-  }))
+  def componentBindings = site.components map (component => (component.prefix, cache(component)))
   
   def bind(xml : Seq[Node]) : Seq[Node] = {
     RootBinding.current.set(this)

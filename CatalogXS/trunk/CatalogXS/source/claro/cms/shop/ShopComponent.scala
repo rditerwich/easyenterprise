@@ -1,7 +1,7 @@
 package claro.cms.shop
 
 import net.liftweb.http.{RequestVar,Req,S,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
-import claro.cms.{Cms,Component,Template,ResourceLocator,Scope,Bindings}
+import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
 import scala.xml.{NodeSeq,Text}
 import agilexs.catalogxs.presentation.util.Util
 import agilexs.catalogxs.presentation.snippet.ShoppingCart
@@ -49,8 +49,8 @@ class ShopComponent extends Component with ShopBindingHelpers {
       "properties" -> group.properties -> "property",
 //      "products" -> IfAttr("include_sub_groups", group.productExtent, group.products) -> "product",
       "promotions" -> group.productExtentPromotions -> "promotion",
+       "link" -> Link(group)
       )
-//      "link" -> Link(group),
 //      "href" -> LinkAttr(group) -> "href")
     
     case order : Order => Map(

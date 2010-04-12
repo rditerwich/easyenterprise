@@ -26,8 +26,8 @@ object ShopModel {
     }
 
   def currentProduct : Option[Product] =
-    S.param("product") match {
-      case Full(id) => shop.productsById.get(id.toLong) 
+    Request.pathTail match {
+      case id :: rest => shop.productsById.get(id.toLong) 
       case _ => None
     }
       
