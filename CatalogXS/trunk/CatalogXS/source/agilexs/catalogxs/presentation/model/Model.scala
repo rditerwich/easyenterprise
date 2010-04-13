@@ -18,7 +18,7 @@ object Model {
   
   val locales : Set[String] = Locale.getAvailableLocales map (_ toString) toSet
   
-  var shopCache = Lazy(new ShopCache) 
+  var shopCache = Lazy(new WebshopCache) 
   
   object shop extends RequestVar[Shop](shopCache.get.shopsById(S.param("shop") get)) 
   object language extends RequestVar[String](S.param("language") get) 

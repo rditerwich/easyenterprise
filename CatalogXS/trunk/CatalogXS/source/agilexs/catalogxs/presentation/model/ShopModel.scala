@@ -11,7 +11,7 @@ import agilexs.catalogxs.presentation.util.{Delegate,ProjectionMap}
 import claro.common.util.KeywordMap
 import claro.common.util.Conversions._
 
-class Mapping(product : Option[Product], cacheData : ShopCacheData) {
+class Mapping(product : Option[Product], cacheData : WebshopCacheData) {
   lazy val productGroups = ProjectionMap((g : jpa.catalog.ProductGroup) => new ProductGroup(g, product, cacheData, this))
   lazy val products = ProjectionMap((p : jpa.catalog.Product) => new Product(p, cacheData, this))
   lazy val properties = ProjectionMap((p : jpa.catalog.Property) => new Property(p, noPropertyValue, product, cacheData, this))
@@ -21,7 +21,7 @@ class Mapping(product : Option[Product], cacheData : ShopCacheData) {
   })
 }
 
-class Shop (val cacheData : ShopCacheData) extends Delegate(cacheData.catalog) {
+class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog) {
 
   private val mapping = new Mapping(None, cacheData)
   
@@ -60,7 +60,7 @@ class Shop (val cacheData : ShopCacheData) extends Delegate(cacheData.catalog) {
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option[Product], cacheData : ShopCacheData, mapping : Mapping) extends Delegate(productGroup) {
+class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(productGroup) {
 
   // terminate recursion
   mapping.productGroups += (productGroup -> this)
@@ -95,7 +95,7 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
   }
 }
 
-class Product(product : jpa.catalog.Product, cacheData : ShopCacheData, var mapping : Mapping) extends Delegate(product) {
+class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var mapping : Mapping) extends Delegate(product) {
   
   // terminate recursion
   mapping.products += (product -> this)
@@ -119,7 +119,7 @@ class Product(product : jpa.catalog.Product, cacheData : ShopCacheData, var mapp
     properties mapBy (_.name)
 }
 
-class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : ShopCacheData, mapping : Mapping) extends Delegate(property)  {
+class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(property)  {
   // terminate recursion
   mapping.properties(property) = this
 
@@ -153,14 +153,14 @@ object noPropertyValue extends jpa.catalog.PropertyValue {
   setId(-1l)
 }
 
-class Promotion(promotion : jpa.shop.Promotion, cacheData : ShopCacheData, mapping : Mapping) extends Delegate(promotion) {
+class Promotion(promotion : jpa.shop.Promotion, cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(promotion) {
   // terminate recursion
   mapping.promotions(promotion) = this
   val id = promotion.getId.longValue
   def products : Set[Product] = Set.empty
 }
 
-class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cacheData : ShopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
+class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cacheData : WebshopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
   val startDate = promotion.getStartDate
   val endDate = promotion.getEndDate
   val price = promotion.getPrice

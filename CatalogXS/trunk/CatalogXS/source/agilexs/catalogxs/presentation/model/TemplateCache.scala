@@ -8,7 +8,7 @@ import agilexs.catalogxs.presentation.util.ProjectionMap
 import agilexs.catalogxs.presentation.model.Conversions._ 
 import claro.common.util.Conversions._
 
-class TemplateCache private (val cacheData : ShopCacheData, val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop, val locale : String) {
+class TemplateCache private (val cacheData : WebshopCacheData, val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop, val locale : String) {
 
   type Templates = Map[String, jpa.catalog.Template]
   

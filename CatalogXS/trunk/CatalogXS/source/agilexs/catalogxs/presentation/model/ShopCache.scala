@@ -7,9 +7,9 @@ import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.ProjectionMap
 import claro.common.util.Conversions._
 
-class ShopCache {
+class WebshopCache {
 
-  val shops = findAllShops map (shop => new Shop(new ShopCacheData(shop.getCatalog, shop)))
+  val shops = findAllShops map (shop => new Shop(new WebshopCacheData(shop.getCatalog, shop)))
   val shopsById = shops mapBy (_.id.toString)
   val shopsByName = shops mapBy (_.shop.getName)
   val shopsByServerName : Map[String, Seq[Shop]] = shops groupBy (_.serverName)
@@ -18,7 +18,7 @@ class ShopCache {
     Model.entityManager.is.createQuery("select shop from Shop shop").getResultList.asInstanceOf[java.util.List[jpa.shop.Shop]]
 }
 
-class ShopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop) {
+class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop) {
 
   val templateObjectCache = new mutable.HashMap[Tuple2[Object, String], NodeSeq]
   val templateClassCache = new mutable.HashMap[Tuple2[Class[_], String], NodeSeq]
