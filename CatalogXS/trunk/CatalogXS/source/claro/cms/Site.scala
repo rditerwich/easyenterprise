@@ -25,7 +25,7 @@ object Site {
     }
   }
 
-  def findSite(server : String, path : List[String]) : Option[(Site, List[String])] = {
+  def findSite(server : String, contextPath : String) : Option[Site] = {
     val sites = sitesByServer get(server) match {
       case Some(sites) => sites
       case None => sitesByServer get("") match {
@@ -33,10 +33,7 @@ object Site {
         case None => Seq()
       }
     }
-    sites find (site => path.startsWith (site.path)) match {
-      case Some(site) => Some(site,path.drop(site.path.length))
-      case None => None
-    }
+    sites find (site => contextPath.startsWith (site.contextPath))
   }
 }
 
@@ -49,7 +46,10 @@ class Site(siteFile : URI) {
   val path = config.path
   val contextPath = config.path.mkString("/", "/", "")
   val resourceStore = new UriStore(locations)
+  val resourceCache = new ResourceCache(this, resourceStore)
+  val contentCache = new ResourceContentCache(this)
   val templateStore = new TemplateStore(this, resourceStore)
+  val templateCache = new TemplateCache(templateStore)
   val caching = false
   val components : Seq[Component] = createComponents
   val templateLocators = components flatMap (_.templateLocators.toList)

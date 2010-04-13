@@ -1,6 +1,6 @@
 package claro.cms
 
-import net.liftweb.http.{Req,LiftRules,LiftSession,RulesSeq,RequestVar,S}
+import net.liftweb.http.{Req,LiftRules,LiftSession,LiftResponse,RulesSeq,RequestVar,S,InMemoryResponse,OkResponse,XhtmlResponse,CSSResponse}
 import net.liftweb.util.{Box,Full,Empty,Log}
 import xml.Node
 import java.util.Locale
@@ -19,21 +19,24 @@ object Cms {
 
   def boot = {
     
-    LiftRules.calculateContextPath = httpRequest => {
-      Request.process(httpRequest) match {
-        case Some(request) => Full(request.site.contextPath)
-        case None => Empty
-      }
-    } 
+    LiftRules.calculateContextPath = Dispatch.calculateContextPath _
     
-	LiftRules.viewDispatch.append {
-	  case ViewDispatch(template) => Left(() => {
-		Request.site.rootBinding.bind(template.xml) match {
-		  case xml if (xml.first.label == "html") => Full(xml)
-		  case _ => Empty
-		}
-      })
+    LiftRules.statelessDispatchTable.append {
+      case Dispatch(response) => response
     }
+    
+    LiftRules.viewDispatch.append {
+    	case Dispatch(response) => Left(response)
+    
+    }
+//	LiftRules.viewDispatch.append {
+//	  case ViewDispatch(template) => Left(() => {
+//		Request.site.rootBinding.bind(template.xml) match {
+//		  case xml if (xml.first.label == "html") => Full(xml)
+//		  case _ => Empty
+//		}
+//      })
+//    }
 
     components.append(() => new TemplateComponent)
     components.append(() => new claro.cms.components.MenuComponent)
@@ -44,7 +47,7 @@ object Cms {
   object ViewDispatch {
     def unapply(path : List[String]) : Option[ConcreteTemplate] = Request.get match {
       case null => None
-      case request => Some(request.template)
+      case request => request.template
     }
   }
 }

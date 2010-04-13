@@ -1,15 +1,15 @@
 package claro.cms
 
 import claro.common.util.Conversions._
-import xml.{Elem,Group,Node,Text}
+import xml.{Elem,Group,Node,NodeSeq,Text}
 import collection.mutable
 import java.util.concurrent.ConcurrentMap
 
 class BindingCtor(label : String) {
   def -> (binding : Binding) = (label, binding)
   def -> (bindings : Map[String,Binding]) = (label, bindings)
-  def -> (f : Seq[Node] => Seq[Node]) = (label, new XmlBinding(f))
-  def -> (f : => Seq[Node]) = (label, new XmlBinding(_ => f))
+  def -> (f : NodeSeq => NodeSeq) = (label, new XmlBinding(f))
+  def -> (f : => NodeSeq) = (label, new XmlBinding(_ => f))
   def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
   def -> (f : => Option[Any]) = new OptionBindingCtor(label, f)
   def -> (f : => Any) = new AnyBindingCtor(label, f)
@@ -36,7 +36,7 @@ class BindingContext(val root : RootBinding, val parent : BindingContext, val bi
 
 object Binding {
   
-  def bind(xml : Seq[Node], context : BindingContext) : Seq[Node] = {
+  def bind(xml : NodeSeq, context : BindingContext) : NodeSeq = {
     xml flatMap {
       case s : Elem =>
         try {
@@ -59,7 +59,7 @@ object Binding {
 }
 
 trait Binding extends BindingHelpers {
-  def bind(node : Node, context : BindingContext) : Seq[Node]
+  def bind(node : Node, context : BindingContext) : NodeSeq
 }
 
 object XmlBinding {
@@ -68,14 +68,14 @@ object XmlBinding {
   def apply(identNotEmpty : Boolean) = if (identNotEmpty) ident else empty 
 }
 
-class XmlBinding(f : Seq[Node] => Seq[Node]) extends Binding {
-  def bind(node : Node, context : BindingContext) : Seq[Node] = {
+class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
+  def bind(node : Node, context : BindingContext) : NodeSeq = {
     Binding.bind(f(node.child), context)
   }
 }
 
 class ComplexBinding(f : => Any, defaultTargetPrefix : String) extends Binding {
-  def bind(node : Node, context : BindingContext) : Seq[Node] = {
+  def bind(node : Node, context : BindingContext) : NodeSeq = {
     val targetPrefix = attr(node, "prefix", defaultTargetPrefix)
     val childBindings = f match {
       case null => Map[String,Binding]()
@@ -90,7 +90,7 @@ class CollectionBindingBase(f : => Collection[Any], eltBinding : Any => Binding)
   def defaultTargetPrefix : String = "list"
   def groupBinding(elt : Any) : Binding = new CollectionBindingBase(List(elt), _ => XmlBinding.ident)
   
-  def bind(node : Node, context: BindingContext) : Seq[Node] = {
+  def bind(node : Node, context: BindingContext) : NodeSeq = {
     val targetPrefix = attr(node, "list-prefix", defaultTargetPrefix)
     val collection : Collection[Any] = f
     val size = collection.size
@@ -117,14 +117,17 @@ class CollectionBindingBase(f : => Collection[Any], eltBinding : Any => Binding)
       }
       result
     } else {
-      Binding.bind(node.child, context + ("list" -> EmptyBindings.bindings))
+      node(child => child.prefix == "list" && child.label == "once") theSeq match {
+        case head :: tail => eltBinding(null).bind(head, context + (targetPrefix -> EmptyBindings.bindings))
+        case Nil => NodeSeq.Empty
+      }
     }
   } 
 }
 
 class CollectionBinding(f : => Collection[Any], eltBinding : Any => Binding) extends CollectionBindingBase(f, eltBinding) {
 	
-  override def bind(node : Node, context: BindingContext) : Seq[Node] = {
+  override def bind(node : Node, context: BindingContext) : NodeSeq = {
 	val collection : Collection[Any] = f
 	val size = collection.size
 	
@@ -169,7 +172,7 @@ object EmptyBindings {
 }
 
 class OptionBinding(f : => Option[Any]) extends Binding {
-	def bind(node : Node, context: BindingContext) : Seq[Node] = {
+	def bind(node : Node, context: BindingContext) : NodeSeq = {
 	  f match { 
 	    case Some(x) => Text(x.toString) 
 	    case None => Seq.empty 
@@ -178,7 +181,7 @@ class OptionBinding(f : => Option[Any]) extends Binding {
 }
 
 class AnyBinding(f : => Any) extends Binding {
-  def bind(node : Node, context: BindingContext) : Seq[Node] = {
+  def bind(node : Node, context: BindingContext) : NodeSeq = {
     Text(f.toString)
   }
 }
@@ -199,17 +202,10 @@ class RootBinding(val site : Site) {
   
   def componentBindings = site.components map (component => (component.prefix, cache(component)))
   
-  def bind(xml : Seq[Node]) : Seq[Node] = {
+  def bind(xml : NodeSeq) : NodeSeq = {
     RootBinding.current.set(this)
     currentElement = RootBinding.emptyElem
     Binding.bind(xml, context)
-  }
-  
-  def findAttr(attr : String, default : => Any) : String = {
-    currentElement.attributes.find(at => at.key == attr && !at.isPrefixed) match {
-      case Some(attr) => attr.value.toString
-      case None => default.toString
-    }
   }
 }
 
@@ -228,6 +224,8 @@ trait BindingHelpers {
   
   def @@(name : String, default : => Any) : String = attr(current, name, default) 
   
+  def @@?[A](name : String, yes : => A, no : => A) = ifAttr(name, yes, no)
+  
   def attr(node : Node, name : String) : String = attr(node, name, throw new Exception("Missing attribute: " + name))
     
   def attr(node : Node, name : String, default : => Any) : String = 
@@ -236,8 +234,8 @@ trait BindingHelpers {
       case None => default.toString
     }
 
-  def find(node : Node, prefix : String, label : String) : Seq[Node] = 
-    node.child filter(child => child.prefix == prefix && child.label == label)
+  def ifAttr[A](name : String, yes : => A, no : => A) = if (attr(current, name, "false") == "true") yes else no
+  
 }
 
 class BindingCache(site : Site) {
