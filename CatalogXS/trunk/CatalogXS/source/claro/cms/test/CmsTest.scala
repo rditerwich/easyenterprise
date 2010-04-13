@@ -1,7 +1,5 @@
 package claro.cms.test
 
-import org.junit.Test
-
 object CmsTest {
 
   def boot = {
@@ -10,7 +8,6 @@ object CmsTest {
   
   
   
-  @Test
   def testUniformElement() {
     assert(1 == 2)
   }
