@@ -1,12 +1,7 @@
-<lift:Shop.shop eager_eval="true">
-<lift:surround with="default" at="content">
+<template:include template="page">
  <h2>Shopping Cart</h2>
-  <lift:ShoppingCart.show phase="1" shopping_list_id="shopping_list">
+  <webshop:shopping_cart phase="1" shopping_list_id="shopping_list">
     <div id="shopping_list">
-      <show:no_items>
-        <p>No articles in your shopping cart.</p>
-      </show:no_items>
-      <show:items>
         <table>
           <thead>
             <th style="width:10%;text-align:center;">ArticleNumber</th>
@@ -14,30 +9,29 @@
             <th style="width:10%;text-align:center;">Price per item</th>
             <th style="width:10%;text-align:center;">Volume</th>
             <th style="width:10%;text-align:center;">Total price</th>
-            <th style="width:10%;text-align:center;">&nbsp;</th>
+            <th style="width:10%;text-align:center;">&#160;</th>
           </thead>
-          <item:list>
+      <shopping_cart:items>
           <tr>
-            <shoppingcart:product>
+            <item:product>
               <td><product:value property="ArticleNumber"/></td>
               <td><product:value property="Description"/></td>
               <td style="text-align:right;"><product:value property="Price"/></td>
-            </shoppingcart:product>
-            <td><shoppingcart:volume shoppingcart:maxlength="3" shoppingcart:style="width:30px;margin:0 5px;" /></td>
-            <td style="text-align:right;"><shoppingcart:priceTotal/></td>
-            <td style="text-align:center;"><shoppingcart:deleteButton><img src="/images/bin_closed.png" /></shoppingcart:deleteButton></td>
+            </item:product>
+            <td><item:volume shoppingcart:maxlength="3" shoppingcart:style="width:30px;margin:0 5px;" /></td>
+            <td style="text-align:right;"><item:priceTotal/></td>
+            <td style="text-align:center;"><item:deleteButton><img src="/images/bin_closed.png" /></item:deleteButton></td>
           </tr>
-          </item:list>
+      </shopping_cart:items>
           <tr>
             <td colspan="4"><b>Total price (excl. shipping costs):</b></td>
-            <td style="text-align:right;"><b><item:totalPrice/></b></td>
-            <td>&nbsp;</td>
+            <td style="text-align:right;"><b><shopping_cart:totalPrice/></b></td>
+            <td>&#160;</td>
           </tr>
         </table>
-      </show:items>
     </div>
-  </lift:ShoppingCart.show>
-  <lift:ShoppingCart.show phase="2">
+  </webshop:shopping_cart>
+  <!-- lift:ShoppingCart.show phase="2">
     Address gegevens...
   </lift:ShoppingCart.show>
   <lift:ShoppingCart.show phase="3">
@@ -48,6 +42,5 @@
   </lift:ShoppingCart.show>
   <lift:ShoppingCart.show phase="5">
     Order geplaatst melding...
-  </lift:ShoppingCart.show>
-</lift:surround>
-</lift:Shop.shop>
+  </lift:ShoppingCart.show> -->
+</template:include>

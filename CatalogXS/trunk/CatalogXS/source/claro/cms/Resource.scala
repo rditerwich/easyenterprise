@@ -34,7 +34,6 @@ abstract case class Resource(val name : String, val kind : String, val scope : S
   def readStream : InputStream
   def writeStream : Option[OutputStream]
   def readString = readStream.readString
-  def readHtml = ParseHtml(readStream, name)._1
   def exists : Boolean
   def uri : URI
 }

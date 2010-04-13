@@ -17,7 +17,7 @@ object WebshopModel {
 
   var shopCache = Lazy(new WebshopCache) 
   object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.website.properties("shop.id", "1"))) 
-  object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
+  object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order, shop.get.mapping))
 
   object currentProductVar extends RequestVar[Option[String]](None)
   object currentProductGroupVar extends RequestVar[Option[String]](None)
@@ -52,7 +52,7 @@ class Mapping(product : Option[Product], cacheData : WebshopCacheData) {
 
 class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog) {
 
-  private val mapping = new Mapping(None, cacheData)
+  val mapping = new Mapping(None, cacheData)
   
   val shop = cacheData.shop
   val catalogId = shop.getCatalog.getId
@@ -135,8 +135,8 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
   val id : Long = product.getId.longValue
   
   val properties : Set[Property] =
-	cacheData.productPropertyValues(product) map (v => 
-	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) toSet
+  	cacheData.productPropertyValues(product) map (v => 
+  	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) toSet
   
   val productGroups : Set[ProductGroup] = 
     product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet 
@@ -200,7 +200,13 @@ class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cach
 }
 
 //FIXME calculate promotion price when calculating new price
-class Order(order : jpa.shop.Order) extends Delegate(order) {
+
+class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(order) {
+  
+  def productOrders : Seq[ProductOrder] = 
+    order.getProductOrders map(new ProductOrder(_, mapping)) toSeq 
+
+  
   def empty = delegate.getProductOrders.clear
 
   def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
@@ -254,3 +260,11 @@ class Order(order : jpa.shop.Order) extends Delegate(order) {
       }
   }
 }
+
+class ProductOrder(val productOrder : jpa.shop.ProductOrder, mapping : Mapping) extends Delegate(productOrder) {
+  val product = mapping.products(productOrder.getProduct)
+  def price = productOrder.getPrice
+  def currency = productOrder.getPriceCurrency
+  def volume = productOrder.getVolume
+}
+

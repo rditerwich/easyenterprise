@@ -52,7 +52,11 @@ class TemplateStore(val website : Website, resourceStore : ResourceStore) {
 
   def find(template : Template, locale : Locale) : Option[ConcreteTemplate] = 
     resourceStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
-      case Some(resource) => Some(ConcreteTemplate(resource, resource.readHtml))
+      case Some(resource) => 
+        ParseHtml(resource.readStream, resource.name) match {
+          case (xml, None) => Some(ConcreteTemplate(resource, xml))
+          case (xml, Some(e)) => Some(ConcreteTemplate(resource, <html>{xml}</html>))
+        }
       case None => None
     }
   

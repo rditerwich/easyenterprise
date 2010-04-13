@@ -3,7 +3,7 @@ package claro.cms.webshop
 import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
 import scala.xml.{Node,NodeSeq,Text}
-import agilexs.catalogxs.presentation.snippet.ShoppingCart
+import agilexs.catalogxs.jpa
 
 class WebshopComponent extends Component with WebshopBindingHelpers {
   
@@ -52,10 +52,18 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "link" -> Link(group))
     
     case order : Order => Map(
+      "items" -> order.order.getProductOrders -> "item",
       "add" -> ("add:" + @@("product_tag", "product")),
       "link" -> Link("/shoppingcart"),
       "href" -> LinkAttr("/shoppingcart") -> "href")
-    
+
+   case productOrder : ProductOrder => Map(   
+      "id" -> productOrder.productOrder.getId.toString,
+      "product" -> productOrder.product,
+      "price" -> productOrder.price,
+      "currency" -> productOrder.currency,
+      "volume" -> productOrder.volume)
+
     case property: Property => Map(  
       "id" -> property.id.toString,
       "name" -> property.name,
@@ -78,12 +86,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
     case "group" :: id :: Nil => WebshopModel.currentProductGroupVar(Some(id)); "group" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
+    case "cart" :: Nil => "shopping_cart" :: Nil
     case _ => Nil
   }
 }
 
 class SearchForm extends Bindable {
-  var searchString : String = {println("HI");WebshopModel.currentSearchStringVar.is getOrElse("")}
+  var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse("")
   
   override def bindings = Map(
     "search_string" -> SHtml.text(searchString, searchString = _, 
