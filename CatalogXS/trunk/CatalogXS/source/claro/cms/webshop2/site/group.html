@@ -1,0 +1,40 @@
+<template:include template="page">
+  <shop:current_product_group>
+		  <head><title>Group <group:group_value property="Name"/></title></head>
+		  <h1 class="group_header"><group:group_value property="Name"/></h1>
+		  <div class="group_image"><group:group_value property="Image"/></div>
+		  <div class="group_desc"><group:group_value property="Description"/></div>
+		  <group:sub_groups prefix="sub">
+			  <div class="subgroup">   	    
+			  	<p><sub:link class="subgroup"><sub:group_value property="Name"/></sub:link></p>
+				</div>
+		  </group:sub_groups>
+		  
+		  <group:promotions prefix="promotion">
+		  	<list:once>Specials????</list:once>
+			  <h3>Special Offers:</h3>
+			    <promotion:product1>
+    <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
+    <p><product:value property="Description"/></p>
+  </promotion:product1> 
+			  
+			  <list:first><h3>Special Offers:</h3></list:first>
+			  <template:include template="promotion"/>
+  	  </group:promotions>
+  	  
+		  <table>
+		    <thead>
+		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>
+		      <th style="width:75%;text-align:center"><lift:loc>Description</lift:loc></th>
+		      <th style="width:15%"><lift:loc>Price</lift:loc></th>
+		    </thead>
+		    <group:products include_sub_groups="yes">
+		      <tr>
+            <td><product:link><product:value property="ArticleNumber" /></product:link></td>
+		        <td><product:value property="Description"/></td>
+		        <td><product:value property="Price" /></td>
+		      </tr>
+		    </group:products>
+		  </table>
+  </shop:current_product_group>
+</template:include>

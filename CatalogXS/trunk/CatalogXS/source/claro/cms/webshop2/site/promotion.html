@@ -1,0 +1,23 @@
+<div>
+  <!-- img src="images/specialoffer.png" style="position:relative;top:0;right:0" /-->
+  <promotion:product>
+    <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
+    <p><product:value property="Description"/></p>
+  </promotion:product> 
+  <div>
+    <p><strike><promotion:product><product:value property="Price"/></promotion:product></strike><br/>
+    <span style="color:red"><promotion:price/></span></p>
+    <p>Price when order<br/> per <b><promotion:volume_discount/></b> articles</p>
+    <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
+  </div>
+  <div>
+    <br/><br/>
+    <promotion:product>
+    <lift:ShoppingCart.addToCart>
+      <span class="add_to_cart">Add to Cart</span>
+    </lift:ShoppingCart.addToCart>
+    <br/><br/>
+    </promotion:product>
+    <promotion:product><product:link>More info &gt;&gt;</product:link></promotion:product>
+  </div>
+</div>
