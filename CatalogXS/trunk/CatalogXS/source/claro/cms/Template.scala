@@ -28,13 +28,13 @@ case class ConcreteTemplate(resource : Resource, xml : NodeSeq) {
 }
 
 class TemplateCache(val store : TemplateStore) {
-  val site = store.site
+  val website = store.website
   private val objectTemplateCache = new ConcurrentHashMap[(Template,Locale),Option[ConcreteTemplate]]()
 
   def apply(template : String, locale : Locale) : Option[ConcreteTemplate] = apply(Template(template), locale)
     
   def apply(template : Template, locale : Locale) : Option[ConcreteTemplate] =
-    if (!site.caching) store.find(template, locale) 
+    if (!website.caching) store.find(template, locale) 
     else objectTemplateCache getOrElseUpdate ((template,locale), store.find(template, locale))
 
   private[cms] def flush(templateName : String) = {
@@ -47,7 +47,7 @@ class TemplateCache(val store : TemplateStore) {
   }
 }
 
-class TemplateStore(val site : Site, resourceStore : ResourceStore) {
+class TemplateStore(val website : Webwebsite, resourceStore : ResourceStore) {
 
   def find(template : Template, locale : Locale) : Option[ConcreteTemplate] = 
     resourceStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
@@ -56,7 +56,7 @@ class TemplateStore(val site : Site, resourceStore : ResourceStore) {
     }
   
   private def resourceLocator(template : Template) : ResourceLocator =
-    site.templateLocators.findFirst(template).
+    website.templateLocators.findFirst(template).
       getOrElse (ResourceLocator(template.name, "html", List(Scope.global)))
 }
 
@@ -75,7 +75,7 @@ class TemplateComponent extends Component {
       val (templateNodes,contentNodes) = node.child.partition(node => node.prefix == prefix && node.label == "define")
       val templateMap : Map[String,NodeSeq] = Map(templateNodes.toSeq map(n => (attr(n, "template"), n.child)):_*)
       val content : NodeSeq = contentNodes.toSeq
-      val template : NodeSeq = currentTemplates.get(name) getOrElse (site.templateCache(name, locale) match {
+      val template : NodeSeq = currentTemplates.get(name) getOrElse (website.templateCache(name, locale) match {
         case Some(template) => template.xml
         case None => content
       })

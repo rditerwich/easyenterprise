@@ -29,13 +29,13 @@ case class ResourceLocator(name : String, kind : String, scopes : Iterable[Scope
 }
 
 abstract case class Resource(val name : String, val kind : String, val scope : Scope, val locale : Locale) {
-  def read : InputStream
-  def write : Option[OutputStream]
-  def readString = read.readString
-  def readHtml = ParseHtml(read, name)._1
+  def readStream : InputStream
+  def writeStream : Option[OutputStream]
+  def readString = readStream.readString
+  def readHtml = ParseHtml(readStream, name)._1
 }
 
-class ResourceContentCache(site : Site) {
+class ResourceContentCache(website : Webwebsite) {
 
   private final val MAX_STRING_CONTENT_SIZE = 100000;
   
@@ -46,18 +46,18 @@ class ResourceContentCache(site : Site) {
   
   def apply(resource : Resource, content : => String) : String = {
     contentCache.getOrElse(resource, content useIn ( content =>    	
-      if (site.caching && content.size < MAX_STRING_CONTENT_SIZE) {
+      if (website.caching && content.size < MAX_STRING_CONTENT_SIZE) {
         contentCache.put(resource, content)
       }))
   }
 }
 
-class ResourceCache(site : Site, store : ResourceStore) {
+class ResourceCache(website : Webwebsite, store : ResourceStore) {
 
   private val resourceCache = new ConcurrentHashMap[(ResourceLocator,Locale),Option[Resource]]()
 
   def apply(locator : ResourceLocator, locale : Locale) : Option[Resource] =
-    if (!site.caching) store.find(locator, Locales.getAlternatives(locale)) 
+    if (!website.caching) store.find(locator, Locales.getAlternatives(locale)) 
     else resourceCache getOrElseUpdate ((locator,locale), store.find(locator, Locales.getAlternatives(locale)))
 }
 
@@ -89,21 +89,21 @@ trait ResourceStore {
   }
 }
 
-class FileStore(val site : Site, templateDirs : Seq[File]) extends ResourceStore {
+class FileStore(val website : Webwebsite, templateDirs : Seq[File]) extends ResourceStore {
   override def get(name : String, kind : String, scope : Scope, locale : Locale) : Option[Resource] = {
 	val fileName = mkFileName(name, kind, scope, locale)
     for (dir <- templateDirs) {
       val resource = new File(dir, fileName)
       if (resource.exists) return Some(new Resource(name, kind, scope, locale) {
-        def read = new FileInputStream(resource)
-        def write = Some(new FileOutputStream(resource))
+        def readStream = new FileInputStream(resource)
+        def writeStream = Some(new FileOutputStream(resource))
         })
 	}
 	None
   }
 }
 
-class ClasspathStore(val site : Site, classpath : Seq[String]) extends ResourceStore {
+class ClasspathStore(val website : Webwebsite, classpath : Seq[String]) extends ResourceStore {
   override def get(name : String, kind : String, scope : Scope, locale : Locale) : Option[Resource] = {
     val fileName = mkFileName(name, kind, scope, locale)
     for (entry <- classpath) {
@@ -113,8 +113,8 @@ class ClasspathStore(val site : Site, classpath : Seq[String]) extends ResourceS
 	  try {
 	    if (is != null) {
 	      return Some(new Resource(name, kind, scope, locale) {
-	        def read = read
-	        def write = None
+	        def readStream = read()
+	        def writeStream = None
 	        })
 	    }
 	  } finally {
@@ -132,8 +132,8 @@ class UriStore(uris : Seq[URI]) extends ResourceStore {
       val file = uri.child(fileName)
       if (file.exists) {
      	return Some(new Resource(name, kind, scope, locale) {
-     	  def read = file.open get
-          def write = None
+     	  def readStream = file.open get
+          def writeStream = None
           })
       }
     }

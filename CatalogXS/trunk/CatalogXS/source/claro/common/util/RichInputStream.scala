@@ -12,10 +12,10 @@ class RichInputStream(is : InputStream) {
     val buffer = new Array[Char](1000)
     var result = new StringBuilder
     try {
-      var read = 0
-      while (read >= 0) {
-    	read = reader.read(buffer)
-    	result.append(buffer, 0, read)
+      var n = 0
+      while (n >= 0) {
+        result.append(buffer, 0, n)
+        n = reader.read(buffer)
       }
     } finally {
       reader.close

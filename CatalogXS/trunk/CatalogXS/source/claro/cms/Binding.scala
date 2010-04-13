@@ -192,15 +192,15 @@ object RootBinding {
   val emptyElem = new Elem(null, "", null, xml.TopScope, null)
 }
 
-class RootBinding(val site : Site) {
+class RootBinding(val website : Webwebsite) {
 
-  val cache = new BindingCache(site)
+  val cache = new BindingCache(website)
   
   val context = new BindingContext(this, null, Map(componentBindings:_*))
   
   var currentElement : Elem = null
   
-  def componentBindings = site.components map (component => (component.prefix, cache(component)))
+  def componentBindings = website.components map (component => (component.prefix, cache(component)))
   
   def bind(xml : NodeSeq) : NodeSeq = {
     RootBinding.current.set(this)
@@ -214,7 +214,7 @@ trait BindingHelpers {
   implicit def labeledBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
   implicit def labeledBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
  
-  def site : Site = RootBinding().site
+  def website : Webwebsite = RootBinding().website
  
   def locale = Cms.locale.get
  
@@ -238,7 +238,7 @@ trait BindingHelpers {
   
 }
 
-class BindingCache(site : Site) {
+class BindingCache(website : Webwebsite) {
   
   def apply(obj : Any) : Map[String,Binding] = objectBindings.get(obj)
   
@@ -246,6 +246,6 @@ class BindingCache(site : Site) {
     new com.google.common.collect.MapMaker().concurrencyLevel(32).weakKeys().makeComputingMap[Any,Map[String,Binding]](
        new com.google.common.base.Function[Any,Map[String,Binding]] {
          def apply(obj : Any) : Map[String,Binding] = {
-           site.bindings findFirst(obj) getOrElse Map()
+           website.bindings findFirst(obj) getOrElse Map()
          }});
 }

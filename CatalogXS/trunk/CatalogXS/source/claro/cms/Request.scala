@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 object Request extends RequestVar[Request](new Request) {
   
   def httpRequest = get.httpRequest
-  def site = get.site
+  def website = get.website
   def template = get.template
   def path = get.path
   def pathTail = get.pathTail
@@ -15,7 +15,7 @@ object Request extends RequestVar[Request](new Request) {
 
 class Request {
   var httpRequest : HttpServletRequest = null
-  var site : Site = null
+  var website : Webwebsite = null
   var template : Option[ConcreteTemplate] = None
   var path : List[String] = Nil
   var pathTail : List[String] = Nil

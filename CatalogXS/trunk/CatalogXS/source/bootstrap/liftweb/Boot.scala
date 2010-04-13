@@ -70,7 +70,7 @@ class Boot {
     //Schemifier.schemify(true, Log.infoF _, User)
 
       
-    // Build SiteMap
+    // Build WebwebsiteMap
     //product is added otherwise product rewrite doesn't work
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
@@ -96,8 +96,8 @@ class Boot {
 */
     
     
-    //User.sitemap
-    //LiftRules.setSiteMap(SiteMap(entries:_*))
+    //User.websitemap
+    //LiftRules.setWebwebsiteMap(WebwebsiteMap(entries:_*))
 
 //    LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
 //      case ShopPathRewriter(response : RewriteResponse) => response 

@@ -15,7 +15,7 @@ object Cms {
 
   object locale extends RequestVar[Locale](Locale.getDefault)
 
-  def entityManager(name : String) = Request.site.entityManagerFactory(name).createEntityManager
+  def entityManager(name : String) = Request.website.entityManagerFactory(name).createEntityManager
 
   def boot = {
     
@@ -31,7 +31,7 @@ object Cms {
     }
 //	LiftRules.viewDispatch.append {
 //	  case ViewDispatch(template) => Left(() => {
-//		Request.site.rootBinding.bind(template.xml) match {
+//		Request.website.rootBinding.bind(template.xml) match {
 //		  case xml if (xml.first.label == "html") => Full(xml)
 //		  case _ => Empty
 //		}
@@ -40,8 +40,8 @@ object Cms {
 
     components.append(() => new TemplateComponent)
     components.append(() => new claro.cms.components.MenuComponent)
-    Site
-    Log.info("CMS Configuration:" + Site.sites.map(CmsInfo.siteInfo(_, "  ")).mkString("\n"))
+    Webwebsite
+    Log.info("CMS Configuration:" + Webwebsite.websites.map(CmsInfo.websiteInfo(_, "  ")).mkString("\n"))
   }
 
   object ViewDispatch {

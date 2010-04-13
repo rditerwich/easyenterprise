@@ -16,7 +16,7 @@ import claro.cms.Request
 object WebshopModel {
 
   var shopCache = Lazy(new WebshopCache) 
-  object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.site.properties("shop.id", "1"))) 
+  object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.website.properties("shop.id", "1"))) 
   object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
 
   def currentProductGroup : Option[ProductGroup] =

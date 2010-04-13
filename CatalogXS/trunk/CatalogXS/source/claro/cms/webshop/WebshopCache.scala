@@ -69,31 +69,31 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
     new mutable.HashMap[jpa.catalog.ProductGroup, mutable.Set[jpa.catalog.Product]] useIn 
     (productGroupProductExtent(shop.getTopLevelProductGroups, _)) immutable  
 
-  private def productGroupChildGroups(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
-    for (group <- groups; if !visited.contains(group)) {
-      visited += group
+  private def productGroupChildGroups(groups : Iterable[jpa.catalog.ProductGroup], viwebsited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
+    for (group <- groups; if !viwebsited.contains(group)) {
+      viwebsited += group
       val children = group.getChildren classFilter(classOf[jpa.catalog.ProductGroup])
-      productGroupChildGroups(children, visited, result)
+      productGroupChildGroups(children, viwebsited, result)
       var direct = children filter (!excludedItems.contains(_))
       val indirect = children filter (excludedItems.contains(_)) flatMap (result.getOrElse(_, Set.empty))
       result(group) = direct ++ indirect toSet
     }
   }
   
-  private def productGroupParents(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
-    for (group <- groups; if !visited.contains(group)) {
-      visited += group
-      productGroupChildGroups(group.getParents, visited, result)
+  private def productGroupParents(groups : Iterable[jpa.catalog.ProductGroup], viwebsited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
+    for (group <- groups; if !viwebsited.contains(group)) {
+      viwebsited += group
+      productGroupChildGroups(group.getParents, viwebsited, result)
       var direct = group.getParents filter (!excludedItems.contains(_))
       val indirect = group.getParents filter (excludedItems.contains(_)) flatMap (result.getOrElse(_, Set.empty))
       result(group) = direct ++ indirect toSet
     }
   }
 
-  private def products(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashSet[jpa.catalog.Product]) : Unit = {
-    for (group <- groups; if !visited.contains(group)) {
-      visited += group
-      products(group.getChildren classFilter(classOf[jpa.catalog.ProductGroup]), visited, result)
+  private def products(groups : Iterable[jpa.catalog.ProductGroup], viwebsited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashSet[jpa.catalog.Product]) : Unit = {
+    for (group <- groups; if !viwebsited.contains(group)) {
+      viwebsited += group
+      products(group.getChildren classFilter(classOf[jpa.catalog.ProductGroup]), viwebsited, result)
       result ++= group.getChildren classFilter(classOf[jpa.catalog.Product]) 
     }
   }
