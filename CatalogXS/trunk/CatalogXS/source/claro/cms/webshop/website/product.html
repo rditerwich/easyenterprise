@@ -1,5 +1,5 @@
 <template:include template="page">
-  <shop:current_product>
+  <webshop:current_product>
      <head><title>Product Info</title></head>
      product id: <product:id/>
      <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
@@ -16,7 +16,7 @@
       <shop:shopping_cart>
       <shopping_cart:add product="product"/>
       </shop:shopping_cart>
-   </shop:current_product>
-   <shop:current_product when-exists="false">
-   </shop:current_product>
+   </webshop:current_product>
+   <webshop:current_product when-exists="false">
+   </webshop:current_product>
 </template:include>

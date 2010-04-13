@@ -21,12 +21,6 @@ object BlogTestComponent extends Component {
     }
   }
   
-  templateClasspath.append("claro.cms.test")
-  
-  entryPoints.append {
-      case "showcase" :: Nil => Template("showcase")
-    }
-
   bindings.append {
     case BlogTestComponent => Map(
         "blog" -> testBlog -> "blog"

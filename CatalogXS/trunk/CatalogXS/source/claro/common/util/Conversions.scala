@@ -30,5 +30,5 @@ object Conversions {
   implicit def richArray[A](array : Array[A]) = new RichArray[A](array)
   implicit def richPartialFunctionIterable[A,B](it : Iterable[PartialFunction[A,B]]) = new RichPartialFunctionIterable[A,B](it)
   implicit def richUri(uri : java.net.URI) = new RichUri(uri)
-  implicit def richInputStream(is : java.io.InputStream) = new RichInputStream(is)
+  implicit def richInputStream(getInputStream : => java.io.InputStream) = new RichInputStream(getInputStream)
 }

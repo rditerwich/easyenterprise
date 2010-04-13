@@ -19,24 +19,20 @@ object WebshopModel {
   object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.website.properties("shop.id", "1"))) 
   object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order))
 
-  def currentProductGroup : Option[ProductGroup] =
-    Request.pathTail match {
-      case id :: rest => shop.productGroupsById.get(id.toLong) 
-      case _ => None
-    }
-
-  def currentProduct : Option[Product] =
-    Request.pathTail match {
-      case id :: rest => shop.productsById.get(id.toLong) 
-      case _ => None
-    }
-      
-  def currentSearchString : Option[String] =
-	  S.param("search") match {
-	  case Full(searchString) => Some(searchString) 
-	  case _ => None
+  object currentProductVar extends RequestVar[Option[String]](None)
+  object currentProductGroupVar extends RequestVar[Option[String]](None)
+  object currentSearchStringVar extends RequestVar[Option[String]](None)
+  
+  def currentProduct : Option[Product] = currentProductVar.is match {
+    case Some(id) => Some(shop.productsById(id.toLong))
+    case None => None
   }
-
+  
+  def currentProductGroup : Option[ProductGroup] = currentProductGroupVar.is match {
+    case Some(id) => Some(shop.productGroupsById(id.toLong))
+    case None => None
+  }
+    
   def currentSearchProducts : Iterable[Product] =
 	  S.param("search") match {
 	  case Full(searchString) => shop.keywordMap.find(searchString) 
@@ -258,4 +254,3 @@ class Order(order : jpa.shop.Order) extends Delegate(order) {
       }
   }
 }
-

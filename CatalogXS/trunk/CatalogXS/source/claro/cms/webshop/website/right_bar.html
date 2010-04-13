@@ -1,13 +1,13 @@
 <div class="page_menu" id="right_bar"> 
   <div class="page_searchbox">
-    <lift:Shop.search form="POST"> 
+    <webshop:search_form form="POST"> 
       <table> 
         <tr> 
-          <td><search:searchString /></td> 
+          <td><search:search_string /></td> 
           <td><search:submit /></td> 
         </tr> 
       </table> 
-    </lift:Shop.search> 
+    </webshop:search_form> 
     <form method="post" action="http://nieuwsbrief.netrex.eu/netrexmail/form.php?form=23" id="frmSS23" onSubmit="return CheckForm23(this);"> 
       <table style="margin-top:5px;"> 
         <tr> 

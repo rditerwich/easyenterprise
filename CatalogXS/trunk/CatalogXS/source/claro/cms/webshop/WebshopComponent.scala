@@ -1,8 +1,8 @@
 package claro.cms.webshop
 
-import net.liftweb.http.{RequestVar,Req,S,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
+import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
-import scala.xml.{NodeSeq,Text}
+import scala.xml.{Node,NodeSeq,Text}
 import agilexs.catalogxs.presentation.snippet.ShoppingCart
 
 class WebshopComponent extends Component with WebshopBindingHelpers {
@@ -14,12 +14,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "id" -> WebshopModel.shop.get.id,
       "current_product_group" -> WebshopModel.currentProductGroup -> "group",
       "current_product" -> WebshopModel.currentProduct -> "product",
-      "current_search_string" -> WebshopModel.currentSearchString,
+      "current_search_string" -> WebshopModel.currentSearchStringVar.is,
       "current_search_products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
       "top_level_groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
-      "shopping_cart" -> WebshopModel.shoppingCart -> "shopping_cart")
+      "shopping_cart" -> WebshopModel.shoppingCart -> "shopping_cart",
+      "search_form" -> new SearchForm -> "search")
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
@@ -69,20 +70,31 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     	  Scope("group" -> g.id)),
         Scope("shop" -> WebshopModel.shop.id),
         Scope("catalog" -> WebshopModel.shop.catalogId),
-    	Scope())
+    	Scope.global)
   }
-  
-  entryPoints.append {
-    case "index" :: Nil => Template("index")
-    case "product" :: id :: Nil => Template("product-page", WebshopModel.shop.productsById.get(id.toLong))
+
+  rewrite.append {
+    case "index" :: Nil => "index" :: Nil
+    case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
+    case "group" :: id :: Nil => WebshopModel.currentProductGroupVar(Some(id)); "group" :: Nil
+    case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
+    case _ => Nil
   }
-  
-  templateClasspath.append("claro.cms.shop.templates")
-  
-//  LiftRules.rewrite.append {
-//    case RewriteRequest(
-//      ParsePath("product" :: product :: Nil,_,_,_),_,_) =>
-//      	RewriteResponse("product" :: Nil, Map("product" -> product))
-//  }
 }
 
+class SearchForm extends Bindable {
+  var searchString : String = {println("HI");WebshopModel.currentSearchStringVar.is getOrElse("")}
+  
+  override def bindings = Map(
+    "search_string" -> SHtml.text(searchString, searchString = _, 
+      ("class", "formfield searchfield"),
+      ("onclick", "javascript:this.value=(this.value == 'search' ? '' : this.value);")),
+    "submit" -> SHtml.submit("Search", () => S.redirectTo("/search/" + searchString),
+      ("class", "formbutton")))
+  
+  override def getXml(xml : NodeSeq) : NodeSeq = {
+    <lift:snippet type="Shop" form="POST">
+      {xml}
+    </lift:snippet>
+  }
+}

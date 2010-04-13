@@ -44,7 +44,7 @@ class Boot {
 	}
 */
     // where to search snippet
-//    LiftRules.addToPackages("agilexs.catalogxs.presentation");
+    LiftRules.addToPackages("agilexs.catalogxs.presentation");
     
     LiftRules.defaultHeaders = {
       // Permit caching of our home page 
@@ -70,7 +70,7 @@ class Boot {
     //Schemifier.schemify(true, Log.infoF _, User)
 
       
-    // Build WebwebsiteMap
+    // Build WebsiteMap
     //product is added otherwise product rewrite doesn't work
     val entries =
       Menu(Loc("Home", List("index"), "Home")) ::
@@ -97,7 +97,7 @@ class Boot {
     
     
     //User.websitemap
-    //LiftRules.setWebwebsiteMap(WebwebsiteMap(entries:_*))
+    //LiftRules.setWebsiteMap(WebsiteMap(entries:_*))
 
 //    LiftRules.rewrite.append(NamedPF("ShopPathRewriter") {
 //      case ShopPathRewriter(response : RewriteResponse) => response 

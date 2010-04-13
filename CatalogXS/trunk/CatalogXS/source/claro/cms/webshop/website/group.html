@@ -1,5 +1,5 @@
 <template:include template="page">
-  <shop:current_product_group>
+  <webshop:current_product_group>
 		  <head><title>Group <group:group_value property="Name"/></title></head>
 		  <h1 class="group_header"><group:group_value property="Name"/></h1>
 		  <div class="group_image"><group:group_value property="Image"/></div>
@@ -11,8 +11,6 @@
 		  </group:sub_groups>
 		  
 		  <group:promotions prefix="promotion">
-		  	<list:once>Specials????</list:once>
-			  <h3>Special Offers:</h3>
 			    <promotion:product1>
     <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
     <p><product:value property="Description"/></p>
@@ -36,5 +34,5 @@
 		      </tr>
 		    </group:products>
 		  </table>
-  </shop:current_product_group>
+  </webshop:current_product_group>
 </template:include>

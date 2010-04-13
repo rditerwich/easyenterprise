@@ -4,7 +4,7 @@ import claro.common.util.Conversions._
 
 object CmsInfo {
 
-  def websiteInfo(website : Webwebsite, prefix : String) = "\n" + prefix + "Web site: " +  
+  def websiteInfo(website : Website, prefix : String) = "\n" + prefix + "Web site: " +  
     website.config.name.emptyOrPrefix("\n" + prefix + "  Name: ") + 
     website.server.emptyOrPrefix("\n" + prefix + "  Server: ") + 
     website.contextPath.emptyOrPrefix("\n" + prefix + "  Context: ") + 

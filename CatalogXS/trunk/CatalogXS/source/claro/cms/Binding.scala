@@ -8,30 +8,46 @@ import java.util.concurrent.ConcurrentMap
 class BindingCtor(label : String) {
   def -> (binding : Binding) = (label, binding)
   def -> (bindings : Map[String,Binding]) = (label, bindings)
-  def -> (f : NodeSeq => NodeSeq) = (label, new XmlBinding(f))
+  def -> (bindable : => Bindable) = new BindableCtor(label, bindable)
+  def -> (f : NodeSeq => NodeSeq) = new XmlBindingCtor(label, f)
   def -> (f : => NodeSeq) = (label, new XmlBinding(_ => f))
   def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
   def -> (f : => Option[Any]) = new OptionBindingCtor(label, f)
   def -> (f : => Any) = new AnyBindingCtor(label, f)
 }
 
+class BindableCtor(label : String, f : => Bindable) {
+  def -> (targetPrefix : String) = (label, new ComplexBinding(targetPrefix, f))
+  def toLabeledBinding = (label, new XmlBinding(f.getXml _))
+}
+
+class XmlBindingCtor(label : String, f : NodeSeq => NodeSeq) {
+  def -> (targetPrefix : String) = (label, ComplexBinding(targetPrefix, f))
+  def toLabeledBinding = (label, new XmlBinding(f))
+}
+
 class CollectionBindingCtor(label : String, f : => Collection[Any]) {
-  def -> (targetPrefix : String) = (label, new CollectionBinding(f, new ComplexBinding(_, targetPrefix)))
+  def -> (targetPrefix : String) = (label, new CollectionBinding(f, ComplexBinding(targetPrefix, _)))
   def toLabeledBinding : Tuple2[String,Binding] = (label, new CollectionBinding(f, new AnyBinding(_)))
 }
 
 class OptionBindingCtor(label : String, f : => Option[Any]) {
-	def -> (targetPrefix : String) = (label, new ComplexBinding(f getOrNull, targetPrefix))
+  def -> (targetPrefix : String) = (label, ComplexBinding(targetPrefix, f getOrNull))
 	def toLabeledBinding = (label, new OptionBinding(f))
 }
 
 class AnyBindingCtor(label : String, f : => Any) {
-  def -> (targetPrefix : String) = (label, new ComplexBinding(f, targetPrefix))
+  def -> (targetPrefix : String) = (label, ComplexBinding(targetPrefix, f))
   def toLabeledBinding = (label, new AnyBinding(f))
 }
 
 class BindingContext(val root : RootBinding, val parent : BindingContext, val bindings : Map[String,Map[String,Binding]]) {
   def +(binding: (String,Map[String,Binding])) = new BindingContext(root, this, bindings + binding)
+}
+
+trait Bindable extends BindingHelpers {
+  def bindings : Map[String,Binding] = Map.empty
+  def getXml(xml : NodeSeq) = xml
 }
 
 object Binding {
@@ -50,7 +66,7 @@ object Binding {
             case None => Elem(s.prefix, s.label, s.attributes, s.scope, bind(s.child, context) :_*)
           }
         } catch {
-          case e => <div>ERROR:{e.getMessage}</div> 
+          case e => <div>ERROR:{e.printStackTrace;e}</div> 
         }
       case Group(nodes) => Group(bind(nodes, context))
       case n => n
@@ -74,16 +90,45 @@ class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
   }
 }
 
-class ComplexBinding(f : => Any, defaultTargetPrefix : String) extends Binding {
-  def bind(node : Node, context : BindingContext) : NodeSeq = {
-    val targetPrefix = attr(node, "prefix", defaultTargetPrefix)
-    val childBindings = f match {
+object ComplexBinding {
+  def apply(defaultPrefix : String, f : NodeSeq => NodeSeq) = new ComplexBinding(defaultPrefix, new Bindable {
+    override def getXml(xml : NodeSeq) = f(xml)
+  })
+  
+  def apply(defaultPrefix : String, f : => Any) = new ComplexBinding(defaultPrefix, new Bindable {
+    override def bindings = f match {
       case null => Map[String,Binding]()
-      case obj => RootBinding().cache(f)
+      case obj => RootBinding().cache(obj)
     }
-    Binding.bind(node.child, context + (targetPrefix -> childBindings))
+  })
+}
+
+//class ComplexBindingOld(f : => Any, defaultPrefix : String) extends Binding {
+//  def bind(node : Node, context : BindingContext) : NodeSeq = {
+//    val prefix = attr(node, "prefix", defaultPrefix)
+//    val childBindings = f match {
+//      case null => Map[String,Binding]()
+//      case obj => RootBinding().cache(f)
+//    }
+//    Binding.bind(node.child, context + (prefix -> childBindings))
+//  }
+//}
+
+class ComplexBinding(defaultPrefix : String, f : => Bindable) extends Binding {
+  def bind(node : Node, context : BindingContext) : NodeSeq = {
+    val prefix = attr(node, "prefix", defaultPrefix)
+    val bindable = f
+    bindable.getXml(Binding.bind(node.child, context + (prefix -> bindable.bindings)))
   }
 }
+
+//class ComplexXmlBinding(f : NodeSeq => NodeSeq, defaultTargetPrefix : String) extends Binding {
+//  def bind(node : Node, context : BindingContext) : NodeSeq = {
+//    val targetPrefix = attr(node, "prefix", defaultTargetPrefix)
+//    val childBindings = RootBinding().cache(f)
+//    f(Binding.bind(node.child, context + (targetPrefix -> childBindings)))
+//  }
+//}
 
 class CollectionBindingBase(f : => Collection[Any], eltBinding : Any => Binding) extends Binding {
 
@@ -117,7 +162,7 @@ class CollectionBindingBase(f : => Collection[Any], eltBinding : Any => Binding)
       }
       result
     } else {
-      node(child => child.prefix == "list" && child.label == "once") theSeq match {
+      node(child => child.prefix == "list" && child.label == "once").theSeq.toList match {
         case head :: tail => eltBinding(null).bind(head, context + (targetPrefix -> EmptyBindings.bindings))
         case Nil => NodeSeq.Empty
       }
@@ -192,7 +237,7 @@ object RootBinding {
   val emptyElem = new Elem(null, "", null, xml.TopScope, null)
 }
 
-class RootBinding(val website : Webwebsite) {
+class RootBinding(val website : Website) {
 
   val cache = new BindingCache(website)
   
@@ -211,10 +256,12 @@ class RootBinding(val website : Webwebsite) {
 
 trait BindingHelpers {
   implicit def ctor(label : String) = new BindingCtor(label)
-  implicit def labeledBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
-  implicit def labeledBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
+  implicit def toLabeledBinding(ctor : XmlBindingCtor) = ctor.toLabeledBinding
+  implicit def toLabeledBinding(ctor : OptionBindingCtor) = ctor.toLabeledBinding
+  implicit def toLabeledBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
+  implicit def toLabeledBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
  
-  def website : Webwebsite = RootBinding().website
+  def website : Website = RootBinding().website
  
   def locale = Cms.locale.get
  
@@ -238,7 +285,7 @@ trait BindingHelpers {
   
 }
 
-class BindingCache(website : Webwebsite) {
+class BindingCache(website : Website) {
   
   def apply(obj : Any) : Map[String,Binding] = objectBindings.get(obj)
   

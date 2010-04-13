@@ -19,16 +19,15 @@ object Cms {
 
   def boot = {
     
-    LiftRules.calculateContextPath = Dispatch.calculateContextPath _
+    LiftRules.calculateContextPath = Request.calculateContextPath _
     
-    LiftRules.statelessDispatchTable.append {
-      case Dispatch(response) => response
-    }
+    LiftRules.statelessDispatchTable.append(Dispatch)
+    LiftRules.viewDispatch.append(ViewDispatch)
+
+//    LiftRules.viewDispatch.append {
+//    	case Dispatch(response) => Left(response)
+//    }
     
-    LiftRules.viewDispatch.append {
-    	case Dispatch(response) => Left(response)
-    
-    }
 //	LiftRules.viewDispatch.append {
 //	  case ViewDispatch(template) => Left(() => {
 //		Request.website.rootBinding.bind(template.xml) match {
@@ -40,15 +39,8 @@ object Cms {
 
     components.append(() => new TemplateComponent)
     components.append(() => new claro.cms.components.MenuComponent)
-    Webwebsite
-    Log.info("CMS Configuration:" + Webwebsite.websites.map(CmsInfo.websiteInfo(_, "  ")).mkString("\n"))
-  }
-
-  object ViewDispatch {
-    def unapply(path : List[String]) : Option[ConcreteTemplate] = Request.get match {
-      case null => None
-      case request => request.template
-    }
+    Website
+    Log.info("CMS Configuration:" + Website.websites.map(CmsInfo.websiteInfo(_, "  ")).mkString("\n"))
   }
 }
 

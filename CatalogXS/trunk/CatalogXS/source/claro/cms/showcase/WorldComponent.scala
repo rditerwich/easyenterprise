@@ -17,10 +17,6 @@ class WorldComponent extends Component {
     Continent("Australia", Country("Australia"))
   ).sort ((x, y) => x.name < y.name)
   
-  entryPoints.append {
-      case "showcase" :: Nil => Template("showcase")
-    }
-
   bindings.append {
     case _ : WorldComponent => Map(
         "continents" -> continents -> "continent",

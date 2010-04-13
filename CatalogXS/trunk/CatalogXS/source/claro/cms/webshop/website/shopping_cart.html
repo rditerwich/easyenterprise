@@ -1,0 +1,53 @@
+<lift:Shop.shop eager_eval="true">
+<lift:surround with="default" at="content">
+ <h2>Shopping Cart</h2>
+  <lift:ShoppingCart.show phase="1" shopping_list_id="shopping_list">
+    <div id="shopping_list">
+      <show:no_items>
+        <p>No articles in your shopping cart.</p>
+      </show:no_items>
+      <show:items>
+        <table>
+          <thead>
+            <th style="width:10%;text-align:center;">ArticleNumber</th>
+            <th style="width:50%;text-align:center;">Product</th>
+            <th style="width:10%;text-align:center;">Price per item</th>
+            <th style="width:10%;text-align:center;">Volume</th>
+            <th style="width:10%;text-align:center;">Total price</th>
+            <th style="width:10%;text-align:center;">&nbsp;</th>
+          </thead>
+          <item:list>
+          <tr>
+            <shoppingcart:product>
+              <td><product:value property="ArticleNumber"/></td>
+              <td><product:value property="Description"/></td>
+              <td style="text-align:right;"><product:value property="Price"/></td>
+            </shoppingcart:product>
+            <td><shoppingcart:volume shoppingcart:maxlength="3" shoppingcart:style="width:30px;margin:0 5px;" /></td>
+            <td style="text-align:right;"><shoppingcart:priceTotal/></td>
+            <td style="text-align:center;"><shoppingcart:deleteButton><img src="/images/bin_closed.png" /></shoppingcart:deleteButton></td>
+          </tr>
+          </item:list>
+          <tr>
+            <td colspan="4"><b>Total price (excl. shipping costs):</b></td>
+            <td style="text-align:right;"><b><item:totalPrice/></b></td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+      </show:items>
+    </div>
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="2">
+    Address gegevens...
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="3">
+    Betalings methode...
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="4">
+    Bevestigings overzicht...
+  </lift:ShoppingCart.show>
+  <lift:ShoppingCart.show phase="5">
+    Order geplaatst melding...
+  </lift:ShoppingCart.show>
+</lift:surround>
+</lift:Shop.shop>

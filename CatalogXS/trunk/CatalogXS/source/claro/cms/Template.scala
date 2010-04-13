@@ -11,6 +11,7 @@ import claro.common.util.Conversions._
 
 object Template {
   def apply(name : String) = new Template(name, null)
+  def apply(path : List[String]) = new Template(path.mkString("/"), null)
 }
 
 case class Template(name : String, obj : Any) {
@@ -47,7 +48,7 @@ class TemplateCache(val store : TemplateStore) {
   }
 }
 
-class TemplateStore(val website : Webwebsite, resourceStore : ResourceStore) {
+class TemplateStore(val website : Website, resourceStore : ResourceStore) {
 
   def find(template : Template, locale : Locale) : Option[ConcreteTemplate] = 
     resourceStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
