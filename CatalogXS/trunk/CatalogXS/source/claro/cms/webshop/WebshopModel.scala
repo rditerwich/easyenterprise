@@ -214,24 +214,12 @@ class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cach
 class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(order) {
   
   def productOrders : Seq[ProductOrder] = 
-    order.getProductOrders map(new ProductOrder(_, mapping)) toSeq 
+    order.getProductOrders map(new ProductOrder(_, this, mapping)) toSeq 
 
   def clear = delegate.getProductOrders.clear
 
   def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
     
-  def updateVolume(productOrder : jpa.shop.ProductOrder, v : Int) : Boolean = {
-    if (productOrder.getVolume != v) {
-      productOrder.setVolume(v)
-      productOrder.setPrice(v * WebshopModel.shop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").value.getMoneyValue.doubleValue)
-      return true
-    }
-    return false
-  }
-
-  def removeProductOrder(productOrder : jpa.shop.ProductOrder) = {
-    delegate.getProductOrders.remove(productOrder)
-  }
 
   /**
    * Calculates the total number of articles in the shopping cart, based on
@@ -261,36 +249,22 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
                 productOrder.setPriceCurrency(property.moneyCurrency)
               case None => 
             }
-            updateVolume(productOrder, volume)
             delegate.getProductOrders.add(productOrder)
     }
-//    val arn = product.propertiesByName("ArticleNumber").value.getStringValue
-//    delegate.getProductOrders find((po) =>
-//      WebshopModel.shop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").value.getStringValue
-//          == arn) match {
-//        case None =>
-//            val productOrder = new jpa.shop.ProductOrder
-//            //fake a productOrder Id, otherwise remove will fail, because equals
-//            //is implemented that if id == null the objects of same type are
-//            //always equal
-//            productOrder.setId(product.delegate.getId)
-//            productOrder.setProduct(product.delegate)
-//            updateVolume(productOrder, volume)
-//            delegate.getProductOrders.add(productOrder)
-//        case Some(p) =>
-//            p.setVolume(p.getVolume.intValue + volume)
-//            p.setPrice(p.getVolume.intValue * product.propertiesByName("Price").value.getMoneyValue.doubleValue)
-//      }
   }
 }
 
-class ProductOrder(val productOrder : jpa.shop.ProductOrder, mapping : Mapping) extends Delegate(productOrder) {
-  def product = mapping.products(productOrder.getProduct)
-  val product2 = product
+class ProductOrder(val productOrder : jpa.shop.ProductOrder, val order : Order, mapping : Mapping) extends Delegate(productOrder) {
+  val product = mapping.products(productOrder.getProduct)
   def price = productOrder.getPrice.getOrElse(0)
   def totalPrice = price * volume
   def currency = productOrder.getPriceCurrency
   def volume = productOrder.getVolume.intValue
   def volume_=(v : Int) = productOrder.setVolume(v)
+  
+  def remove = {
+    order.delegate.getProductOrders.retainOnly(_.getProduct.getId != product.id)
+  }
+
 }
 

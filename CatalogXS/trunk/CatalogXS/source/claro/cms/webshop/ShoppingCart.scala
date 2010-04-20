@@ -24,11 +24,11 @@ class ShoppingCart private extends Bindable with Redrawable {
 
   override def bindings = bindingsFor(this)
   
-  def add(productPrefix : String) : NodeSeq => NodeSeq = xml => {
+  def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
     findBoundObject(productPrefix) match {
       case Some(product:Product) =>
         val redraws = CurrentRedraws.get
-        SHtml.a(() => addProduct(product, redraws), xml) % currentAttributes(Set("product"))
+        SHtml.a(() => doAddProduct(product, redraws), xml) % currentAttributes(Set("product"))
       case None => 
         NodeSeq.Empty
     }
@@ -36,28 +36,39 @@ class ShoppingCart private extends Bindable with Redrawable {
 
   def clear : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
-    SHtml.a(() => clear(redraws), xml) % current.attributes
+    SHtml.a(() => doClear(redraws), xml) % current.attributes
   }
 
-  def volume(productOrder : ProductOrder) = { 
+  def updateVolume(productOrder : ProductOrder) = { 
     val redraws = CurrentRedraws.get
     SHtml.ajaxText(productOrder.volume.toString,
-      updateVolume(productOrder, _, redraws)) % current.attributes
+      doUpdateVolume(productOrder, _, redraws)) % current.attributes
   }
   
-  private def addProduct(product : Product, redraws : Redraws) : JsCmd = {
+  def removeProductOrder(productOrder : ProductOrder) = (xml : NodeSeq) => { 
+    val redraws = CurrentRedraws.get
+    SHtml.a(() => doRemoveProductOrder(productOrder, redraws), xml) % current.attributes
+  }
+  
+  private def doAddProduct(product : Product, redraws : Redraws) : JsCmd = {
     S.notice("Product added to shopping cart")
     order.addProduct(product, 1)
     redraws.toJsCmd
   }
   
-  private def clear(redraws : Redraws) : JsCmd = {
+  private def doClear(redraws : Redraws) : JsCmd = {
       S.notice("Shopping cart cleared")
       order.clear
       redraws.toJsCmd
   }
   
-  private def updateVolume(productOrder : ProductOrder, volume : String, redraws : Redraws) = {
+  private def doUpdateVolume(productOrder : ProductOrder, volume : String, redraws : Redraws) = {
+    productOrder.volume = volume.toIntOr(productOrder.volume)
+    redraws.toJsCmd
+  }
+  
+  private def doRemoveProductOrder(productOrder : ProductOrder, redraws : Redraws) = {
+    productOrder.remove
     redraws.toJsCmd
   }
 }

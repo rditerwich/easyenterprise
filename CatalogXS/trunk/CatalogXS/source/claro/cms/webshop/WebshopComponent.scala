@@ -23,13 +23,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-form" -> new SearchForm -> "search")
     
-    case cart : ShoppingCart => Map(
-      "items" -> cart.order.productOrders -> "item",
-      "add" -> cart.add(@@("product-prefix", "product")),
-      "clear" -> cart.clear,
-      "link" -> Link("/cart"),
-      "href" -> LinkAttr("/cart") -> "href")
-    
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
@@ -59,11 +52,15 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "promotions" -> group.productExtentPromotions -> "promotion",
       "link" -> Link(group))
       
+    case cart : ShoppingCart => Map(
+      "items" -> cart.order.productOrders -> "item",
+      "add" -> cart.addProduct(@@("product-prefix", "product")),
+      "clear" -> cart.clear,
+      "link" -> Link("/cart"))
+    
     case order : Order => Map(
       "items" -> order.order.getProductOrders -> "item",
-      "add" -> ("add:" + @@("product_tag", "product")),
-      "link" -> Link("/cart"),
-      "href" -> LinkAttr("/cart") -> "href")
+      "link" -> Link("/order"))
 
    case productOrder : ProductOrder => Map(   
       "id" -> productOrder.productOrder.getId.toString,
@@ -72,7 +69,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "total-price" -> money(productOrder.totalPrice, productOrder.currency),
       "currency" -> productOrder.currency,
       "volume" -> productOrder.volume.toString,
-      "volume-edit" -> ShoppingCart.volume(productOrder))
+      "volume-edit" -> ShoppingCart.updateVolume(productOrder),
+      "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
     case property: Property => Map(  
       "id" -> property.id.toString,

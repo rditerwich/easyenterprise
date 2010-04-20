@@ -79,6 +79,11 @@ class RichString(s: String) {
     if (s.endsWith(suffix)) s
     else s + suffix
   }
+  
+  def toIntOr(default : Int) = try { s.toInt } catch { case _ => default}
+  def toLongOr(default : Long) = try { s.toLong } catch { case _ => default}
+  def toFloatOr(default : Float) = try { s.toFloat } catch { case _ => default}
+  def toDoubleOr(default : Double) = try { s.toDouble } catch { case _ => default}
 }
 
 class RichStringSeq(ss : Seq[String]) {
