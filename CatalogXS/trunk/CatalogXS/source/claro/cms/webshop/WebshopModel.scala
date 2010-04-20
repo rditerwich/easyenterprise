@@ -241,15 +241,15 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
     productOrders.find(_.product.id == product.id) match {
       case Some(productOrder) => productOrder.volume += volume
       case None =>
-            val productOrder = new jpa.shop.ProductOrder
-            productOrder.setProduct(product.delegate)
-            product.priceProperty match {
-              case Some(property) => 
-                productOrder.setPrice(property.moneyValue)
-                productOrder.setPriceCurrency(property.moneyCurrency)
-              case None => 
-            }
-            delegate.getProductOrders.add(productOrder)
+        val productOrder = new jpa.shop.ProductOrder
+        productOrder.setProduct(product.delegate)
+        product.priceProperty match {
+          case Some(property) => 
+            productOrder.setPrice(property.moneyValue)
+            productOrder.setPriceCurrency(property.moneyCurrency)
+          case None => 
+        }
+        delegate.getProductOrders.add(productOrder)
     }
   }
 }
