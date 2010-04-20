@@ -18,6 +18,8 @@ class Shop {
 	ShopBindings.shopBinding(Model.shop).bind(S.attr("tag") openOr "shop", xml) 
   }
   
+  def ident(xml : NodeSeq) : NodeSeq = xml
+  
   def search(xml : NodeSeq) : NodeSeq = {
     var searchString = Model.currentSearchString getOrElse("")
 

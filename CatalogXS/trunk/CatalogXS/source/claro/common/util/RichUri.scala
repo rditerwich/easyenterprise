@@ -3,6 +3,7 @@ package claro.common.util
 import claro.common.util.Conversions._
 import java.io.{File,FileInputStream,InputStream}
 import java.net.URI
+import java.util.regex.Pattern;
 import collection.mutable.ArrayBuffer
 
 object RichUri {
@@ -16,6 +17,10 @@ object RichUri {
     }
     result
   }
+  
+  val spacePattern = Pattern.compile(" ");
+
+  def encode(in : String) = spacePattern.matcher(in).replaceAll("%20")
 }
 
 class RichUri(u : URI) {
@@ -34,7 +39,7 @@ class RichUri(u : URI) {
   
   def parent : URI = uri.resolve(if (path.endsWith("/")) ".." else ".")
   
-  def child(childPath : String) = uri.resolve(if (path.endsWith("/")) childPath.dropPrefix("/") else name + childPath.ensurePrefix("/")) 
+  def child(childPath : String) = uri.resolve(RichUri.encode(if (path.endsWith("/")) childPath.dropPrefix("/") else name + childPath.ensurePrefix("/"))) 
 
   def find(pred : URI => Boolean) : Seq[URI] = find(0, pred)
   

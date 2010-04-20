@@ -23,6 +23,17 @@ class RichProperties(properties : Properties) {
   
   def list(name : String) : List[String] = properties.getProperty(name, "").split(",").toList.trim
   
+  /** 
+   * Add all properties from other properties that have not been defined by this properties. 
+   */
+  def merge(other : Properties) = {
+    for (name <- other.names) {
+      if (properties.getProperty(name) == null) {
+        properties.setProperty(name, other(name))
+      }
+    }
+  }
+  
   def load(uri : URI) : Properties = {
     try {
       val is = uri.open.get

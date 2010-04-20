@@ -16,8 +16,7 @@ import claro.cms.Request
 object WebshopModel {
 
   var shopCache = Lazy(new WebshopCache) 
-  object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.website.properties("shop.id", "1"))) 
-  object shoppingCart extends SessionVar[Order](new Order(new jpa.shop.Order, shop.get.mapping))
+  object shop extends RequestVar[Shop](shopCache.get.shopsById(Request.website.config.properties("shop.id", "1"))) 
 
   object currentProductVar extends RequestVar[Option[String]](None)
   object currentProductGroupVar extends RequestVar[Option[String]](None)
@@ -33,10 +32,9 @@ object WebshopModel {
     case None => None
   }
     
-  def currentSearchProducts : Iterable[Product] =
-	  S.param("search") match {
-	  case Full(searchString) => shop.keywordMap.find(searchString) 
-	  case _ => Seq.empty
+  def currentSearchProducts : Set[Product] = currentSearchStringVar.is match {
+	  case Some(searchString) => shop.keywordMap.find(searchString) 
+	  case _ => Set.empty
   }
 }
 
@@ -82,6 +80,9 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val productsById : Map[Long, Product] = 
     products mapBy (_.id)
     
+  val productGroupsByName : Map[String, ProductGroup] = 
+    productGroups mapBy (_.name)
+  
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cacheData.mediaValues
   
@@ -114,6 +115,12 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     
   val properties : Set[Property] =
     productGroup.getProperties map(mapping.properties) toSet
+    
+  val name : String = 
+    groupPropertiesByName.get("Name") match {
+      case Some(property) => property.value.getStringValue
+      case None => ""
+    }
     
   lazy val productExtent : Set[Product] =
     cacheData.productGroupProductExtent(productGroup) map(mapping.products) toSet
@@ -163,7 +170,6 @@ class Property(property : jpa.catalog.Property, val value : jpa.catalog.Property
   val valueId : Long = value.getId.longValue
   val mimeType : String = value.getMimeType getOrElse ""
   val mediaValue : Array[Byte] = value.getMediaValue
-  val pvalue = value
   
   def hasValue = value != noPropertyValue
 
@@ -206,15 +212,14 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
   def productOrders : Seq[ProductOrder] = 
     order.getProductOrders map(new ProductOrder(_, mapping)) toSeq 
 
-  
-  def empty = delegate.getProductOrders.clear
+  def clear = delegate.getProductOrders.clear
 
   def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
     
   def updateVolume(productOrder : jpa.shop.ProductOrder, v : Int) : Boolean = {
     if (productOrder.getVolume != v) {
       productOrder.setVolume(v)
-      productOrder.setPrice(v * WebshopModel.shop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
+      productOrder.setPrice(v * WebshopModel.shop.get.productsById(productOrder.getProduct().getId().longValue()).propertiesByName("Price").value.getMoneyValue.doubleValue)
       return true
     }
     return false
@@ -241,30 +246,40 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
    * the volume count for that product.
    */
   def addProduct(product : Product, volume : Int) = {
-    val arn = product.propertiesByName("ArticleNumber").pvalue.getStringValue
-    delegate.getProductOrders find((po) =>
-      WebshopModel.shop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").pvalue.getStringValue
-          == arn) match {
-        case None =>
+    productOrders.find(_.product.id == product.id) match {
+      case Some(productOrder) => productOrder.volume += volume
+      case None =>
             val productOrder = new jpa.shop.ProductOrder
-            //fake a productOrder Id, otherwise remove will fail, because equals
-            //is implemented that if id == null the objects of same type are
-            //always equal
-            productOrder.setId(product.delegate.getId)
             productOrder.setProduct(product.delegate)
             updateVolume(productOrder, volume)
             delegate.getProductOrders.add(productOrder)
-        case Some(p) =>
-            p.setVolume(p.getVolume.intValue + volume)
-            p.setPrice(p.getVolume.intValue * product.propertiesByName("Price").pvalue.getMoneyValue.doubleValue)
-      }
+    }
+//    val arn = product.propertiesByName("ArticleNumber").value.getStringValue
+//    delegate.getProductOrders find((po) =>
+//      WebshopModel.shop.productsById(po.getProduct().getId().longValue()).propertiesByName("ArticleNumber").value.getStringValue
+//          == arn) match {
+//        case None =>
+//            val productOrder = new jpa.shop.ProductOrder
+//            //fake a productOrder Id, otherwise remove will fail, because equals
+//            //is implemented that if id == null the objects of same type are
+//            //always equal
+//            productOrder.setId(product.delegate.getId)
+//            productOrder.setProduct(product.delegate)
+//            updateVolume(productOrder, volume)
+//            delegate.getProductOrders.add(productOrder)
+//        case Some(p) =>
+//            p.setVolume(p.getVolume.intValue + volume)
+//            p.setPrice(p.getVolume.intValue * product.propertiesByName("Price").value.getMoneyValue.doubleValue)
+//      }
   }
 }
 
 class ProductOrder(val productOrder : jpa.shop.ProductOrder, mapping : Mapping) extends Delegate(productOrder) {
-  val product = mapping.products(productOrder.getProduct)
+  def product = mapping.products(productOrder.getProduct)
+  val product2 = product
   def price = productOrder.getPrice
   def currency = productOrder.getPriceCurrency
-  def volume = productOrder.getVolume
+  def volume = productOrder.getVolume.intValue
+  def volume_=(v : Int) = productOrder.setVolume(v)
 }
 

@@ -38,6 +38,21 @@ class RichString(s: String) {
     else source.substring(index + pattern.length());
   }
 
+  def beforeFirst(c : Char) : String = {
+    val source = getOrElse("")
+    val index = source.indexOf(c);
+    if (index < 0) source
+    else source.substring(0, index);
+  }
+
+  def afterFirst(c : Char) : String = {
+    val source = getOrElse("")
+    val index = source.indexOf(c);
+    if (index < 0) source
+    else source.substring(index + 1);
+  }
+
+
   def afterLast(c : Char) : String = {
     val source = getOrElse("")
 	val index = source.lastIndexOf(c);

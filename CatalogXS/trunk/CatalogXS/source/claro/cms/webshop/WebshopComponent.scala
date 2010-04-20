@@ -12,22 +12,30 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   bindings.append {
     case _ : WebshopComponent => Map (
       "id" -> WebshopModel.shop.get.id,
-      "current_product_group" -> WebshopModel.currentProductGroup -> "group",
-      "current_product" -> WebshopModel.currentProduct -> "product",
-      "current_search_string" -> WebshopModel.currentSearchStringVar.is,
-      "current_search_products" -> WebshopModel.currentSearchProducts -> "product",
+      "current-product-group" -> WebshopModel.currentProductGroup -> "group",
+      "current-product" -> WebshopModel.currentProduct -> "product",
+      "current-search-string" -> WebshopModel.currentSearchStringVar.is,
+      "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
-      "top_level_groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
+      "group" -> WebshopModel.shop.get.productGroupsByName.get(@@("name")) -> "group",
+      "top-level-groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
-      "shopping_cart" -> WebshopModel.shoppingCart -> "shopping_cart",
-      "search_form" -> new SearchForm -> "search")
+      "shopping-cart" -> new ShoppingCart -> "shopping-cart",
+      "search-form" -> new SearchForm -> "search")
+    
+    case cart : ShoppingCart => Map(
+      "items" -> cart.order.productOrders -> "item",
+      "add" -> cart.add(@@("product-prefix", "product")),
+      "clear" -> cart.clear,
+      "link" -> Link("/cart"),
+      "href" -> LinkAttr("/cart") -> "href")
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
-      "start_date" -> WebshopUtil.slashDate.format(promotion.startDate),
-      "end_date" -> WebshopUtil.slashDate.format(promotion.endDate),
+      "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
+      "end-date" -> WebshopUtil.slashDate.format(promotion.endDate),
       "price" -> WebshopUtil.formatMoney(promotion.priceCurrency, promotion.price.doubleValue),
-      "volume_discount" -> promotion.volumeDiscount,
+      "volume-discount" -> promotion.volumeDiscount,
       "product" -> promotion.product -> "product")
     
     case product : Product => Map(   
@@ -41,25 +49,25 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     
     case group : ProductGroup => Map(   
       "id" -> group.id.toString,
-      "sub_groups" -> group.children -> "group",
-      "parent_groups" -> group.parents -> "group",
-      "group_properties" -> group.groupProperties -> "property",
-      "group_property" -> group.groupPropertiesByName.get(@@("name")) -> "property",
-      "group_value" -> value(group.groupPropertiesByName.get(@@("property"))),
+      "sub-groups" -> group.children -> "group",
+      "parent-groups" -> group.parents -> "group",
+      "group-properties" -> group.groupProperties -> "property",
+      "group-property" -> group.groupPropertiesByName.get(@@("name")) -> "property",
+      "group-value" -> value(group.groupPropertiesByName.get(@@("property"))),
       "properties" -> group.properties -> "property",
-      "products" -> @@?("include_sub_groups", group.productExtent, group.products) -> "product",
+      "products" -> @@?("include_sub-groups", group.productExtent, group.products) -> "product",
       "promotions" -> group.productExtentPromotions -> "promotion",
       "link" -> Link(group))
-    
+      
     case order : Order => Map(
       "items" -> order.order.getProductOrders -> "item",
       "add" -> ("add:" + @@("product_tag", "product")),
-      "link" -> Link("/shoppingcart"),
-      "href" -> LinkAttr("/shoppingcart") -> "href")
+      "link" -> Link("/cart"),
+      "href" -> LinkAttr("/cart") -> "href")
 
    case productOrder : ProductOrder => Map(   
       "id" -> productOrder.productOrder.getId.toString,
-      "product" -> productOrder.product,
+      "product" -> productOrder.product -> "product",
       "price" -> productOrder.price,
       "currency" -> productOrder.currency,
       "volume" -> productOrder.volume)
@@ -87,23 +95,25 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case "group" :: id :: Nil => WebshopModel.currentProductGroupVar(Some(id)); "group" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
     case "cart" :: Nil => "shopping_cart" :: Nil
-    case _ => Nil
+    case path => path
   }
 }
 
 class SearchForm extends Bindable {
   var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse("")
   
-  override def bindings = Map(
-    "search_string" -> SHtml.text(searchString, searchString = _, 
+  override def bindings = Bindings(this, Map(
+    "search-string" -> SHtml.text(searchString, searchString = _, 
       ("class", "formfield searchfield"),
       ("onclick", "javascript:this.value=(this.value == 'search' ? '' : this.value);")),
     "submit" -> SHtml.submit("Search", () => S.redirectTo("/search/" + searchString),
-      ("class", "formbutton")))
+      ("class", "formbutton"))))
   
-  override def getXml(xml : NodeSeq) : NodeSeq = {
-    <lift:snippet type="Shop" form="POST">
-      {xml}
+  override def bind(node : Node, context : BindingContext) : NodeSeq = {
+    <lift:snippet type={"Shop:ident"} form="POST">
+      { super.bind(node, context) }
     </lift:snippet>
   }
+  
+  def ident(xml : NodeSeq) : NodeSeq = xml
 }

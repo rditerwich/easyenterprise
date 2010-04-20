@@ -69,7 +69,11 @@ class Value(property : => Option[Property]) extends Function0[NodeSeq]{
 	       else
   		     Text(property.mediaValue.toString());
       case jpa.catalog.PropertyType.Money =>
-        WebshopUtil.formatMoney(property.pvalue.getMoneyCurrency, property.pvalue.getMoneyValue.doubleValue)
+        if (property.value != null) {
+          WebshopUtil.formatMoney(property.value.getMoneyCurrency, property.value.getMoneyValue.doubleValue)
+        } else {
+          Text("")
+        }
       case _ => Text(property.valueAsString)
     }
     case None => Text("")

@@ -21,6 +21,18 @@ body {
   background-color:#E6E7E9;
 }
 
+.add_to_cart {
+  float:right;
+  padding: 8px 12px;
+  font-size: 12px;
+  text-decoration: none;
+  white-space:nowrap;
+  line-height:20px;
+  border: 1px solid #999;
+  color: #4D4D4D;
+  background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;
+}
+
 #site_content {
   position:relative;
   width:960px;
@@ -361,19 +373,20 @@ body {
 
 
 .kruimelpad {
-  font-size:9px;
+  font-size:12px;
   line-height:12px;
-  padding-left:23px;
-  padding-top:13px;
+  padding-left:0px;
+  padding-top:0px;
   padding-bottom:13px;
-  color:#ccc;
+  color:#444;
 }
 .kruimelpad a {
-  color:#ccc;
-  text-decoration: none;
+  color:#444;
+  text-decoration:underline;
 }
 .kruimelpad a:hover {
   text-decoration:underline;
+  cursor: pointer;
 }
 
 

@@ -84,9 +84,9 @@ class TemplateComponent extends Component {
         case Some(template) => template.xml
         case None => content
       })
-	  Binding.bind(template, context + (prefix -> Map(
+	  Binding.bind(template, context + (prefix -> Bindings(this, 
         "include" -> new IncludeBinding(currentTemplates ++ templateMap),
-        "content" -> content))) 
+        "content" -> content)))
     }
   }
 }

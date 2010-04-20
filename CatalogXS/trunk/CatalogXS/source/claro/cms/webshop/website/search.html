@@ -1,18 +1,18 @@
 <template:include template="page">
 		  <head><title>Product Groups</title></head>
-		  <div class="contentheading">Search Results for '<webshop:current_search_string/>'</div>
+		  <div class="contentheading">Search Results for '<webshop:current-search-string/>'</div>
 		  <table>
 		    <thead>
 		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>
 		      <th style="width:75%;text-align:center"><lift:loc>Description</lift:loc></th>
 		      <th style="width:15%"><lift:loc>Price</lift:loc></th>
 		    </thead>
-		  <webshop:current_search_products>
+		  <webshop:current-search-products>
 		      <tr>
             <td><product:link><product:value property="ArticleNumber" /></product:link></td>
 		        <td><product:value property="Description"/></td>
 		        <td><product:value property="Price" /></td>
 		      </tr>
-		  </webshop:current_search_products>
+		  </webshop:current-search-products>
 		  </table>
 </template:include>

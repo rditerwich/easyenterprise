@@ -11,12 +11,16 @@ object CmsInfo {
     (website.config.parents.map(_.id) match {
       case Nil => ""
       case single :: Nil => "\n" + prefix + "  Parent: " + single
-      case many => "\n" + prefix + "  Parents:\n    " + many.mkString("\n" + prefix + "    ")
+      case many => "\n" + prefix + "  Parents:\n    " + prefix + many.mkString("\n" + prefix + "    ")
     }) + 
     (website.locations.map(_.toString) match {
       case Nil => ""
       case single :: Nil => "\n" + prefix + "  Location: " + single
-      case many => "\n" + prefix + "  Locations:\n    " + many.mkString("\n" + prefix + "    ")
+      case many => "\n" + prefix + "  Locations:\n    " + prefix + many.mkString("\n" + prefix + "    ")
+    }) + 
+    (website.emProperties.map(e => e._1 + "=" + e._2) match {
+    case Nil => ""
+    case many => "\n" + prefix + "  Entity Manager:\n    " + prefix + many.mkString("\n" + prefix + "    ")
     }) 
 
 }

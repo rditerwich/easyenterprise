@@ -1,13 +1,13 @@
 <div class="page_menu" id="right_bar"> 
   <div class="page_searchbox">
-    <webshop:search_form form="POST"> 
+    <webshop:search-form form="POST"> 
       <table> 
         <tr> 
-          <td><search:search_string /></td> 
+          <td><search:search-string /></td> 
           <td><search:submit /></td> 
         </tr> 
       </table> 
-    </webshop:search_form> 
+    </webshop:search-form> 
     <form method="post" action="http://nieuwsbrief.netrex.eu/netrexmail/form.php?form=23" id="frmSS23" onSubmit="return CheckForm23(this);"> 
       <table style="margin-top:5px;"> 
         <tr> 
@@ -19,6 +19,13 @@
   </div> 
   <div class="page_menu_artgrp"> 
     <div class="description">Order status</div>
+    <webshop:shopping-cart>
+		  <div class="order_status" >
+		    <div><shopping-cart:link><b><lift:loc>Shopping Cart</lift:loc> &gt;&gt;</b></shopping-cart:link></div>
+		    <div><shopping-cart:items><list:size/> </shopping-cart:items>&#160;<lift:loc>articles in shopping cart</lift:loc></div> 
+		    <div><shopping-cart:clear><lift:loc>Clear shopping cart</lift:loc>&gt;&gt;</shopping-cart:clear></div>
+		  </div>
+    </webshop:shopping-cart>
     <div id="order_status"><liftembed what="order_status" /></div>
   </div> 
   <div class="page_menu_footer"></div> 

@@ -40,7 +40,6 @@ object Website {
 class Website(websiteFile : URI) {
   val config = new WebsiteConfig(websiteFile)
   val locations : List[URI] = config.extent.flatMap(_.locations)
-  val properties = new Properties(System.getProperties).load(websiteFile)
   val name = config.name
   val server = config.server
   val path = config.path
@@ -51,7 +50,7 @@ class Website(websiteFile : URI) {
   val contentCache = new ResourceContentCache(this)
   val templateStore = new TemplateStore(this, resourceStore)
   val templateCache = new TemplateCache(templateStore)
-  def caching = false
+  var caching = true
   val components : Seq[Component] = createComponents
   val templateLocators = components flatMap (_.templateLocators.toList)
   val bindings = components flatMap (_.bindings.toList)
@@ -59,7 +58,7 @@ class Website(websiteFile : URI) {
 
   val rootBinding = new RootBinding(this)
   
-  lazy val emProperties = properties.parseAll("entitymanager.")
+  lazy val emProperties = config.properties.parseAll("entitymanager.")
   
   def entityManagerFactory(name : String) =  
 	  Persistence.createEntityManagerFactory(name, emProperties toJava)
@@ -85,14 +84,32 @@ class Website(websiteFile : URI) {
 class WebsiteConfig(websiteFile : URI) {
   val configFile = websiteFile.canonical
   val properties = new Properties(System.getProperties).load(websiteFile)
+  val parents : List[WebsiteConfig] = properties.list("website.parents").map(new URI(_).child("website.config")).filter(_.exists).map(new WebsiteConfig(_))
+  for (parent <- parents) {
+    properties.merge(parent.properties)
+  }
   val name = properties("website.name")
   val server = properties("website.server")
-  val parents : List[WebsiteConfig] = properties.list("website.parents").map(new URI(_).child("website.config")).filter(_.exists).map(new WebsiteConfig(_))
+  val urls : List[(String, List[String])] = properties("website.urls").split(",").trim.map(parseUrl _).toList
   val explicitLocations : List[URI] = properties.list("website.locations").map(new URI(_))
   val path : List[String] = properties("website.path").getOrElse("/").split("/").trim.toList 
-  val components : List[String] = properties("website.components").split(",").trim.toList
+  val components : List[String] = properties.list("website.components")
   val location = configFile.parent
   val locations = if (!explicitLocations.isEmpty) explicitLocations else List(location)
   def id : String = name getOrElse location.toString
   def extent : List[WebsiteConfig] = this :: parents.flatMap(_.extent)
+  
+  private def parseUrl(s : String) : (String, List[String]) = {
+    if (s.startsWith("//")) {
+      s.substring(1).split("/").toList match {
+        case head :: tail => (head, tail)
+        case Nil => ("", Nil)
+      } 
+    } else {
+      s.split("/").toList match {
+        case path => ("", path)
+      } 
+    }
+
+  }
 }

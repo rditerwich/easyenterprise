@@ -196,6 +196,100 @@ INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2052,'catalog.productg
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205201, 1000, 2052, 'en', 'Stiching');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (205202, 1011, 2052, 'en', 'Stiching');
 
+/* Product group Xingraphics */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2080,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208001, 1000, 2080, 'en', 'Xingraphics');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208002, 1011, 2080, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208003, 1012, 2080, 'en', null);
+
+/* Product group Xingraphics: Plates */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2081,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208101, 1000, 2081, 'en', 'Plates');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208102, 1011, 2081, 'en', 'Plates');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208103, 1012, 2081, 'en', null);
+
+/* Properties for Xingraphics: Plates */
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1080,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3080,1080,'Type');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1081,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3081,1081,'Substrate');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1082,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3082,1082,'Spectral sensitivity');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1083,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3083,1083,'Exposure energy');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1084,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3084,1084,'Resolution');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1085,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3085,1085,'Run length');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1086,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3086,1086,'Maximum width');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1087,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3087,1087,'Start up');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1088,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3088,1088,'Roll up');
+INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1089,'String', 2081);
+INSERT INTO catalogxs.label (id,property_id,label) VALUES (3089,1089,'Shelf life');
+
+/* Product group Xingraphics: Chemicals */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2082,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208201, 1000, 2082, 'en', 'Chemicals');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208202, 1011, 2082, 'en', 'Chemicals');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208203, 1012, 2082, 'en', null);
+
+/* Product group Xingraphics: eCO Primo */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2083,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208301, 1000, 2083, 'en', 'FIT eCO Primo');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208302, 1011, 2083, 'en', 'FIT eCO Primo Processless Thermal Plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208303, 1012, 2083, 'en', null);
+
+/* Property values for Xingraphics: eCO Primo */
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208310, 1080, 2083, 'en', 'Thermal negative processless plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208311, 1081, 2083, 'en', 'High quality grained and anodized aluminum');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208312, 1082, 2083, 'en', '830nm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208313, 1083, 2083, 'en', '300 mj/cm2(varies based on platesetter manufacture)');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208314, 1084, 2083, 'en', 'AM 1-99% @ 200 lpi; 20 micron stochastic');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208315, 1085, 2083, 'en', '20,000-50,000 impressions ');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208316, 1086, 2083, 'en', '1050mm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208317, 1087, 2083, 'en', 'Pre-dampening required');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208318, 1088, 2083, 'en', '<15 impressions');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208319, 1089, 2083, 'en', '18 months when away from excessive cold, heat and humidity');
+
+/* Product group Xingraphics: Xtra Melior */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2084,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208401, 1000, 2084, 'en', 'FIT Xtra Melior');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208402, 1011, 2084, 'en', 'FIT Xtra Melior Thermal CTP Plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208403, 1012, 2084, 'en', null);
+
+/* Property values for Xingraphics: Xtra Melior */
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208410, 1080, 2084, 'en', 'Positive working thermal CTP plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208411, 1081, 2084, 'en', 'Electro-chemically grained and anodized lithographic-grade aluminum with hydrophilic treatment');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208412, 1082, 2084, 'en', '800~850n');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208413, 1083, 2084, 'en', '100~120mj/cm2');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208414, 1084, 2084, 'en', '1 ~ 99% @ 450 lpi');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208415, 1085, 2084, 'en', '250,000 impressions unbaked and 1,000,000 impressions post-baked');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208416, 1086, 2084, 'en', '1480mm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208417, 1087, 2084, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208418, 1088, 2084, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208419, 1089, 2084, 'en', '18 months when away from excessive cold, heat and humidity');
+
+/* Product group Xingraphics: Melior */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2085,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208501, 1000, 2085, 'en', 'FIT Melior');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208502, 1011, 2085, 'en', 'FIT Melior Thermal CTP Plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208503, 1012, 2085, 'en', null);
+
+/* Property values for Xingraphics: Melior */
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208510, 1080, 2085, 'en', 'Positive working thermal CTP plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208511, 1081, 2085, 'en', 'Electro-chemically grained and anodized lithographic-grade aluminum with hydrophilic treatment');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208512, 1082, 2085, 'en', '830nm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208513, 1083, 2085, 'en', '120mj/cm2');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208514, 1084, 2085, 'en', '1 ~ 99% @ 450lp');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208515, 1085, 2085, 'en', '250,000 impressions unbaked and 1,000,000 impressions post-baked');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208516, 1086, 2085, 'en', '1450mm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208517, 1087, 2085, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208518, 1088, 2085, 'en', '');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (208519, 1089, 2085, 'en', '18 months when away from excessive cold, heat and humidity');
+
 /* Product Group hierarchy */
 INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 
@@ -254,7 +348,23 @@ INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 /* Press */
 (2043,2050),
 (2043,2051),
-(2043,2052);
+(2043,2052),
+
+/* Xingraphics */
+(2008,2080),
+
+/* Xingraphics Plates & Chemicals */
+(2080, 2081),
+(2080, 2082),
+
+/* Xingraphics Plates under Print */
+(2049, 2081), 
+
+/* Xingraphics Plates */
+(2081, 2083),
+(2081, 2084),
+(2081, 2085)
+;
 
 /* Product 5001 Property Values */
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10010, 1010, 5001, 'en', '188078');
@@ -339,6 +449,40 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501504, 1020, 5015, 'en', 'Magenta');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501505, 1023, 5015, 'en', 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501506, 1015, 5015, 'en', 'Magenta bio process ink for best results at a high speed.');
+
+/* Product 5080 Xingraphics eCO Prima 1x1*/
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5080,'catalog.product');
+INSERT INTO catalogxs.item_parents (children_id,parents_id) VALUES (5080,2083);
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508001, 1010, 5080, 'en', 'SKU467262');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508002, 1011, 5080, 'en', 'FIT eCO Primo 1x1');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508003, 1014, 5080, null, '100.95');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508010, 1080, 5080, 'en', 'Thermal negative processless plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508011, 1081, 5080, 'en', 'High quality grained and anodized aluminum');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508012, 1082, 5080, 'en', '830nm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508013, 1083, 5080, 'en', '300 mj/cm2(varies based on platesetter manufacture)');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508014, 1084, 5080, 'en', 'AM 1-99% @ 200 lpi; 20 micron stochastic');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508015, 1085, 5080, 'en', '20,000-50,000 impressions ');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508016, 1086, 5080, 'en', '1050mm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508017, 1087, 5080, 'en', 'Pre-dampening required');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508018, 1088, 5080, 'en', '<15 impressions');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508019, 1089, 5080, 'en', '18 months when away from excessive cold, heat and humidity');
+
+/* Product 5081 Xingraphics eCO Prima 1x5*/
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5081,'catalog.product');
+INSERT INTO catalogxs.item_parents (children_id,parents_id) VALUES (5081,2083);
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508101, 1010, 5081, 'en', 'SKU467262');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508102, 1011, 5081, 'en', 'FIT eCO Primo 1x5');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508103, 1014, 5081, null, '399.00');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508110, 1080, 5081, 'en', 'Thermal negative processless plate');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508111, 1081, 5081, 'en', 'High quality grained and anodized aluminum');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508112, 1082, 5081, 'en', '830nm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508113, 1083, 5081, 'en', '300 mj/cm2(varies based on platesetter manufacture)');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508114, 1084, 5081, 'en', 'AM 1-99% @ 200 lpi; 20 micron stochastic');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508115, 1085, 5081, 'en', '20,000-50,000 impressions ');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508116, 1086, 5081, 'en', '1050mm');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508117, 1087, 5081, 'en', 'Pre-dampening required');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508118, 1088, 5081, 'en', '<15 impressions');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (508119, 1089, 5081, 'en', '18 months when away from excessive cold, heat and humidity');
 
 /* bShop */
 INSERT INTO catalogxs.shop (name,catalog_id,id) VALUES ('webshop',1,1);

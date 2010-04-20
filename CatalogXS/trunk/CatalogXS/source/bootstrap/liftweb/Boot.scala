@@ -45,6 +45,7 @@ class Boot {
 */
     // where to search snippet
     LiftRules.addToPackages("agilexs.catalogxs.presentation");
+LiftRules.addToPackages("claro.cms.webshop");
     
     LiftRules.defaultHeaders = {
       // Permit caching of our home page 

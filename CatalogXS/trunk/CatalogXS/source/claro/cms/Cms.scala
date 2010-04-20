@@ -18,6 +18,8 @@ object Cms {
   def entityManager(name : String) = Request.website.entityManagerFactory(name).createEntityManager
 
   def boot = {
+    System.setProperty("websites", ",classpath:/claro/cms/showcase/,classpath:/claro/cms/webshop/website,classpath:agilexs.cms.shop.tetterode.website,classpath:claro.cms.documentation,classpath:agilexs.cms.shop.xingraphics.website")
+
     
     LiftRules.calculateContextPath = Request.calculateContextPath _
     

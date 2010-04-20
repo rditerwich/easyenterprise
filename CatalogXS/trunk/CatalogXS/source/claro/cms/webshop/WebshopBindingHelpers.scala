@@ -22,8 +22,8 @@ trait WebshopBindingHelpers {
 		      <img src={"image/" + property.valueId} />
 	         else
   		       Text(property.mediaValue.toString());
-        case jpa.catalog.PropertyType.Money =>
-          WebshopUtil.formatMoney(property.pvalue.getMoneyCurrency, property.pvalue.getMoneyValue.doubleValue)
+        case jpa.catalog.PropertyType.Money if (property.value != null && property.value.getMoneyValue != null) =>
+            WebshopUtil.formatMoney(property.value.getMoneyCurrency, property.value.getMoneyValue.doubleValue)
         case _ => Text(property.valueAsString)
       }
       case None => Text("")

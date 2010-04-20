@@ -1,6 +1,6 @@
 package claro.common.util
 
-import java.io.{InputStream,InputStreamReader}
+import java.io.{ByteArrayOutputStream,InputStream, BufferedInputStream,InputStreamReader}
 import java.nio.charset.Charset
 
 class RichInputStream(getInputStream : => InputStream) {
@@ -21,6 +21,23 @@ class RichInputStream(getInputStream : => InputStream) {
       reader.close
     }
     result.toString
+  }
+  
+  def readBytes : Array[Byte] = {
+    val is = new BufferedInputStream(getInputStream)
+    val result = new ByteArrayOutputStream()
+    val buffer = new Array[Byte](1000)
+    try {
+      var n = 0
+      while (n >= 0) {
+        result.write(buffer, 0, n)
+        n = is.read(buffer)
+      }
+    } finally {
+      result.close
+      is.close
+    }
+    result.toByteArray
   }
   
   def exists : Boolean = {

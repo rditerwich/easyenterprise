@@ -34,22 +34,23 @@ abstract case class Resource(val name : String, val kind : String, val scope : S
   def readStream : InputStream
   def writeStream : Option[OutputStream]
   def readString = readStream.readString
+  def readBytes = readStream.readBytes
   def exists : Boolean
   def uri : URI
 }
 
 class ResourceContentCache(website : Website) {
 
-  private final val MAX_STRING_CONTENT_SIZE = 100000;
+  private final val MAX_CONTENT_SIZE = 200000;
   
-  private val contentCache : ConcurrentMap[Resource,String] = 
-    new com.google.common.collect.MapMaker().concurrencyLevel(32).softKeys().makeMap[Resource,String]
+  private val contentCache : ConcurrentMap[Resource,Array[Byte]] = 
+    new com.google.common.collect.MapMaker().concurrencyLevel(32).softKeys().makeMap[Resource,Array[Byte]]
 
-  def apply(resource : Resource) : String = apply(resource, resource.readString)
+  def apply(resource : Resource) : Array[Byte] = apply(resource, resource.readBytes)
   
-  def apply(resource : Resource, content : => String) : String = {
+  def apply(resource : Resource, content : => Array[Byte]) : Array[Byte] = {
     contentCache.getOrElse(resource, content useIn ( content =>    	
-      if (website.caching && content.size < MAX_STRING_CONTENT_SIZE) {
+      if (website.caching && content.size < MAX_CONTENT_SIZE) {
         contentCache.put(resource, content)
       }))
   }
@@ -77,11 +78,10 @@ trait ResourceStore {
     for (scope <- locator.scopes) {
       for (locale <- locales) {
         for (resource <- get(locator.name, locator.kind, scope, locale)) {
+          Log.info("Scanning resource: " + resource.uri); 
           if (resource.exists) {
             Log.info("Resource found: " + resource.uri); 
             return Some(resource)
-          } else {
-            Log.info("Resource not found: " + resource.uri); 
           }
         }
       }

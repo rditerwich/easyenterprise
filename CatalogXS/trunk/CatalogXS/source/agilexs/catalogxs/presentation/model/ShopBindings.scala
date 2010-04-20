@@ -13,14 +13,14 @@ object ShopBindings {
 
   def shopBinding(shop : Shop) = shop bindWith params(   
     "id" -> Text(shop.id.toString),
-    "current_product_group" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
-    "current_product" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
-    "current_search_string" -> Text(Model.currentSearchString.getOrElse("")),
-    "current_search_products" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
+    "current-product-group" -> Complex(productGroupBinding(Model.currentProductGroup getOrNull)) -> "group",
+    "current-product" -> Complex(productBinding(Model.currentProduct getOrNull)) -> "product",
+    "current-search-string" -> Text(Model.currentSearchString.getOrElse("")),
+    "current-search-products" -> Complex(Model.currentSearchProducts map (productBinding _)) -> "product",
     "products" -> Complex(shop.products map (productBinding _)) -> "product",
-    "top_level_groups" -> Complex(shop.topLevelProductGroups map (productGroupBinding _)) -> "group",
+    "top-level-groups" -> Complex(shop.topLevelProductGroups map (productGroupBinding _)) -> "group",
     "promotions" -> Complex(shop.promotions map (promotionBinding _)) -> "promotion",
-    "shopping_cart" -> Complex(shoppingCartBinding(Model.shoppingCart)) -> "shopping_cart")
+    "shopping-cart" -> Complex(shoppingCartBinding(Model.shoppingCart)) -> "shopping-cart")
 
   def promotionBinding(promotion : Promotion) = promotion match {
     case p : VolumeDiscountPromotion => volumeDiscountPromotionBinding(p)
@@ -29,10 +29,10 @@ object ShopBindings {
   
   def volumeDiscountPromotionBinding(promotion : VolumeDiscountPromotion) = promotion bindWith params(         
     "id" -> Text(promotion.id.toString),
-    "start_date" -> Text(Util.slashDate.format(promotion.startDate)),
-    "end_date" -> Text(Util.slashDate.format(promotion.endDate)),
+    "start-date" -> Text(Util.slashDate.format(promotion.startDate)),
+    "end-date" -> Text(Util.slashDate.format(promotion.endDate)),
     "price" -> Util.formatMoney(promotion.priceCurrency, promotion.price.doubleValue),
-    "volume_discount" -> Text(promotion.volumeDiscount.toString),
+    "volume-discount" -> Text(promotion.volumeDiscount.toString),
     "product" -> Complex(productBinding(promotion.product)) -> "product")
 
   def productBinding(product : Product) = product bindWith params(   
@@ -46,13 +46,13 @@ object ShopBindings {
 
   def productGroupBinding(group : ProductGroup) : Binding = group bindWith params(   
     "id" -> Text(group.id.toString),
-    "sub_groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
-    "parent_groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group",
-    "group_properties" -> Complex(group.groupProperties map (propertyBinding(_))) -> "property",
-    "group_property" -> Complex(propertyBinding(group.groupPropertiesByName.get(BindAttr("name")) getOrNull)) -> "property",
-    "group_value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
+    "sub-groups" -> Complex(group.children map (productGroupBinding(_))) -> "group",
+    "parent-groups" -> Complex(group.parents map (productGroupBinding(_))) -> "group",
+    "group-properties" -> Complex(group.groupProperties map (propertyBinding(_))) -> "property",
+    "group-property" -> Complex(propertyBinding(group.groupPropertiesByName.get(BindAttr("name")) getOrNull)) -> "property",
+    "group-value" -> Value(group.groupPropertiesByName.get(BindAttr("property"))),
     "properties" -> Complex(group.properties map (propertyBinding(_))) -> "property",
-    "products" -> Complex(IfAttr("include_sub_groups", group.productExtent, group.products) map (productBinding(_))) -> "product",
+    "products" -> Complex(IfAttr("include_sub-groups", group.productExtent, group.products) map (productBinding(_))) -> "product",
     "promotions" -> Complex(group.productExtentPromotions map (promotionBinding _)) -> "promotion",
     "link" -> Link(group),
     "href" -> LinkAttr(group) -> "href")
