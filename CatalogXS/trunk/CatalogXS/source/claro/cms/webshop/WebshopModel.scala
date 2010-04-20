@@ -153,6 +153,8 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
 
   val propertiesByName : Map[String, Property] = 
     properties mapBy (_.name)
+  
+  val priceProperty : Option[Property] = propertiesByName.get("Price") 
 }
 
 class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(property)  {
@@ -170,6 +172,8 @@ class Property(property : jpa.catalog.Property, val value : jpa.catalog.Property
   val valueId : Long = value.getId.longValue
   val mimeType : String = value.getMimeType getOrElse ""
   val mediaValue : Array[Byte] = value.getMediaValue
+  val moneyValue : Double = value.getMoneyValue.getOrElse(0)
+  val moneyCurrency : String = value.getMoneyCurrency
   
   def hasValue = value != noPropertyValue
 
@@ -198,7 +202,7 @@ class Promotion(promotion : jpa.shop.Promotion, cacheData : WebshopCacheData, ma
 class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cacheData : WebshopCacheData, mapping : Mapping) extends Promotion(promotion, cacheData, mapping) {
   val startDate = promotion.getStartDate
   val endDate = promotion.getEndDate
-  val price = promotion.getPrice
+  val price = promotion.getPrice.getOrElse(0)
   val priceCurrency = promotion.getPriceCurrency
   val volumeDiscount = promotion.getVolumeDiscount
   val product = mapping.products(promotion.getProduct)
@@ -251,6 +255,12 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
       case None =>
             val productOrder = new jpa.shop.ProductOrder
             productOrder.setProduct(product.delegate)
+            product.priceProperty match {
+              case Some(property) => 
+                productOrder.setPrice(property.moneyValue)
+                productOrder.setPriceCurrency(property.moneyCurrency)
+              case None => 
+            }
             updateVolume(productOrder, volume)
             delegate.getProductOrders.add(productOrder)
     }
@@ -277,7 +287,8 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
 class ProductOrder(val productOrder : jpa.shop.ProductOrder, mapping : Mapping) extends Delegate(productOrder) {
   def product = mapping.products(productOrder.getProduct)
   val product2 = product
-  def price = productOrder.getPrice
+  def price = productOrder.getPrice.getOrElse(0)
+  def totalPrice = price * volume
   def currency = productOrder.getPriceCurrency
   def volume = productOrder.getVolume.intValue
   def volume_=(v : Int) = productOrder.setVolume(v)

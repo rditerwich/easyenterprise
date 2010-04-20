@@ -21,6 +21,7 @@ object Conversions {
   implicit def richStringSeq(ss: Seq[String]) = new RichStringSeq(ss)
   implicit def richStringList(ss: List[String]) = new RichStringList(ss)
   implicit def richObject[A](value : A) = new RichObject(value)
+  implicit def richDouble(value : java.lang.Double) = new RichDouble(value)
   implicit def richIterable[A](it : Iterable[A]) = new RichIterable[A](it)
   implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def richSeq[A](seq : Seq[A]) = new RichSeq[A](seq)

@@ -3,6 +3,7 @@ package claro.cms.webshop
 import xml.{Node,NodeSeq,Text}
 import agilexs.catalogxs.jpa
 import claro.cms.XmlBinding
+import claro.common.util.Conversions._
 
 trait WebshopBindingHelpers {
 
@@ -12,6 +13,21 @@ trait WebshopBindingHelpers {
     class XmlBinding2 (f : NodeSeq => NodeSeq) extends XmlBinding(f) {}
   }
 
+  object money {
+    def apply(amount : Double, currency : String) = {
+      //Unparsed doesn't seem to work in combination with ajax calls...
+      //Therefore we use the symbol tokens instead of html symbols.
+      Text(currency match {
+          case "EUR" => "€"; //"&euro;"
+          case "GBP" => "£"; //"&pound;";
+          case "USD" => "$";
+          case _ => "&euro;";
+      }) ++
+      Text(" ") ++
+      Text(String.format("%.2f", double2Double(amount / 100.0)))
+    }
+  }
+  
   private def propertyValue(property : Option[Property]) = {
     property match { 
       case Some(property) => property.propertyType match {
@@ -23,7 +39,7 @@ trait WebshopBindingHelpers {
 	         else
   		       Text(property.mediaValue.toString());
         case jpa.catalog.PropertyType.Money if (property.value != null && property.value.getMoneyValue != null) =>
-            WebshopUtil.formatMoney(property.value.getMoneyCurrency, property.value.getMoneyValue.doubleValue)
+            money(property.value.getMoneyValue.getOrElse(0), property.value.getMoneyCurrency)
         case _ => Text(property.valueAsString)
       }
       case None => Text("")

@@ -34,7 +34,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
       "end-date" -> WebshopUtil.slashDate.format(promotion.endDate),
-      "price" -> WebshopUtil.formatMoney(promotion.priceCurrency, promotion.price.doubleValue),
+      "price" -> money(promotion.price, promotion.priceCurrency),
       "volume-discount" -> promotion.volumeDiscount,
       "product" -> promotion.product -> "product")
     
@@ -68,7 +68,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
    case productOrder : ProductOrder => Map(   
       "id" -> productOrder.productOrder.getId.toString,
       "product" -> productOrder.product -> "product",
-      "price" -> productOrder.price,
+      "price" -> money(productOrder.price, productOrder.currency),
+      "total-price" -> money(productOrder.totalPrice, productOrder.currency),
       "currency" -> productOrder.currency,
       "volume" -> productOrder.volume.toString,
       "volume-edit" -> ShoppingCart.volume(productOrder))

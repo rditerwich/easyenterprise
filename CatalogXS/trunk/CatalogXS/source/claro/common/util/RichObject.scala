@@ -16,3 +16,9 @@ class RichObject[A](obj : A) {
   }
 }
 
+class RichDouble(value : java.lang.Double) {
+  def getOrElse(default : Double) : Double = value match {
+    case null => default
+    case _ => value.doubleValue
+  }
+}
