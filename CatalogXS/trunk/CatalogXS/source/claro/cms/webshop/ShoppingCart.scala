@@ -15,7 +15,10 @@ import javax.servlet.http.HttpServletRequest
 //TODO add button "next step"
 //TODO on shoppingcart page, when emptying shopping cart, table should be refreshed too.
 //FIXME anchor for buttons no are anchor, with # this introduces new history token, or return false or no a, and set style via css, like cursor
-class ShoppingCart extends Bindable with Redrawable {
+
+object ShoppingCart extends ShoppingCart {}
+
+class ShoppingCart private extends Bindable with Redrawable {
 
   object order extends SessionVar[Order](new Order(new jpa.shop.Order, WebshopModel.shop.get.mapping))
 
@@ -25,9 +28,7 @@ class ShoppingCart extends Bindable with Redrawable {
     findBoundObject(productPrefix) match {
       case Some(product:Product) =>
         val redraws = CurrentRedraws.get
-        SHtml.a(() => addProduct(product, redraws), <span id="order_status">
-        { xml }
-        </span>, ("style","text-decoration:none"))
+        SHtml.a(() => addProduct(product, redraws), xml) % currentAttributes(Set("product"))
       case None => 
         NodeSeq.Empty
     }
@@ -35,9 +36,13 @@ class ShoppingCart extends Bindable with Redrawable {
 
   def clear : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
-    SHtml.a(() => clear(redraws), <span id="order_status">
-        { xml }
-        </span>, ("style","text-decoration:none"))
+    SHtml.a(() => clear(redraws), xml) % current.attributes
+  }
+
+  def volume(productOrder : ProductOrder) = { 
+    val redraws = CurrentRedraws.get
+    SHtml.ajaxText(productOrder.volume.toString,
+      updateVolume(productOrder, _, redraws)) % current.attributes
   }
   
   private def addProduct(product : Product, redraws : Redraws) : JsCmd = {
@@ -52,4 +57,7 @@ class ShoppingCart extends Bindable with Redrawable {
       redraws.toJsCmd
   }
   
+  private def updateVolume(productOrder : ProductOrder, volume : String, redraws : Redraws) = {
+    redraws.toJsCmd
+  }
 }

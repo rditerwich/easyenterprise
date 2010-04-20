@@ -259,7 +259,10 @@ trait BindingHelpers {
   def current : Elem = Request.website.rootBinding.currentElement
   
   def currentContext : BindingContext = Request.website.rootBinding.currentContext
-  
+
+  def currentAttributes(excl : Set[String]) = 
+    current.attributes filter(a => !excl.contains(a.key))
+
   def @@(name : String) : String = attr(current, name)
   
   def @@(name : String, default : => Any) : String = attr(current, name, default) 
@@ -285,7 +288,6 @@ trait BindingHelpers {
     case Some(Bindings(obj, _)) => Some(obj)
     case None => None
   }
-
 }
 
 class BindingCache(website : Website) {

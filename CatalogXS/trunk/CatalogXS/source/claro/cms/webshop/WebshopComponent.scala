@@ -20,7 +20,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "group" -> WebshopModel.shop.get.productGroupsByName.get(@@("name")) -> "group",
       "top-level-groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
-      "shopping-cart" -> new ShoppingCart -> "shopping-cart",
+      "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-form" -> new SearchForm -> "search")
     
     case cart : ShoppingCart => Map(
@@ -70,7 +70,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "product" -> productOrder.product -> "product",
       "price" -> productOrder.price,
       "currency" -> productOrder.currency,
-      "volume" -> productOrder.volume)
+      "volume" -> productOrder.volume.toString,
+      "volume-edit" -> ShoppingCart.volume(productOrder))
 
     case property: Property => Map(  
       "id" -> property.id.toString,
