@@ -54,6 +54,8 @@ public interface I18NCatalogXS extends Messages {
   String navigation();
 
   String promotions();
+  
+  String orders();
 
   String settings();
 
@@ -78,4 +80,14 @@ public interface I18NCatalogXS extends Messages {
   String deletePromotionQuestion();
 
   String promotionDeleted();
+
+  String deletePropertyQuestion();
+  
+  String propertiesFrom(String name);
+  
+  String explainLanguages();
+
+  String save();
+
+  String languagesSaved();
 }

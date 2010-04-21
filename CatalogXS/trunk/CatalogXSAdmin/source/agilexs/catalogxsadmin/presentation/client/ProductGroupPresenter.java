@@ -140,6 +140,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
               StatusMessage.get().show(i18n.productGroupSaved(name==null?"":name.getStringValue()));
               CatalogCache.get().put(result);
               show(result);
+            } else {
+              StatusMessage.get().show(i18n.productGroupSaved(""));
             }
           }
         });

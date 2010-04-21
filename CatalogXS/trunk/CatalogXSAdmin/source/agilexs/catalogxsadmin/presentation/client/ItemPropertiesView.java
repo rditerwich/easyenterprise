@@ -9,10 +9,12 @@ import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -93,8 +95,9 @@ class ItemPropertiesView extends Composite implements View {
         if (deleteHandler == null) return;
         final Cell c = grid.getCellForEvent(event);
 
-        if (c.getCellIndex() == DELETE_COLUMN) {
-          deleteHandler.onDelete(Integer.valueOf(c.getRowIndex()));
+        if (c.getCellIndex() == DELETE_COLUMN && 
+            Window.confirm(i18n.deletePropertyQuestion())) { 
+          deleteHandler.onDelete(Integer.valueOf(c.getRowIndex()-1/*-header*/));
         }
       }
     });
@@ -114,7 +117,9 @@ class ItemPropertiesView extends Composite implements View {
     grid.setWidget(0, 2, new InlineLabel(i18n.value()));
     grid.setWidget(0, 3, new InlineLabel(i18n.groupOnly()));
     grid.setWidget(0, 4, new InlineLabel(i18n.languageSpecificName()));
+    grid.getCellFormatter().addStyleName(0, 4, "languageField");
     grid.setWidget(0, 5, new InlineLabel(i18n.languageSpecificValue()));
+    grid.getCellFormatter().addStyleName(0, 5, "languageField");
     grid.setWidget(0, 6, new InlineHTML("&nbsp;"));
   }
 
@@ -158,9 +163,11 @@ class ItemPropertiesView extends Composite implements View {
     grid.setWidget(row, 2, rowView.getDefaultValueWidget());
     grid.setWidget(row, 3, rowView.getPGOnly());
     grid.setWidget(row, 4, (Widget) rowView.getName());
+    grid.getCellFormatter().addStyleName(row, 4, "languageField");
     grid.setWidget(row, 5, rowView.getValueWidget());
+    grid.getCellFormatter().addStyleName(row, 5, "languageField");
     grid.setWidget(row, DELETE_COLUMN, new Image(rb.deleteImage()));
-
+    grid.getWidget(row, DELETE_COLUMN).getElement().getStyle().setCursor(Cursor.POINTER);
     return rowView;
   }
 }

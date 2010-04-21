@@ -118,7 +118,6 @@ public class CatalogPresenter implements Presenter<CatalogView> {
       }
     });
 
-    view.setLanguages(CatalogCache.get().getLanguages(), "en");
     view.getLanguageChangeHandler().addChangeHandler(new ChangeHandler(){
       @Override
       public void onChange(ChangeEvent event) {
@@ -132,6 +131,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
       @Override public void onSuccess(Shop result) {
         activeShop = result;
+        view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
         CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>(){
         @Override public void onFailure(Throwable caught) {
         }

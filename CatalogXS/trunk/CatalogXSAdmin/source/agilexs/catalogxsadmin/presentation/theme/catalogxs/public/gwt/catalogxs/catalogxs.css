@@ -1225,3 +1225,11 @@ td.datePickerMonth {
   background: #f5a71f url(images/splitPanelThumb.png) center center no-repeat;
   cursor: row-resize;
 }
+
+.languageField {
+  background: #fad38f;
+}
+
+.statusMessage {
+  background: #f5a71f;
+}

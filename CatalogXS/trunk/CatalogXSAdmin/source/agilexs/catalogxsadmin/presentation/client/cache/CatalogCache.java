@@ -159,10 +159,6 @@ public class CatalogCache {
     }
   }
 
-  public ArrayList<Language> getLanguages() {
-    return languages;
-  }
-
   public ArrayList<String> getLangNames() {
     return langs;
   }

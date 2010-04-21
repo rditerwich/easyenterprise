@@ -53,7 +53,7 @@ public class ItemValuesPresenter implements Presenter<ItemValuesView> {
     int i = 0;
     for (PropertyValue[] pvLangs : curValues) {
       final PGPRowView rowView = view.setRow(i);
-      
+
       if (bindingSize <= i) {
         final PropertyValueBinding pvdb = new PropertyValueBinding();
         final PropertyValueBinding pvb = new PropertyValueBinding();

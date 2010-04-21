@@ -25,21 +25,20 @@ public class StatusMessage {
 
   private DecoratedPopupPanel status = new DecoratedPopupPanel(false, false);
   private HTML message = new HTML();
+  private final PositionCallback pc = new PositionCallback() {
+    @Override
+    public void setPosition(int offsetWidth, int offsetHeight) {
+      status.setPopupPosition((Window.getClientWidth() - offsetWidth) >> 1, 0);
+    }
+  };
 
   private StatusMessage() {
-    status.setStyleName("statusmessage");
+    //status.setStyleName("statusMessage");
     //Method NOT publicly visible: status.setAnimationType(AnimationType.ROLL_DOWN);
     status.add(message);
-    status.setPopupPositionAndShow(new PositionCallback() {
-      @Override
-      public void setPosition(int offsetWidth, int offsetHeight) {
-        int left = (Window.getClientWidth() - offsetWidth) >> 1;
-        status.setPopupPosition(left, 0);
-      }
-    });
-   status.hide();
-   //set animation after initial show+hide
-   status.setAnimationEnabled(true);
+    status.hide();
+    //set animation after initial show+hide
+    status.setAnimationEnabled(true);
   }
 
   /**
@@ -65,6 +64,6 @@ public class StatusMessage {
       }
     }.schedule(durationSeconds * 1000);
     this.message.setHTML(message);
-    status.show();
+    status.setPopupPositionAndShow(pc);
   }
 }

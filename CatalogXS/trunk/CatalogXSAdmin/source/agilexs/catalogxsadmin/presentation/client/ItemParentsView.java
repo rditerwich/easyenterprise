@@ -76,7 +76,7 @@ public class ItemParentsView extends Composite implements View {
     return allParentsListBox;
   }
 
-  public HasClickHandlers buttonAddParentHasClickHandlers() {
+  public HasClickHandlers buttonAddHasClickHandlers() {
     return addButton;
   }
 

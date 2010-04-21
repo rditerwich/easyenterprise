@@ -22,7 +22,7 @@ public class PropertyValueWidget extends Composite {
       break;
     case Media:
       value = new MediaWidget(false);
-      ((MediaWidget) value).show(pv.getId() + "", pv.getMimeType(), pv.getStringValue());
+      ((MediaWidget) value).show(Util.stringValueOf(pv.getId()), pv.getMimeType(), pv.getStringValue());
       break;
     case String:
       value = new InlineLabel();

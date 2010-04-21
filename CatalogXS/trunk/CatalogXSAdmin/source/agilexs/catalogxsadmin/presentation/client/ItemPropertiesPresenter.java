@@ -95,7 +95,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         currentItem.getPropertyValues().add(pv);
         pv.setLanguage(language);
         final Property p = new Property();
-        
+
         p.setType(PropertyType.String);
         p.setProductGroupProperty(Boolean.FALSE);
         currentItem.getProperties().add(p);
@@ -115,9 +115,23 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
       @Override
       public void onDelete(Integer index) {
         final Tuple b = bindings.get(index.intValue());
-        
-        currentItem.getProperties().remove(b.getBinding().getData());
-        currentItem.getProperties().remove(b.getDefaultBinding().getData());
+        final Long propId = ((PropertyValue) b.getBinding().getData()).getProperty().getId();
+        final ArrayList<PropertyValue> deletes  = new ArrayList<PropertyValue>(3);
+
+        for (PropertyValue pv : currentItem.getPropertyValues()) {
+          if (propId.equals(pv.getProperty().getId())) {
+            deletes.add(pv);
+          }
+        }
+        for (PropertyValue pv : deletes) {
+          currentItem.getPropertyValues().remove(pv);
+        }
+        for (Property property : currentItem.getProperties()) {
+          if (propId.equals(property.getId())) {
+            currentItem.getProperties().remove(property);
+            break;
+          }
+        }
         show(CatalogCache.get().getLangNames(), language, currentItem);
       }
     });
@@ -186,7 +200,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         } else if (language.equals(pv.getLanguage())) {
 //          bindings.get(i).refresh();
           Util.bindPropertyValue(pv.getProperty().getType(), rowView.setValueWidget(pv.getProperty().getType()), bindings.get(i).getBinding());
-          bindings.get(i).refresh();          
+          bindings.get(i).refresh();
         }
       }
       i++;

@@ -160,7 +160,7 @@ public class ProductPresenter implements Presenter<ProductView> {
           for (PropertyValue pv : pvlangs) {
             if (currentLanguage.equals(pv.getLanguage())) {
               lpv = pv;
-            } else if (pv.getLanguage() ==  null){
+            } else if (pv.getLanguage() ==  null) {
               dpv = pv;
             }
           }

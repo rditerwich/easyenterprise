@@ -12,8 +12,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -58,7 +58,7 @@ public class ItemValuesView extends Composite implements View {
   private static ItemValuesUiBinder uiBinder = GWT.create(ItemValuesUiBinder.class);
 
   @UiField Grid grid;
-  @UiField InlineHTML name;
+  @UiField HTML name;
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
@@ -94,12 +94,12 @@ public class ItemValuesView extends Composite implements View {
     grid.setWidget(row, 1, (Widget) rowView.getType());
     grid.setWidget(row, 2, rowView.getDefaultValueWidget());
     grid.setWidget(row, 3, rowView.getValueWidget());
-
+    grid.getCellFormatter().addStyleName(row, 3, "languageField");
     return rowView;
   }
 
   public void setName(String name) {
-    this.name.setHTML(name);
+    this.name.setHTML(i18n.h3(i18n.propertiesFrom(name)));
   }
 
   private void addHeader() {
@@ -107,5 +107,6 @@ public class ItemValuesView extends Composite implements View {
     grid.setWidget(0, 1, new InlineLabel(i18n.type()));
     grid.setWidget(0, 2, new InlineLabel(i18n.value()));
     grid.setWidget(0, 3, new InlineLabel(i18n.languageSpecificValue()));
+    grid.getCellFormatter().addStyleName(0, 3, "languageField");
   }
 }

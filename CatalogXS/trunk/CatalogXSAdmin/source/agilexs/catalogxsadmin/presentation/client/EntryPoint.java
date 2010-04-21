@@ -19,6 +19,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
   private final CatalogPresenter cp = new CatalogPresenter();
   private final NavigationPresenter np = new NavigationPresenter();
   private final PromotionPresenter p = new PromotionPresenter();
+  private final OrderPresenter o = new OrderPresenter();
   private final SettingsPresenter s = new SettingsPresenter();
 
   @Override
@@ -38,6 +39,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
     tp.add(cp.getView(), i18n.catalog());
     tp.add(np.getView(), i18n.navigation());
     tp.add(p.getView(), i18n.promotions());
+    tp.add(o.getView().asWidget(), i18n.orders());
     tp.add(s.getView().asWidget(), i18n.settings());
     tp.addSelectionHandler(new SelectionHandler<Integer>() {
       @Override
@@ -52,6 +54,9 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
           p.show();
           break;
         case 3:
+          o.show();
+          break;
+        case 4:
           s.show();
           break;
         default:

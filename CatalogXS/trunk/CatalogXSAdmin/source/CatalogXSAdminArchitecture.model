@@ -57,13 +57,11 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Item/attributes:catalog
                         }
-/*TODO HSB: Language support, remove comments
                         ClassAttributeView {
                             name = LanguageView
                             kind = all
                             referringAttributes = catalog:Catalog/attributes:languages
                         }
-*/
                         ClassAttributeView {
                             name = ParentsView
                             kind = all
@@ -119,13 +117,12 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Catalog/attributes:shops
                         }
-/*TODO HSB: Language support, remove comments
                         ClassAttributeView {
                             name = LanguageView
                             kind = all
+                            forceComposite = true
                             referringAttributes = catalog:Catalog/attributes:languages
                         }
-*/
                         ClassAttributeView {
                             name = ItemsView
                             kind = all
@@ -171,6 +168,11 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = EnumsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     }
                 }
@@ -222,6 +224,11 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = EnumsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     }
                 }
@@ -281,6 +288,11 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             forceComposite = true
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = EnumsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     }
                 }
@@ -353,6 +365,11 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
                         }
+                        ClassAttributeView {
+                            name = EnumsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
                     }
                 }
             }
@@ -411,6 +428,11 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = EnumsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     } 
                  }

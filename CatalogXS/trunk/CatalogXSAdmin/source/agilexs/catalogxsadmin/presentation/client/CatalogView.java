@@ -44,6 +44,7 @@ public class CatalogView extends Composite implements View {
     buttonBar.add(newProductGroupButton);
     buttonBar.add(languageList);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
+    languageList.addStyleName("languageField");
     buttonBar.add(name);
     detailPanel.addNorth(buttonBar, 75);
     buttonBar.getElement().getStyle().setMargin(10, Unit.PX);

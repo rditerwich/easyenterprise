@@ -68,6 +68,11 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:Property/properties:labels
                                 }
+                                JavaBeanPropertyView {
+                                    name = EnumsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:enumValues
+                                }
                             }
                         }
                     }
@@ -128,6 +133,11 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:Property/properties:labels
                                 }
+                                JavaBeanPropertyView {
+                                    name = EnumsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:enumValues
+                                }
                             }
                         }
                     }
@@ -180,6 +190,11 @@ GwtPackage {
                                     name = LabelsView
                                     kind = all
                                     referringProperties = catalog:Property/properties:labels
+                                }
+                                JavaBeanPropertyView {
+                                    name = EnumsView
+                                    kind = all
+                                    referringProperties = catalog:Property/properties:enumValues
                                 }
                             }
                         }

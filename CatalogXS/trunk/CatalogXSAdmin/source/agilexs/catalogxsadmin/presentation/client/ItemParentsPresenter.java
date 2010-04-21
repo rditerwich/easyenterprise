@@ -25,7 +25,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
 
   public ItemParentsPresenter(final ItemParentsView view) {
     this.view = view;
-    view.buttonAddParentHasClickHandlers().addClickHandler(new ClickHandler() {
+    view.buttonAddHasClickHandlers().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         final Long newPG = Long.valueOf(view.getAllParentsListBox().getValue(view.getSelectedNewParent()));

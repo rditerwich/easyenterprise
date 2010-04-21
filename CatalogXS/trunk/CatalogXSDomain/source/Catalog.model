@@ -44,14 +44,13 @@ Package {
                     lower = 0
                     upper = {}
                 }
-/*TODO HSB: Language support, remove comments
                 Attribute {
                     name = languages
                     type = catalog:Language
+                    isOrdered = true
                     lower = 0
                     upper = {}
                 }
-*/
             }
         }
         Class {
@@ -199,7 +198,7 @@ Package {
                     name = enumValues
                     type = catalog:EnumValue
                     isComposite = true
-                    lower = 1
+                    lower = 0
                     upper = {}
                     opposite = catalog:EnumValue/attributes:property
                 }

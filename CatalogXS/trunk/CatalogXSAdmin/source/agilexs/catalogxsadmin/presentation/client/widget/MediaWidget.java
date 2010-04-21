@@ -162,7 +162,9 @@ public class MediaWidget extends Composite {
   public void show(String idS, String text, String filename) {
     final Long id = Long.valueOf(idS == null || "".equals(idS.trim()) ? "0" : idS.trim());
 
-    text = text.trim();
+    if (text != null) {
+      text = text.trim();
+    }
     if (filename != null) {
       filename = filename.trim();
     }

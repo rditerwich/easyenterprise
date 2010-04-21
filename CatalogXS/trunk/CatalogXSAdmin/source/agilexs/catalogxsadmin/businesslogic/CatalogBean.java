@@ -2,7 +2,9 @@ package agilexs.catalogxsadmin.businesslogic;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import agilexs.catalogxsadmin.jpa.catalog.Catalog;
+import agilexs.catalogxsadmin.jpa.catalog.Label;
 import agilexs.catalogxsadmin.jpa.catalog.Language;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
 import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
@@ -54,6 +57,10 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
         productGroup.setCatalog(productGroup.getCatalog());
         for (Property property : productGroup.getProperties()) {
           property.setLabels(property.getLabels());
+          for (Label lbl : property.getLabels()) {
+            lbl.setEnumValue(lbl.getEnumValue());
+          }
+          property.setEnumValues(property.getEnumValues());
           property.setItem(property.getItem());
         }
         for (PropertyValue value : productGroup.getPropertyValues()) {
@@ -69,13 +76,19 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
   public List<Language> getAllLanguages() {
     final Locale list[] = SimpleDateFormat.getAvailableLocales();
     final List<Language> languages = new ArrayList<Language>();
-    
+
+    Arrays.sort(list, new Comparator<Locale>(){
+      @Override
+      public int compare(Locale o1, Locale o2) {
+        return o1.getDisplayName().compareTo(o2.getDisplayName());
+      }});
     for (int i = 0; i < list.length; i++) {
       final Language lang = new Language();
-      
+
       lang.setId(Long.valueOf(i));
       lang.setName(list[i].getLanguage());
       lang.setDisplayName(list[i].getDisplayName());
+      languages.add(lang);
     }
     return languages;
   }
@@ -156,6 +169,10 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
           productGroup.setCatalog(productGroup.getCatalog());
           for (Property property : productGroup.getProperties()) {
             property.setLabels(property.getLabels());
+            for (Label lbl : property.getLabels()) {
+              lbl.setEnumValue(lbl.getEnumValue());
+            }
+            property.setEnumValues(property.getEnumValues());
             property.setItem(property.getItem());
           }
           for (PropertyValue value : productGroup.getPropertyValues()) {
