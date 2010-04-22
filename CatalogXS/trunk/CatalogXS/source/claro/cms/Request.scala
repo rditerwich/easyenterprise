@@ -21,7 +21,7 @@ object Request extends RequestVar[Request](new Request) {
         case null => (lastLocalhostServer, false)
         case server => 
           lastLocalhostServer = server
-          (server, false)
+          (server, httpRequest.getParameter("caching") != null)
       }
       case server => (server, true)
     }

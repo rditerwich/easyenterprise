@@ -34,10 +34,10 @@
 <tr colspan="2"><td><h4>Size, Once, Plural</h4></td></tr>
 <showcase:sample>
 <world:continents>
-  <continent:name/> has
+  <continent:name/>
     <continent:countries>
       <list:once>
-         <list:size/> 
+         has <list:size/> 
          <list:single>country</list:single>
          <list:plural>countries</list:plural>
       </list:once>
@@ -48,7 +48,7 @@
 </world:continents>
 </showcase:sample>
 
-<tr colspan="2"><td><h4>Repeat, Size, Plural</h4></td></tr>
+<tr colspan="2"><td><h4>list:repeat, list:size, list:single, list:plural, list:none</h4></td></tr>
 <showcase:sample>
 <world:continents>
   <p>There are <list:size/> continent<list:plural>s</list:plural></p>
@@ -62,6 +62,7 @@
         <list:skip-first>&#8226;</list:skip-first>
         <country:name/>
       </list:repeat>
+      <list:none><continent:name/> has no countries</list:none>
     </continent:countries><br/> 
   </list:repeat>
 </world:continents>
@@ -93,7 +94,20 @@
 </table>
 </showcase:sample>
 
-<tr colspan="2"><td><h4>Groups, group-fill</h4></td></tr>
+<tr colspan="2"><td><h4>Groups, Group Scatter, Colums</h4></td></tr>
+<showcase:sample>
+<table>
+<world:continents group-size="2" group-scatter="true">
+<tr>
+  <list:group>
+    <td><continent:name/></td>
+  </list:group>
+</tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, Group Fill</h4></td></tr>
 <showcase:sample>
 <table>
 <world:continents group-count="3">
@@ -109,7 +123,7 @@
 </table>
 </showcase:sample>
 
-<tr colspan="2"><td><h4>Groups, group-fill, group-scatter</h4></td></tr>
+<tr colspan="2"><td><h4>Groups, Group Scatter, Group Fill</h4></td></tr>
 <showcase:sample>
 <table>
 <world:continents group-count="3" group-scatter="true">
@@ -120,19 +134,6 @@
   <list:group-fill>
     <td><i>(empty <fill:index/>)</i></td>
   </list:group-fill>
-</tr>
-</world:continents>
-</table>
-</showcase:sample>
-
-<tr colspan="2"><td><h4>Groups, group-scatter, Colums</h4></td></tr>
-<showcase:sample>
-<table>
-<world:continents group-size="2" group-scatter="true">
-<tr>
-  <list:group>
-    <td><continent:name/></td>
-  </list:group>
 </tr>
 </world:continents>
 </table>

@@ -243,6 +243,7 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
       case None =>
         val productOrder = new jpa.shop.ProductOrder
         productOrder.setProduct(product.delegate)
+        productOrder.setVolume(volume)
         product.priceProperty match {
           case Some(property) => 
             productOrder.setPrice(property.moneyValue)
@@ -259,7 +260,7 @@ class ProductOrder(val productOrder : jpa.shop.ProductOrder, val order : Order, 
   def price = productOrder.getPrice.getOrElse(0)
   def totalPrice = price * volume
   def currency = productOrder.getPriceCurrency
-  def volume = productOrder.getVolume.intValue
+  def volume = productOrder.getVolume.getOrElse(0)
   def volume_=(v : Int) = productOrder.setVolume(v)
   
   def remove = {

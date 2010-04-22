@@ -93,27 +93,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case "index" :: Nil => "index" :: Nil
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
     case "group" :: id :: Nil => WebshopModel.currentProductGroupVar(Some(id)); "group" :: Nil
+    case "group" :: id :: "search" :: s :: Nil => 
+      WebshopModel.currentProductGroupVar(Some(id))
+      WebshopModel.currentSearchStringVar(Some(s))
+      "group_search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
     case "cart" :: Nil => "shopping_cart" :: Nil
     case path => path
   }
 }
 
-class SearchForm extends Bindable {
-  var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse("")
-  
-  override def bindings = Bindings(this, Map(
-    "search-string" -> SHtml.text(searchString, searchString = _, 
-      ("class", "formfield searchfield"),
-      ("onclick", "javascript:this.value=(this.value == 'search' ? '' : this.value);")),
-    "submit" -> SHtml.submit("Search", () => S.redirectTo("/search/" + searchString),
-      ("class", "formbutton"))))
-  
-  override def bind(node : Node, context : BindingContext) : NodeSeq = {
-    <lift:snippet type={"Shop:ident"} form="POST">
-      { super.bind(node, context) }
-    </lift:snippet>
-  }
-  
-  def ident(xml : NodeSeq) : NodeSeq = xml
-}

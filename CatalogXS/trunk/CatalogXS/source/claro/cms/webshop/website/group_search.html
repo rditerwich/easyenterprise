@@ -1,23 +1,18 @@
 <template:include template="page">
 		  <head><title>Product Groups</title></head>
-		  <div class="contentheading">Search Results for '<webshop:current-search-string/>'</div>
-		  <webshop:current-search-products>
+		  <div class="contentheading">Search results for '<webshop:current-search-string/>' in group</div>
 		  <table>
 		    <thead>
 		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>
 		      <th style="width:75%;text-align:center"><lift:loc>Description</lift:loc></th>
 		      <th style="width:15%"><lift:loc>Price</lift:loc></th>
 		    </thead>
-		  <list:repeat>
+		  <webshop:current-search-products>
 		      <tr>
             <td><product:link><product:value property="ArticleNumber" /></product:link></td>
 		        <td><product:value property="Description"/></td>
 		        <td><product:value property="Price" /></td>
 		      </tr>
-		  </list:repeat>
-		  </table>
-		  <list:none>
-  		  No search results found
-		  </list:none>
 		  </webshop:current-search-products>
+		  </table>
 </template:include>

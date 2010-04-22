@@ -2,6 +2,7 @@
  <h2>Shopping Cart</h2>
   <webshop:shopping-cart phase="1" shopping_list_id="shopping_list">
     <div id="shopping_list">
+      <shopping-cart:items>
         <table>
           <thead>
             <th style="width:10%;text-align:center;">ArticleNumber</th>
@@ -11,7 +12,7 @@
             <th style="width:10%;text-align:center;">Total price</th>
             <th style="width:10%;text-align:center;">&#160;</th>
           </thead>
-      <shopping-cart:items>
+      <list:repeat>
           <tr>
             <item:product>
               <td><product:value property="ArticleNumber"/></td>
@@ -22,13 +23,15 @@
             <td style="text-align:right;"><item:total-price/></td>
             <td style="text-align:center;"><item:remove><img src="/images/bin_closed.png" /></item:remove></td>
           </tr>
-      </shopping-cart:items>
+      </list:repeat>
           <tr>
             <td colspan="4"><b>Total price (excl. shipping costs):</b></td>
             <td style="text-align:right;"><b><shopping-cart:totalPrice/></b></td>
             <td>&#160;</td>
           </tr>
         </table>
+        <list:none>There are no items in the shopping cart</list:none>
+      </shopping-cart:items>
     </div>
   </webshop:shopping-cart>
   <!-- lift:ShoppingCart.show phase="2">
