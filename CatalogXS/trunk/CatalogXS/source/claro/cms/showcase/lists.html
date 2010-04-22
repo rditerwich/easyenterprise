@@ -12,50 +12,27 @@
   <tr><td><code>&lt;list:index&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;list:size&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... list-prefix="<i>list</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... list-repeat="<i>immediate</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... group-size="<i>1</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... group-count="<i>-1</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... group-scatter="<i>false</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;list:group list-prefix="group"&gt;</code></td><td></td></tr> 
-  <tr><td><code>&lt;list:fill&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;list:group-fill&gt;</code></td><td></td></tr> 
 </table>
 
 <table border="0">
 <tr colspan="2"><td><h4>First, Skip First, Last</h4></td></tr>
-<tr><td>
-<pre>&lt;world:continents>
-  &lt;list:first>&amp;#8658;&lt;/list:first>
-  &lt;list:skip-first>&amp;#8226;&lt;/list:skip-first>
-  &lt;continent:name/>
-  &lt;list:last>&amp;#8656;&lt;/list:last>
-&lt;/world:continents></pre>
-</td>
-<td>
+<showcase:sample>
 <world:continents>
   <list:first>&#8658;</list:first>
   <list:skip-first>&#8226;</list:skip-first>
   <continent:name/>
   <list:last>&#8656;</list:last>
 </world:continents>
-</td>
-</tr>
+</showcase:sample>
 
 <tr colspan="2"><td><h4>Size, Once, Plural</h4></td></tr>
-<tr><td>
-<pre>&lt;world:continents>
-  &lt;continent:name/> has
-    &lt;continent:countries>
-      &lt;list:once>
-         &lt;list:size/> 
-         &lt;list:single>country&lt;/list:single>
-         &lt;list:plural>countries&lt;/list:plural>
-      &lt;/list:once>
-      &lt;list:first>&amp;#8658;&lt;/list:first>
-      &lt;list:skip-first>&amp;#8226;&lt;/list:skip-first>
-      &lt;country:name/>
-    &lt;/continent:countries>&lt;br/>
-&lt;/world:continents></pre>
-</td>
-<td>
+<showcase:sample>
 <world:continents>
   <continent:name/> has
     <continent:countries>
@@ -69,36 +46,108 @@
       <country:name/>
     </continent:countries><br/>
 </world:continents>
-</td>
-</tr>
+</showcase:sample>
 
-<tr colspan="2"><td><h4>Colums</h4></td></tr>
-<tr><td>
-<pre>
-&lt;table>
-&lt;world:continents group-size="2">
-  &lt;tr>
-  &lt;list:group>
-    &lt;td>&lt;group:first>&lt;u>&lt;continent:name/>&lt;/u>&lt;/group:first>
-    &lt;group:skip-first>&lt;continent:name/>&lt;/group:skip-first>&lt;/td>
-  &lt;/list:group>
-  &lt;/tr>
-&lt;/world:continents>
-&lt;/table>
-</pre>
-</td>
-<td>
+<tr colspan="2"><td><h4>Repeat, Size, Plural</h4></td></tr>
+<showcase:sample>
+<world:continents list-repeat="delayed">
+  <p>There are <list:size/> continent<list:plural>s</list:plural></p>
+  <list:repeat>
+    <continent:countries list-repeat="delayed">
+      <continent:name/> has <list:size/> 
+      <list:single>country</list:single>
+      <list:plural>countries</list:plural>
+      <list:repeat>
+        <list:first>&#8658;</list:first>
+        <list:skip-first>&#8226;</list:skip-first>
+        <country:name/>
+      </list:repeat>
+    </continent:countries><br/> 
+  </list:repeat>
+</world:continents>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, group-size</h4></td></tr>
+<showcase:sample>
 <table>
 <world:continents group-size="2">
 <tr>
   <list:group>
-  	<td><group:first><u><continent:name/></u></group:first>
-  	<group:skip-first><continent:name/></group:skip-first></td>
+    <td><continent:name/></td>
   </list:group>
 </tr>
 </world:continents>
 </table>
-</td>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, group-count</h4></td></tr>
+<showcase:sample>
+<table>
+<world:continents group-count="2">
+<tr>
+  <list:group>
+    <td><continent:name/></td>
+  </list:group>
 </tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, group-fill</h4></td></tr>
+<showcase:sample>
+<table>
+<world:continents group-count="2">
+<tr>
+  <list:group>
+    <td><continent:name/></td>
+    <group:fill>
+      <td><i>(empty)</i></td>
+    </group:fill>
+  </list:group>
+</tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, group-scatter, Colums</h4></td></tr>
+<showcase:sample>
+<table>
+<world:continents group-size="2" group-scatter="true">
+<tr>
+  <list:group>
+    <td><continent:name/></td>
+  </list:group>
+</tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Groups, group:first</h4></td></tr>
+<showcase:sample>
+<table>
+<world:continents group-size="2">
+<tr>
+  <list:group>
+    <td><group:first><u><continent:name/></u></group:first>
+    <group:skip-first><continent:name/></group:skip-first></td>
+  </list:group>
+</tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>Sample</h4></td></tr>
+<showcase:sample>
+	<table><br> </br>
+	<world:continents group-size="2">
+	<tr>
+	  <list:group>
+	    <td><group:first><u>hello<continent:name/></u></group:first>
+	    <group:skip-first><continent:name/></group:skip-first></td>
+	  </list:group>
+	</tr>
+	</world:continents>
+	</table>
+</showcase:sample>
 </table>
 </html>

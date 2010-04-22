@@ -35,4 +35,5 @@ object Conversions {
   implicit def richPartialFunctionIterable[A,B](it : Iterable[PartialFunction[A,B]]) = new RichPartialFunctionIterable[A,B](it)
   implicit def richUri(uri : java.net.URI) = new RichUri(uri)
   implicit def richInputStream(getInputStream : => java.io.InputStream) = new RichInputStream(getInputStream)
+  implicit def richNodeSeq(xml : scala.xml.NodeSeq) = new RichNodeSeq(xml)
 }
