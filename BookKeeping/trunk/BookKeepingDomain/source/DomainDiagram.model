@@ -14,8 +14,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 27
-                    y = 14
+                    x = 271
+                    y = -23
                     width = -1
                     height = -1
                 }
@@ -25,8 +25,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 119
-                    y = 186
+                    x = 127
+                    y = 254
                     width = -1
                     height = -1
                 }
@@ -146,8 +146,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 282
-                    y = 17
+                    x = 143
+                    y = 151
                     width = -1
                     height = -1
                 }
@@ -157,10 +157,10 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 480
-                    y = 39
-                    width = -1
-                    height = -1
+                    x = -48
+                    y = -7
+                    width = 193
+                    height = 130
                 }
             }
             domainClass = /packages:EasyEnterprise/packages:Domain/types:Mutation
@@ -168,21 +168,10 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 417
-                    y = 309
-                    width = 100
-                    height = 112
-                }
-            }
-            domainClass = /packages:EasyEnterprise/packages:Domain/types:OwnerProperties
-        }
-        DiagramClass {
-            bounds = {
-                Rectangle {
-                    x = -130
-                    y = 196
-                    width = -1
-                    height = -1
+                    x = -147
+                    y = 152
+                    width = 119
+                    height = 86
                 }
             }
             domainClass = /packages:EasyEnterprise/packages:Domain/types:SourceDocument
@@ -245,8 +234,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = -119
-                    y = 619
+                    x = -118
+                    y = 591
                     width = -1
                     height = -1
                 }
@@ -264,16 +253,21 @@ DomainDiagram {
             }
             domainClass = /packages:EasyEnterprise/packages:Domain/types:CreditNote
         }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 357
+                    y = 147
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:EasyEnterprise/packages:Domain/types:Dimension
+        }
     }
     references = {
         Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Bookkeeping/attributes:bookings
-        }
-        Reference {
             sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:JournalEntry/attributes:account
-        }
-        Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Mutation/attributes:entries
         }
         Reference {
             sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:BankTransaction/attributes:bankAccount
@@ -299,16 +293,25 @@ DomainDiagram {
             sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Ledger/attributes:accounts
         }
         Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Booking/attributes:mutations
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Bookkeeping/attributes:mutations
         }
         Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:JournalEntry/attributes:owner
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Booking/attributes:entries
         }
         Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Account/attributes:owner
+            bendPoints = {
+                Point {
+                    x = 191
+                    y = 96
+                }
+            }
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Mutation/attributes:bookings
         }
         Reference {
-            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:JournalEntry/attributes:sourceDocument
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Booking/attributes:sourceDocument
+        }
+        Reference {
+            sourceAttribute = /packages:EasyEnterprise/packages:Domain/types:Booking/attributes:owner
         }
     }
     superClassReferences = {
@@ -339,10 +342,6 @@ DomainDiagram {
         SuperClassReference {
             source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Expense
             target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Account
-        }
-        SuperClassReference {
-            source = {}
-            target = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:JournalEntry
         }
         SuperClassReference {
             source = /domainDiagrams:EasyEnterprise/classes:\/packages\:EasyEnterprise\/packages\:Domain\/types\:Receipt

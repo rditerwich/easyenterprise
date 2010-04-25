@@ -25,8 +25,8 @@ Package {
                     type = primitive:String
                 }
                 Attribute {
-                    name = bookings
-                    type = bookkeeping:Booking
+                    name = mutations
+                    type = bookkeeping:Mutation
                     lower = 0
                     upper = {}
                     isComposite = true
@@ -80,11 +80,6 @@ Package {
                     lower = 1
                 }
                 Attribute {
-                    name = sourceDocument
-                    type = bookkeeping:SourceDocument
-                    lower = 0
-                }
-                Attribute {
                     name = account
                     type = bookkeeping:Account
                 }
@@ -99,12 +94,6 @@ Package {
                 Attribute {
                     name = journalDate
                     type = primitive:Timestamp
-                }
-                Attribute {
-                    name = owner
-                    type = bookkeeping:OwnerProperties
-                    lower = 1
-                    upper = {}
                 }
             }
         }
@@ -193,12 +182,6 @@ Package {
                     name = accountNr
                     type = primitive:String
                 }
-                Attribute {
-                    name = owner
-                    type = bookkeeping:OwnerProperties
-                    lower = 1
-                    upper = {}
-                }
             }
         }
         @comment "Activa"
@@ -230,15 +213,25 @@ Package {
             name = Booking
             attributes = {
                 Attribute {
-                    name = mutations
-                    type = bookkeeping:Mutation
-                    isComposite = true
+                    name = bookingDate
+                    type = primitive:Date
+                }
+                Attribute {
+                    name = sourceDocument
+                    type = bookkeeping:SourceDocument
                     lower = 0
+                }
+                Attribute {
+                    name = entries
+                    type = bookkeeping:JournalEntry
+                    lower = 1
                     upper = {}
                 }
                 Attribute {
-                    name = bookingDate
-                    type = primitive:Date
+                    name = owner
+                    type = bookkeeping:Dimension
+                    lower = 1
+                    upper = {}
                 }
             }            
         }
@@ -246,11 +239,13 @@ Package {
             name = Mutation
             attributes = {
                 Attribute {
-                    name = entries
-                    type = bookkeeping:JournalEntry
-                    lower = 1
+                    name = bookings
+                    type = bookkeeping:Booking
+                    lower = 0
                     upper = {}
+                    isComposite = true
                 }
+                
                 Attribute {
                     name = createdBy
                     type = primitive:Long
@@ -268,7 +263,7 @@ Package {
         }
         
         Class {
-            name = OwnerProperties
+            name = Dimension
             attributes = {
                 Attribute {
                     name = ownerType
