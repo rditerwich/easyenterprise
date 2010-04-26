@@ -1,8 +1,6 @@
 package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import agilexs.catalogxsadmin.presentation.client.ItemPropertiesView.PGPRowView;
@@ -24,53 +22,33 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
+import agilexs.catalogxsadmin.presentation.client.util.BindingTuple;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
- * Presenter class for all properties on a specific ProductGroup.
+ * Presenter that displays a table with all the properties own by the group shown.
+ * The user can modify the properties and their default values.
  */
 public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
 
-  private static class Tuple {
+  private static class Tuple extends BindingTuple<PropertyValue, PropertyValueBinding> {
+
     private static String curLang = null;
 
     public static void setLanguage(String lang) {
       curLang = lang;
     }
 
-    private final HashMap<String, PropertyValue> langMap = new HashMap<String, PropertyValue>(3);
-    private final PropertyValueBinding defaultBinding = new PropertyValueBinding();
-    private final PropertyValueBinding binding = new PropertyValueBinding();
-
-    public PropertyValueBinding getBinding() {
-      return binding;
+    @Override
+    protected String getCurrentLanguage() {
+      return curLang;
     }
-
-    public PropertyValueBinding getDefaultBinding() {
-      return defaultBinding;
-    }
-
-    public Collection<PropertyValue> values() {
-      return langMap.values();
-    }
-
-    public void refresh() {
-      if (langMap.get("") != null) {
-        getDefaultBinding().setData(langMap.get(""));
-      }
-      getBinding().setData(langMap.get(curLang));
-    }
-
-    public void setData(PropertyValue pv) {
-      if (pv.getLanguage() == null) {
-        defaultBinding.setData(pv);
-        langMap.put("", pv);
-      } else {
-        binding.setData(pv);
-        langMap.put(pv.getLanguage(), pv);
-      }
+    
+    @Override
+    protected PropertyValueBinding newBinding() {
+      return new PropertyValueBinding();
     }
   }
 
@@ -104,10 +82,10 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         final Tuple tuple = createRow(rowView);
 
         dpv.setProperty(p);
-        tuple.setData(dpv);
+        tuple.setValue(dpv, dpv.getLanguage());
         rowView.setDefaultValueWidget(PropertyType.String);
         pv.setProperty(p);
-        tuple.setData(pv);
+        tuple.setValue(pv, pv.getLanguage());
         rowView.setValueWidget(PropertyType.String);
       }
     });
@@ -115,11 +93,14 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
       @Override
       public void onDelete(Integer index) {
         final Tuple b = bindings.get(index.intValue());
-        final Long propId = ((PropertyValue) b.getBinding().getData()).getProperty().getId();
+        final Property delProperty = ((PropertyValue) b.getBinding().getData()).getProperty();
+        final Long propId = delProperty.getId();
         final ArrayList<PropertyValue> deletes  = new ArrayList<PropertyValue>(3);
 
         for (PropertyValue pv : currentItem.getPropertyValues()) {
-          if (propId.equals(pv.getProperty().getId())) {
+          //if propId == null it's a new not yet stored property
+          if ((propId == null && pv.getProperty() == delProperty) || 
+              propId.equals(pv.getProperty().getId())) {
             deletes.add(pv);
           }
         }
@@ -127,7 +108,8 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
           currentItem.getPropertyValues().remove(pv);
         }
         for (Property property : currentItem.getProperties()) {
-          if (propId.equals(property.getId())) {
+          if ((propId == null && property == delProperty) ||
+              propId.equals(property.getId())) {
             currentItem.getProperties().remove(property);
             break;
           }
@@ -193,7 +175,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         createRow(rowView);
       }
       for (PropertyValue pv : pvl) {
-        bindings.get(i).setData(pv);
+        bindings.get(i).setValue(pv, pv.getLanguage());
         if (pv.getLanguage() == null){
           Util.bindPropertyValue(pv.getProperty().getType(), rowView.setDefaultValueWidget(pv.getProperty().getType()), bindings.get(i).getDefaultBinding());
           bindings.get(i).refresh();
@@ -245,10 +227,13 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
           @Override
           public void onBindingChangeEvent(BindingEvent event) {
             if (event instanceof BindingChangeStateEvent) {
-              Util.bindPropertyValue(((PropertyValue) pb.getDefaultBinding().getData()).getProperty().getType(),
-                  rowView.setDefaultValueWidget(lpb.get(rowView.getType().getSelectedIndex())), pb.getDefaultBinding());
-              Util.bindPropertyValue(((PropertyValue) pb.getBinding().getData()).getProperty().getType(),
-                  rowView.setValueWidget(lpb.get(rowView.getType().getSelectedIndex())), pb.getBinding());
+              final PropertyType pt = (PropertyType) ((BindingChangeStateEvent) event).getSender().getData();
+
+              Util.bindPropertyValue(pt, rowView.setDefaultValueWidget(lpb
+                  .get(rowView.getType().getSelectedIndex())), pb
+                  .getDefaultBinding());
+              Util.bindPropertyValue(pt, rowView.setValueWidget(lpb.get(rowView
+                  .getType().getSelectedIndex())), pb.getBinding());
               //Next line doesn't work because data not set at this point. Bug?
               //rowView.setValueWidget((PropertyType) pb.property().type().getData());
             }

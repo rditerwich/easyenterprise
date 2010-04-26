@@ -6,7 +6,7 @@ import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
-import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
+import agilexs.catalogxsadmin.presentation.client.util.CatalogXSWidgetUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -29,6 +29,10 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
+/**
+ * View that displays a table with all the properties own by the group shown.
+ * The user can modify the properties and their default values.
+ */
 class ItemPropertiesView extends Composite implements View {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
@@ -69,11 +73,11 @@ class ItemPropertiesView extends Composite implements View {
     }
 
     public Widget setDefaultValueWidget(PropertyType type) {
-      return CatalogWidgetUtil.setPropertyTypeWidget(defaultValueWrapper, type);
+      return CatalogXSWidgetUtil.setPropertyTypeWidget(defaultValueWrapper, type, true);
     }
 
     public Widget setValueWidget(PropertyType type) {
-      return CatalogWidgetUtil.setPropertyTypeWidget(valueWrapper, type);
+      return CatalogXSWidgetUtil.setPropertyTypeWidget(valueWrapper, type, true);
     }
   }
 
@@ -95,7 +99,7 @@ class ItemPropertiesView extends Composite implements View {
         if (deleteHandler == null) return;
         final Cell c = grid.getCellForEvent(event);
 
-        if (c.getCellIndex() == DELETE_COLUMN && 
+        if (c != null && c.getCellIndex() == DELETE_COLUMN && 
             Window.confirm(i18n.deletePropertyQuestion())) { 
           deleteHandler.onDelete(Integer.valueOf(c.getRowIndex()-1/*-header*/));
         }

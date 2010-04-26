@@ -30,6 +30,7 @@ public class ProductGroupView extends Composite implements View {
   private final SimplePanel propertiesPanel = new SimplePanel();
   private final FlowPanel parentPropertiesPanel = new FlowPanel();
   private final SimplePanel parentsPanel = new SimplePanel();
+  private final SimplePanel relatedToPanel = new SimplePanel();
 
   public ProductGroupView() {
     initWidget(detailPanel);
@@ -47,10 +48,12 @@ public class ProductGroupView extends Composite implements View {
     detailPanel.addNorth(fp, 80);
     //top
     final ScrollPanel sp = new ScrollPanel(allPropertiesPanel);
-    allPropertiesPanel.add(parentsPanel);
+    final HorizontalPanel pAndR = new HorizontalPanel();
+    
+    pAndR.add(parentsPanel);
+    pAndR.add(relatedToPanel);
+    allPropertiesPanel.add(pAndR);
     allPropertiesPanel.add(propertiesPanel);
-    //allPropertiesPanel.add(new HTML("<h3>Relations</h3>"));
-    //allPropertiesPanel..add(relations);
     allPropertiesPanel.add(new HTML(i18n.h3(i18n.inheritedProperties())));
     allPropertiesPanel.add(parentPropertiesPanel);
     sp.getElement().getStyle().setPadding(10, Unit.PX);
@@ -80,6 +83,10 @@ public class ProductGroupView extends Composite implements View {
 
   public void setParentsPanel(View view) {
     parentsPanel.setWidget(view.asWidget());
+  }
+
+  public void setRelatedToPanel(View view) {
+    relatedToPanel.setWidget(view.asWidget());
   }
 
   public void setPropertiesPanel(View w) {

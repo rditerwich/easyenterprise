@@ -10,6 +10,7 @@ import agilexs.catalogxsadmin.presentation.client.binding.CheckBoxBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.ListPropertyBinding;
 import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.EnumValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
@@ -18,6 +19,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
+import agilexs.catalogxsadmin.presentation.client.widget.EnumValuesEditWidget;
 import agilexs.catalogxsadmin.presentation.client.widget.MediaWidget;
 
 import com.google.gwt.i18n.client.NumberFormat;
@@ -62,10 +64,10 @@ public class Util {
      * Initializes the data set, call this method AFTER the instance is bound.
      */
     public void set() {
-      setData(PROPERTY_TYPE_LIST);  
+      setData(PROPERTY_TYPE_LIST);
     }
   }
-  
+
   public static final String NAME = "Name";
 
   //private static final Label EMPTY_LABEL = new Label();
@@ -84,14 +86,14 @@ public class Util {
    */
   public static boolean matchLang(String lang, String pvLang) {
     return (lang == null && pvLang == null) ||
-        (lang != null && lang.equals(pvLang)); 
+        (lang != null && lang.equals(pvLang));
   }
 
   /**
-   * Returns a list of all PropertyValues based on all properties in a 
+   * Returns a list of all PropertyValues based on all properties in a
    * ProductGroup. If no propertyValue is present, a new one is created.
    * The newly created propertyValues are added to the current productGroup.
-   * 
+   *
    * @param pg
    * @param values
    * @return
@@ -155,7 +157,7 @@ public class Util {
     for (Property p : properties) {
       for (Label label : p.getLabels()) {
         if (name.equals(label.getLabel()) &&
-             ((lang == null && label.getLanguage() == null) || 
+             ((lang == null && label.getLanguage() == null) ||
               (lang != null && lang.equals(label.getLanguage())))) {
           return p;
         }
@@ -201,11 +203,11 @@ public class Util {
   }
 
   public static Label getLabel(PropertyValue value, String lang) {
-    return value == null ? null : Util.getLabel(value.getProperty().getLabels(), lang);
+    return value == null ? null : getLabel(value.getProperty().getLabels(), lang);
   }
 
   public static Label getLabel(PropertyValue value, String lang, boolean fallback) {
-    return value == null ? null : Util.getLabel(value.getProperty().getLabels(), lang, fallback);
+    return value == null ? null : getLabel(value.getProperty().getLabels(), lang, fallback);
   }
 
   public static Label getLabel(List<Label> labels, String lang) {
@@ -216,7 +218,7 @@ public class Util {
    * Returns the label matching the language. If lang is not null, but the list
    * of Labels contains a label with language null this label is returns. If no
    * match could be found, an empty label is returned.
-   *  
+   *
    * @param labels
    * @param lang
    * @return
@@ -224,15 +226,15 @@ public class Util {
   public static Label getLabel(List<Label> labels, String lang, boolean fallback) {
     if (labels != null) {
       for (Label label : labels) {
-        if ((lang == null && label.getLanguage() == null) || 
+        if ((lang == null && label.getLanguage() == null) ||
             (lang != null && lang.equals(label.getLanguage()) &&
-                (!fallback || (label.getLabel() != null && !"".equals(label.getLabel()))))) { 
+                (!fallback || (label.getLabel() != null && !"".equals(label.getLabel()))))) {
           return label;
         }
       }
       if (fallback) {
         for (Label label : labels) {
-          if (label.getLanguage() == null) { 
+          if (label.getLanguage() == null) {
             return label;
           }
         }
@@ -243,7 +245,7 @@ public class Util {
 
     return lbl;
   }
-  
+
   public static List<Property> filterEmpty(List<Property> properties) {
     for (Property property : properties) {
       final List<Label> nl = new ArrayList<Label>();
@@ -271,12 +273,12 @@ public class Util {
 
   /**
    * Returns true if all PropertyValue data fields all null.
-   *  
+   *
    * @param pv PropertyValue
    * @return
    */
   public static boolean isEmpty(PropertyValue pv) {
-    return (pv.getStringValue() == null || "".equals(pv.getStringValue())) 
+    return (pv.getStringValue() == null || "".equals(pv.getStringValue()))
         && pv.getIntegerValue() == null
         && pv.getEnumValue() == null && pv.getRealValue() == null
         && pv.getBooleanValue() == null
@@ -313,7 +315,7 @@ public class Util {
     Binding value = null;
     switch (pt) {
     case Enum:
-      //value = new TextBox();
+      value = ((EnumValuesEditWidget)w).bind(pvb);
       break;
     case FormattedText:
       value = TextBoxBaseBinding.bind((TextBoxBase)w, pvb.stringValue(), BindingConverters.STRING_CONVERTER);
@@ -377,7 +379,7 @@ public class Util {
           dpv = propv;
         }
       }
-      final String v = Util.propertyValueToString(lpv != null && !Util.isEmpty(lpv) ? lpv : dpv);
+      final String v = Util.propertyValueToString(lpv != null && !Util.isEmpty(lpv) ? lpv : dpv, language);
 
       s.append(v);
       if (!"".equals(v)) {
@@ -387,13 +389,26 @@ public class Util {
     return s.toString();
   }
 
-  public static String propertyValueToString(PropertyValue pv) {
+  /**
+   * Converts a propertyValue to String.
+   *
+   * @param pv
+   * @param language
+   * @return
+   */
+  public static String propertyValueToString(PropertyValue pv, String language) {
     if (pv == null) return "";
     Object value = null;
 
     switch (pv.getProperty().getType()) {
     case Enum:
-      value = "";
+      for (EnumValue enumValue : pv.getProperty().getEnumValues()) {
+        if (enumValue.getId().equals(pv.getEnumValue())) {
+          value = getLabel(pv.getProperty().getEnumValues().get(
+              pv.getEnumValue()).getLabels(), language, true);
+          break;
+        }
+      }
       break;
     case FormattedText:
       value = pv.getStringValue();
@@ -449,7 +464,7 @@ public class Util {
   /**
    * Converts the objectValue to a String and if objectValue == null return an
    * empty String.
-   *  
+   *
    * @param objectValue
    * @return
    */

@@ -90,4 +90,18 @@ public interface I18NCatalogXS extends Messages {
   String save();
 
   String languagesSaved();
+
+  String deleteProductQuestion();
+
+  String productDeleted();
+
+  String explainEnums();
+
+  String cancel();
+
+  String ok();
+
+  String editEnumTitle();
+
+  String noValue();
 }

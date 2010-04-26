@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
-import agilexs.catalogxsadmin.presentation.client.util.CatalogWidgetUtil;
+import agilexs.catalogxsadmin.presentation.client.util.CatalogXSWidgetUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -19,6 +19,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * View that displays a table of inherited properties for one parent group.
+ * The user can modify the values.
+ */
 public class ItemValuesView extends Composite implements View {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
@@ -46,11 +50,11 @@ public class ItemValuesView extends Composite implements View {
     }
 
     public Widget setDefaultValueWidget(PropertyType type) {
-      return CatalogWidgetUtil.setPropertyTypeWidget(defaultValueWrapper, type);
+      return CatalogXSWidgetUtil.setPropertyTypeWidget(defaultValueWrapper, type, false);
     }
 
     public Widget setValueWidget(PropertyType type) {
-      return CatalogWidgetUtil.setPropertyTypeWidget(valueWrapper, type);
+      return CatalogXSWidgetUtil.setPropertyTypeWidget(valueWrapper, type, false);
     }
   }
 

@@ -18,12 +18,17 @@ import agilexs.catalogxsadmin.presentation.client.widget.StatusMessage;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 public class ProductPresenter implements Presenter<ProductView> {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
+  private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
+  private final static int EDIT_COL = 0; // when update, change FIRST_DATA_COL
+  private final static int DELETE_COL = 1; // when update, change FIRST_DATA_COL
+  private final static int FIRST_DATA_COL = 2;
 
   private final ProductView view = new ProductView();
   private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
@@ -42,9 +47,16 @@ public class ProductPresenter implements Presenter<ProductView> {
       @Override
       public void onClick(ClickEvent event) {
         final Cell c = view.getProductTable().getCellForEvent(event);
+
         if (c != null) {
-          currentProduct = currentProducts.get(c.getRowIndex()-1);
-          show(SHOW.PRODUCT);
+          final int colIndex = c.getCellIndex();
+          if (colIndex == EDIT_COL) {
+            currentProduct = currentProducts.get(c.getRowIndex()-1);
+            show(SHOW.PRODUCT);
+          } else if (colIndex == DELETE_COL &&
+              Window.confirm(i18n.deleteProductQuestion())) {
+            delete(currentProducts.get(c.getRowIndex()-1));
+          }
         }
       }});
     view.backClickHandlers().addClickHandler(new ClickHandler() {
@@ -72,6 +84,20 @@ public class ProductPresenter implements Presenter<ProductView> {
     return view;
   }
 
+  private void delete(Product product) {
+    if (product != null) {
+      final Product saveProduct = currentProduct.clone(new HashMap());
+      CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
+        @Override public void onFailure(Throwable caught) {
+        }
+        @Override public void onSuccess(Product result) {
+          StatusMessage.get().show(i18n.productDeleted());
+          currentProduct = null;
+          show(SHOW.PRODUCTS);
+        }
+      });
+    }
+  }
   private void save() {
     //clear field not needed to be stored: properties and empty property value
     // field
@@ -139,7 +165,9 @@ public class ProductPresenter implements Presenter<ProductView> {
       view.getProductTable().resizeRows(currentProducts.size() + 1);
       final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
 
-      int h = 0;
+      view.setProductTableHeader(EDIT_COL, " ");
+      view.setProductTableHeader(DELETE_COL, " "); 
+      int h = FIRST_DATA_COL;
       for (PropertyValue[] pvhlangs : header) {
         for (PropertyValue pvh : pvhlangs) {
           if (currentLanguage.equals(pvh.getLanguage())) {
@@ -152,7 +180,9 @@ public class ProductPresenter implements Presenter<ProductView> {
         final Product product = currentProducts.get(i);
         final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), product);
 
-        int j = 0;
+        view.setProductTableCellImage(i+1, EDIT_COL, rb.editImage());
+        view.setProductTableCellImage(i+1, DELETE_COL, rb.deleteImage());
+        int j = FIRST_DATA_COL;
         for (PropertyValue[] pvlangs : pvl) {
           PropertyValue dpv = null;
           PropertyValue lpv = null;

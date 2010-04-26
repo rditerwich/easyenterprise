@@ -2,6 +2,12 @@ package agilexs.catalogxsadmin.presentation.client.util;
 
 import java.util.Map;
 
+/**
+ * Generic implementation of the Map.Entry interface.
+ *
+ * @param <K> Key
+ * @param <V> Value
+ */
 public class Entry<K,V> implements Map.Entry<K,V> {
 
   private final K key;

@@ -9,6 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -111,9 +113,15 @@ public class ProductView extends Composite implements View {
     productTable.setWidget(0, column, new Label(text));
   }
 
-  public void setProductTableCell(int row, int column, PropertyValue pv) {
-    productTable.getRowFormatter().getElement(row).getStyle().setCursor(Cursor.POINTER);
+  public void setProductTableCellImage(int row, int column, ImageResource image) {
+    productTable.getCellFormatter().getElement(row, column).getStyle().setCursor(Cursor.POINTER);
+    if (column >= productTable.getColumnCount()) {
+      productTable.resizeColumns(column+1);
+    }
+    productTable.setWidget(row, column, new Image(image));
+  }
 
+  public void setProductTableCell(int row, int column, PropertyValue pv) {
     if (column >= productTable.getColumnCount()) {
       productTable.resizeColumns(column+1);
     }

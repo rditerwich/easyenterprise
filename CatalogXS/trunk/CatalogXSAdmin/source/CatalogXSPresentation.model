@@ -69,9 +69,14 @@ GwtPackage {
                                     referringProperties = catalog:Property/properties:labels
                                 }
                                 JavaBeanPropertyView {
-                                    name = EnumsView
+                                    name = EnumValuesView
                                     kind = all
                                     referringProperties = catalog:Property/properties:enumValues
+                                }
+                                JavaBeanPropertyView {
+                                    name = EnumValuesLabelsView
+                                    kind = all
+                                    referringProperties = catalog:EnumValue/properties:labels
                                 }
                             }
                         }
@@ -134,9 +139,14 @@ GwtPackage {
                                     referringProperties = catalog:Property/properties:labels
                                 }
                                 JavaBeanPropertyView {
-                                    name = EnumsView
+                                    name = EnumValuesView
                                     kind = all
                                     referringProperties = catalog:Property/properties:enumValues
+                                }
+                                JavaBeanPropertyView {
+                                    name = EnumValuesLabelsView
+                                    kind = all
+                                    referringProperties = catalog:EnumValue/properties:labels
                                 }
                             }
                         }
@@ -192,9 +202,14 @@ GwtPackage {
                                     referringProperties = catalog:Property/properties:labels
                                 }
                                 JavaBeanPropertyView {
-                                    name = EnumsView
+                                    name = EnumValuesView
                                     kind = all
                                     referringProperties = catalog:Property/properties:enumValues
+                                }
+                                JavaBeanPropertyView {
+                                    name = EnumValuesLabelsView
+                                    kind = all
+                                    referringProperties = catalog:EnumValue/properties:labels
                                 }
                             }
                         }

@@ -79,6 +79,17 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = catalog:Item/attributes:properties
                         }
                         ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+                        ClassAttributeView {
                             name = PropertyValueItemView
                             kind = all
                             referringAttributes = catalog:PropertyValue/attributes:item
@@ -150,6 +161,17 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = catalog:Item/attributes:properties
                         }
                         ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+                        ClassAttributeView {
                             name = PropertyValueItemView
                             kind = all
                             referringAttributes = catalog:PropertyValue/attributes:item
@@ -168,11 +190,6 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
-                        }
-                        ClassAttributeView {
-                            name = EnumsView
-                            kind = all
-                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     }
                 }
@@ -225,11 +242,6 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
                         }
-                        ClassAttributeView {
-                            name = EnumsView
-                            kind = all
-                            referringAttributes = catalog:Property/attributes:enumValues
-                        }
                     }
                 }
             }
@@ -262,6 +274,18 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = catalog:Item/attributes:properties
                         }
                         ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+                        ClassAttributeView {
                             name = PropertyValuesView
                             kind = all
                             forceComposite = true
@@ -288,11 +312,6 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             forceComposite = true
                             referringAttributes = catalog:Property/attributes:labels
-                        }
-                        ClassAttributeView {
-                            name = EnumsView
-                            kind = all
-                            referringAttributes = catalog:Property/attributes:enumValues
                         }
                     }
                 }
@@ -365,11 +384,6 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
                         }
-                        ClassAttributeView {
-                            name = EnumsView
-                            kind = all
-                            referringAttributes = catalog:Property/attributes:enumValues
-                        }
                     }
                 }
             }
@@ -429,11 +443,7 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
                         }
-                        ClassAttributeView {
-                            name = EnumsView
-                            kind = all
-                            referringAttributes = catalog:Property/attributes:enumValues
-                        }
+
                     } 
                  }
              }

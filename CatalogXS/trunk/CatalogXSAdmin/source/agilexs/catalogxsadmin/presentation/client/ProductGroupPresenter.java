@@ -196,6 +196,5 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       } else {
 
       }
-//    }
   }
 }
