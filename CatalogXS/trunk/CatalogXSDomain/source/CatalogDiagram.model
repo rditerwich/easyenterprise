@@ -135,7 +135,26 @@ DomainDiagram {
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:RelationType
         }
         DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 42
+                    y = -35
+                    width = -1
+                    height = -1
+                }
+            }
             domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Language
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 34
+                    y = 127
+                    width = 155
+                    height = 97
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyGroup
         }
     }
     enumerations = {
@@ -212,8 +231,8 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 176
-                    y = 165
+                    x = 224
+                    y = 175
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:properties
@@ -247,6 +266,33 @@ DomainDiagram {
         }
         Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:languages
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 176
+                    y = 320
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyGroup/attributes:properties
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 297
+                    y = 149
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:propertyGroups
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 55
+                    y = 648
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyGroup/attributes:labels
         }
     }
     superClassReferences = {

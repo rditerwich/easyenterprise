@@ -68,6 +68,14 @@ Package {
                     upper = {}
                     opposite = catalog:ProductGroup/attributes:children
                 }
+                Attribute {
+                    name = propertyGroups
+                    type = catalog:PropertyGroup
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = catalog:PropertyGroup/attributes:item
+                }
                 /**
                  * Defines the properties that a product in the child-extent
                  * can have. This includes this item, if it is a product.
@@ -121,6 +129,31 @@ Package {
                     name = containsProducts
                     type = primitive:Boolean
                     default = true
+                }
+            }
+        }
+        Class {
+            name = PropertyGroup
+            attributes = {
+                Attribute {
+                    name = labels
+                    type = catalog:Label
+                    isComposite = true
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:Label/attributes:propertyGroup
+                }
+                Attribute {
+                    name = item
+                    type = catalog:Item
+                    opposite = catalog:Item/attributes:propertyGroups
+                }
+                Attribute {
+                    name = properties
+                    type = catalog:Property
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:Property/attributes:propertyGroups
                 }
             }
         }
@@ -191,6 +224,13 @@ Package {
                     opposite = catalog:Item/attributes:properties
                 }
                 Attribute {
+                    name = propertyGroups
+                    type = catalog:PropertyGroup
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:PropertyGroup/attributes:properties
+                }
+                Attribute {
                     name = type
                     type = catalog:PropertyType
                 }
@@ -249,6 +289,12 @@ Package {
                     type = catalog:Property
                     lower = 0
                     opposite = catalog:Property/attributes:labels
+                }
+                Attribute {
+                    name = propertyGroup
+                    type = catalog:PropertyGroup
+                    lower = 0
+                    opposite = catalog:PropertyGroup/attributes:labels
                 }
                 Attribute {
                     name = enumValue
