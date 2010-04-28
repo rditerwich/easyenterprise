@@ -8,6 +8,8 @@ import agilexs.catalogxsadmin.presentation.client.widget.PropertyValueWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Anchor;
@@ -22,7 +24,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,16 +35,17 @@ public class ProductView extends Composite implements View {
     NO_PRODUCTS, PRODUCTS, PRODUCT
   }
 
-  private final SimplePanel parentsPanel = new SimplePanel();
   private final DeckPanel deck = new DeckPanel();
   private final Button newProductButton = new Button(i18n.newProduct());
   private final Button saveButton = new Button(i18n.saveChanges());
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
-  private final FlowPanel propertiesPanel = new FlowPanel();
-
+  private final DeckPanel propertiesDeck = new DeckPanel();
+  private final FlowPanel labels = new FlowPanel();
   private final Grid productTable = new Grid();
 
+  private Label lastSelected;
+  
   public ProductView() {
     initWidget(deck);
 
@@ -76,12 +78,47 @@ public class ProductView extends Composite implements View {
     final ScrollPanel sp = new ScrollPanel(productPanel);
     sp.getElement().getStyle().setPadding(10, Unit.PX);
     detailPanel.add(sp);
-
     productPanel.add(pname);
-    productPanel.add(parentsPanel);
-    productPanel.add(propertiesPanel);
+    final HorizontalPanel properties = new HorizontalPanel();
+    
+    productPanel.add(properties);
+    properties.add(labels);
+    labels.addStyleName("propertiesGroupName");
+    properties.add(propertiesDeck);
+    propertiesDeck.getElement().getStyle().setPadding(10, Unit.PX);
+    propertiesDeck.setStyleName("properties");
+    sp.getElement().getStyle().setPadding(10, Unit.PX);
   }
 
+  public void clear() {
+    labels.clear();
+    propertiesDeck.clear();
+  }
+
+  public void add(String name, Widget widget) {
+    final Label lbl = new Label(name); 
+
+    propertiesDeck.add(widget);
+    final int i = propertiesDeck.getWidgetCount() - 1;
+
+    labels.add(lbl);
+    lbl.addStyleName("propertyGroupName");
+    lbl.addClickHandler(new ClickHandler(){
+
+      @Override public void onClick(ClickEvent event) {
+        lastSelected.removeStyleName("propertyGroupNameSelected");
+
+        lbl.addStyleName("propertyGroupNameSelected");
+        lastSelected = lbl;
+        propertiesDeck.showWidget(i);
+      }});
+    if (i == 0) {
+      lastSelected = lbl;
+      lbl.addStyleName("propertyGroupNameSelected");
+      propertiesDeck.showWidget(i);
+    }
+  }
+  
   public HasClickHandlers backClickHandlers() {
     return back;
   }
@@ -92,10 +129,6 @@ public class ProductView extends Composite implements View {
 
   public HasClickHandlers saveButtonClickHandlers() {
     return saveButton;
-  }
-
-  public FlowPanel getPropertiesPanel() {
-    return propertiesPanel;
   }
 
   public void setProductName(String name) {
@@ -131,10 +164,6 @@ public class ProductView extends Composite implements View {
   @Override
   public Widget asWidget() {
     return this;
-  }
-
-  public void setParentsPanel(View view) {
-    parentsPanel.setWidget(view.asWidget());
   }
 
   public void showPage(SHOW show) {

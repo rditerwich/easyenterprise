@@ -116,6 +116,11 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = catalog:Item/attributes:relations
                         }
                         ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
                             name = RelationRelatedToView
                             kind = all
                             referringAttributes = catalog:Relation/attributes:relatedTo
@@ -215,6 +220,11 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = catalog:Item/attributes:relations
                         }
                         ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
                             name = RelationRelatedToView
                             kind = all
                             referringAttributes = catalog:Relation/attributes:relatedTo
@@ -281,6 +291,11 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             forceComposite = true
                             referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
                         }
                         ClassAttributeView {
                             name = RelationRelatedToView
@@ -369,6 +384,11 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             forceComposite = true
                             referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
                         }
                         ClassAttributeView {
                             name = RelationRelatedToView

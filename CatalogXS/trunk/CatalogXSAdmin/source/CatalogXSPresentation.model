@@ -144,7 +144,21 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:Item/properties:relations
                                 }
-                                
+                                JavaBeanPropertyView {
+                                    name = RelationItemView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = RelationRelatedToView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:relatedTo
+                                }
+                                JavaBeanPropertyView {
+                                    name = RelationTypeView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:relationType
+                                }
                             }
                         }
                     }
@@ -214,6 +228,22 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:Item/properties:relations
                                 }
+                                JavaBeanPropertyView {
+                                    name = RelationItemView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:item
+                                }
+                                JavaBeanPropertyView {
+                                    name = RelationRelatedToView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:relatedTo
+                                }
+                                JavaBeanPropertyView {
+                                    name = RelationTypeView
+                                    kind = all
+                                    referringProperties = catalog:Relation/properties:relationType
+                                }
+                                
                             }
                         }
                     }

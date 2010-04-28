@@ -202,7 +202,7 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   private void showProduct() {
-    view.getPropertiesPanel().clear();
+    view.clear();
     valuesPresenters.clear();
     final List<Long> parents = Util.findParents(currentProductGroup);
 
@@ -213,9 +213,12 @@ public class ProductPresenter implements Presenter<ProductView> {
 
       if (!pv.isEmpty()) {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();
+        final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
+        final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
+        final String name = pvName == null ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
 
         valuesPresenters.add(presenter);
-        view.getPropertiesPanel().add(presenter.getView().asWidget());
+        view.add(name, presenter.getView().asWidget());
         //Util.getPropertyValueByName(parent.getPropertyValues(), Util.NAME, currentLanguage).getStringValue()
         presenter.show(currentLanguage, pv);
       }

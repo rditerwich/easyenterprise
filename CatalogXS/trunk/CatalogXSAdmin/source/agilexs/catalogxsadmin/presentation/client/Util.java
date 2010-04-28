@@ -304,8 +304,8 @@ public class Util {
     if (productGroup != null && productGroup.getParents() != null) {
       for (ProductGroup parent : productGroup.getParents()) {
         if (!parents.contains(parent.getId())) {
-          parents.add(parent.getId());
           findParents(parent, parents);
+          parents.add(parent.getId());
         }
       }
     }

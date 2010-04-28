@@ -14,12 +14,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProductGroupView extends Composite implements View {
@@ -27,15 +25,11 @@ public class ProductGroupView extends Composite implements View {
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   private final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
-//  private final FlowPanel allPropertiesPanel = new FlowPanel();
-  final Button saveButton = new Button(i18n.saveChanges()); 
+  private final Button saveButton = new Button(i18n.saveChanges()); 
   private final CheckBox containsProducts = new CheckBox();
-//  private final SimplePanel propertiesPanel = new SimplePanel();
-//  private final FlowPanel parentPropertiesPanel = new FlowPanel();
-//  private final SimplePanel parentsPanel = new SimplePanel();
-//  private final SimplePanel relatedToPanel = new SimplePanel();
   private final DeckPanel deck = new DeckPanel();
   private final FlowPanel labels = new FlowPanel();
+
   private Label lastSelected;
 
   public ProductGroupView() {
@@ -56,13 +50,13 @@ public class ProductGroupView extends Composite implements View {
     final HorizontalPanel properties = new HorizontalPanel();
     final ScrollPanel sp = new ScrollPanel(properties);
 
+    detailPanel.add(sp);
     properties.add(labels);
     labels.addStyleName("propertiesGroupName");
     properties.add(deck);
     deck.getElement().getStyle().setPadding(10, Unit.PX);
     deck.setStyleName("properties");
     sp.getElement().getStyle().setPadding(10, Unit.PX);
-    detailPanel.add(sp);
   }
 
   @Override
@@ -107,23 +101,7 @@ public class ProductGroupView extends Composite implements View {
     }
   }
 
-//  public FlowPanel getParentPropertiesPanel() {
-//    return parentPropertiesPanel;
-//  }
-
   public HasClickHandlers saveButtonClickHandlers() {
     return saveButton;
   }
-
-//  public void setParentsPanel(View view) {
-//    parentsPanel.setWidget(view.asWidget());
-//  }
-
-//  public void setRelatedToPanel(View view) {
-//    relatedToPanel.setWidget(view.asWidget());
-//  }
-
-//  public void setPropertiesPanel(View w) {
-//    propertiesPanel.setWidget(w.asWidget());
-//  }
 }
