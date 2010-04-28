@@ -5,6 +5,7 @@ div,td,p {text-align:left;font:inherit;}
 img {border:none;}
 table {border-collapse:collapse;}
 table,tr,td {margin:0px;padding:0px;font:inherit; font-size:inherit;}
+thead {line-height: 10pt;}
 
 a {text-decoration:none;}
 a:hover {text-decoration: underline;}
@@ -21,19 +22,7 @@ body {
   background-color:#E6E7E9;
 }
 
-.add_to_cart {
-  float:right;
-  padding: 8px 12px;
-  font-size: 12px;
-  text-decoration: none;
-  white-space:nowrap;
-  line-height:20px;
-  border: 1px solid #999;
-  color: #4D4D4D;
-  background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;
-}
-
-#site_content {
+#page {
   position:relative;
   width:960px;
   margin:auto;
@@ -41,15 +30,18 @@ body {
   _height:800px;
 }
 
-.page_logo {
-  margin-left:10px;
-  height: 56px;
-  width:181px;
-  background-image:url("images/logo_tetterode_2009.jpg");
+#page_center {
+  background-image:url("images/page_background.jpg");
   background-repeat:no-repeat;
-  background-position:0px 10px;
-  cursor:pointer;
+  background-color:#f1f1f1;
+  height:700px;
+  width:100%;
 }
+
+#page_middle {
+  width: 558px;
+}	
+
 .page_logo {
   margin-left:10px;
   height: 56px;
@@ -70,15 +62,16 @@ body {
 }
 
 .page_messages {
-  position:absolute;
+  position: absolute;
   display:inline;
-  left:250px;
+  left: 350px;
   top:30px;
   padding:3px 5px;
   font-size:12px;
   font-weight: bold;
   color:#032D67;
-  background-color:gold; 
+  background-color:gold;
+  text-align: center;
 }
 
 .page_messages ul, .page_messages li {
@@ -105,20 +98,6 @@ body {
 .page_login a {
   color: #032D67;
   text-decoration:underline;
-}
-
-.page_content {
-  background-image:url("images/page_background.jpg");
-  background-repeat:no-repeat;
-  background-color:#f1f1f1;
-  height:700px;
-  width:100%;
-}
-
-
-
-.page_middle {
-  width: 558px;
 }
 
 .homepage_middle {
@@ -215,8 +194,6 @@ body {
 .homepage_nieuws_midden .agatext .agamore:hover {
   color: #F41651;
 }
-
-
 
 
 .page_menu {
@@ -372,7 +349,7 @@ body {
 
 
 
-.kruimelpad {
+.bread_crumb {
   font-size:12px;
   line-height:12px;
   padding-left:0px;
@@ -389,9 +366,7 @@ body {
   cursor: pointer;
 }
 
-
-
-.contents {
+.page_content {
   min-height:300px;
   _height:300px;
   padding-left:23px;
@@ -399,7 +374,8 @@ body {
   font-size:12px;
 }
 
-.contentheading {
+h1 {
+	font-weight: normal;
   font-size:18px;
   line-height:22px;
   color:#032D67;
@@ -408,42 +384,58 @@ body {
   border-bottom:1px dashed #000;
 }
 
-.contentdescription {
+h2 {
+	font-weight: bold;
+  font-size:12px;
+  color:#032D67;
+  padding-top:15px;
+  margin-top:7px;
+  border-bottom:1px solid #929397;
+  
+  clear: both;
+color: #929397;
+font-weight: bold;
+line-height: 1.6em;
+margin-bottom: 2px;
+}
+
+.page_content {
   line-height:22px;
 }
 
-.contentdescription a {
+.page_content a {
   color:#EC1B52;
   text-decoration:none;
 }
-.contentdescription a:hover {
+.page_content a:hover {
   text-decoration:underline;
 }
 
-.contentdescription p {
+.site_content p {
   padding:0px;
   margin:0px;
   margin-bottom:1em;
   line-height:22px;
 }
 
-.contentimage {
+.page_contentimage {
   float:right;
   margin:5px;
 }
 
 
-.contentdescription .sublist {
+.page_content .sublist {
   margin-top:20px;
 }
 
-.contentdescription .subitem {
+.sub_item {
   padding-top:10px;
   margin-bottom:20px;
   clear:both;
+	margin-top: 10px;
 }
 
-.contentdescription .subitem .subitem_title {
+.sub_item .left {
   width:204px;
   border-right:3px solid #e6e6e6;
   padding-right:10px;
@@ -452,29 +444,31 @@ body {
   color:#758FA8;
   font-weight:bold;
 }
-.contentdescription .subitem .subitem_title a {
+
+.sub_item .left a {
   color:#758FA8;
   text-decoration:none;
 }
-.contentdescription .subitem .subitem_title a:hover {
+.sub_item .left a:hover {
   text-decoration:underline;
 }
 
-.contentdescription .subitem .subitem_summary {
+.sub_item .right {
   padding-left:20px;
   color:#5D5D5D;
   line-height:1.8em;
+  display: block;
 }
-.contentdescription .subitem .subitem_summary p {
+.sub_item .right p {
   margin:0px;
   padding:0px;
 }
 
-.contentdescription .subitem .subitem_summary a {
+.sub_item .right a {
   color:#EC1B52;
   text-decoration:none;
 }
-.contentdescription .subitem .subitem_summary a:hover {
+.sub_item .right a:hover {
   text-decoration:underline;
 }
 
@@ -605,7 +599,7 @@ body {
 }
 .add_to_cart {
 	float:right;
-	padding: 8px 12px;
+	padding: 4px 6px;
 	font-size: 12px;
 	text-decoration: none;
 	white-space:nowrap;
@@ -613,4 +607,42 @@ body {
 	border: 1px solid #999;
 	color: #4D4D4D;
 	background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;
+}
+
+.product_table {
+	border-spacing: 10pt 10pt;
+}
+
+.product_table th {
+	text-align: left;
+}
+.product_table td {
+	padding-right: 10px;
+}
+
+.product_table .id_col {
+	width: 10%;
+}
+	
+.product_table .desc_col {
+	width: 75%;
+}
+	
+.product_table .price_col {
+	text-align: right;
+	width:15%;
+	padding-right: 0px;
+}
+
+.promotion {
+  position:relative;
+  background-image:url("images/promotion_panel.png");
+  background-repeat:no-repeat;
+  margin-top:15px;
+  margin-bottom:4px;
+  padding:10px;
+	position: relative;
+	width: 164px;
+	height: 191px;
+	float:left;
 }

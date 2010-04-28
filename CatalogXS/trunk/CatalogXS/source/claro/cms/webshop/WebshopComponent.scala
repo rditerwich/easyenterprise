@@ -21,6 +21,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "top-level-groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
+      "search-all" -> searchAllLink,
       "search-form" -> new SearchForm -> "search")
     
     case promotion : VolumeDiscountPromotion => Map(         
@@ -42,6 +43,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     
     case group : ProductGroup => Map(   
       "id" -> group.id.toString,
+      "name" -> group.name,
       "sub-groups" -> group.children -> "group",
       "parent-groups" -> group.parents -> "group",
       "group-properties" -> group.groupProperties -> "property",
@@ -96,7 +98,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case "group" :: id :: "search" :: s :: Nil => 
       WebshopModel.currentProductGroupVar(Some(id))
       WebshopModel.currentSearchStringVar(Some(s))
-      "group_search" :: Nil
+      "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
     case "cart" :: Nil => "shopping_cart" :: Nil
     case path => path

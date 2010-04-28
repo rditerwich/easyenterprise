@@ -33,11 +33,12 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
   }
 
   private def render(website : Website, rawPath : List[String], template : ConcreteTemplate) : Box[NodeSeq] = {
-    val result = Request.website.rootBinding.bind(template.xml) match {
+    val result = Request.website.rootBinding.bind(template.xml) 
+    /*match {
       case xml if (xml.first.label == "html") => Full(xml)
       case _ => Empty
-    }
+    }*/
     Log.info("Rendered template: " + template.resource.uri + " for path: " + rawPath.mkString("/", "/", ""))
-    result
+    Full(result)
   }
 }

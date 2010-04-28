@@ -3,6 +3,7 @@ package claro.cms
 import java.util.Locale
 import net.liftweb.http.{Req,LiftRules,LiftResponse,CSSResponse,StreamingResponse,InMemoryResponse}
 import net.liftweb.util.{CSSParser,Box,Full,Empty,Log}
+import claro.common.util.Conversions._
 
 object Dispatch extends LiftRules.DispatchPF {
 
@@ -17,7 +18,7 @@ object Dispatch extends LiftRules.DispatchPF {
   def apply(req : Req) : () => Box[LiftResponse] = dispatch(Request.website, req) 
 
   def dispatch(website : Website, req : Req) : () => Box[LiftResponse] = {
-  	req.path.suffix match {
+  	req.request.getServletPath.afterLast('.') match {
   	  case "css" => () => dispatchCSS(website, req)
   	  case "js" => req.section match {
         case "classpath" => emptyResponse
@@ -49,9 +50,9 @@ object Dispatch extends LiftRules.DispatchPF {
   }
   
   private def dispatchCSS(website : Website, req : Req) : Box[LiftResponse] = {
-    val path = req.path.partPath.drop(website.path.size)
+    val path = req.request.getServletPath.beforeLast('.').drop(website.contextPath.size)
     val locale = Locale.getDefault
-    website.resourceCache(ResourceLocator(path.mkString("/"), "css", List(Scope.global)), locale) match {
+    website.resourceCache(ResourceLocator(path, "css", List(Scope.global)), locale) match {
       case Some(resource) =>
         val bytes = website.contentCache(resource, 
             CSSParser(website.contextPath).fixCSS(resource.readString) match {

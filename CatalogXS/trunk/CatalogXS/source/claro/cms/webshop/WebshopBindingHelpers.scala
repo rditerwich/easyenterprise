@@ -1,31 +1,36 @@
 package claro.cms.webshop
 
-import xml.{Node,NodeSeq,Text}
+import xml.{Elem,Node,NodeSeq,Text,UnprefixedAttribute,TopScope}
 import agilexs.catalogxs.jpa
-import claro.cms.XmlBinding
+import claro.cms.{XmlBinding,BindingHelpers}
 import claro.common.util.Conversions._
 
-trait WebshopBindingHelpers {
+trait WebshopBindingHelpers extends BindingHelpers {
 
   object value {
     def apply(property : => Option[Property]) = new XmlBinding(_ => propertyValue(property))
     def apply(property : => Property) = new XmlBinding2(_ => propertyValue(if (property != null) Some(property) else None))
     class XmlBinding2 (f : NodeSeq => NodeSeq) extends XmlBinding(f) {}
   }
-
-  object money {
-    def apply(amount : Double, currency : String) = {
-      //Unparsed doesn't seem to work in combination with ajax calls...
-      //Therefore we use the symbol tokens instead of html symbols.
-      Text(currency match {
-          case "EUR" => "€"; //"&euro;"
-          case "GBP" => "£"; //"&pound;";
-          case "USD" => "$";
-          case _ => "&euro;";
-      }) ++
-      Text(" ") ++
-      Text(String.format("%.2f", double2Double(amount / 100.0)))
+  
+  def searchAllLink : NodeSeq => NodeSeq = { xml => 
+    WebshopModel.currentSearchStringVar.is match {
+      case Some(s) => new Elem(null, "a", new UnprefixedAttribute("href", "/search/" + s, current.attributes), TopScope, xml:_*);
+      case None => NodeSeq.Empty
     }
+  }
+
+  def money(amount : Double, currency : String) = {
+    //Unparsed doesn't seem to work in combination with ajax calls...
+    //Therefore we use the symbol tokens instead of html symbols.
+    Text(currency match {
+        case "EUR" => "€"; //"&euro;"
+        case "GBP" => "£"; //"&pound;";
+        case "USD" => "$";
+        case _ => "&euro;";
+    }) ++
+    Text(" ") ++
+    Text(String.format("%.2f", double2Double(amount / 100.0)))
   }
   
   private def propertyValue(property : Option[Property]) = {

@@ -28,13 +28,19 @@ object WebshopModel {
   }
   
   def currentProductGroup : Option[ProductGroup] = currentProductGroupVar.is match {
-    case Some(id) => Some(shop.productGroupsById(id.toLong))
+    case Some(id) => shop.productGroupsById.get(id.toLong)
     case None => None
   }
     
-  def currentSearchProducts : Set[Product] = currentSearchStringVar.is match {
-	  case Some(searchString) => shop.keywordMap.find(searchString) 
-	  case _ => Set.empty
+  def currentSearchProducts : Seq[Product] = currentSearchStringVar.is match {
+	  case Some(searchString) => 
+      val products = shop.keywordMap.find(searchString) 
+      currentProductGroup match {
+        case Some(group) => products filter group.products toSeq
+        case None => products.toSeq
+      }
+      
+	  case _ => Seq.empty
   }
 }
 
@@ -115,7 +121,10 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     
   val properties : Set[Property] =
     productGroup.getProperties map(mapping.properties) toSet
-    
+
+  val propertiesByName : Map[String, Property] = 
+    properties mapBy (_.name)
+
   val name : String = 
     groupPropertiesByName.get("Name") match {
       case Some(property) => property.value.getStringValue
@@ -129,6 +138,8 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     val promotions = cacheData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
     if (promotions isEmpty) Set.empty else Set(promotions.toSeq first) 
   }
+  
+  override def toString = name
 }
 
 class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var mapping : Mapping) extends Delegate(product) {
