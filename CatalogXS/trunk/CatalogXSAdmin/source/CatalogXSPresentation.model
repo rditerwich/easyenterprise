@@ -68,16 +68,6 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:Property/properties:labels
                                 }
-                                JavaBeanPropertyView {
-                                    name = EnumValuesView
-                                    kind = all
-                                    referringProperties = catalog:Property/properties:enumValues
-                                }
-                                JavaBeanPropertyView {
-                                    name = EnumValuesLabelsView
-                                    kind = all
-                                    referringProperties = catalog:EnumValue/properties:labels
-                                }
                             }
                         }
                     }
@@ -94,6 +84,7 @@ GwtPackage {
                                 catalog:Item/properties:parents
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
+                                catalog:Item/properties:relations
                                 catalog:ProductGroup/properties:containsProducts
                             }
                             views = {
@@ -148,6 +139,12 @@ GwtPackage {
                                     kind = all
                                     referringProperties = catalog:EnumValue/properties:labels
                                 }
+                                JavaBeanPropertyView {
+                                    name = RelationsView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:relations
+                                }
+                                
                             }
                         }
                     }
@@ -163,6 +160,7 @@ GwtPackage {
                                 catalog:Item/properties:catalog
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
+                                catalog:Item/properties:relations
                             }
                             views = {
                                 JavaBeanPropertyView {
@@ -210,6 +208,11 @@ GwtPackage {
                                     name = EnumValuesLabelsView
                                     kind = all
                                     referringProperties = catalog:EnumValue/properties:labels
+                                }
+                                JavaBeanPropertyView {
+                                    name = RelationsView
+                                    kind = all
+                                    referringProperties = catalog:Item/properties:relations
                                 }
                             }
                         }

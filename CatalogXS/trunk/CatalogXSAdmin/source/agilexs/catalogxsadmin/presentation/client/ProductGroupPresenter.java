@@ -11,6 +11,7 @@ import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
+import agilexs.catalogxsadmin.presentation.client.catalog.Relation;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
@@ -31,6 +32,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   private final ProductGroupView view = new ProductGroupView();
   private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
+  private RelatedToPresenter relatedToP = new RelatedToPresenter (new ItemParentsView());
   private ItemPropertiesPresenter pgpp;
   private String currentLanguage = "en";
   private ProductGroup currentProductGroup;
@@ -68,8 +70,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         }
       }
     });
-    view.setParentsPanel(parentsP.getView());
-    view.setPropertiesPanel(pgpp.getView());
     view.containsProductsClickHandlers().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
@@ -124,6 +124,17 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         p.setItem(saveProductGroup);
       }
     }
+    saveProductGroup.getParents().clear();
+    for (Long parent : parentsP.getValues()) {
+      final ProductGroup p = new ProductGroup();
+      
+      p.setId(parent);
+      saveProductGroup.getParents().add(p);
+    }
+    saveProductGroup.getRelations().clear();
+    for (Relation relation : relatedToP.getValues()) {
+      saveProductGroup.getRelations().add(relation);
+    }
     saveProductGroup.setPropertyValues(Util.filterEmpty(saveProductGroup.getPropertyValues()));
     CatalogServiceAsync.updateProductGroup(orgProductGroup,
         saveProductGroup, new AsyncCallback<ProductGroup>() {
@@ -173,11 +184,13 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
           curParents.add(CatalogCache.get().getProductGroupName(cp.getId(), currentLanguage));
         }
         parentsP.show(currentProductGroup, curParents, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
+        relatedToP.show(currentProductGroup, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
         //own properties with default values
         pgpp.show(langs, currentLanguage, currentProductGroup);
         //inherited properties from parents
-        view.getParentPropertiesPanel().clear();
+        view.clear();
         valuesPresenters.clear();
+        view.add(i18n.properties(), pgpp.getView());
         final List<Long> parents = Util.findParents(currentProductGroup);
 
         for (Long pid : parents) {
@@ -188,11 +201,16 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             final ItemValuesPresenter presenter = new ItemValuesPresenter();
 
             valuesPresenters.add(presenter);
-            view.getParentPropertiesPanel().add(presenter.getView().asWidget());
             final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
-            presenter.show(pvName == null ? "<no language specific name>" : pvName.getStringValue(), currentLanguage, pv);
+            final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
+            final String name = pvName == null ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
+
+            view.add(name, presenter.getView());
+            presenter.show(currentLanguage, pv);
           }
         }
+        view.add(i18n.parents(), parentsP.getView());
+        view.add(i18n.relatedTo(), relatedToP.getView());
       } else {
 
       }

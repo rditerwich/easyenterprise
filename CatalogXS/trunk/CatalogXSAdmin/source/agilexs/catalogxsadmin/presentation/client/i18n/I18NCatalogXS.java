@@ -104,4 +104,10 @@ public interface I18NCatalogXS extends Messages {
   String editEnumTitle();
 
   String noValue();
+
+  String relatedTo();
+
+  String parents();
+
+  String properties();
 }

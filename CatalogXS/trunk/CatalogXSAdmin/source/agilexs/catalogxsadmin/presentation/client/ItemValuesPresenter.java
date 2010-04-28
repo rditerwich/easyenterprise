@@ -44,10 +44,9 @@ public class ItemValuesPresenter implements Presenter<ItemValuesView> {
     return view;
   }
 
-  public void show(String name, final String language, List<PropertyValue[]> values) {
+  public void show(final String language, List<PropertyValue[]> values) {
     curValues.clear();
     curValues.addAll(values);
-    view.setName(name);
     final int bindingSize = bindings.size();
 
     int i = 0;

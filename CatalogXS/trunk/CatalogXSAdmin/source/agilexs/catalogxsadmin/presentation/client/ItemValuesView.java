@@ -58,17 +58,12 @@ public class ItemValuesView extends Composite implements View {
     }
   }
 
-  interface ItemValuesUiBinder extends UiBinder<Widget, ItemValuesView> {}
-  private static ItemValuesUiBinder uiBinder = GWT.create(ItemValuesUiBinder.class);
-
-  @UiField Grid grid;
-  @UiField HTML name;
+  private Grid grid = new Grid(1, 4);
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
   public ItemValuesView() {
-    initWidget(uiBinder.createAndBindUi(this));
-    grid.resize(1, 4);
+    initWidget(grid);
     addHeader();
   }
 
@@ -100,10 +95,6 @@ public class ItemValuesView extends Composite implements View {
     grid.setWidget(row, 3, rowView.getValueWidget());
     grid.getCellFormatter().addStyleName(row, 3, "languageField");
     return rowView;
-  }
-
-  public void setName(String name) {
-    this.name.setHTML(i18n.h3(i18n.propertiesFrom(name)));
   }
 
   private void addHeader() {

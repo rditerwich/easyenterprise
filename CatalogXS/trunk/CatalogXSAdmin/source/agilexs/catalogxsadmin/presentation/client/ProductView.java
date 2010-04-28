@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProductView extends Composite implements View {
-  
+
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   public enum SHOW {
@@ -37,7 +37,7 @@ public class ProductView extends Composite implements View {
   private final SimplePanel parentsPanel = new SimplePanel();
   private final DeckPanel deck = new DeckPanel();
   private final Button newProductButton = new Button(i18n.newProduct());
-  private final Button saveButton = new Button(i18n.saveChanges()); 
+  private final Button saveButton = new Button(i18n.saveChanges());
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
   private final FlowPanel propertiesPanel = new FlowPanel();
@@ -63,7 +63,7 @@ public class ProductView extends Composite implements View {
     //Detail page
     final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
     deck.add(detailPanel);
-    final HorizontalPanel toph = new HorizontalPanel(); 
+    final HorizontalPanel toph = new HorizontalPanel();
     back.setHTML(i18n.backToProductOverview());
     toph.add(back);
     saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
@@ -93,7 +93,7 @@ public class ProductView extends Composite implements View {
   public HasClickHandlers saveButtonClickHandlers() {
     return saveButton;
   }
-  
+
   public FlowPanel getPropertiesPanel() {
     return propertiesPanel;
   }

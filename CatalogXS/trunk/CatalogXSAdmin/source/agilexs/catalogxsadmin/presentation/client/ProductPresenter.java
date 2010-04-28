@@ -216,7 +216,8 @@ public class ProductPresenter implements Presenter<ProductView> {
 
         valuesPresenters.add(presenter);
         view.getPropertiesPanel().add(presenter.getView().asWidget());
-        presenter.show(Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage).getStringValue(), currentLanguage, pv);
+        //Util.getPropertyValueByName(parent.getPropertyValues(), Util.NAME, currentLanguage).getStringValue()
+        presenter.show(currentLanguage, pv);
       }
     }
   }

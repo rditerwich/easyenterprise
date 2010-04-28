@@ -43,7 +43,7 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = shop:Shop/attributes:topLevelProductGroups
                         }
                         ClassAttributeView {
-                            name = Promotions
+                            name = PromotionsView
                             kind = all
                             referringAttributes = shop:Shop/attributes:promotions
                         }
@@ -108,6 +108,23 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
                         }
                     }
                 }
@@ -191,6 +208,23 @@ JavaEEArchitectureJpaEjbGwt {
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
                         }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
                     }
                 }
             }
@@ -241,6 +275,23 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
                         }
                     }
                 }
@@ -313,8 +364,32 @@ JavaEEArchitectureJpaEjbGwt {
                             forceComposite = true
                             referringAttributes = catalog:Property/attributes:labels
                         }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
                     }
                 }
+            }
+        }
+        Crud {
+            name = CrudForOrder
+            participants = {
+                shop:Order
+                shop:ProductOrder
             }
         }
         Crud {
@@ -356,6 +431,75 @@ JavaEEArchitectureJpaEjbGwt {
                             name = ProductView
                             kind = all
                             referringAttributes = shop:VolumeDiscountPromotion/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Query {
+            name = "Query for Orders"
+            methodNamePrefix = findActual
+            participants = { 
+                shop:Order
+            }
+            filter = shop:Promotion
+            paging = true
+            view = {
+                ClassView {
+                    name = QueryForAllOrdersView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ProductOrderView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:productOrders
+                        }
+                        ClassAttributeView {
+                            name = TransportView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:transport
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PromotionView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:promotion
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
                         }
                         ClassAttributeView {
                             name = PropertyValuesView

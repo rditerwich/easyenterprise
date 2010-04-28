@@ -1233,3 +1233,19 @@ td.datePickerMonth {
 .statusMessage {
   background: #f5a71f;
 }
+
+.properties {
+	 border: 2px solid #d86403; 
+}
+.propertyGroupName {
+  background-color: #f5a71f;
+  margin-bottom:2px;
+  padding: 5px;
+  font-weight:bold;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.propertyGroupNameSelected {
+  background-color: #d86403;
+}
