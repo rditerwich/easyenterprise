@@ -23,7 +23,7 @@ class ShoppingCart private extends Bindable with Redrawable {
   object order extends SessionVar[Order](new Order(new jpa.shop.Order, WebshopModel.shop.get.mapping))
 
   override def bindings = bindingsFor(this)
-  
+
   def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
     def callback(product : Product) = {
@@ -33,12 +33,30 @@ class ShoppingCart private extends Bindable with Redrawable {
     }
     findBoundObject(productPrefix) match {
       case Some(product:Product) =>
-        SHtml.a(() => callback(product), xml) % currentAttributes(Set("product"))
+        SHtml.a(() => callback(product), xml) % currentAttributes("product-prefix")
       case None => 
         NodeSeq.Empty
     }
   }
 
+  def addPromotion(promotionPrefix : String) : NodeSeq => NodeSeq = xml => {
+    val redraws = CurrentRedraws.get
+    def callback(promotion : Promotion) = {
+      promotion match {
+        case p : VolumeDiscountPromotion =>
+          S.notice("Promotion added to shopping cart")
+          order.addProduct(p.product, p.volumeDiscount)
+      }
+      redraws.toJsCmd
+    }
+    findBoundObject(promotionPrefix) match {
+    case Some(promotion:Promotion) =>
+    SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
+    case None => 
+    NodeSeq.Empty
+    }
+  }
+  
   def clear : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
     def callback = {

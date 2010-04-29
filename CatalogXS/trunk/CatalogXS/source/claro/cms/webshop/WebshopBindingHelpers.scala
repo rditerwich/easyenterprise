@@ -20,7 +20,9 @@ trait WebshopBindingHelpers extends BindingHelpers {
     }
   }
 
-  def money(amount : Double, currency : String) = {
+  def format(money : Money) = formatMoney(money.amount, money.currency)
+  
+  def formatMoney(amount : Double, currency : String) = {
     //Unparsed doesn't seem to work in combination with ajax calls...
     //Therefore we use the symbol tokens instead of html symbols.
     Text(currency match {
@@ -44,7 +46,7 @@ trait WebshopBindingHelpers extends BindingHelpers {
 	         else
   		       Text(property.mediaValue.toString());
         case jpa.catalog.PropertyType.Money if (property.value != null && property.value.getMoneyValue != null) =>
-            money(property.value.getMoneyValue.getOrElse(0), property.value.getMoneyCurrency)
+            formatMoney(property.value.getMoneyValue.getOrElse(0), property.value.getMoneyCurrency)
         case _ => Text(property.valueAsString)
       }
       case None => Text("")

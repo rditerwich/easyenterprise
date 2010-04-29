@@ -1,10 +1,10 @@
-<div class="page_menu" id="right_bar"> 
+<div class="side_bar" id="right_bar"> 
   <div class="page_searchbox">
     <webshop:search-form form="POST"> 
       <table> 
         <tr> 
-          <td><search:search-string /></td> 
-          <td><search:submit /></td> 
+          <td><search:search-string class="formfield searchfield"/></td> 
+          <td><search:submit class="formbutton"/></td> 
         </tr> 
       </table> 
     </webshop:search-form> 
@@ -16,9 +16,24 @@
         </tr> 
       </table> 
     </form> 
+  </div>
+  <hr/> 
+  <div class="side_bar_panel loginpanel"> 
+    <h1>Login</h1>
+    <webshop:login-form>
+      <table> 
+        <tr> 
+        <td><login:email class="formfield emailfield"/></td></tr>
+        <tr><td><login:password class="formfield passwordfield"/>
+        <login:login class="formbutton"/></td>
+        </tr> 
+      </table> 
+      <a href="/register">Register as new customer &gt;&gt;</a>
+    </webshop:login-form>
   </div> 
-  <div class="page_menu_artgrp"> 
-    <div class="description">Order status</div>
+  <hr/> 
+  <div class="side_bar_panel"> 
+    <h1>Order status</h1>
     <webshop:shopping-cart>
 		  <div class="order_status" >
 		    <div><shopping-cart:link><b><lift:loc>Shopping Cart</lift:loc> &gt;&gt;</b></shopping-cart:link></div>

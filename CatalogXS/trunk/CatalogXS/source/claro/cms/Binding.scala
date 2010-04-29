@@ -334,7 +334,7 @@ trait BindingHelpers {
   
   def currentContext : BindingContext = Request.website.rootBinding.currentContext
 
-  def currentAttributes(excl : Set[String]) = 
+  def currentAttributes(excl : String*) = 
     current.attributes filter(a => !excl.contains(a.key))
 
   def @@(name : String) : String = attr(current, name)
@@ -362,6 +362,18 @@ trait BindingHelpers {
     case Some(Bindings(obj, _)) => Some(obj)
     case None => None
   }
+}
+
+class BindableForm extends Bindable {
+
+  override def bindings = bindingsFor(this)
+  
+  override def bind(node : Node, context : BindingContext) : NodeSeq = {
+    <lift:snippet type={"Shop:ident"} form="POST">
+      { super.bind(node, context) }
+    </lift:snippet>
+  }
+
 }
 
 class BindingCache(website : Website) {

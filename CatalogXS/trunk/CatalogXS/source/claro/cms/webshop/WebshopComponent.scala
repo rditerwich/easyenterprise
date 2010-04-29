@@ -22,13 +22,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-all" -> searchAllLink,
-      "search-form" -> new SearchForm -> "search")
+      "search-form" -> new SearchForm -> "search",
+      "current-user" -> WebshopModel.currentUserVar.is -> "user",
+      "login-form" -> LoginForm.is -> "login",
+      "register-form" -> RegistrationForm.is -> "register")
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
       "end-date" -> WebshopUtil.slashDate.format(promotion.endDate),
-      "price" -> money(promotion.price, promotion.priceCurrency),
+      "price" -> formatMoney(promotion.price, promotion.priceCurrency),
       "volume-discount" -> promotion.volumeDiscount,
       "product" -> promotion.product -> "product")
     
@@ -57,6 +60,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case cart : ShoppingCart => Map(
       "items" -> cart.order.productOrders -> "item",
       "add" -> cart.addProduct(@@("product-prefix", "product")),
+      "add-promotion" -> cart.addPromotion(@@("promotion-prefix", "promotion")),
+      "total-prices" -> cart.order.totalPrices -> "total-price",
       "clear" -> cart.clear,
       "link" -> Link("/cart"))
     
@@ -67,18 +72,50 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
    case productOrder : ProductOrder => Map(   
       "id" -> productOrder.productOrder.getId.toString,
       "product" -> productOrder.product -> "product",
-      "price" -> money(productOrder.price, productOrder.currency),
-      "total-price" -> money(productOrder.totalPrice, productOrder.currency),
+      "price" -> formatMoney(productOrder.price, productOrder.currency),
+      "total-price" -> formatMoney(productOrder.totalPrice, productOrder.currency),
       "currency" -> productOrder.currency,
       "volume" -> productOrder.volume.toString,
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
       "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
+    case login : LoginForm => Map(
+      "email" -> login.emailField,
+      "password" -> login.passwordField,
+      "login" -> login.loginButton)
+   
+    case register : RegistrationForm => Map(
+      "email" -> register.emailField,
+      "password" -> register.passwordField,
+      "repeat-password" -> register.repeatPasswordField,
+      "name" -> register.nameField,
+      "phone" -> register.phoneField,
+      "address" -> register.addressForm -> "address",
+      "register" -> register.registerButton)
+    
+    case user : jpa.party.User => Map(
+      "email" -> user.getEmail,
+      "name" -> user.getParty.getName,
+      "address" -> user.getParty.getAddress
+    )
+    
+    case address : AddressForm => Map(
+      "address1" -> address.address1Field,
+      "address2" -> address.address2Field,
+      "postalCode" -> address.postalCodeField,
+      "town" -> address.townField,
+      "country" -> address.countryField)
+    
     case property: Property => Map(  
       "id" -> property.id.toString,
       "name" -> property.name,
       "label" -> property.name,
       "value" -> value(property))
+    
+    case money : Money => Map(
+      "amount" -> money.amount,
+      "currency" -> money.currency,
+      "format" -> format(money))
   }
   
   templateLocators.append {

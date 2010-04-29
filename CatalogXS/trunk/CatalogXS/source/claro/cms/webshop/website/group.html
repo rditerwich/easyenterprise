@@ -13,21 +13,19 @@
 		  </tr>
 		  </table>
 		  </group:sub-groups>
-		  
+
       <group:promotions prefix="promotion">
-        <list:first><h2>special offer<list:plural>s</list:plural></h2></list:first>
         <template:include template="promotion"/>
       </group:promotions>
+       <div style="clear:both" />
       
 	    <group:products include_sub-groups="yes">
-	    <h2>products</h2>
 		  <table class="product_table">
-<!-- 		    <thead>
+ 		    <thead>
 		      <th class="id_col"><lift:loc>Product</lift:loc></th>
 		      <th class="desc_col"><lift:loc></lift:loc></th>
 		      <th class="price_col"><lift:loc>Price</lift:loc></th>
 		    </thead>
-		     -->
 		    <list:repeat>
 		      <tr>
             <td class="id_col"><product:link><product:value property="ArticleNumber" /></product:link></td>

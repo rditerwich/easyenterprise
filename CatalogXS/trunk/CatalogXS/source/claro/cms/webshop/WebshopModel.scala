@@ -3,6 +3,7 @@ package claro.cms.webshop
 import net.liftweb.http.{RequestVar,SessionVar,Req,S}
 import net.liftweb.util.{Box,Full}
 import java.util.LinkedHashSet
+import javax.persistence.EntityManager
 import scala.xml.NodeSeq 
 import scala.xml.Text 
 import scala.collection.{mutable, immutable, Set, Map}
@@ -21,6 +22,7 @@ object WebshopModel {
   object currentProductVar extends RequestVar[Option[String]](None)
   object currentProductGroupVar extends RequestVar[Option[String]](None)
   object currentSearchStringVar extends RequestVar[Option[String]](None)
+  object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
   
   def currentProduct : Option[Product] = currentProductVar.is match {
     case Some(id) => Some(shop.productsById(id.toLong))
@@ -41,6 +43,27 @@ object WebshopModel {
       }
       
 	  case _ => Seq.empty
+  }
+  
+  def dbaccess[A](f : EntityManager => A) : A = {
+    val em = Cms.entityManager("AgileXS.CatalogXS.Jpa.PersistenceUnit")
+    try {
+      val tx = em.getTransaction
+      try {
+        tx.begin
+        val result = f(em)
+        tx.commit
+        result
+      } catch {
+        case e => 
+          if (tx.isActive) tx.rollback
+          throw e
+      }
+    }
+    finally {
+      em.close
+    }
+
   }
 }
 
@@ -203,6 +226,8 @@ object noPropertyValue extends jpa.catalog.PropertyValue {
   setId(-1l)
 }
 
+case class Money(amount : Double, currency : String) {}
+
 class Promotion(promotion : jpa.shop.Promotion, cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(promotion) {
   // terminate recursion
   mapping.promotions(promotion) = this
@@ -215,7 +240,7 @@ class VolumeDiscountPromotion(promotion : jpa.shop.VolumeDiscountPromotion, cach
   val endDate = promotion.getEndDate
   val price = promotion.getPrice.getOrElse(0)
   val priceCurrency = promotion.getPriceCurrency
-  val volumeDiscount = promotion.getVolumeDiscount
+  val volumeDiscount = promotion.getVolumeDiscount.getOrElse(0)
   val product = mapping.products(promotion.getProduct)
   override def products = Set(product)
 }
@@ -230,7 +255,6 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
   def clear = delegate.getProductOrders.clear
 
   def isEmpty = delegate.getProductOrders == null || delegate.getProductOrders.isEmpty
-    
 
   /**
    * Calculates the total number of articles in the shopping cart, based on
@@ -240,9 +264,13 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
     (0 /: delegate.getProductOrders.map(_.getVolume.intValue)) (_ + _)
   }
   
-  def totalPrice : Double = {
-    (0 /: delegate.getProductOrders.map(_.getPrice.intValue)) (_ + _)
+  def currencies = productOrders map (_.currency) toSet
+  
+  def totalPrice(currency: String) : Double = {
+    (0.0 /: productOrders.filter(_.currency == currency).map(_.totalPrice)) (_ + _)
   }
+  
+  def totalPrices : Seq[Money] = currencies.toSeq map(c => Money(totalPrice(c), c)) 
 
   /**
    * Adds a product to the order list. If the product already is present update
