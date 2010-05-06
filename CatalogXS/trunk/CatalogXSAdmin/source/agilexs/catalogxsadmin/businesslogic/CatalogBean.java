@@ -128,59 +128,65 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
         return query.getResultList();
     }
 
-  @Override
-  @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Product findProductById(Long id) {
-    final Product p = super.findProductById(id);
+        final Product p = super.findProductById(id);
 
-    p.setCatalog(p.getCatalog());
-    for (PropertyValue pv : p.getPropertyValues()) {
-      pv.setProperty(pv.getProperty());
+        p.setCatalog(p.getCatalog());
+        for (PropertyValue pv : p.getPropertyValues()) {
+          pv.setProperty(pv.getProperty());
+        }
+        return p;
     }
-    return p;
-  }
 
-  @Override
-  @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Collection<ProductGroup> findAllProductGroupChildren(Shop shop, ProductGroup parent) {
-      Query query;
-      if (parent == null) {
-        //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
-        query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
+        Query query;
+        if (parent == null) {
+          //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
+          query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
 
-        //query.setParameter("view", view);
-      } else {
-        //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
-        //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
-        query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.parents) parent where parent = :parent");
+          //query.setParameter("view", view);
+        } else {
+          //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
+          //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
+          query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.parents) parent where parent = :parent");
 
-        //query.setParameter("taxonomy", taxonomy);
-        query.setParameter("parent", parent);
-      }
-      final List<ProductGroup> result = query.getResultList();
-      if (result != null) {
-        for (ProductGroup productGroup : result) {
-          //check, because db containsProduct table may be null
-          if (productGroup.getContainsProducts() == null) {
-            productGroup.setContainsProducts(Boolean.FALSE);
-          }
-          productGroup.setCatalog(productGroup.getCatalog());
-          for (Property property : productGroup.getProperties()) {
-            property.setLabels(property.getLabels());
-            for (Label lbl : property.getLabels()) {
-              lbl.setEnumValue(lbl.getEnumValue());
+          //query.setParameter("taxonomy", taxonomy);
+          query.setParameter("parent", parent);
+        }
+        final List<ProductGroup> result = query.getResultList();
+        if (result != null) {
+          for (ProductGroup productGroup : result) {
+            //check, because db containsProduct table may be null
+            if (productGroup.getContainsProducts() == null) {
+              productGroup.setContainsProducts(Boolean.FALSE);
             }
-            property.setEnumValues(property.getEnumValues());
-            property.setItem(property.getItem());
-          }
-          for (PropertyValue value : productGroup.getPropertyValues()) {
-            value.setItem(value.getItem());
-            value.setProperty(value.getProperty());
+            productGroup.setCatalog(productGroup.getCatalog());
+            for (Property property : productGroup.getProperties()) {
+              property.setLabels(property.getLabels());
+              for (Label lbl : property.getLabels()) {
+                lbl.setEnumValue(lbl.getEnumValue());
+              }
+              property.setEnumValues(property.getEnumValues());
+              property.setItem(property.getItem());
+            }
+            for (PropertyValue value : productGroup.getPropertyValues()) {
+              value.setItem(value.getItem());
+              value.setProperty(value.getProperty());
+            }
           }
         }
-      }
-      return result;
+        return result;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public String publish() {
+        //TODO implement call to webshop
+        return null;
     }
 }

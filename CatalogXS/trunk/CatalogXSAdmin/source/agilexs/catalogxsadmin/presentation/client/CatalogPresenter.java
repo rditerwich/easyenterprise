@@ -11,6 +11,7 @@ import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
+import agilexs.catalogxsadmin.presentation.client.widget.StatusMessage;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -60,6 +61,18 @@ public class CatalogPresenter implements Presenter<CatalogView> {
         //view.getTree().deSelectItem();
         view.selectedTab(TAB_GROUP);
       }});
+    view.getPublishButtonClickHandler().addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        CatalogServiceAsync.publish(new AsyncCallback<String>(){
+          @Override public void onFailure(Throwable caught) {
+            // TODO Auto-generated method stub
+          }
+
+          @Override public void onSuccess(String result) {
+            StatusMessage.get().show(i18n.publishSucess());
+          }});
+    }});
     view.addTabSelectionHandler(new SelectionHandler<Integer>() {
       @Override
       public void onSelection(SelectionEvent<Integer> event) {

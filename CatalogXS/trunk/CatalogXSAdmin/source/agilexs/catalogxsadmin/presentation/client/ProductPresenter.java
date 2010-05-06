@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HTMLTable.Cell;
 public class ProductPresenter implements Presenter<ProductView> {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
-  private static final ResourceBundle rb = GWT.create(ResourceBundle.class);
+  private final static ResourceBundle rb = GWT.create(ResourceBundle.class);
   private final static int EDIT_COL = 0; // when update, change FIRST_DATA_COL
   private final static int DELETE_COL = 1; // when update, change FIRST_DATA_COL
   private final static int FIRST_DATA_COL = 2;
@@ -163,7 +163,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.getProductTable().clear();
     if (currentProducts.size() > 0) {
       view.getProductTable().resizeRows(currentProducts.size() + 1);
-      final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
+      final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
 
       view.setProductTableHeader(EDIT_COL, " ");
       view.setProductTableHeader(DELETE_COL, " "); 
@@ -178,7 +178,7 @@ public class ProductPresenter implements Presenter<ProductView> {
       }
       for (int i = 0; i < currentProducts.size(); i++) {
         final Product product = currentProducts.get(i);
-        final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), product);
+        final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
 
         view.setProductTableCellImage(i+1, EDIT_COL, rb.editImage());
         view.setProductTableCellImage(i+1, DELETE_COL, rb.deleteImage());
@@ -209,7 +209,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     parents.add(currentProductGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-      final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), parent, currentProduct);
+      final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), parent, currentProduct);
 
       if (!pv.isEmpty()) {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();

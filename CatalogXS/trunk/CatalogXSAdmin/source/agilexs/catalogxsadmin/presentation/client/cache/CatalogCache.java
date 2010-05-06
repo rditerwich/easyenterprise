@@ -9,7 +9,6 @@ import java.util.Map;
 import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
-import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -41,23 +40,10 @@ public class CatalogCache {
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Promotion> promotionCache = new HashMap<Long, Promotion>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
-  private final ArrayList<String> langs = new ArrayList<String>(2);
-  private final ArrayList<Language> languages = new ArrayList<Language>(2);
   private ProductGroup productGroupName;
   private ProductGroup productGroupProduct;
 
   private CatalogCache() {
-    //TODO Calculate cache languages based on what is in database
-    final Language en = new Language();
-    en.setName("en");
-    en.setDisplayName("English");
-    languages.add(en);
-    final Language de = new Language();
-    de.setName("de");
-    de.setDisplayName("Deutsch");
-    languages.add(de);
-    langs.add(en.getName());
-    langs.add(de.getName());
   }
 
   public Catalog getActiveCatalog() {
@@ -157,10 +143,6 @@ public class CatalogCache {
           callback.onSuccess(result);
         }});
     }
-  }
-
-  public ArrayList<String> getLangNames() {
-    return langs;
   }
 
   public Collection<ProductGroup> getAllProductGroups() {

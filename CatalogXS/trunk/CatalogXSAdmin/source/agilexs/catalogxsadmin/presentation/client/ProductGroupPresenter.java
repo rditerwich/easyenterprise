@@ -8,6 +8,7 @@ import java.util.Map;
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -164,7 +165,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   public void show(ProductGroup productGroup) {
-    final List<String> langs = CatalogCache.get().getLangNames();
+    final List<Language> langs = CatalogCache.get().getActiveCatalog().getLanguages();
 
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;

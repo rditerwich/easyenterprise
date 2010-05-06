@@ -16,6 +16,7 @@ import agilexs.catalogxsadmin.presentation.client.binding.TextBoxBaseBinding;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
@@ -114,7 +115,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
             break;
           }
         }
-        show(CatalogCache.get().getLangNames(), language, currentItem);
+        show(CatalogCache.get().getActiveCatalog().getLanguages(), language, currentItem);
       }
     });
 
@@ -158,7 +159,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
    * shows the property list.
    * @param values
    */
-  public void show(List<String> langs, String language, Item productGroup) {
+  public void show(List<Language> langs, String language, Item productGroup) {
     currentItem = productGroup;
     this.language = language;
     Tuple.setLanguage(language);

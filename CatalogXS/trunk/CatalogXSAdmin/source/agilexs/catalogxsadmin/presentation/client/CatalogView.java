@@ -8,6 +8,7 @@ import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.widget.ExtendedTree;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -30,6 +31,7 @@ public class CatalogView extends Composite implements View {
   private final ExtendedTree tree = new ExtendedTree();
   private final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
   private final Button newProductGroupButton = new Button(i18n.newGroup());
+  private final Button publishButton = new Button(i18n.publish());
   private final HTML name = new HTML();
   private final ListBox languageList = new ListBox();
 
@@ -42,7 +44,10 @@ public class CatalogView extends Composite implements View {
     final FlowPanel buttonBar = new FlowPanel();
 
     buttonBar.add(newProductGroupButton);
+    publishButton.setTitle(i18n.explainPublish());
     buttonBar.add(languageList);
+    buttonBar.add(publishButton);
+    publishButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
     languageList.addStyleName("languageField");
     buttonBar.add(name);
@@ -71,6 +76,10 @@ public class CatalogView extends Composite implements View {
 
   public HasClickHandlers getNewProductGroupButtonClickHandler() {
     return newProductGroupButton;
+  }
+
+  public HasClickHandlers getPublishButtonClickHandler() {
+    return publishButton;
   }
 
   public String getSelectedLanguage() {

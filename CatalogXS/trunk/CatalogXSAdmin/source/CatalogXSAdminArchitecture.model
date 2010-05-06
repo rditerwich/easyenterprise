@@ -411,6 +411,66 @@ JavaEEArchitectureJpaEjbGwt {
                 shop:Order
                 shop:ProductOrder
             }
+            view = {
+                ClassView {
+                    name = QueryForAllOrdersView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ProductOrderView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:productOrders
+                        }
+                        ClassAttributeView {
+                            name = TransportView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:transport
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PromotionView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:promotion
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
         }
         Crud {
             name = CrudForAll
@@ -489,7 +549,7 @@ JavaEEArchitectureJpaEjbGwt {
             participants = { 
                 shop:Order
             }
-            filter = shop:Promotion
+            filter = shop:Order
             paging = true
             view = {
                 ClassView {

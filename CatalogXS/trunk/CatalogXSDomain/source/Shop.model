@@ -154,6 +154,7 @@ Package {
                 Attribute {
                     name = promotion
                     type = shop:Promotion
+                    lower = 0
                 }
                 Attribute {
                     name = volume

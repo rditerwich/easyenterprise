@@ -13,6 +13,7 @@ import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.EnumValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
+import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -99,10 +100,10 @@ public class Util {
    * @return
    */
   public static List<PropertyValue[]> getProductGroupPropertyValues(
-      List<String> langs, ProductGroup pg, Item item) {
+      List<Language> langs, ProductGroup pg, Item item) {
     final List<PropertyValue> values = item.getPropertyValues();
     final List<PropertyValue[]> pgValues = new ArrayList<PropertyValue[]>();
-    final ArrayList<String> allLangs = new ArrayList<String>(langs);
+    final ArrayList<Language> allLangs = new ArrayList<Language>(langs);
 
     if (!langs.contains(null)) {
       allLangs.add(null);
@@ -115,7 +116,9 @@ public class Util {
 
       pgValues.add(pgValue);
       for (int i = 0; i < allLangs.size(); i++) {
-        final String lang = allLangs.get(i);
+        final Language lLang = allLangs.get(i);
+        final String lang = lLang != null ? lLang.getName() : null;
+
         PropertyValue found = null;
         for (PropertyValue value : values) {
           if (value.getProperty().getId().equals(property.getId()) &&
@@ -366,14 +369,14 @@ public class Util {
    * @return
    */
   public static String productToString(Product product, String language) {
-    final List<PropertyValue[]> pvs = Util.getProductGroupPropertyValues(CatalogCache.get().getLangNames(), CatalogCache.get().getProductGroupProduct(), product);
+    final List<PropertyValue[]> pvs = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
     final StringBuffer s = new StringBuffer();
 
     for (PropertyValue[] pvhlangs : pvs) {
       PropertyValue dpv = null;
       PropertyValue lpv = null;
       for (PropertyValue propv : pvhlangs) {
-        if (language.equals(propv.getLanguage())) {
+        if (language != null && language.equals(propv.getLanguage())) {
           lpv = propv;
         } else if (propv.getLanguage() == null) {
           dpv = propv;

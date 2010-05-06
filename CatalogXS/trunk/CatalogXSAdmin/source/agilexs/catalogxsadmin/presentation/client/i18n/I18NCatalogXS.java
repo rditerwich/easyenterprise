@@ -110,4 +110,16 @@ public interface I18NCatalogXS extends Messages {
   String parents();
 
   String properties();
+
+  String orderDate();
+
+  String orderVolume();
+
+  String orderValue();
+
+  String publish();
+
+  String publishSucess();
+  
+  String explainPublish();
 }

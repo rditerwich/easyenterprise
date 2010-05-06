@@ -679,5 +679,9 @@ Package {
             upper = {}
             isOrdered = true
         }
+        Operation {
+            name = publish
+            type = primitive:String
+        }
     }
 }
