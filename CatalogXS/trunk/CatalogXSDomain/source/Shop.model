@@ -138,6 +138,7 @@ Package {
                     lower = 1
                     upper = {}
                     isComposite = true
+                    opposite = shop:ProductOrder/attributes:order
                 }
                 Attribute {
                     name = transport
@@ -189,6 +190,11 @@ Package {
                 Attribute {
                     name = priceCurrency
                     type = primitive:String
+                }
+                Attribute {
+                    name = order
+                    type = shop:Order
+                    opposite = shop:Order/attributes:productOrders
                 }
             }
         }

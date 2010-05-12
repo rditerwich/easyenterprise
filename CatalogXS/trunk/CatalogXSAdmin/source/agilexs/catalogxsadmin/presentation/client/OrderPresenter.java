@@ -74,8 +74,9 @@ public class OrderPresenter implements Presenter<OrderView> {
       volume += po.getVolume() != null ? po.getVolume().intValue() : 0;
       price += po.getPrice() != null ? po.getPrice().doubleValue() : 0.0;
     }
+    view.setCustomer(row, order.getUser().getParty().getName());
     view.setVolume(row, volume);
     view.setPrice(row, Util.formatMoney(price));
+    view.setOrderStatus(row, order.getStatus());
   }
-
 }

@@ -17,6 +17,7 @@ import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
 path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
 path domain = /packages:AgileXS/packages:Domain/packages
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path party = /packages:AgileXS/packages:Domain/packages:Party/types
 path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
 
 JavaEEArchitectureJpaEjbGwt {
@@ -487,6 +488,9 @@ JavaEEArchitectureJpaEjbGwt {
                 shop:VolumeDiscountPromotion
                 shop:Promotion
                 shop:VolumeDiscountPromotion
+                party:User
+                party:Party
+                party:Address
             }
         }
         Query {
@@ -567,6 +571,11 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = shop:Order/attributes:transport
                         }
                         ClassAttributeView {
+                            name = UserView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:user
+                        }
+                        ClassAttributeView {
                             name = ProductView
                             kind = all
                             referringAttributes = shop:ProductOrder/attributes:product
@@ -607,6 +616,11 @@ JavaEEArchitectureJpaEjbGwt {
                             name = LabelsView
                             kind = all
                             referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = PartyView
+                            kind = all
+                            referringAttributes = party:User/attributes:party
                         }
                     }
                 }

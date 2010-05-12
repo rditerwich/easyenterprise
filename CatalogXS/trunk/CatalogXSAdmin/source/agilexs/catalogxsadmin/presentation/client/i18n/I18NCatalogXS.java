@@ -122,4 +122,8 @@ public interface I18NCatalogXS extends Messages {
   String publishSucess();
   
   String explainPublish();
+
+  String orderCustomer();
+  
+  String orderStatus();
 }

@@ -24,8 +24,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
   @Override
   public void onModuleLoad() {
-    ResourceBundle rb = GWT.create(ResourceBundle.class);
-
+    final ResourceBundle rb = GWT.create(ResourceBundle.class);
     final DockLayoutPanel dlp = new DockLayoutPanel(Unit.PX);
     final FlowPanel topPanel = new FlowPanel();
     final TabLayoutPanel tp = new TabLayoutPanel(30, Unit.PX);
