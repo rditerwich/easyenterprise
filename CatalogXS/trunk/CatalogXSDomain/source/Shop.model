@@ -137,14 +137,31 @@ Package {
                     type = shop:ProductOrder
                     lower = 1
                     upper = {}
+                    isComposite = true
                 }
                 Attribute {
                     name = transport
                     type = shop:Transport
+                    isComposite = true
                 }
                 Attribute {
                     name = user
                     type = party:User
+                }
+                Attribute {
+                    name = status
+                    type = shop:OrderStatus
+                }
+                Attribute {
+                    name = amountPaid
+                    type = primitive:Money
+                }
+                Attribute {
+                    name = history
+                    type = shop:OrderHistory
+                    lower = 0
+                    upper = {}
+                    isComposite = true
                 }
             }
             
@@ -190,6 +207,59 @@ Package {
                 Attribute {
                     name = deliveryTime
                     type = primitive:Integer
+                }
+            }
+        }
+        Class {
+            name = OrderHistory
+            attributes = {
+                Attribute {
+                    name = user
+                    type = party:User
+                }
+                Attribute {
+                    name = newStatus
+                    type = shop:OrderStatus
+                }
+                Attribute {
+                    name = comment
+                    type = primitive:String
+                }
+                Attribute {
+                    name = date
+                    type = primitive:Date 
+                }
+            }
+        }
+        Enumeration {
+            name = OrderStatus
+            literals = {
+                Literal {
+                    name = InShoppingCart
+                }
+                Literal {
+                    name = PendingPayment 
+                }
+                Literal {
+                    name = Processing 
+                }
+                Literal {
+                    name = Shipped 
+                }
+                Literal {
+                    name = Shipped 
+                }
+                Literal {
+                    name = OnHold 
+                }
+                Literal {
+                    name = Complete 
+                }
+                Literal {
+                    name = Closed 
+                }
+                Literal {
+                    name = Canceled 
                 }
             }
         }

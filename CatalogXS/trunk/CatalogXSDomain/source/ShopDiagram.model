@@ -1,5 +1,6 @@
 root /domainDiagrams
 
+import Metaphor.Eclipse.Diagrams.Point
 import Metaphor.Eclipse.Diagrams.Rectangle
 import Metaphor.Eclipse.DomainDiagrams.DiagramClass
 import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
@@ -46,10 +47,10 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 129
-                    y = 264
-                    width = -1
-                    height = -1
+                    x = 160
+                    y = 268
+                    width = 116
+                    height = 89
                 }
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Promotion
@@ -104,6 +105,12 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:promotions
         }
         Reference {
+            bendPoints = {
+                Point {
+                    x = 329
+                    y = 284
+                }
+            }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:ProductOrder/attributes:promotion
         }
         Reference {
