@@ -12,6 +12,7 @@ import Metaphor.PIM.Domain.Parameter
 path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
 path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
 path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
+path party = /packages:AgileXS/packages:Domain/packages:Party/types
 
 Package {
     name = Shop
@@ -140,6 +141,10 @@ Package {
                 Attribute {
                     name = transport
                     type = shop:Transport
+                }
+                Attribute {
+                    name = user
+                    type = party:User
                 }
             }
             
