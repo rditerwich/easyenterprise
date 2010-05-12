@@ -241,10 +241,10 @@ Package {
                     name = PendingPayment 
                 }
                 Literal {
-                    name = Processing 
+                    name = ReceivedPayment 
                 }
                 Literal {
-                    name = Shipped 
+                    name = Processing 
                 }
                 Literal {
                     name = Shipped 
