@@ -4,6 +4,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.View;
 import agilexs.catalogxsadmin.presentation.client.widget.PropertyValueWidget;
+import agilexs.catalogxsadmin.presentation.client.widget.Table;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -42,10 +43,10 @@ public class ProductView extends Composite implements View {
   private final HTML pname = new HTML();
   private final DeckPanel propertiesDeck = new DeckPanel();
   private final FlowPanel labels = new FlowPanel();
-  private final Grid productTable = new Grid();
+  private final Table productTable = new Table();
 
   private Label lastSelected;
-  
+
   public ProductView() {
     initWidget(deck);
 
@@ -80,7 +81,7 @@ public class ProductView extends Composite implements View {
     detailPanel.add(sp);
     productPanel.add(pname);
     final HorizontalPanel properties = new HorizontalPanel();
-    
+
     productPanel.add(properties);
     properties.add(labels);
     labels.addStyleName("propertiesGroupName");
@@ -96,7 +97,7 @@ public class ProductView extends Composite implements View {
   }
 
   public void add(String name, Widget widget) {
-    final Label lbl = new Label(name); 
+    final Label lbl = new Label(name);
 
     propertiesDeck.add(widget);
     final int i = propertiesDeck.getWidgetCount() - 1;
@@ -118,7 +119,7 @@ public class ProductView extends Composite implements View {
       propertiesDeck.showWidget(i);
     }
   }
-  
+
   public HasClickHandlers backClickHandlers() {
     return back;
   }
@@ -135,7 +136,7 @@ public class ProductView extends Composite implements View {
     pname.setHTML(i18n.h2(name));
   }
 
-  public Grid getProductTable() {
+  public Table getProductTable() {
     return productTable;
   }
 
@@ -143,7 +144,7 @@ public class ProductView extends Composite implements View {
     if (column >= productTable.getColumnCount()) {
       productTable.resizeColumns(column+1);
     }
-    productTable.setWidget(0, column, new Label(text));
+    productTable.setHeaderHTML(0, column, text);
   }
 
   public void setProductTableCellImage(int row, int column, ImageResource image) {

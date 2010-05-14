@@ -420,6 +420,7 @@ JavaEEArchitectureJpaEjbGwt {
                         ClassAttributeView {
                             name = ProductOrderView
                             kind = all
+                            forceComposite = true
                             referringAttributes = shop:Order/attributes:productOrders
                         }
                         ClassAttributeView {

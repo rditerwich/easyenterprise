@@ -1249,3 +1249,37 @@ td.datePickerMonth {
 .propertyGroupNameSelected {
   background-color: #d86403;
 }
+
+.cxs-table {
+  border-spacing:0;
+	border: 1px solid #7F7F7F;
+	border-collapse:separate;
+}
+.cxs-table th {
+  border:none;
+  border-right: 1px solid #CBCBCB;
+  margin:0;
+  padding: 4px;
+	background: url("images/hborder.png") repeat-x 0px -989px;
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.cxs-table .cxs-first td {
+  border-top: 1px solid #7F7F7F;
+}
+
+.cxs-table td {
+  border:none;
+  border-right: 1px solid #CBCBCB;
+  margin:0;
+  padding: 4px;
+}
+
+.cxs-table .cxs-odd {
+	background-color: #FFF3DF;
+}
+
+.cxs-table .cxs-even {
+	background-color: white;
+}

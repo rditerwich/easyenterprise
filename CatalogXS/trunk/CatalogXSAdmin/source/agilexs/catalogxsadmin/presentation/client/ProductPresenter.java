@@ -162,7 +162,7 @@ public class ProductPresenter implements Presenter<ProductView> {
   private void showProducts() {
     view.getProductTable().clear();
     if (currentProducts.size() > 0) {
-      view.getProductTable().resizeRows(currentProducts.size() + 1);
+      view.getProductTable().resizeRows(currentProducts.size());
       final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
 
       view.setProductTableHeader(EDIT_COL, " ");
@@ -180,8 +180,8 @@ public class ProductPresenter implements Presenter<ProductView> {
         final Product product = currentProducts.get(i);
         final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
 
-        view.setProductTableCellImage(i+1, EDIT_COL, rb.editImage());
-        view.setProductTableCellImage(i+1, DELETE_COL, rb.deleteImage());
+        view.setProductTableCellImage(i, EDIT_COL, rb.editImage());
+        view.setProductTableCellImage(i, DELETE_COL, rb.deleteImage());
         int j = FIRST_DATA_COL;
         for (PropertyValue[] pvlangs : pvl) {
           PropertyValue dpv = null;
@@ -194,7 +194,7 @@ public class ProductPresenter implements Presenter<ProductView> {
               dpv = pv;
             }
           }
-          view.setProductTableCell(i+1, j, Util.isEmpty(lpv) ? dpv : lpv);
+          view.setProductTableCell(i, j, Util.isEmpty(lpv) ? dpv : lpv);
           j++;
         }
       }
