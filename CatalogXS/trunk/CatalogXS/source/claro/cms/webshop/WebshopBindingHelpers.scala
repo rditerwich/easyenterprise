@@ -4,6 +4,8 @@ import xml.{Elem,Node,NodeSeq,Text,UnprefixedAttribute,TopScope}
 import agilexs.catalogxs.jpa
 import claro.cms.{XmlBinding,BindingHelpers}
 import claro.common.util.Conversions._
+import net.liftweb.http.{S, SHtml}
+import net.liftweb.http.js.{JsCmds}
 
 trait WebshopBindingHelpers extends BindingHelpers {
 
@@ -20,6 +22,13 @@ trait WebshopBindingHelpers extends BindingHelpers {
     }
   }
 
+  def logoutLink : NodeSeq => NodeSeq = { xml =>
+    SHtml.a(() => {
+      WebshopModel.currentUserVar.set(None)
+      jscmds.ReloadPage()
+    }, xml) % currentAttributes()
+  }
+  
   def format(money : Money) = formatMoney(money.amount, money.currency)
   
   def formatMoney(amount : Double, currency : String) = {

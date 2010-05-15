@@ -3,7 +3,7 @@ package claro.cms.webshop
 import java.util.Date
 import java.text.SimpleDateFormat
 import net.liftweb.util.{Bindable,Box,Full,Empty}
-import net.liftweb.http.{S}
+import net.liftweb.http.{S, SHtml}
 import scala.xml.{NodeSeq, Node, Text, Unparsed, Elem, UnprefixedAttribute, TopScope} 
 import agilexs.catalogxs.jpa
 

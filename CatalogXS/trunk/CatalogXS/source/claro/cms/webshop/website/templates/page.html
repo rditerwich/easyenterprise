@@ -27,20 +27,27 @@
         <lift:notice_msg>&#160;</lift:notice_msg>
       </lift:msgs>
       </div>
-      <div class="page_login"><a href="/admin/">Login</a> intranet</div>
+		  
+		  <webshop:current-user>
+      <div class="page_login">
+        Welcome, <user:name/>
+        &#160;<a href="/userinfo">settings</a>
+        &#160;<webshop:logout-link>logout</webshop:logout-link>
+       </div>
+       </webshop:current-user>
       <template:include template="nested"/> 
     </div>
     <table id="page_center">
       <tr valign="top"> 
         <td id="page_left"> 
-          <template:include template="left_bar"/>
+          <template:include template="templates/left_bar"/>
         </td>
         <td id="page_middle" class="page_content"> 
           <div class="bread_crumb"><a onclick="javascript:history.back()">back</a><br/></div>
           <template:content/>
         </td>
         <td id="page_right">
-          <template:include template="right_bar"/> 
+          <template:include template="templates/right_bar"/> 
         </td> 
       </tr> 
       <tr>

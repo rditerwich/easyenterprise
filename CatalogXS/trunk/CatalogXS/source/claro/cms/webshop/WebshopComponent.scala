@@ -23,9 +23,12 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-all" -> searchAllLink,
       "search-form" -> new SearchForm -> "search",
-      "current-user" -> WebshopModel.currentUserVar.is -> "user",
+      "current-user" -> WebshopModel.currentUserVar.get -> "user",
       "login-form" -> LoginForm.is -> "login",
-      "register-form" -> RegistrationForm.is -> "register")
+      "logout-link" -> logoutLink,
+      "user-info-form" -> UserInfoForm.ExistingUser.get -> "form",
+      "register-form" -> UserInfoForm.NewUser.get -> "form",
+      "confirm-user" -> UserInfoForm.confirmUser -> "")
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
@@ -80,31 +83,45 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
     case login : LoginForm => Map(
-      "email" -> login.emailField,
-      "password" -> login.passwordField,
-      "login" -> login.loginButton)
+      "email-field" -> login.emailField,
+      "password-field" -> login.passwordField,
+      "login-button" -> login.loginButton,
+      "failure" -> login.failure -> "failure")
+    
+    case failure : LoginFailure => Map(
+      "message" -> failure.message
+    )
    
-    case register : RegistrationForm => Map(
-      "email" -> register.emailField,
-      "password" -> register.passwordField,
-      "repeat-password" -> register.repeatPasswordField,
-      "name" -> register.nameField,
-      "phone" -> register.phoneField,
-      "address" -> register.addressForm -> "address",
-      "register" -> register.registerButton)
+    case form : UserInfoForm => Map(
+      "errors" -> form.errors -> "error",
+      "user" -> form.user -> "user",
+      "is-new" -> form.isNew -> "",
+      "email-field" -> form.emailField -> "field",
+      "password-field" -> form.passwordField -> "field",
+      "repeat-password-field" -> form.repeatPasswordField -> "field",
+      "name-field" -> form.partyForm.nameField -> "field",
+      "phone-field" -> form.partyForm.phoneField -> "field",
+      "address-form" -> form.partyForm.addressForm -> "form",
+      "party" -> form.partyForm -> "party",
+      "store-button" -> form.storeButton(@@("label", "Store"), @@("href", ""), @@("confirm-href", "/confirm")))
+        
+    case form : PartyForm => Map(
+      "name-field" -> form.nameField -> "field",
+      "phone-field" -> form.phoneField -> "field",
+      "address-form" -> form.addressForm -> "form")
     
     case user : jpa.party.User => Map(
       "email" -> user.getEmail,
       "name" -> user.getParty.getName,
-      "address" -> user.getParty.getAddress
-    )
+      "address" -> user.getParty.getAddress,
+      "is-confirmed" -> user.getConfirmed -> "")
     
     case address : AddressForm => Map(
-      "address1" -> address.address1Field,
-      "address2" -> address.address2Field,
-      "postalCode" -> address.postalCodeField,
-      "town" -> address.townField,
-      "country" -> address.countryField)
+      "address1-field" -> address.address1Field -> "field",
+      "address2-field" -> address.address2Field -> "field",
+      "postal-code-field" -> address.postalCodeField -> "field",
+      "town-field" -> address.townField -> "field",
+      "country-field" -> address.countryField -> "field")
     
     case property: Property => Map(  
       "id" -> property.id.toString,

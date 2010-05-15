@@ -1,4 +1,4 @@
-<template:include template="page">
+<template:include template="templates/page">
  <h1>Shopping Cart</h1>
   <webshop:shopping-cart phase="1" shopping_list_id="shopping_list">
     <div id="shopping_list">
@@ -6,11 +6,11 @@
         <table>
           <thead>
             <th style="width:10%;text-align:center;">ArticleNumber</th>
-            <th style="width:50%;text-align:center;">Product</th>
-            <th style="width:10%;text-align:center;">Price</th>
+            <th style="width:40%;text-align:center;">Product</th>
+            <th style="width:15%;text-align:center;">Price</th>
             <th style="width:10%;text-align:center;">Volume</th>
-            <th style="width:10%;text-align:center;">Total</th>
-            <th style="width:10%;text-align:center;">&#160;</th>
+            <th style="width:15%;text-align:center;">Total</th>
+            <th style="width:5%;text-align:center;">&#160;</th>
           </thead>
       <list:repeat>
           <tr>
@@ -35,6 +35,18 @@
         <list:none>There are no items in the shopping cart</list:none>
       </shopping-cart:items>
     </div>
+    <shopping-cart:items>
+    <list:last>
+    <div class="button-bar">
+    <webshop:current-user>
+    <a class="form-button" href="/checkout">checkout</a>
+    <object:none>
+    <a class="disabled form-button" href="/checkout">checkout</a>
+    <br/>Please, login to proceed checkout</object:none>
+    </webshop:current-user>
+    </div>
+    </list:last>
+    </shopping-cart:items>
   </webshop:shopping-cart>
   <!-- lift:ShoppingCart.show phase="2">
     Address gegevens...

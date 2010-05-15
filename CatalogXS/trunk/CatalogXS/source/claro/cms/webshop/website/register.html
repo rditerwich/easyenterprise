@@ -1,23 +1,9 @@
-<template:include template="page">
+<template:include template="templates/page">
   <h1>Register as new customer</h1>
   <webshop:register-form>
-  <table>
-  <tr class="heading" colspan="2"><td>Login data</td></tr>
-  <tr><td>Email address</td><td><register:email/></td></tr>
-  <tr><td>Password</td><td><register:password/></td></tr>
-  <tr><td>Repeat password</td><td><register:repeat-password/></td></tr>
+  <template:include template="templates/user_info_form"/>
 
-  <tr class="heading" colspan="2"><td>Account data</td></tr>
-  <register:address>
-  <tr><td>Name</td><td><register:name /></td></tr>
-  <tr><td>Address</td><td><address:address1 /></td></tr>
-  <tr><td></td><td><address:address2 /></td></tr>
-  <tr><td>Postal code</td><td><address:postalCode /></td></tr>
-  <tr><td>Town</td><td><address:town /></td></tr>
-  <tr><td>Country</td><td><address:country /></td></tr>
-  <tr><td>Telephone</td><td><register:phone/></td></tr>
-  </register:address>
-  </table>
-  <register:register/>
+  <form:store-button label="Register" href="/registered"/>
+  <form:is-new>NEWNEWNEW</form:is-new>
   </webshop:register-form>
 </template:include>

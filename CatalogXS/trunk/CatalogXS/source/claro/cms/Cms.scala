@@ -40,6 +40,7 @@ object Cms {
 //    }
 
     components.append(() => new TemplateComponent)
+    components.append(() => new claro.cms.components.StdComponent)
     components.append(() => new claro.cms.components.Utils)
     components.append(() => new claro.cms.components.MenuComponent)
     Website

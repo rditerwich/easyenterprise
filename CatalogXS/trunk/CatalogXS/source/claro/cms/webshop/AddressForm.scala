@@ -5,11 +5,11 @@ import xml.{Node, NodeSeq, MetaData}
 import agilexs.catalogxs.jpa
 import claro.common.util.Conversions._
 
-class AddressForm(address : jpa.party.Address) extends BindingHelpers {
+class AddressForm(address : jpa.party.Address) extends Form {
 
-  def address1Field = SHtml.text(address.getAddress1.getOrElse(""), address.setAddress1(_)) % currentAttributes() 
-  def address2Field = SHtml.text(address.getAddress2.getOrElse(""), address.setAddress2(_)) % currentAttributes() 
-  def postalCodeField = SHtml.text(address.getPostalCode.getOrElse(""), address.setPostalCode(_)) % currentAttributes() 
-  def townField = SHtml.text(address.getTown.getOrElse(""), address.setTown(_)) % currentAttributes() 
-  def countryField = SHtml.text(address.getCountry.getOrElse(""), address.setCountry(_)) % currentAttributes() 
+  val address1Field = TextField(address.getAddress1, address.setAddress1(_))  
+  val address2Field = TextField(address.getAddress2, address.setAddress2(_))  
+  val postalCodeField = TextField(address.getPostalCode, address.setPostalCode(_))  
+  val townField = TextField(address.getTown, address.setTown(_))  
+  val countryField = TextField(address.getCountry, address.setCountry(_))  
 }
