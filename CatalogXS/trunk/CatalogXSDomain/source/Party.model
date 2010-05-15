@@ -75,6 +75,15 @@ Package {
                    name = party
                    type = party:Party
                }
+               Attribute {
+                   name = confirmed
+                   type = primitive:Boolean
+               }
+               Attribute {
+                   name = confirmationKey
+                   type = primitive:String
+                   lower = 0
+               }
            }
        }
        Class {
