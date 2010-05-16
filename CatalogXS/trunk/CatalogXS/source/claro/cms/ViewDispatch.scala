@@ -8,23 +8,23 @@ import xml.NodeSeq
 object ViewDispatch extends LiftRules.ViewDispatchPF {
   
   def isDefinedAt(path : List[String]): Boolean = Request.website != null
-  def apply(path : List[String]) = viewDispatch(Request.website, path)
+  def apply(path : List[String]) = viewDispatch(Request.get, path)
   
-  private def viewDispatch(website : Website, rawPath : List[String]) = {
-    val tempPath = rawPath.drop(website.path.size) match {
+  private def viewDispatch(request : Request, rawPath : List[String]) = {
+    val tempPath = rawPath.drop(request.context.size) match {
       case Nil => "index" :: Nil
       case path => path
     }
-    val path = website.rewrite.foldLeft(tempPath)((b, a) => a(b)) 
+    val path = request.website.rewrite.foldLeft(tempPath)((b, a) => a(b)) 
     if (path != Nil) {
       val template = Template(path)
       val locale = Locale.getDefault
-      website.templateCache(template, locale) match {
+      request.website.templateCache(template, locale) match {
         case Some(template) => 
           val request = Request.is
           request.template = Some(template)
           request.path = path
-          Left(() => render(website, rawPath, template))
+          Left(() => render(request.website, rawPath, template))
         case None => 
           Log.info("No template found for path: " + rawPath.mkString("/", "/", ""))
           Left(() => Empty)

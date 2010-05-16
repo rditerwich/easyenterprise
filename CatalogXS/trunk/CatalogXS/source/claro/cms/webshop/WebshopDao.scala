@@ -13,4 +13,6 @@ object WebshopDao extends Dao("AgileXS.CatalogXS.Jpa.PersistenceUnit") {
   def findUserByEmailAndPassword(email : String, encryptedPassword : String) : Option[jpa.party.User] = 
     querySingle("Select u from User u where u.email = :email and u.password = :password", "email" -> email, "password" -> encryptedPassword)
   
+  def findEmailConfirmationByEmail(email : String) : Option[jpa.party.EmailConfirmation] = 
+    querySingle("Select c from EmailConfirmation c where c.email = :email", "email" -> email)
 }

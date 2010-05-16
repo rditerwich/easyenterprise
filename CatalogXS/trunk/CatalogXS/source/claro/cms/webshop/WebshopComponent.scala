@@ -4,6 +4,7 @@ import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,Rewrite
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
 import scala.xml.{Node,NodeSeq,Text}
 import agilexs.catalogxs.jpa
+import claro.common.util.Conversions._
 
 class WebshopComponent extends Component with WebshopBindingHelpers {
   
@@ -26,9 +27,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-user" -> WebshopModel.currentUserVar.get -> "user",
       "login-form" -> LoginForm.is -> "login",
       "logout-link" -> logoutLink,
-      "user-info-form" -> UserInfoForm.ExistingUser.get -> "form",
-      "register-form" -> UserInfoForm.NewUser.get -> "form",
-      "confirm-user" -> UserInfoForm.confirmUser -> "")
+      "user-info-form" -> UserInfoForm.get -> "form",
+      "register-form" -> RegistrationForm.get -> "form",
+      "change-password-form" -> ChangePasswordForm.get -> "form")
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
@@ -66,7 +67,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "add-promotion" -> cart.addPromotion(@@("promotion-prefix", "promotion")),
       "total-prices" -> cart.order.totalPrices -> "total-price",
       "clear" -> cart.clear,
-      "link" -> Link("/cart"))
+      "link" -> Link("/cart"),
+      "place-order-link" -> cart.placeOrderLink)
     
     case order : Order => Map(
       "items" -> order.order.getProductOrders -> "item",
@@ -86,24 +88,41 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "email-field" -> login.emailField,
       "password-field" -> login.passwordField,
       "login-button" -> login.loginButton,
-      "failure" -> login.failure -> "failure")
+      "failure" -> login.failure -> "failure",
+      "forgot-password-link" -> login.forgotPasswordLink(@@("href", "/passwordreset"), @@("change-password-href", "/changepassword")))
     
     case failure : LoginFailure => Map(
       "message" -> failure.message
     )
    
-    case form : UserInfoForm => Map(
+    case form : RegistrationForm => Map(
       "errors" -> form.errors -> "error",
       "user" -> form.user -> "user",
-      "is-new" -> form.isNew -> "",
       "email-field" -> form.emailField -> "field",
-      "password-field" -> form.passwordField -> "field",
-      "repeat-password-field" -> form.repeatPasswordField -> "field",
       "name-field" -> form.partyForm.nameField -> "field",
       "phone-field" -> form.partyForm.phoneField -> "field",
       "address-form" -> form.partyForm.addressForm -> "form",
       "party" -> form.partyForm -> "party",
-      "store-button" -> form.storeButton(@@("label", "Store"), @@("href", ""), @@("confirm-href", "/confirm")))
+      "register-button" -> form.registerButton(@@("label", "Register"), @@("href", "/registered"), @@("change-password-href", "/changepassword")))
+    
+    case form : UserInfoForm => Map(
+      "errors" -> form.errors -> "error",
+      "user" -> form.user -> "user",
+      "email-field" -> form.emailField -> "field",
+      "name-field" -> form.partyForm.nameField -> "field",
+      "phone-field" -> form.partyForm.phoneField -> "field",
+      "address-form" -> form.partyForm.addressForm -> "form",
+      "party" -> form.partyForm -> "party",
+      "change-password-link" -> form.changePasswordLink(@@("change-password-href", "/changepassword")),
+      "store-button" -> form.storeButton(@@("label", "Store")))
+        
+    case form : ChangePasswordForm => Map(
+      "errors" -> form.errors -> "error",
+      "email" -> form.email,
+      "password-field" -> form.passwordField -> "field",
+      "repeat-password-field" -> form.repeatPasswordField -> "field",
+      "is-valid" -> form.isValid -> "",
+      "change-password-button" -> form.changePasswordButton(@@("label", "Change password"), @@("href", "/passwordchanged")))
         
     case form : PartyForm => Map(
       "name-field" -> form.nameField -> "field",
@@ -114,7 +133,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "email" -> user.getEmail,
       "name" -> user.getParty.getName,
       "address" -> user.getParty.getAddress,
-      "is-confirmed" -> user.getConfirmed -> "")
+      "has-password" -> (user.getPassword.getOrElse("") != "") -> "")
     
     case address : AddressForm => Map(
       "address1-field" -> address.address1Field -> "field",
@@ -155,6 +174,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
     case "cart" :: Nil => "shopping_cart" :: Nil
+    case "flushcache" :: Nil => 
+      WebshopModel.flush 
+      "index" :: Nil
     case path => path
   }
 }

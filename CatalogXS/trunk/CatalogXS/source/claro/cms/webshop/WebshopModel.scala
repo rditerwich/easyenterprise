@@ -3,8 +3,6 @@ package claro.cms.webshop
 import net.liftweb.http.{RequestVar,SessionVar,Req,S}
 import net.liftweb.util.{Box,Full}
 import java.util.LinkedHashSet
-import java.security.MessageDigest
-import java.nio.charset.Charset
 
 import scala.xml.NodeSeq 
 import scala.xml.Text 
@@ -24,9 +22,7 @@ object WebshopModel {
   object currentProductVar extends RequestVar[Option[String]](None)
   object currentProductGroupVar extends RequestVar[Option[String]](None)
   object currentSearchStringVar extends RequestVar[Option[String]](None)
-  object currentUserVar extends SessionVar[Option[jpa.party.User]](None) {
-    override def get = {println("Getting user: " + super.get); super.get}
-  }
+  object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
   
   def currentProduct : Option[Product] = currentProductVar.is match {
     case Some(id) => Some(shop.productsById(id.toLong))
@@ -49,16 +45,10 @@ object WebshopModel {
 	  case _ => Seq.empty
   }
   
-  def encryptPassword(password : String) : String = {
-    val md = MessageDigest.getInstance("SHA-1")
-    val salt = "SALT&PEPPER"
-    val charset = Charset.forName("UTF-8")
-    md.update(salt.getBytes(charset))
-    md.update(password.getBytes(charset))
-    val bytes = md.digest.map(_.asInstanceOf[Int] & 0xff)
-    val codes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuwvxyz01234567890+-"
-    val chars = bytes.map(b => codes(b & 0x0f)) ++ bytes.map(b => codes(b >> 4))
-    new String(chars.toArray)
+  def flush = {
+    shopCache.reset
+    shop.remove()
+    shop.get
   }
 }
 

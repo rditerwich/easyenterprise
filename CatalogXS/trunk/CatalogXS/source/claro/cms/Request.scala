@@ -10,34 +10,32 @@ object Request extends RequestVar[Request](new Request) {
 
   var lastLocalhostServer = ""
   
-  def httpRequest = get.httpRequest
-  def website = get.website
-  def template = get.template
-  def path = get.path
-  
   def calculateContextPath(httpRequest : HttpServletRequest) : Box[String] = {
-    val (server, caching) = httpRequest.getServerName match {
-      case "localhost" => httpRequest.getParameter("server") match {
-        case null => (lastLocalhostServer, false)
-        case server => 
-          lastLocalhostServer = server
-          (server, httpRequest.getParameter("caching") != null)
+    val servletPath = httpRequest.getServletPath
+    val (server, path, localhost) = httpRequest.getServerName match {
+      case "localhost" => servletPath.indexOf('/', 1) match {
+        case -1 => ("", servletPath, false)
+        case i => (servletPath.substring(1, i), servletPath.substring(i), true)
       }
-      case server => (server, true)
-    }
-    val path = httpRequest.getServletPath
-    if (path.startsWith("/classpath/") || path.startsWith("/ajax_request/")) {
-//      return Empty
+      case server => (server, servletPath, false)
     }
     Website.findWebsite(server, path) match {
       case Some(website) => 
         val request = Request.is
+        website.caching = !localhost
         request.httpRequest = httpRequest 
         request.website = website
-        website.caching = caching
-        website.contextPath match {
-          case "/" => Empty
-          case contextPath => Full(contextPath)
+        if (localhost) {
+          request.context = server :: website.path 
+          request.contextPath = "/" + server + (if (website.contextPath == "/") "" else website.contextPath)  
+          Full(request.contextPath)
+        } else {
+          request.context = website.path 
+          request.contextPath = website.contextPath 
+          website.contextPath match {
+            case "/" => Empty
+            case contextPath => Full(contextPath)
+          }
         }
       case None => Empty
     }
@@ -46,6 +44,8 @@ object Request extends RequestVar[Request](new Request) {
 
 class Request {
   var httpRequest : HttpServletRequest = null
+  var context = List[String]()
+  var contextPath = ""
   var website : Website = null
   var template : Option[ConcreteTemplate] = None
   var path : List[String] = Nil

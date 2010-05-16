@@ -38,6 +38,38 @@ class ShoppingCart private extends Bindable with Redrawable {
         NodeSeq.Empty
     }
   }
+  
+  def placeOrderLink = (xml : NodeSeq) => {
+    val redraws = CurrentRedraws.get
+    def callback = {
+      WebshopDao.transaction { em =>
+        WebshopModel.currentUserVar.get match {
+          case Some(user) => WebshopDao.findUserById(user.getId getOrElse(-1)) match {
+            case Some(user) => 
+              val transport = new jpa.shop.Transport
+              transport.setDesciption("Standard Delivery")
+              transport.setDeliveryTime(14)
+              transport.setTransportCompany("UPS")
+              
+              order.order.setUser(user)
+              order.order.setOrderDate(new java.util.Date())
+              order.order.setAmountPaid(0d)
+              order.order.setStatus(jpa.shop.OrderStatus.PendingPayment)
+              order.order.setTransport(transport)
+              em.merge(order.order)
+              
+              // clear shopping basket
+              order.remove()
+              S.notice("Order has been placed")
+            case None =>
+          }
+          case None =>
+        }
+        redraws.toJsCmd
+      }
+    }
+    SHtml.a(() => callback, xml) % currentAttributes()
+  }
 
   def addPromotion(promotionPrefix : String) : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
@@ -50,10 +82,10 @@ class ShoppingCart private extends Bindable with Redrawable {
       redraws.toJsCmd
     }
     findBoundObject(promotionPrefix) match {
-    case Some(promotion:Promotion) =>
-    SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
-    case None => 
-    NodeSeq.Empty
+      case Some(promotion:Promotion) =>
+        SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
+      case None => 
+        NodeSeq.Empty
     }
   }
   

@@ -1,14 +1,15 @@
 package claro.cms
 
 import net.liftweb.http.RequestVar
-import javax.persistence.EntityManager
+import javax.persistence.{EntityManager,EntityManagerFactory}
 
 class Dao(dataSource : String) {
 
-  def createEntityManager = Request.website.entityManagerFactory(dataSource).createEntityManager
+  val factory : EntityManagerFactory = Request.website.entityManagerFactory(dataSource)
+  def createEntityManager = factory.createEntityManager
   private object currentEntityManager extends RequestVar[Option[EntityManager]](None)
     
-  def access[A](f : EntityManager => A) : A = {
+  def transaction[A](f : EntityManager => A) : A = {
     currentEntityManager.get match {
       case Some(em) => f(em)
       case None =>
@@ -34,7 +35,7 @@ class Dao(dataSource : String) {
     }
   }
   
-  def querySingle[A](query : String, parameters : (String,Any)*) : Option[A] = access { em => 
+  def querySingle[A](query : String, parameters : (String,Any)*) : Option[A] = transaction { em => 
     val q = em.createQuery(query)
     for ((parameter, value) <- parameters) q.setParameter(parameter, value)
     if (q.getResultList.isEmpty) {

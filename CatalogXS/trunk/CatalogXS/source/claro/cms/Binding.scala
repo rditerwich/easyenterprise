@@ -131,10 +131,14 @@ class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
 
 class AnyComplexBinding(prefix : Node => String, f : => Any) extends Binding {
   def bind(node : Node, context : BindingContext) : NodeSeq = {
+    def none = {
+      val nodes = node.child.filter(child => child.prefix == "object" && child.label == "none").flatMap(_.child)
+      nodes.flatMap(Binding.bind(_, context))
+    }
     f match {
-      case null => NodeSeq.Empty
-        val nodes = node.child.filter(child => child.prefix == "object" && child.label == "none").flatMap(_.child)
-        nodes.flatMap(Binding.bind(_, context))
+      case null => none 
+      case false => none 
+      case java.lang.Boolean.FALSE => none 
       case value =>
         Binding.bind(node.child, context + (prefix(node) -> bindingsFor(value)))
     }
@@ -311,6 +315,7 @@ class RootBinding(val website : Website) {
 }
 
 trait BindingHelpers {
+  
   implicit def toCtor(label : String) = new BindingCtor(label)
   implicit def toBinding(ctor : BindableBindingCtor) = ctor.toLabeledBinding
   implicit def toBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
