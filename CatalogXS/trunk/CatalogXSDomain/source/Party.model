@@ -75,14 +75,22 @@ Package {
                    name = party
                    type = party:Party
                }
+           }
+       }
+       Class {
+           name = EmailConfirmation
+           attributes = {
                Attribute {
-                   name = confirmed
-                   type = primitive:Boolean
+                   name = email
+                   type = primitive:String
                }
                Attribute {
                    name = confirmationKey
                    type = primitive:String
-                   lower = 0
+               }
+               Attribute {
+                   name = expirationTime
+                   type = primitive:Long
                }
            }
        }
