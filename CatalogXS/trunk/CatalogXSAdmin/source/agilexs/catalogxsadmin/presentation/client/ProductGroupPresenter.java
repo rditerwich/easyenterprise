@@ -151,6 +151,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
               
               StatusMessage.get().show(i18n.productGroupSaved(name==null?"":name.getStringValue()));
               CatalogCache.get().put(result);
+              currentProductGroup = null; //force redraw of product group
+              orgProductGroup = null;
               show(result);
             } else {
               StatusMessage.get().show(i18n.productGroupSaved(""));

@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -175,5 +174,9 @@ public class ProductView extends Composite implements View {
     case PRODUCT: i = 2; break;
     }
     deck.showWidget(i);
+  }
+
+  public void setProductsTableEmpty(boolean empty) {
+    productTable.setVisible(!empty);
   }
 }

@@ -41,6 +41,7 @@ public class ProductPresenter implements Presenter<ProductView> {
   private int fromIndex = 0;
   private int pageSize = 1000;
   private SHOW show = SHOW.PRODUCTS;
+  private Shop shop;
 
   public ProductPresenter() {
     view.getProductTable().addClickHandler(new ClickHandler(){
@@ -51,11 +52,12 @@ public class ProductPresenter implements Presenter<ProductView> {
         if (c != null) {
           final int colIndex = c.getCellIndex();
           if (colIndex == EDIT_COL) {
-            currentProduct = currentProducts.get(c.getRowIndex()-1);
+            currentProduct = currentProducts.get(c.getRowIndex());
             show(SHOW.PRODUCT);
           } else if (colIndex == DELETE_COL &&
               Window.confirm(i18n.deleteProductQuestion())) {
-            delete(currentProducts.get(c.getRowIndex()-1));
+            delete(currentProducts.get(c.getRowIndex()));
+            show(SHOW.PRODUCTS);
           }
         }
       }});
@@ -66,6 +68,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.saveButtonClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
         save();
+        currentProducts = null;
       }});
     view.newProductButtonClickHandlers().addClickHandler(new ClickHandler() {
       @Override
@@ -93,6 +96,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         @Override public void onSuccess(Product result) {
           StatusMessage.get().show(i18n.productDeleted());
           currentProduct = null;
+          orgProduct = null;
           show(SHOW.PRODUCTS);
         }
       });
@@ -116,6 +120,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         if (result != null) {
           CatalogCache.get().put(result);
           currentProduct = result;
+          orgProduct = null;
           show(SHOW.PRODUCT);
         }
       }
@@ -128,6 +133,7 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   public void show(Shop shop, ProductGroup productGroup) {
+    this.shop = shop;
     if (currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
       if (currentProductGroup != null) {
@@ -161,7 +167,10 @@ public class ProductPresenter implements Presenter<ProductView> {
 
   private void showProducts() {
     view.getProductTable().clear();
-    if (currentProducts.size() > 0) {
+    if (currentProducts == null) {
+      loadProducts(shop, currentProductGroup);
+    } else if (currentProducts.size() > 0) {
+      view.setProductsTableEmpty(false);
       view.getProductTable().resizeRows(currentProducts.size());
       final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
 
@@ -198,6 +207,8 @@ public class ProductPresenter implements Presenter<ProductView> {
           j++;
         }
       }
+    } else {
+      view.setProductsTableEmpty(true);
     }
   }
 
@@ -229,7 +240,8 @@ public class ProductPresenter implements Presenter<ProductView> {
     CatalogServiceAsync.findAllByProductGroupProducts(fromIndex, pageSize, pg, new AsyncCallback<List<Product>>() {
 
       @Override public void onFailure(Throwable caught) {
-        //FIXME implement handling failure
+        show = SHOW.NO_PRODUCTS;
+        show(show);
       }
 
       @Override public void onSuccess(List<Product> result) {

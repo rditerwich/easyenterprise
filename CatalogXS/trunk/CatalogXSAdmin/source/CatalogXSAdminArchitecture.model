@@ -429,6 +429,16 @@ JavaEEArchitectureJpaEjbGwt {
                             referringAttributes = shop:Order/attributes:transport
                         }
                         ClassAttributeView {
+                            name = UserView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:user
+                        }
+                        ClassAttributeView {
+                            name = PartyView
+                            kind = all
+                            referringAttributes = party:User/attributes:party
+                        }
+                        ClassAttributeView {
                             name = ProductView
                             kind = all
                             referringAttributes = shop:ProductOrder/attributes:product

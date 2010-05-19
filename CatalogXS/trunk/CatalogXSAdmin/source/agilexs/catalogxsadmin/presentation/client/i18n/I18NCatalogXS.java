@@ -126,4 +126,8 @@ public interface I18NCatalogXS extends Messages {
   String orderCustomer();
   
   String orderStatus();
+
+  String orderStatusUpdated();
+
+  String backToOrdersOverview();
 }
