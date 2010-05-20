@@ -115,7 +115,7 @@ public interface I18NCatalogXS extends Messages {
 
   String orderVolume();
 
-  String orderValue();
+  String orderPrice();
 
   String publish();
 

@@ -193,6 +193,8 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         //inherited properties from parents
         view.clear();
         valuesPresenters.clear();
+        view.add(i18n.parents(), parentsP.getView());
+        view.add(i18n.relatedTo(), relatedToP.getView());
         view.add(i18n.properties(), pgpp.getView());
         final List<Long> parents = Util.findParents(currentProductGroup);
 
@@ -212,8 +214,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             presenter.show(currentLanguage, pv);
           }
         }
-        view.add(i18n.parents(), parentsP.getView());
-        view.add(i18n.relatedTo(), relatedToP.getView());
       } else {
 
       }

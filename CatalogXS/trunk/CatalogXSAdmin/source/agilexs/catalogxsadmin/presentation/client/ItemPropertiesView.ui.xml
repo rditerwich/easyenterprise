@@ -6,7 +6,6 @@
     .right { text-align:right; }
   </ui:style>
   <g:FlowPanel>
-    <g:HTML><h3>Properties</h3></g:HTML>
     <g:Grid ui:field="grid"/>
     <g:Button ui:field="addNew" />
     <g:HTML><br/></g:HTML>

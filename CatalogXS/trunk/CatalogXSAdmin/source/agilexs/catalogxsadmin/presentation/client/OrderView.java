@@ -159,7 +159,7 @@ public class OrderView extends Composite implements View {
     orderGrid.setHeaderHTML(0, 1, i18n.orderDate());
     orderGrid.setHeaderHTML(0, 2, i18n.orderCustomer());
     orderGrid.setHeaderHTML(0, 3, i18n.orderVolume());
-    orderGrid.setHeaderHTML(0, 4, i18n.orderValue());
+    orderGrid.setHeaderHTML(0, 4, i18n.orderPrice());
     orderGrid.setHeaderHTML(0, 5, i18n.orderStatus());
   }
 
@@ -167,7 +167,7 @@ public class OrderView extends Composite implements View {
     productOrderGrid.setVisible(true);
     productOrderGrid.setHeaderHTML(0, 0, i18n.name());
     productOrderGrid.setHeaderHTML(0, 1, i18n.orderVolume());
-    productOrderGrid.setHeaderHTML(0, 2, i18n.orderValue());
+    productOrderGrid.setHeaderHTML(0, 2, i18n.orderPrice());
   }
 
   public void setProductName(int row, String name) {
