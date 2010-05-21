@@ -28,7 +28,7 @@ public class ProductGroupView extends Composite implements View {
   private final FlowPanel deck = new FlowPanel();
 //  private final FlowPanel labels = new FlowPanel();
 
-  private Label lastSelected;
+//  private Label lastSelected;
 
   public ProductGroupView() {
     initWidget(detailPanel);
