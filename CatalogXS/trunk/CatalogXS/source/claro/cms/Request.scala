@@ -19,6 +19,7 @@ object Request extends RequestVar[Request](new Request) {
       }
       case server => (server, servletPath, false)
     }
+     
     Website.findWebsite(server, path) match {
       case Some(website) => 
         val request = Request.is
