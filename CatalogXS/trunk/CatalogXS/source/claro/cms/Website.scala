@@ -25,7 +25,7 @@ object Website {
     }
   }
 
-  def findWebsite(server : String, contextPath : String) : Option[Website] = {
+  def findWebsite(server : String, path : List[String]) : Option[Website] = {
     val websites = websitesByServer get(server) match {
       case Some(websites) => websites
       case None => websitesByServer get("") match {
@@ -33,7 +33,7 @@ object Website {
         case None => Seq()
       }
     }
-    websites find (website => contextPath.startsWith (website.contextPath))
+    websites find (website => path.startsWith (website.path))
   }
 }
 
@@ -43,7 +43,7 @@ class Website(websiteFile : URI) {
   val name = config.name
   val server = config.server
   val path = config.path
-  val contextPath = config.path.mkString("/", "/", "")
+  val contextPath = path.mkString("/", "/", "")
   val websiteStores = config.extent.map(c => new UriStore(c.locations))
   val resourceStore = CompoundResourceStore(websiteStores, true)
   val resourceCache = new ResourceCache(this, resourceStore)
@@ -64,7 +64,7 @@ class Website(websiteFile : URI) {
 	  Persistence.createEntityManagerFactory(name, emProperties toJava)
 
   override def toString = {
-    websiteFile + List(server.emptyOrPrefix("server "), contextPath.emptyOrPrefix("path ")).trim.mkString(" (",", ", ")")
+    websiteFile + List(server.emptyOrPrefix("server "), path.mkString("path /", "/", "") emptyOrPrefix("path ")).trim.mkString(" (",", ", ")")
   }
   
   private def createComponents : Seq[Component] = {

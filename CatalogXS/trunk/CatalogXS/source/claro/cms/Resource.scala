@@ -20,17 +20,17 @@ case class Scope (name : String, id : Any) {
 }
 
 object ResourceLocator {
-  def apply(name : String, kind : String, scopes : Iterable[Scope]*) = 
-    new ResourceLocator(name, kind, scopes.flatMap(a => a))
+  def apply(path : List[String], kind : String, scopes : Iterable[Scope]*) = 
+    new ResourceLocator(path, kind, scopes.flatMap(a => a))
 }
 
 /**
  * Note the implicit conversion from a single scope to a scope list
  */
-case class ResourceLocator(name : String, kind : String, scopes : Iterable[Scope]) {
+case class ResourceLocator(path : List[String], kind : String, scopes : Iterable[Scope]) {
 }
 
-abstract case class Resource(val name : String, val kind : String, val scope : Scope, val locale : Locale) {
+abstract case class Resource(val path : List[String], val kind : String, val scope : Scope, val locale : Locale) {
   def readStream : InputStream
   def writeStream : Option[OutputStream]
   def readString = readStream.readString
@@ -89,10 +89,10 @@ trait ResourceStore {
     None
   }
   
-  def get(name : String, kind : String, scope : Scope, locale : Locale) : Seq[Resource]
+  def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource]
   
-  def mkFileName(name : String, kind : String, scope : Scope, locale : Locale) = {
-    val builder = new StringBuilder(name)
+  def mkFileName(path : List[String], kind : String, scope : Scope, locale : Locale) = {
+    val builder = new StringBuilder()
     if (scope.name != "") builder.append("-").append(scope.name)
     if (scope.id != null) builder.append("-").append(scope.id)
     val localeString = locale.toString
@@ -103,7 +103,7 @@ trait ResourceStore {
 }
 
 class FileStore(dirs : Seq[File]) extends ResourceStore {
-  override def get(name : String, kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
+  override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
   	val fileName = mkFileName(name, kind, scope, locale)
     dirs map { dir =>
       val file = new File(dir, fileName)
@@ -118,7 +118,7 @@ class FileStore(dirs : Seq[File]) extends ResourceStore {
 }
 
 class ClasspathStore(val website : Website, classPath : Seq[String]) extends ResourceStore {
-  override def get(name : String, kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
+  override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
     val fileName = mkFileName(name, kind, scope, locale)
     classPath map { pkg =>
   	  val resource = pkg.replace('.', '/') + "/" + fileName
@@ -133,7 +133,7 @@ class ClasspathStore(val website : Website, classPath : Seq[String]) extends Res
 }
 
 class UriStore(uris : Seq[URI]) extends ResourceStore {
-  override def get(name : String, kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
+  override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
     val fileName = mkFileName(name, kind, scope, locale)
     uris map { uri =>
       val file = uri.child(fileName)
@@ -158,7 +158,7 @@ class CompoundResourceStore(stores: Seq[ResourceStore], localFirst : Boolean) ex
     if (localFirst) stores mapFirst (_.find(locator, locales))
     else super.find(locator, locales)
 
-  override def get(name : String, kind : String, scope : Scope, locale : Locale) =
+  override def get(path : List[String], kind : String, scope : Scope, locale : Locale) =
     stores flatMap (_.get(name, kind, scope, locale))
 }
 

@@ -2,11 +2,12 @@ package claro.common.util
 
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
-import scala.collection.Map
 import claro.common.util.Conversions._
 
 object Locales {
 
+  val availableLocales : Map[String, Locale] = Map(Locale.getAvailableLocales.map(l => l.toString -> l):_*)
+  
   private val alternativeCache = new ConcurrentHashMap[Locale,List[Locale]]
   
   def getAlternatives(locale : Locale) = {
