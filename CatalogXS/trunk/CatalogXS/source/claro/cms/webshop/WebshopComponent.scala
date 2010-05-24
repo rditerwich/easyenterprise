@@ -42,8 +42,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case product : Product => Map(   
       "id" -> product.id.toString,
       "properties" -> product.properties -> "property",
-      "property" -> product.propertiesByName.get(@@("name")) -> "property",
-      "value" -> value(product.getProperty(@@("property"))),
+      "property" -> product.property(locale, @@("name")) -> "property",
+      "value" -> value(product.property(locale, @@("property"))),
       "groups" -> product.productGroups -> "group",
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
@@ -53,9 +53,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "name" -> group.name,
       "sub-groups" -> group.children -> "group",
       "parent-groups" -> group.parents -> "group",
-      "group-properties" -> group.getGroupProperties -> "property",
-      "group-property" -> group.getGroupProperty(@@("name")) -> "property",
-      "group-value" -> value(group.getGroupProperty(@@("property"))),
+      "group-properties" -> group.groupProperties(locale) -> "property",
+      "group-property" -> group.groupProperty(locale, @@("name")) -> "property",
+      "group-value" -> value(group.groupProperty(locale, @@("property"))),
       "properties" -> group.properties -> "property",
       "products" -> @@?("include-sub-groups", group.productExtent, group.products) -> "product",
       "promotions" -> group.productExtentPromotions -> "promotion",

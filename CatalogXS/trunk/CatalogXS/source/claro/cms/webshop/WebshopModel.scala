@@ -124,26 +124,25 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     cacheData.productGroupPropertyValues(productGroup) map (v => 
 	    new Property(v.getProperty, v, None, cacheData, mapping)) 
   
-  val groupPropertiesByName : Map[String, Property] = 
-    groupProperties mapBy (_.name)
+  val groupPropertyNames : Set[String] = 
+  	groupProperties.map(_.name).toSet
+  	
+  val groupPropertiesByLocaleName : Map[(Locale,String), Property] = 
+    groupProperties mapBy (p => (p.locale, p.name))
 
-  val groupPropertiesByLocale = groupByLocale(groupProperties)
-
-  val groupPropertiesByNameByLocale : Map[String, Map[Locale, Seq[Property]]] = {
-    val propertiesByName = groupProperties.groupBy(_.name).toSeq
-    Map(propertiesByName.map(byName => (byName._1, groupByLocale(byName._2))) :_*)
-  }
-
-  def getGroupProperties = groupPropertiesByLocale.getOrElse(Request.locale, Seq.empty)
+  def groupProperties(locale : Locale) =
+    groupPropertyNames.map(groupProperty(locale, _))
   
-  def getGroupProperty(name : String) = groupPropertiesByNameByLocale.get(name) match {
-    case Some(map) => map.get(Request.locale) match {
-      case Some(properties) if (!properties.isEmpty) => Some(properties.first)
-      case _ => None
+  def groupProperty(locale : Locale, name : String) : Option[Property] = {
+    for (alt <- Locales.getAlternatives(locale)) {
+      groupPropertiesByLocaleName.get(alt, name) match {
+        case Some(property) => return Some(property)
+        case _ =>
+      }
     }
-    case None => None
+    None
   }
-  
+
   val properties : Seq[Property] =
     productGroup.getProperties map(mapping.properties) toSeq
 
@@ -158,7 +157,7 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
 //  }
 
   val name : String = 
-    groupPropertiesByName.get("Name") match {
+    groupPropertiesByLocaleName.get(Locales.empty, "Name") match {
       case Some(property) => property.value.getStringValue
       case None => ""
     }
@@ -194,25 +193,26 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
   val productGroupExtent : Set[ProductGroup] = 
     product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet
 
-  val propertiesByName : Map[String, Property] = 
-    properties mapBy (_.name)
+  val propertyNames : Set[String] = 
+  	properties.map(_.name).toSet
+  	
+  val propertiesByLocaleName : Map[(Locale,String), Property] = 
+    properties mapBy (p => (p.locale, p.name))
 
-  val propertiesByLocale = groupByLocale(properties)
-
-  val propertiesByNameByLocale : Map[String, Map[Locale, Seq[Property]]] = {
-    val propertiesByName = properties.groupBy(_.name).toSeq
-    Map(propertiesByName.map(byName => (byName._1, groupByLocale(byName._2))) :_*)
-  }
-
-  val priceProperty : Option[Property] = propertiesByName.get("Price")
+  def properties(locale : Locale) =
+    propertyNames.map(property(locale, _))
   
-  def getProperty(name : String) = propertiesByNameByLocale.get(name) match {
-    case Some(map) => map.get(Request.locale) match {
-      case Some(properties) if (!properties.isEmpty) => Some(properties.first)
-      case _ => None
+  def property(locale : Locale, name : String) : Option[Property] = {
+    for (alt <- Locales.getAlternatives(locale)) {
+      propertiesByLocaleName.get(alt, name) match {
+        case Some(property) => return Some(property)
+        case _ =>
+      }
     }
-    case None => None
+    None
   }
+
+  val priceProperty : Option[Property] = property(Locales.empty, "Price")
 }
 
 class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(property)  {
@@ -232,6 +232,8 @@ class Property(property : jpa.catalog.Property, val value : jpa.catalog.Property
   val mediaValue : Array[Byte] = value.getMediaValue
   val moneyValue : Double = value.getMoneyValue.getOrElse(0)
   val moneyCurrency : String = value.getMoneyCurrency
+  
+  val locale = Locales(value.getLanguage)
   
   def hasValue = value != noPropertyValue
 

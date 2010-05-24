@@ -24,7 +24,7 @@ object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePassw
     WebshopDao.transaction(_.merge(confirmation))
     
     val req = Request.httpRequest
-    req.getScheme + "://" + req.getServerName + ":" + req.getServerPort + req.getContextPath + href + "?email=" + email + "&key=" + key
+    req.getScheme + "://" + req.getServerName + ":" + req.getServerPort + Request.context.openOr("/") + href + "?email=" + email + "&key=" + key
   }
   
   def encrypt(password : String) : String = {

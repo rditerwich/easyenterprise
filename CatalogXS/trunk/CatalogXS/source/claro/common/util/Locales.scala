@@ -10,6 +10,8 @@ object Locales {
   
   private val alternativeCache = new ConcurrentHashMap[Locale,List[Locale]]
 
+  val empty = new Locale("")
+  
   def apply(locale : String) = availableLocales.get(locale.getOrElse("")) match {
     case Some(locale) => locale
     case None => new Locale("")
@@ -17,7 +19,7 @@ object Locales {
   
   def getAlternatives(locale : Locale) = {
     alternativeCache getOrElseUpdate (locale, {
-      var alternatives = new Locale("") :: Nil
+      var alternatives = empty :: Nil
       if (locale.getCountry != "") alternatives = new Locale(locale.getLanguage) :: alternatives
       if (locale.getVariant != "") alternatives = new Locale(locale.getLanguage, locale.getCountry) :: alternatives
       locale :: alternatives

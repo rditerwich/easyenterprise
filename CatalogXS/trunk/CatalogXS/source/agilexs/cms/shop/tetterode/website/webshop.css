@@ -230,6 +230,7 @@ body {
   background-repeat:no-repeat;
   background-color:#E6E7E9;
   height:45px;
+  pading-left: 55px;
   overflow:hidden;
 }
 
@@ -357,16 +358,18 @@ body {
 	padding: 2px;
 }
 
+div.bread_crumb {
+  padding-top:13px;
+}
 
-
-.bread_crumb {
+div.bread_crumb a {
   font-size:12px;
   line-height:12px;
   padding-left:0px;
-  padding-top:0px;
-  padding-bottom:13px;
   color:#444;
+  cursor: pointer;
 }
+
 .kruimelpad a {
   color:#444;
   text-decoration:underline;
