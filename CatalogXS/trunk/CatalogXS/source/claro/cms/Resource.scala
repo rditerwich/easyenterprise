@@ -77,7 +77,7 @@ trait ResourceStore {
   def find(locator : ResourceLocator, locales : Seq[Locale]) : Option[Resource] = {
     for (scope <- locator.scopes) {
       for (locale <- locales) {
-        for (resource <- get(locator.name, locator.kind, scope, locale)) {
+        for (resource <- get(locator.path, locator.kind, scope, locale)) {
           Log.info("Scanning resource: " + resource.uri); 
           if (resource.exists) {
             Log.info("Resource found: " + resource.uri); 
@@ -93,6 +93,7 @@ trait ResourceStore {
   
   def mkFileName(path : List[String], kind : String, scope : Scope, locale : Locale) = {
     val builder = new StringBuilder()
+    path.addString(builder, "/")
     if (scope.name != "") builder.append("-").append(scope.name)
     if (scope.id != null) builder.append("-").append(scope.id)
     val localeString = locale.toString
@@ -104,10 +105,10 @@ trait ResourceStore {
 
 class FileStore(dirs : Seq[File]) extends ResourceStore {
   override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
-  	val fileName = mkFileName(name, kind, scope, locale)
+  	val fileName = mkFileName(path, kind, scope, locale)
     dirs map { dir =>
       val file = new File(dir, fileName)
-      new Resource(name, kind, scope, locale) {
+      new Resource(path, kind, scope, locale) {
         def readStream = new FileInputStream(file)
         def writeStream = Some(new FileOutputStream(file))
         def uri = file.toURI
@@ -119,10 +120,10 @@ class FileStore(dirs : Seq[File]) extends ResourceStore {
 
 class ClasspathStore(val website : Website, classPath : Seq[String]) extends ResourceStore {
   override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
-    val fileName = mkFileName(name, kind, scope, locale)
+    val fileName = mkFileName(path, kind, scope, locale)
     classPath map { pkg =>
   	  val resource = pkg.replace('.', '/') + "/" + fileName
-      new Resource(name, kind, scope, locale) {
+      new Resource(path, kind, scope, locale) {
         def readStream = getClass.getClassLoader.getResourceAsStream(resource)
         def writeStream = None
         def uri = new URI("classpath", resource, null)
@@ -134,10 +135,10 @@ class ClasspathStore(val website : Website, classPath : Seq[String]) extends Res
 
 class UriStore(uris : Seq[URI]) extends ResourceStore {
   override def get(path : List[String], kind : String, scope : Scope, locale : Locale) : Seq[Resource] = {
-    val fileName = mkFileName(name, kind, scope, locale)
+    val fileName = mkFileName(path, kind, scope, locale)
     uris map { uri =>
       val file = uri.child(fileName)
-     	new Resource(name, kind, scope, locale) {
+     	new Resource(path, kind, scope, locale) {
      	  def readStream = file.open get
         def writeStream = None
         def uri = file
@@ -159,6 +160,6 @@ class CompoundResourceStore(stores: Seq[ResourceStore], localFirst : Boolean) ex
     else super.find(locator, locales)
 
   override def get(path : List[String], kind : String, scope : Scope, locale : Locale) =
-    stores flatMap (_.get(name, kind, scope, locale))
+    stores flatMap (_.get(path, kind, scope, locale))
 }
 

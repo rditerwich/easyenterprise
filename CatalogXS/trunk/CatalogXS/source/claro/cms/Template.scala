@@ -10,11 +10,11 @@ import claro.common.util.Locales
 import claro.common.util.Conversions._
 
 object Template {
-  def apply(name : String) = new Template(name, null)
-  def apply(path : List[String]) = new Template(path.mkString("/"), null)
+  def apply(name : String) = new Template(List(name), null)
+  def apply(path : List[String]) = new Template(path, null)
 }
 
-case class Template(name : String, obj : Any) {
+case class Template(path : List[String], obj : Any) {
 }
 
 case class ConcreteTemplate(resource : Resource, xml : NodeSeq) {
@@ -38,10 +38,10 @@ class TemplateCache(val store : TemplateStore) {
     if (!website.caching) store.find(template, locale) 
     else objectTemplateCache getOrElseUpdate ((template,locale), store.find(template, locale))
 
-  private[cms] def flush(templateName : String) = {
+  private[cms] def flush(templatePath : List[String]) = {
     val it = objectTemplateCache.keySet.iterator
     while (it.hasNext) {
-      if (it.next._1.name== templateName) {
+      if (it.next._1.path == templatePath) {
         it.remove
       }
     }
@@ -53,7 +53,7 @@ class TemplateStore(val website : Website, resourceStore : ResourceStore) {
   def find(template : Template, locale : Locale) : Option[ConcreteTemplate] = 
     resourceStore.find(resourceLocator(template), Locales.getAlternatives(locale)) match {
       case Some(resource) => 
-        ParseHtml(resource.readStream, resource.name) match {
+        ParseHtml(resource.readStream, resource.path.mkString("/")) match {
           case (xml, None) => Some(ConcreteTemplate(resource, xml))
           case (xml, Some(e)) => Some(ConcreteTemplate(resource, <html>{xml}</html>))
         }
@@ -62,7 +62,7 @@ class TemplateStore(val website : Website, resourceStore : ResourceStore) {
   
   private def resourceLocator(template : Template) : ResourceLocator =
     website.templateLocators.findFirst(template).
-      getOrElse (ResourceLocator(template.name, "html", List(Scope.global)))
+      getOrElse (ResourceLocator(template.path, "html", List(Scope.global)))
 }
 
 class TemplateComponent extends Component {
