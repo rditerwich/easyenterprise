@@ -9,11 +9,12 @@ import collection.mutable
  * Redrawing
  */
 
-object CurrentRedraws extends RequestVar(new Redraws)
+object CurrentRedraws extends RequestVar(new Redraws(Request))
 
-class Redraws extends mutable.HashMap[String,() => NodeSeq] {
+class Redraws(request : Request) extends mutable.HashMap[String,() => NodeSeq] {
   def toJsCmd = {
     CurrentRedraws.set(this)
+    Request.set(request)
     this.map(r => new JsCmds.SetHtml(r._1, r._2())).foldLeft(JsCmds.Noop)(_ & _)
   }
 }

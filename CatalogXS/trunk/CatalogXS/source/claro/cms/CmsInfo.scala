@@ -7,7 +7,7 @@ object CmsInfo {
   def websiteInfo(website : Website, prefix : String) = "\n" + prefix + "Web site: " +  
     website.config.name.emptyOrPrefix("\n" + prefix + "  Name: ") + 
     website.server.emptyOrPrefix("\n" + prefix + "  Server: ") + 
-    website.contextPath.emptyOrPrefix("\n" + prefix + "  Context: ") + 
+    website.context.emptyOrPrefix("\n" + prefix + "  Context: ") + 
     (website.config.parents.map(_.id) match {
       case Nil => ""
       case single :: Nil => "\n" + prefix + "  Parent: " + single

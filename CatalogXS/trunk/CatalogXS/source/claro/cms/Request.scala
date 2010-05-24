@@ -1,7 +1,7 @@
 package claro.cms
 
 import java.util.Locale
-import net.liftweb.http.{RequestVar,SessionVar}
+import net.liftweb.http.{RequestVar,SessionVar,S}
 import net.liftweb.util.{Box,Full,Empty,Log}
 import javax.servlet.http.HttpServletRequest
 import claro.common.util.Locales
@@ -14,69 +14,13 @@ object Request extends RequestVar[Request](new Request) {
   var lastLocalhostServer = ""
   
   def calculateContextPath(httpRequest : HttpServletRequest) : Box[String] = {
+    val r = S.request
     val request = Request.is
     if (request.httpRequest == null) {
       request.httpRequest = httpRequest
-      val servletPath = httpRequest.getServletPath
-    
-	    // parse name and extension
-	    var end = servletPath.length
-	    val start = servletPath.lastIndexOf('/', end - 1)
-	    if (start + 1 < end) {
-	      val dot = servletPath.lastIndexOf('.', end - 1)
-	      if (dot >= start) {
-	        request.suffix = servletPath.substring(dot + 1)
-	        end = dot
-	      }
-	    }
-	    
-	    // parse path
-	    while (end >= 0) {
-	      val start = servletPath.lastIndexOf('/', end - 1)
-	      if (start + 1 < end) {
-	        request.path = servletPath.substring(start + 1, end) :: request.path
-	      }
-	      end = start
-	    }
-	
-	    // parse server
-	    val server = httpRequest.getServerName match {
-	      case "localhost" => request.path match {
-	        case server :: rest => 
-	          request.path = rest
-	          server
-          case _ => "" 
-	      }
-        case server => server
-      }
-	  
-	    // parse locale
-	    request.path match {
-	      case locale :: rest =>
-	        Locales.availableLocales.get(locale) match {
-	          case Some(locale) => 
-	            request.locale = locale
-	            request.path = rest
-	          case None => 
-	        }
-       case _ =>
-	    }
-     
-		  // find website
-		  Website.findWebsite(server, request.path) match {
-		    case Some(website) => 
-		      request.website = website
-		      request.context = website.path
-          website.contextPath match {
-            case "/" => Empty
-            case contextPath => Full(contextPath)
-          }
-		      request.contextPath = Empty
-        case None =>
-		      request.contextPath = Empty
-		  }
+      request.fill
     }
-    request.contextPath
+    request.context
   }
    
 //  def fillRequest(request : Request) = {
@@ -122,12 +66,80 @@ object Request extends RequestVar[Request](new Request) {
 
 class Request {
   var httpRequest : HttpServletRequest = null
-  var context = List[String]()
+  var contextPath = List[String]()
   var website : Website = null
   var template : Option[ConcreteTemplate] = None
   var path : List[String] = Nil
   var suffix = ""
   var locale : Locale = Request.defaultLocale
-  var contextPath : Box[String] = Empty
+  var context : Box[String] = Empty
+
+  def fill = {
+    
+    val servletPath = httpRequest.getServletPath
+    var disableCaching = false
+  
+    // parse suffix
+    var end = servletPath.length
+    val start = servletPath.lastIndexOf('/', end - 1)
+    if (start + 1 < end) {
+      val dot = servletPath.lastIndexOf('.', end - 1)
+      if (dot >= start) {
+        suffix = servletPath.substring(dot + 1)
+        end = dot
+      }
+    }
+    
+    // parse path
+    while (end >= 0) {
+      val start = servletPath.lastIndexOf('/', end - 1)
+      if (start + 1 < end) {
+        path = servletPath.substring(start + 1, end) :: path
+      }
+      end = start
+    }
+
+    // parse server
+    val server = httpRequest.getServerName match {
+      case "localhost" => path match {
+        case server :: rest => 
+          contextPath = server :: contextPath
+          disableCaching = true
+          path = rest
+          server
+        case _ => "" 
+      }
+      case server => server
+    }
+  
+    // parse locale
+    path match {
+      case localeString :: rest =>
+        Locales.availableLocales.get(localeString) match {
+          case Some(locale) => 
+            this.locale = locale
+            contextPath = localeString :: contextPath
+            path = rest
+          case None => 
+        }
+     case _ =>
+    }
+   
+    // find website
+    contextPath = contextPath.reverse
+    website = Website.findWebsite(server, contextPath) match {
+      case Some(website) =>
+        if (disableCaching) {
+          website.caching = false
+        }
+        website
+      case _ => null
+    }
+    
+    // context
+    context = 
+      if (contextPath.isEmpty) Empty
+      else Full(contextPath.mkString("/", "/", ""))
+  }
 }
 

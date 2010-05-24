@@ -97,7 +97,7 @@ trait ResourceStore {
     if (scope.name != "") builder.append("-").append(scope.name)
     if (scope.id != null) builder.append("-").append(scope.id)
     val localeString = locale.toString
-    if (localeString != "") builder.append("-").append(localeString)
+    if (localeString != "") builder.append("_").append(localeString)
     builder.append(".").append(kind)
     builder.toString
   }

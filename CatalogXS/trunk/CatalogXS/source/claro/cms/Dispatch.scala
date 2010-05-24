@@ -1,8 +1,9 @@
 package claro.cms
 
 import java.util.Locale
-import net.liftweb.http.{Req,LiftRules,LiftResponse,CSSResponse,StreamingResponse,InMemoryResponse}
+import net.liftweb.http.{Req,LiftRules,LiftResponse,CSSResponse,StreamingResponse,InMemoryResponse,JavaScriptResponse,NotFoundResponse,ResourceServer}
 import net.liftweb.util.{CSSParser,Box,Full,Empty,Log}
+import net.liftweb.util.TimeHelpers._
 import claro.common.util.Conversions._
 
 object Dispatch extends LiftRules.DispatchPF {
@@ -23,8 +24,8 @@ object Dispatch extends LiftRules.DispatchPF {
   	request.suffix match {
   	  case "css" => () => dispatchCSS(request)
   	  case "js" => request.path match {
-        case "classpath" :: rest => emptyResponse
-        case "ajax_request" :: rest => emptyResponse
+        case "classpath" :: rest => () => dispatchClasspathResource(request, "text/javascript")
+        case "ajax_request" :: "liftAjax" :: Nil => () => dispatchLiftAjax(request)
         case _ => () => dispatchResource(request, "text/javascript")
       }
   	  case "png" => () => dispatchResource(request, "image/png")
@@ -34,19 +35,43 @@ object Dispatch extends LiftRules.DispatchPF {
       case _ => emptyResponse
   	}
   }
+
+  private def dispatchLiftAjax(request : Request) : Box[LiftResponse] = {
+    val script = net.liftweb.http.js.ScriptRenderer.ajaxScript
+    val modTime = System.currentTimeMillis
+    Full(JavaScriptResponse(script,
+                            List("Last-Modified" -> toInternetDate(modTime),
+                            "Expires" -> toInternetDate(modTime + 60.minutes)),
+                            Nil, 200))
+  }
+  
+  private def dispatchClasspathResource(request : Request, mimeType : String) : Box[LiftResponse] = {
+    val name = ResourceServer.baseResourceLocation + request.path.drop(1).mkString("/", "/", "") + "." + request.suffix
+    def is = getClass.getClassLoader.getResourceAsStream(name)
+    try {
+      val bytes = is.readBytes
+      val headers = List(
+          "Cache-Control" -> "public, max-age=3600", 
+          "Pragma" -> "public", 
+          "Content-Length" -> bytes.length.toString,
+          "Content-Type" -> mimeType) 
+      Full(InMemoryResponse(bytes, headers, Nil, 200))
+    } catch {
+      case _ => Full(NotFoundResponse())
+    }
+  }
   
   private def dispatchResource(request : Request, mimeType : String) : Box[LiftResponse] = {
-    val locale = Locale.getDefault
-    val locator = ResourceLocator(request.path, request.suffix, List(Scope.global))
-    request.website.resourceCache(locator, locale) match {
+      val locator = ResourceLocator(request.path, request.suffix, List(Scope.global))
+      request.website.resourceCache(locator, request.locale) match {
       case Some(resource) => 
-        val bytes = request.website.contentCache(resource)
-        val headers = List(
-            "Cache-Control" -> "public, max-age=3600", 
-            "Pragma" -> "public", 
-            "Content-Length" -> bytes.length.toString,
-            "Content-Type" -> mimeType) 
-        Full(InMemoryResponse(bytes, headers, Nil, 200))
+      val bytes = request.website.contentCache(resource)
+      val headers = List(
+          "Cache-Control" -> "public, max-age=3600", 
+          "Pragma" -> "public", 
+          "Content-Length" -> bytes.length.toString,
+          "Content-Type" -> mimeType) 
+          Full(InMemoryResponse(bytes, headers, Nil, 200))
       case None => Empty
       }
   }
@@ -56,7 +81,7 @@ object Dispatch extends LiftRules.DispatchPF {
     request.website.resourceCache(locator, request.locale) match {
       case Some(resource) =>
         val bytes = request.website.contentCache(resource, 
-            CSSParser(request.website.contextPath).fixCSS(resource.readString) match {
+            CSSParser(request.website.context).fixCSS(resource.readString) match {
               case Full(content) => content.getBytes("UTF-8")
               case _ => new Array[Byte](0)
             })

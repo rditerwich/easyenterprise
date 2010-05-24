@@ -2,15 +2,15 @@ package claro.cms.webshop
 
 import net.liftweb.http.{RequestVar,SessionVar,Req,S}
 import net.liftweb.util.{Box,Full}
-import java.util.LinkedHashSet
+import java.util.{Locale,LinkedHashSet}
 
 import scala.xml.NodeSeq 
 import scala.xml.Text 
-import scala.collection.{mutable, immutable, Set, Map}
+import scala.collection.{mutable, immutable}
 
 import agilexs.catalogxs.jpa
 import agilexs.catalogxs.presentation.util.{ProjectionMap}
-import claro.common.util.{Delegate,Lazy,KeywordMap}
+import claro.common.util.{Delegate,Lazy,KeywordMap,Locales}
 import claro.common.util.Conversions._
 import claro.cms.Request
 
@@ -121,17 +121,41 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     cacheData.productGroupProducts(this) map(mapping.products) toSet 
   
   val groupProperties : Seq[Property] = 
-	cacheData.productGroupPropertyValues(productGroup) map (v => 
-	  new Property(v.getProperty, v, None, cacheData, mapping)) 
-
+    cacheData.productGroupPropertyValues(productGroup) map (v => 
+	    new Property(v.getProperty, v, None, cacheData, mapping)) 
+  
   val groupPropertiesByName : Map[String, Property] = 
     groupProperties mapBy (_.name)
-    
-  val properties : Set[Property] =
-    productGroup.getProperties map(mapping.properties) toSet
+
+  val groupPropertiesByLocale = groupByLocale(groupProperties)
+
+  val groupPropertiesByNameByLocale : Map[String, Map[Locale, Seq[Property]]] = {
+    val propertiesByName = groupProperties.groupBy(_.name).toSeq
+    Map(propertiesByName.map(byName => (byName._1, groupByLocale(byName._2))) :_*)
+  }
+
+  def getGroupProperties = groupPropertiesByLocale.getOrElse(Request.locale, Seq.empty)
+  
+  def getGroupProperty(name : String) = groupPropertiesByNameByLocale.get(name) match {
+    case Some(map) => map.get(Request.locale) match {
+      case Some(properties) if (!properties.isEmpty) => Some(properties.first)
+      case _ => None
+    }
+    case None => None
+  }
+  
+  val properties : Seq[Property] =
+    productGroup.getProperties map(mapping.properties) toSeq
 
   val propertiesByName : Map[String, Property] = 
     properties mapBy (_.name)
+
+//  val propertiesByLocale = groupByLocale(properties)
+//
+//  val propertiesByNameByLocale : Map[String, Map[Locale, Seq[Property]]] = {
+//    val propertiesByName = properties.groupBy(_.name).toSeq
+//    Map(propertiesByName.map(byName => (byName._1, groupByLocale(byName._2))) :_*)
+//  }
 
   val name : String = 
     groupPropertiesByName.get("Name") match {
@@ -146,7 +170,7 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
     val promotions = cacheData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
     if (promotions isEmpty) Set.empty else Set(promotions.toSeq first) 
   }
-  
+
   override def toString = name
 }
 
@@ -160,10 +184,10 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
 
   val id : Long = product.getId.longValue
   
-  val properties : Set[Property] =
+  val properties : Seq[Property] =
   	cacheData.productPropertyValues(product) map (v => 
-  	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) toSet
-  
+  	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) 
+
   val productGroups : Set[ProductGroup] = 
     product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet 
   
@@ -172,8 +196,23 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
 
   val propertiesByName : Map[String, Property] = 
     properties mapBy (_.name)
+
+  val propertiesByLocale = groupByLocale(properties)
+
+  val propertiesByNameByLocale : Map[String, Map[Locale, Seq[Property]]] = {
+    val propertiesByName = properties.groupBy(_.name).toSeq
+    Map(propertiesByName.map(byName => (byName._1, groupByLocale(byName._2))) :_*)
+  }
+
+  val priceProperty : Option[Property] = propertiesByName.get("Price")
   
-  val priceProperty : Option[Property] = propertiesByName.get("Price") 
+  def getProperty(name : String) = propertiesByNameByLocale.get(name) match {
+    case Some(map) => map.get(Request.locale) match {
+      case Some(properties) if (!properties.isEmpty) => Some(properties.first)
+      case _ => None
+    }
+    case None => None
+  }
 }
 
 class Property(property : jpa.catalog.Property, val value : jpa.catalog.PropertyValue, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(property)  {
@@ -205,6 +244,23 @@ class Property(property : jpa.catalog.Property, val value : jpa.catalog.Property
     else if (value.getMoneyValue != null) "&euro; " + value.getMoneyValue.toString
     else if (value.getRealValue != null) value.getRealValue.toString
     else ""
+}
+
+object groupByLocale {
+  
+  def apply(properties : Seq[Property]) : Map[Locale, Seq[Property]] = {
+    val loc_prop : Set[(Locale, Property)] = Set(properties.map(p => Locales(p.value.getLanguage getOrElse("")) -> p):_*)
+    val all_loc_prop = new mutable.ArrayBuffer[(Locale, Property)]
+    for ((locale, property) <- loc_prop) {
+      all_loc_prop += (locale, property) 
+      var alt = Locales.getAlternatives(locale).tail
+      while (alt != Nil && !loc_prop.contains((alt.head, property))) {
+        all_loc_prop += (alt.head, property) 
+        alt = alt.tail
+      }
+    }
+    all_loc_prop.map(_._2).groupBy(p => Locales(p.value.getLanguage))
+  }
 }
 
 object noPropertyValue extends jpa.catalog.PropertyValue {

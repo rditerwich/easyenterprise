@@ -32,9 +32,9 @@ class Form extends Bindable {
   
   override def bind(node : Node, context : BindingContext) : NodeSeq = {
     if (parent == null) {
-      <lift:snippet type={"Shop:ident"} form="POST">
+      <form method="post" action={Request.path.mkString("/", "/", "")}>
         { super.bind(node, context) }
-      </lift:snippet>
+      </form>
     } else super.bind(node, context)
   }
   

@@ -324,7 +324,7 @@ trait BindingHelpers {
   
   def website : Website = Request.website
  
-  def locale = Cms.locale.get
+  def locale = Request.locale
  
   def current : Elem = Request.website.rootBinding.currentElement
   

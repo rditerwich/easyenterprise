@@ -13,8 +13,6 @@ object Cms {
   val components = RulesSeq[() => Component]
   val locales = Set(Locale.getAvailableLocales map (_ toString) :_*) 
 
-  object locale extends RequestVar[Locale](Locale.getDefault)
-
   def entityManager(name : String) = Request.website.entityManagerFactory(name).createEntityManager
 
   def boot = {
@@ -25,6 +23,7 @@ object Cms {
     
     LiftRules.statelessDispatchTable.append(Dispatch)
     LiftRules.viewDispatch.append(ViewDispatch)
+//    LiftRules.jsArtifacts = MyJsArtifacts
 
 //    LiftRules.viewDispatch.append {
 //    	case Dispatch(response) => Left(response)
@@ -47,4 +46,3 @@ object Cms {
     Log.info("CMS Configuration:" + Website.websites.map(CmsInfo.websiteInfo(_, "  ")).mkString("\n"))
   }
 }
-

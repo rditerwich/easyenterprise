@@ -27,8 +27,8 @@ class ShoppingCart private extends Bindable with Redrawable {
   def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
     def callback(product : Product) = {
-      S.notice("Product added to shopping cart")
       order.addProduct(product, 1)
+      S.notice("Product added to shopping cart")
       redraws.toJsCmd
     }
     findBoundObject(productPrefix) match {

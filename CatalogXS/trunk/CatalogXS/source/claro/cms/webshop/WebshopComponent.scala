@@ -43,7 +43,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "id" -> product.id.toString,
       "properties" -> product.properties -> "property",
       "property" -> product.propertiesByName.get(@@("name")) -> "property",
-      "value" -> value(product.propertiesByName.get(@@("property"))),
+      "value" -> value(product.getProperty(@@("property"))),
       "groups" -> product.productGroups -> "group",
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
@@ -53,11 +53,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "name" -> group.name,
       "sub-groups" -> group.children -> "group",
       "parent-groups" -> group.parents -> "group",
-      "group-properties" -> group.groupProperties -> "property",
-      "group-property" -> group.groupPropertiesByName.get(@@("name")) -> "property",
-      "group-value" -> value(group.groupPropertiesByName.get(@@("property"))),
+      "group-properties" -> group.getGroupProperties -> "property",
+      "group-property" -> group.getGroupProperty(@@("name")) -> "property",
+      "group-value" -> value(group.getGroupProperty(@@("property"))),
       "properties" -> group.properties -> "property",
-      "products" -> @@?("include_sub-groups", group.productExtent, group.products) -> "product",
+      "products" -> @@?("include-sub-groups", group.productExtent, group.products) -> "product",
       "promotions" -> group.productExtentPromotions -> "promotion",
       "link" -> Link(group))
       

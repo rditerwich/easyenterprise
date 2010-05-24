@@ -11,17 +11,15 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
   def apply(path : List[String]) = viewDispatch(Request.get, path)
   
   private def viewDispatch(request : Request, rawPath : List[String]) = {
-    val tempPath = rawPath.drop(request.context.size) match {
+    val tempPath = rawPath.drop(request.contextPath.size) match {
       case Nil => "index" :: Nil
       case path => path
     }
     val path = request.website.rewrite.foldLeft(tempPath)((b, a) => a(b)) 
     if (path != Nil) {
       val template = Template(path)
-      val locale = Locale.getDefault
-      request.website.templateCache(template, locale) match {
+      request.website.templateCache(template, request.locale) match {
         case Some(template) => 
-          val request = Request.is
           request.template = Some(template)
           request.path = path
           Left(() => render(request.website, rawPath, template))

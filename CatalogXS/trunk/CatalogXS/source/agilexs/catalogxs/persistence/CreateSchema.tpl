@@ -14,7 +14,7 @@ import metaphor.psm.rdbms.IRdbmsPackage
 INSERT INTO catalogxs.catalog (name,id) VALUES ('staples',1);
 
 
-/* Product Group Property Values */
+/* Root Product Group */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2000,'catalog.productgroup');
 INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1000,'String',2000);
 INSERT INTO catalogxs.label (id,property_id,label) VALUES (3000, 1000,'Name');
@@ -32,10 +32,22 @@ INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1015,'String',2000);
 INSERT INTO catalogxs.label (id,property_id,label) VALUES (3006,1015,'Synopsis');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10000, 1000, 2000, 'en', 'Root');
 
+/* Supplies Product Group */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2001,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10001, 1000, 2001, 'en', 'Supplies');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10002, 1011, 2001, 'en', 'Contains supplies of all sorts');
 
+/* SpareParts Product Group */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2011,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (201101, 1000, 2011, 'en', 'Spare Parts');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (201102, 1011, 2011, 'en', 'Contains spare parts of all sorts');
+
+/* Service Product Group */
+INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2012,'catalog.productgroup');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (201201, 1000, 2012, 'en', 'Services');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (201202, 1011, 2012, 'en', 'Contains service products');
+
+/* Ink Product Group */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2002,'catalog.productgroup');
 INSERT INTO catalogxs.property (id,type_id,item_id) VALUES (1020,'String', 2002);
 INSERT INTO catalogxs.label (id,property_id,label) VALUES (3010,1020,'Color');
@@ -56,11 +68,6 @@ INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2004,'catalog.productg
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10007, 1000, 2004, 'en', 'Products');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10008, 1011, 2004, 'en', 'All products');
 
-/* Root properties */
-
-
-/* Ink example properties */
-
 /*  Insert example Ink products */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5001,'catalog.product');
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5002,'catalog.product');
@@ -74,24 +81,24 @@ INSERT INTO catalogxs.item_parents (children_id,parents_id) VALUES (5003,2002);
 /* Product group Saphira Supplies */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2005,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200501, 1000, 2005, 'en', 'Saphira Supplies');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200502, 1011, 2005, 'en', 'Saphira offers you a w_ide range of consumables to cover all your needs - from prepress to postpress. Our experts prov_ide technical and application support for Saphira products, and advise you on how to use them most effectively.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200502, 1011, 2005, 'en', 'Saphira offers you a wide range of consumables to cover all your needs - from prepress to postpress. Our experts provide technical and application support for Saphira products, and advise you on how to use them most effectively.');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200503, 1012, 2005, 'en', null);
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200504, 1011, 2005, 'de', 'He_idelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200504, 1011, 2005, 'de', 'Heidelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
 
 /* Product group Saphira Supplies Proofing */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2006,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200621, 1000, 2006, 'en', 'Saphira Proofing Supplies');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200622, 1011, 2006, 'en', 'Saphira offers you a w_ide range of consumables to cover all your needs - from prepress to postpress. Our experts prov_ide technical and application support for Saphira products, and advise you on how to use them most effectively.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200622, 1011, 2006, 'en', 'Saphira offers you a wide range of consumables to cover all your needs - from prepress to postpress. Our experts provide technical and application support for Saphira products, and advise you on how to use them most effectively.');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200623, 1012, 2006, 'en', null);
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200624, 1011, 2006, 'de', 'He_idelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200624, 1011, 2006, 'de', 'Heidelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
 
 /* Product group Saphira Supplies Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2007,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200711, 1000, 2007, 'en', 'Saphira Inks');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200712, 1011, 2007, 'en', 'Saphira offers you a w_ide range of consumables to cover all your needs - from prepress to postpress. Our experts prov_ide technical and application support for Saphira products, and advise you on how to use them most effectively.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200712, 1011, 2007, 'en', 'Saphira offers you a wide range of consumables to cover all your needs - from prepress to postpress. Our experts provide technical and application support for Saphira products, and advise you on how to use them most effectively.');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200713, 1012, 2007, 'en', null);
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200714, 1000, 2007, 'de', 'Saphira Lacke');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200715, 1011, 2007, 'de', 'He_idelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (200715, 1011, 2007, 'de', 'Heidelberg bietet Ihnen mit Saphira eine vielfaltige Auswahl an Verbrauchsmaterialien, die Ihren Bedarf von der Druckvorstufe bis hin zur Weiterverarbeitung abdecken. Unsere Experten stehen Ihnen ausserdem mit Rat und Tat zur Seite, wenn es um technische oder andere Fragen zur Anwendung und Leistungsfahigkeit der Saphira Produkte geht.');
 
 /* Product group Brands */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2008,'catalog.productgroup');
@@ -117,14 +124,14 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue
 /* Product group Machine Speedmaster XL 105 */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2021,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202101, 1000, 2021, 'en', 'Speedmaster XL 105');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202102, 1011, 2021, 'en', 'Products suitable for the He_idelberg Speedmaster XL 105');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202102, 1011, 2021, 'en', 'Products suitable for the Heidelberg Speedmaster XL 105');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202103, 1012, 2021, 'en', null);
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202104, 1015, 2021, 'en', 'Door een vergaand automatiseringsniveau, 100% volautomatische snelhe_idscompensatie, geavanceerde toepassingen voor een optimaal veltransport en hoge productiesnelheden van 18.000 druks per uur, zet de XL 105 ook in de praktijk een nieuwe categorie neer. Voor de hoge mate van stabiliteit die vereist is bij het produceren van topdrukwerk bij hoge snelheden, heeft He_idelberg een geheel nieuw platform ontworpen als basis voor de XL 105.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202104, 1015, 2021, 'en', 'Door een vergaand automatiseringsniveau, 100% volautomatische snelhe_idscompensatie, geavanceerde toepassingen voor een optimaal veltransport en hoge productiesnelheden van 18.000 druks per uur, zet de XL 105 ook in de praktijk een nieuwe categorie neer. Voor de hoge mate van stabiliteit die vereist is bij het produceren van topdrukwerk bij hoge snelheden, heeft Heidelberg een geheel nieuw platform ontworpen als basis voor de XL 105.');
 
-/* Product group Machine He_idelberg Speedmaster XL 145 */
+/* Product group Machine Heidelberg Speedmaster XL 145 */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,2022,'catalog.productgroup');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202201, 1000, 2022, 'en', 'Speedmaster XL 145');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202202, 1011, 2022, 'en', 'Products suitable for the He_idelberg Speedmaster XL 145');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202202, 1011, 2022, 'en', 'Products suitable for the Heidelberg Speedmaster XL 145');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (202203, 1012, 2022, 'en', null);
 
 /* Product group Process */
@@ -294,26 +301,27 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue
 INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 
 /* Root */ 
-(2000,2001),
+(2000,2004),
+(2000,2008),
 (2000,2020),
 (2000,2040),
 
 /* Supplies */
 (2001,2002),
-(2001,2006),
-(2001,2007),
+(2001,2005),
 
 /* Ink */
 (2002,2003),
 (2002,2007),
 
-/* Saphira */
+/* Saphira supplies */
 (2005,2006),
 (2005,2007),
 
 /* Products */
 (2004,2001),
-(2004,2002),
+(2004,2011),
+(2004,2012),
 
 /* Brands */
 (2008,2009),

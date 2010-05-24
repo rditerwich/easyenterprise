@@ -9,6 +9,11 @@ object Locales {
   val availableLocales : Map[String, Locale] = Map(Locale.getAvailableLocales.map(l => l.toString -> l):_*)
   
   private val alternativeCache = new ConcurrentHashMap[Locale,List[Locale]]
+
+  def apply(locale : String) = availableLocales.get(locale.getOrElse("")) match {
+    case Some(locale) => locale
+    case None => new Locale("")
+  }
   
   def getAlternatives(locale : Locale) = {
     alternativeCache getOrElseUpdate (locale, {
