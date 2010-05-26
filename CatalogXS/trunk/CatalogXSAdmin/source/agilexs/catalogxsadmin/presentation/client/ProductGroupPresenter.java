@@ -208,7 +208,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             valuesPresenters.add(presenter);
             final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
             final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
-            final String name = pvName == null ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
+            final String name = pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
 
             view.add(name, presenter.getView());
             presenter.show(currentLanguage, pv);
