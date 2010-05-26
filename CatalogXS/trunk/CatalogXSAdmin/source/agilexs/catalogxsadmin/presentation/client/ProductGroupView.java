@@ -106,6 +106,20 @@ public class ProductGroupView extends Composite implements View {
     }
 */  }
 //
+
+  /**
+   * Diplays button for status when saving in progress. 
+   */
+  public void setSaving(boolean saving) {
+    if (saving) {
+      saveButton.setText(i18n.saving());
+      saveButton.setEnabled(false);
+    } else {
+      saveButton.setText(i18n.saveChanges());
+      saveButton.setEnabled(true);
+    }
+  }
+
   public HasClickHandlers saveButtonClickHandlers() {
     return saveButton;
   }

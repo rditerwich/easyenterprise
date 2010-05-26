@@ -135,6 +135,19 @@ public class ProductView extends Composite implements View {
     return saveButton;
   }
 
+  /**
+   * Diplays button for status when saving in progress. 
+   */
+  public void setSaving(boolean saving) {
+    if (saving) {
+      saveButton.setText(i18n.saving());
+      saveButton.setEnabled(false);
+    } else {
+      saveButton.setText(i18n.saveChanges());
+      saveButton.setEnabled(true);
+    }
+  }
+
   public void setProductName(String name) {
     pname.setHTML(i18n.h2(name));
   }
@@ -171,6 +184,7 @@ public class ProductView extends Composite implements View {
   }
 
   public void showPage(SHOW show) {
+    setSaving(false); //reset save button
     int i = 0;
     switch (show) {
     case NO_PRODUCTS: i = 0; break;

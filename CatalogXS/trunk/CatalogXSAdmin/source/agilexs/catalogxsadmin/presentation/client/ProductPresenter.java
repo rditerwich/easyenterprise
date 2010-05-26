@@ -68,7 +68,6 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.saveButtonClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
         save();
-        currentProducts = null;
       }});
     view.newProductButtonClickHandlers().addClickHandler(new ClickHandler() {
       @Override
@@ -102,7 +101,9 @@ public class ProductPresenter implements Presenter<ProductView> {
       });
     }
   }
+
   private void save() {
+    view.setSaving(true);
     //clear field not needed to be stored: properties and empty property value
     // field
     if (orgProduct != null) {
@@ -113,8 +114,11 @@ public class ProductPresenter implements Presenter<ProductView> {
 
     saveProduct.setProperties(null);
     saveProduct.setPropertyValues(Util.filterEmpty(saveProduct.getPropertyValues()));
+    currentProducts = null;
     CatalogServiceAsync.updateProduct(orgProduct, saveProduct, new AsyncCallback<Product>(){
-      @Override public void onFailure(Throwable caught) {}
+      @Override public void onFailure(Throwable caught) {
+        view.setSaving(false);
+      }
       @Override public void onSuccess(Product result) {
         StatusMessage.get().show(i18n.productSaved());
         if (result != null) {

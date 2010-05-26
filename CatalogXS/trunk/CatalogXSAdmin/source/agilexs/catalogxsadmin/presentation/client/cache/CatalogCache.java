@@ -103,6 +103,7 @@ public class CatalogCache {
 
   public Map.Entry<Long, String> getProductGroupName(Long pid, String lang) {
     final Map.Entry<Long, String> tp = new Entry<Long, String>(pid);
+
     if (productGroupNamesCache.containsKey(pid)) {
       if (productGroupNamesCache.get(pid).containsKey(lang)) {
         tp.setValue(productGroupNamesCache.get(pid).get(lang)); 

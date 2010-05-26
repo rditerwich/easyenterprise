@@ -130,4 +130,6 @@ public interface I18NCatalogXS extends Messages {
   String orderStatusUpdated();
 
   String backToOrdersOverview();
+  
+  String saving();
 }

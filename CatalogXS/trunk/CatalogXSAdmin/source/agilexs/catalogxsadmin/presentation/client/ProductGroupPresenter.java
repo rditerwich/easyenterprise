@@ -110,6 +110,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   private void save() {
+    view.setSaving(true);
     //
     if (orgProductGroup != null) {
       orgProductGroup.getChildren().clear();
@@ -141,7 +142,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         saveProductGroup, new AsyncCallback<ProductGroup>() {
           @Override
           public void onFailure(Throwable caught) {
-            //TODO message on save fail
+            view.setSaving(false);
           }
 
           @Override
@@ -167,6 +168,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   public void show(ProductGroup productGroup) {
+    view.setSaving(false);
     final List<Language> langs = CatalogCache.get().getActiveCatalog().getLanguages();
 
     if (currentProductGroup != productGroup) {
