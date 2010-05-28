@@ -71,6 +71,10 @@ public class CatalogCache {
     return productGroupProduct;
   }
 
+  /**
+   * This is the Product Group that owns the Name property
+   * @param productGroupName
+   */
   public void setProductGroupName(ProductGroup productGroupName) {
     this.productGroupName = productGroupName;
   }

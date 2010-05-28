@@ -221,7 +221,8 @@ public class ProductPresenter implements Presenter<ProductView> {
     view.clear();
     valuesPresenters.clear();
     final List<Long> parents = Util.findParents(currentProductGroup);
-
+    final Long nameGId = CatalogCache.get().getProductGroupName().getId();
+    
     parents.add(currentProductGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
@@ -231,10 +232,10 @@ public class ProductPresenter implements Presenter<ProductView> {
         final ItemValuesPresenter presenter = new ItemValuesPresenter();
         final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
         final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
-        final String name = pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
+        final String name = nameGId.equals(pid) ? "" : (pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue());
 
         valuesPresenters.add(presenter);
-        view.add(name, presenter.getView().asWidget());
+        view.addPropertyValues(name, presenter.getView());
         //Util.getPropertyValueByName(parent.getPropertyValues(), Util.NAME, currentLanguage).getStringValue()
         presenter.show(currentLanguage, pv);
       }

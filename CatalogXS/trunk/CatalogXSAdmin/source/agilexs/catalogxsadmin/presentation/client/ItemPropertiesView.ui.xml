@@ -4,10 +4,12 @@
     >
   <ui:style>
     .right { text-align:right; }
+    .addNewButton { margin-top:10px; }
   </ui:style>
   <g:FlowPanel>
+    <g:Label ui:field="emptyTable" visible="false" />
     <g:Grid ui:field="grid"/>
-    <g:Button ui:field="addNew" />
+    <g:Button styleName="{style.addNewButton}" ui:field="addNew" />
     <g:HTML><br/></g:HTML>
   </g:FlowPanel>
 </ui:UiBinder>

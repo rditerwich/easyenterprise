@@ -38,6 +38,8 @@ public class ProductView extends Composite implements View {
   private final Anchor back = new Anchor();
   private final HTML pname = new HTML();
   private final FlowPanel propertiesDeck = new FlowPanel();
+  private final FlowPanel propertyValuesPanel = new FlowPanel();
+  
 //  private final FlowPanel labels = new FlowPanel();
   private final Table productTable = new Table();
 
@@ -90,19 +92,32 @@ public class ProductView extends Composite implements View {
   public void clear() {
 //    labels.clear();
     propertiesDeck.clear();
+    propertyValuesPanel.clear();
+    propertyValuesPanel.removeFromParent();
+  }
+
+  public void addPropertyValues(String name, Widget widget) {
+    if (!propertyValuesPanel.isAttached()) {
+      propertiesDeck.add(propertyValuesPanel);
+    }
+    add(propertyValuesPanel, name, widget);
   }
 
   public void add(String name, Widget widget) {
     final FlowPanel fp = new FlowPanel();
+
+    add(fp, name, widget);
+    propertiesDeck.add(fp);
+  }
+
+  private void add(FlowPanel parent, String name, Widget widget) {
     final HTML lbl = new HTML(i18n.h3(name)); 
 
-    fp.getElement().getStyle().setPadding(8, Unit.PX);
-    fp.getElement().getStyle().setMarginBottom(8, Unit.PX);
-    fp.setStyleName("properties");
-    fp.add(lbl);
-    fp.add(widget);
-
-    propertiesDeck.add(fp);
+    parent.getElement().getStyle().setPadding(8, Unit.PX);
+    parent.getElement().getStyle().setMarginBottom(8, Unit.PX);
+    parent.setStyleName("properties");
+    parent.add(lbl);
+    parent.add(widget);
 /*    final int i = propertiesDeck.getWidgetCount() - 1;
 
     labels.add(lbl);

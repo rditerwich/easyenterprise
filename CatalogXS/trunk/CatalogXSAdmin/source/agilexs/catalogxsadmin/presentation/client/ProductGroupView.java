@@ -26,9 +26,7 @@ public class ProductGroupView extends Composite implements View {
   private final Button saveButton = new Button(i18n.saveChanges()); 
   private final CheckBox containsProducts = new CheckBox();
   private final FlowPanel deck = new FlowPanel();
-//  private final FlowPanel labels = new FlowPanel();
-
-//  private Label lastSelected;
+  private final FlowPanel propertyValuesPanel = new FlowPanel();
 
   public ProductGroupView() {
     initWidget(detailPanel);
@@ -50,11 +48,7 @@ public class ProductGroupView extends Composite implements View {
     final ScrollPanel sp = new ScrollPanel(properties);
 
     detailPanel.add(sp);
-//    properties.add(labels);
-//    labels.addStyleName("propertiesGroupName");
     properties.add(deck);
-//    deck.getElement().getStyle().setPadding(10, Unit.PX);
-//    deck.setStyleName("properties");
     sp.getElement().getStyle().setPadding(8, Unit.PX);
   }
 
@@ -74,38 +68,33 @@ public class ProductGroupView extends Composite implements View {
   public void clear() {
 //    labels.clear();
     deck.clear();
+    propertyValuesPanel.clear();
+    propertyValuesPanel.removeFromParent();
+  }
+
+  public void addPropertyValues(String name, Widget widget) {
+    if (!propertyValuesPanel.isAttached()) {
+      deck.add(propertyValuesPanel);
+    }
+    add(propertyValuesPanel, name, widget);
   }
 
   public void add(String name, Widget widget) {
     final FlowPanel fp = new FlowPanel();
+
+    add(fp, name, widget);
+    deck.add(fp);
+  }
+
+  private void add(FlowPanel parent, String name, Widget widget) {
     final HTML lbl = new HTML(i18n.h3(name)); 
 
-    fp.getElement().getStyle().setPadding(8, Unit.PX);
-    fp.getElement().getStyle().setMarginBottom(8, Unit.PX);
-    fp.setStyleName("properties");
-    fp.add(lbl);
-    fp.add(widget);
-    deck.add(fp);
-//    final int i = deck.getWidgetCount() - 1;
-
-//    labels.add(lbl);
-/*    lbl.addStyleName("propertyGroupName");
-    lbl.addClickHandler(new ClickHandler(){
-
-      @Override public void onClick(ClickEvent event) {
-        lastSelected.removeStyleName("propertyGroupNameSelected");
-
-        lbl.addStyleName("propertyGroupNameSelected");
-        lastSelected = lbl;
-        deck.showWidget(i);
-      }});
-    if (i == 0) {
-      lastSelected = lbl;
-      lbl.addStyleName("propertyGroupNameSelected");
-      deck.showWidget(i);
-    }
-*/  }
-//
+    parent.getElement().getStyle().setPadding(8, Unit.PX);
+    parent.getElement().getStyle().setMarginBottom(8, Unit.PX);
+    parent.setStyleName("properties");
+    parent.add(lbl);
+    parent.add(widget);
+  }
 
   /**
    * Diplays button for status when saving in progress. 

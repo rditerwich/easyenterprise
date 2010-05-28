@@ -111,6 +111,8 @@ public interface I18NCatalogXS extends Messages {
 
   String properties();
 
+  String propertyValues();
+
   String orderDate();
 
   String orderVolume();
@@ -132,4 +134,6 @@ public interface I18NCatalogXS extends Messages {
   String backToOrdersOverview();
   
   String saving();
+  
+  String noProperties(String groupName);
 }

@@ -2,6 +2,7 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.ItemPropertiesView.PGPRowView;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
@@ -164,7 +165,10 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
     this.language = language;
     Tuple.setLanguage(language);
     final List<PropertyValue[]> values = Util.getProductGroupPropertyValues(langs, (ProductGroup)productGroup, productGroup);
+    final Entry<Long, String> name =
+      CatalogCache.get().getProductGroupName(productGroup.getId(), language);
 
+    view.setName(name==null ? "" : name.getValue());
     view.resetTable();
     final int bindingSize = bindings.size();
     int i = 0;
@@ -188,6 +192,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
       }
       i++;
     }
+    view.setTableVisible(i > 0);
     activeBindingSize = i;
   }
 

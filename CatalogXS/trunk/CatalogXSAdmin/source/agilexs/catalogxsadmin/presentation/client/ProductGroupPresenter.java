@@ -198,6 +198,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         view.add(i18n.relatedTo(), relatedToP.getView());
         view.add(i18n.properties(), pgpp.getView());
         final List<Long> parents = Util.findParents(currentProductGroup);
+        final Long nameGId = CatalogCache.get().getProductGroupName().getId();
 
         for (Long pid : parents) {
           final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
@@ -209,9 +210,9 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
             valuesPresenters.add(presenter);
             final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
             final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
-            final String name = pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue();
+            final String name = nameGId.equals(pid) ? "" : (pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue());
 
-            view.add(name, presenter.getView());
+            view.addPropertyValues(name, presenter.getView());
             presenter.show(currentLanguage, pv);
           }
         }

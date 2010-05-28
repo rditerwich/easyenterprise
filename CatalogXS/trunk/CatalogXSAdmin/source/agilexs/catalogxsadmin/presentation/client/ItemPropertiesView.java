@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -86,6 +87,7 @@ class ItemPropertiesView extends Composite implements View {
 
   @UiField Button addNew;
   @UiField Grid grid;
+  @UiField Label emptyTable;
 
   private ArrayList<PGPRowView> rowViews = new ArrayList<PGPRowView>();
 
@@ -141,6 +143,15 @@ class ItemPropertiesView extends Composite implements View {
 
   public void setDeleteHandler(DeleteHandler<Integer> deleteHandler) {
     this.deleteHandler = deleteHandler;
+  }
+
+  public void setName(String name) {
+    emptyTable.setText(i18n.noProperties(name));
+  }
+
+  public void setTableVisible(boolean visible) {
+    grid.setVisible(visible);
+    emptyTable.setVisible(!visible);
   }
 
   /**
