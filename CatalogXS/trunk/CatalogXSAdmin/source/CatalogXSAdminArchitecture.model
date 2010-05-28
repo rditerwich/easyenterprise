@@ -352,6 +352,12 @@ JavaEEArchitectureJpaEjbGwt {
                             forceComposite = true
                             referringAttributes = catalog:EnumValue/attributes:labels
                         }
+//                        ClassAttributeView {
+//                            name = PropertyValuePropertyView
+//                            kind = all
+//                            //forceComposite = true
+//                            referringAttributes = catalog:Property/attributes:propertyValues
+//                        }
                         ClassAttributeView {
                             name = PropertyValuesView
                             kind = all

@@ -111,7 +111,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   private void save() {
     view.setSaving(true);
-    //
     if (orgProductGroup != null) {
       orgProductGroup.getChildren().clear();
       orgProductGroup.setProperties(Util.filterEmpty(orgProductGroup.getProperties()));
@@ -147,6 +146,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
           @Override
           public void onSuccess(ProductGroup result) {
+            view.setSaving(false);
             if (result != null) {
               final PropertyValue name = Util.getPropertyValueByName(result.getPropertyValues(), Util.NAME, currentLanguage);
               
@@ -168,7 +168,6 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   public void show(ProductGroup productGroup) {
-    view.setSaving(false);
     final List<Language> langs = CatalogCache.get().getActiveCatalog().getLanguages();
 
     if (currentProductGroup != productGroup) {

@@ -120,6 +120,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         view.setSaving(false);
       }
       @Override public void onSuccess(Product result) {
+        view.setSaving(false);
         StatusMessage.get().show(i18n.productSaved());
         if (result != null) {
           CatalogCache.get().put(result);
