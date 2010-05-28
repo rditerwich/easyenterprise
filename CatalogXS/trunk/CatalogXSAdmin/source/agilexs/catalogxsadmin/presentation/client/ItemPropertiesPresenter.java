@@ -89,6 +89,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         pv.setProperty(p);
         tuple.setValue(pv, pv.getLanguage());
         rowView.setValueWidget(PropertyType.String);
+        view.setTableVisible(true); //needed in case this is first property
       }
     });
     view.setDeleteHandler(new DeleteHandler<Integer>(){
