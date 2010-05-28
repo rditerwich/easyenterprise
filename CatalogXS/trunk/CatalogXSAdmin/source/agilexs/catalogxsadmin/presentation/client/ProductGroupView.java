@@ -27,6 +27,7 @@ public class ProductGroupView extends Composite implements View {
   private final CheckBox containsProducts = new CheckBox();
   private final FlowPanel deck = new FlowPanel();
   private final FlowPanel propertyValuesPanel = new FlowPanel();
+  private final HTML pvHeader = new HTML(i18n.h3(i18n.propertyValues()));
 
   public ProductGroupView() {
     initWidget(detailPanel);
@@ -75,6 +76,7 @@ public class ProductGroupView extends Composite implements View {
   public void addPropertyValues(String name, Widget widget) {
     if (!propertyValuesPanel.isAttached()) {
       deck.add(propertyValuesPanel);
+      propertyValuesPanel.add(pvHeader);
     }
     add(propertyValuesPanel, name, widget);
   }

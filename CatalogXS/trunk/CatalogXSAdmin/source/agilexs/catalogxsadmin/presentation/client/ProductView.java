@@ -39,6 +39,7 @@ public class ProductView extends Composite implements View {
   private final HTML pname = new HTML();
   private final FlowPanel propertiesDeck = new FlowPanel();
   private final FlowPanel propertyValuesPanel = new FlowPanel();
+  private final HTML pvHeader = new HTML(i18n.h3(i18n.propertyValues()));
   
 //  private final FlowPanel labels = new FlowPanel();
   private final Table productTable = new Table();
@@ -99,6 +100,7 @@ public class ProductView extends Composite implements View {
   public void addPropertyValues(String name, Widget widget) {
     if (!propertyValuesPanel.isAttached()) {
       propertiesDeck.add(propertyValuesPanel);
+      propertyValuesPanel.add(pvHeader);
     }
     add(propertyValuesPanel, name, widget);
   }
