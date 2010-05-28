@@ -145,16 +145,16 @@ public class CatalogPresenter implements Presenter<CatalogView> {
       @Override public void onSuccess(Shop result) {
         activeShop = result;
         view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
-        CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>(){
-        @Override public void onFailure(Throwable caught) {
-        }
-
-        @Override public void onSuccess(String result) {
-          loadChildren(activeShop, null); //initial tree
-          for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
-            CatalogCache.get().put(pg);
+        CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>() {
+          @Override public void onFailure(Throwable caught) {
           }
-        }
+
+          @Override public void onSuccess(String result) {
+            loadChildren(activeShop, null); //initial tree
+            for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
+              CatalogCache.get().put(pg);
+            }
+          }
       });
     }});
   }
@@ -164,6 +164,10 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     return view;
   }
 
+  public void show() {
+    view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
+  }
+  
   private void loadChildren(Shop shop, final TreeItem parent) {
     final ProductGroup parentPG = CatalogCache.get().getProductGroup(treemap.get(parent));
 

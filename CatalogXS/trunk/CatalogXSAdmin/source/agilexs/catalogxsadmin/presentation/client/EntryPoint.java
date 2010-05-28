@@ -45,6 +45,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
       public void onSelection(SelectionEvent<Integer> event) {
         switch (event.getSelectedItem().intValue()) {
         case 0:
+          cp.show();
           break;
         case 1:
           np.show();

@@ -104,6 +104,7 @@ public class CatalogView extends Composite implements View {
    * @param selected
    */
   public void setLanguages(List<Language> languages, String selected) {
+    languageList.clear();
     for (Language lang : languages) {
       languageList.addItem(lang.getDisplayName(), lang.getName());
       if (lang.getName().equals(selected)) {
