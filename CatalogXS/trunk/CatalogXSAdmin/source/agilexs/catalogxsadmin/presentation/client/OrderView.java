@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,13 +40,23 @@ public class OrderView extends Composite implements View {
   private final ListBox orderStatus = new ListBox();
   private final FlowPanel orderDetail = new FlowPanel();
   private final Grid customerDetails = new Grid(3, 2);
-
+  private final ListBox  statusFilter = new ListBox();
+  
   public OrderView() {
     initWidget(panel);
     panel.getElement().getStyle().setPadding(10, Unit.PX);
+    final FlowPanel ordersFP = new FlowPanel();
+    ordersFP.add(new InlineLabel(i18n.filter()));
+    ordersFP.add(statusFilter);
+    statusFilter.addItem("<no filter>", "");
+    for (OrderStatus os : OrderStatus.values()) {
+      statusFilter.addItem(os.toString());      
+    }
     final ScrollPanel ordersSP = new ScrollPanel();
 
-    panel.add(ordersSP);
+    ordersSP.getElement().getStyle().setMarginTop(15, Unit.PX);
+    ordersFP.add(ordersSP);
+    panel.add(ordersFP);
     ordersSP.add(orderGrid);
     final ScrollPanel productOrdersSP = new ScrollPanel();
 
@@ -69,11 +80,29 @@ public class OrderView extends Composite implements View {
     return orderStatus;
   }
 
+  public HasChangeHandlers getStatusFilterHandler() {
+    return statusFilter;
+  }
+
   public OrderStatus getSelectedOrderStatus() {
     final int i = orderStatus.getSelectedIndex();
 
     if (i > 0) {
       final String s = orderStatus.getValue(i);
+      for (OrderStatus os : OrderStatus.values()) {
+        if (os.toString().equals(s)) {
+          return os;
+        }
+      }
+    }
+    return null;
+  }
+
+  public OrderStatus getSelectedOrderStatusFilter() {
+    final int i = statusFilter.getSelectedIndex();
+
+    if (i > 0) {
+      final String s = statusFilter.getValue(i);
       for (OrderStatus os : OrderStatus.values()) {
         if (os.toString().equals(s)) {
           return os;
@@ -94,6 +123,7 @@ public class OrderView extends Composite implements View {
 
   public void clear() {
     orderGrid.clear();
+    orderGrid.setVisible(false);
   }
 
   public void clearProductOrders() {
@@ -156,6 +186,7 @@ public class OrderView extends Composite implements View {
 
   public void setHeaderOrders() {
     //orderGrid.setHeaderHTML(0, 0, "&nbsp;");
+    orderGrid.setVisible(true);
     orderGrid.setHeaderHTML(0, 1, i18n.orderDate());
     orderGrid.setHeaderHTML(0, 2, i18n.orderCustomer());
     orderGrid.setHeaderHTML(0, 3, i18n.orderVolume());

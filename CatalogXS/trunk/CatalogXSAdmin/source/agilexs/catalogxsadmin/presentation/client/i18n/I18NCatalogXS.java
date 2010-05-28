@@ -136,4 +136,6 @@ public interface I18NCatalogXS extends Messages {
   String saving();
   
   String noProperties(String groupName);
+
+  String filter();
 }

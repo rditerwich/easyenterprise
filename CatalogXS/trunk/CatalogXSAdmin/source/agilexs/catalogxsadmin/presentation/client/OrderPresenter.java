@@ -26,7 +26,7 @@ public class OrderPresenter implements Presenter<OrderView> {
   private OrderView view = new OrderView();
   private Integer fromIndex = 0;
   private Integer pageSize = 1000;
-  private Order filter;
+  private Order filter = null;
   private String currentLanguage = null;
   private List<Order> orders;
   private Order currentOrder;
@@ -55,6 +55,19 @@ public class OrderPresenter implements Presenter<OrderView> {
             }});
         }
       }});
+    view.getStatusFilterHandler().addChangeHandler(new ChangeHandler(){
+      @Override public void onChange(ChangeEvent event) {
+        final OrderStatus os = view.getSelectedOrderStatusFilter();
+        
+        if (os == null) {
+          filter = null;
+        } else {
+          filter = new Order();
+          filter.setStatus(os);
+        }
+        show();
+      }
+    });
     view.backClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
         view.showPage(SHOW.ORDERS);
@@ -69,6 +82,7 @@ public class OrderPresenter implements Presenter<OrderView> {
   public void show() {
     view.clear();
     view.clearProductOrders();
+    view.showPage(SHOW.ORDERS);
     ShopServiceAsync.findActualOrders(fromIndex, pageSize, filter, new AsyncCallback<List<Order>>(){
 
       @Override public void onFailure(Throwable caught) {
@@ -77,11 +91,13 @@ public class OrderPresenter implements Presenter<OrderView> {
 
       @Override public void onSuccess(List<Order> result) {
         orders = result;
-        int row = 0;
-        view.setHeaderOrders();
-        for (Order order : result) {
-          showProductOrder(row, order);
-          row++;
+        if (!orders.isEmpty()) {
+          int row = 0;
+          view.setHeaderOrders();
+          for (Order order : result) {
+            showProductOrder(row, order);
+            row++;
+          }
         }
       }});
   }
@@ -132,6 +148,5 @@ public class OrderPresenter implements Presenter<OrderView> {
     view.setVolume(row, volume);
     view.setPrice(row, Util.formatMoney(price));
     view.setOrderStatus(row, order.getStatus());
-    view.showPage(SHOW.ORDERS);
   }
 }
