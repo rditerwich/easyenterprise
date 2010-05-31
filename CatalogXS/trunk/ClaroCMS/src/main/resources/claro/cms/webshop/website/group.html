@@ -1,0 +1,39 @@
+<template:include template="templates/page">
+  <webshop:current-product-group>
+		  <head><title>Group <group:group-value property="Name"/></title></head>
+		  <h1><group:group-value property="Name"/></h1>
+		  <div class="page_image"><group:group-value property="Image"/></div>
+		  <p><group:group-value property="Description"/></p>
+
+		  <group:sub-groups prefix="sub" group-size="1">
+		  <table class="sub_item">
+		  <tr>
+        <td class="left"><sub:link class="subgroup"><sub:group-value property="Name"/></sub:link></td>
+        <td class="right"><util:break size="80"><sub:group-value property="Description"/><break:more>...</break:more></util:break></td>
+		  </tr>
+		  </table>
+		  </group:sub-groups>
+
+      <group:promotions prefix="promotion">
+        <template:include template="promotion"/>
+      </group:promotions>
+       <div style="clear:both" />
+      
+	    <group:products include-sub-groups="true">
+		  <table class="product_table">
+ 		    <thead>
+		      <th class="id_col"><lift:loc>Product</lift:loc></th>
+		      <th class="desc_col"><lift:loc></lift:loc></th>
+		      <th class="price_col"><lift:loc>Price</lift:loc></th>
+		    </thead>
+		    <list:repeat>
+		      <tr>
+            <td class="id_col"><product:link><product:value property="ArticleNumber" /></product:link></td>
+		        <td class="desc_col"><product:value property="Description"/></td>
+		        <td class="price_col"><product:value property="Price" /></td>
+		      </tr>
+		    </list:repeat>
+		  </table>
+	    </group:products>
+  </webshop:current-product-group>
+</template:include>

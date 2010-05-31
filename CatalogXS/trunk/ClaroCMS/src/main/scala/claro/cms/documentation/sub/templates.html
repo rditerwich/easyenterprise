@@ -1,0 +1,39 @@
+<template:include template="templates/page">
+<h1>SUBTemplates</h1>
+A site consists of top-level templates and templates that are included from other templates. 
+There are three commands that deal with template inclusion:
+<table>
+  <tr><th>element</th><th>description</th></tr>
+  <tr><td><code>&lt;template:include template="<i>name</i>"&gt;</code></td><td>Includes another template</td></tr> 
+  <tr><td><code>&lt;template:define template="<i>name</i>"&gt;</code></td><td>Defines a template that can be included by nested templates</td></tr> 
+  <tr><td><code>&lt;template:content"&gt;</code></td><td>Renders the default content of the enclosing <code>template:include</code></td></tr> 
+</table>
+
+<h2>Default template content</h2>
+When an included template is not found, the body the <code>template:include</code> element is rendered. 
+This way, one can easily define extension-points in some html:
+<pre>&lt;head&gt;
+  &lt;template:include template="custom-scripts"&gt;
+    &lt;script src="/json.js" type="text/javascript" /&gt;
+  &lt;/template:include&gt;
+&lt;/head&gt;</pre><pre></pre>
+
+Output:
+<pre>&lt;head&gt;
+  &lt;script src="/json.js" type="text/javascript" /&gt;
+&lt;/head&gt;</pre><pre></pre>
+
+<h2>Include default content explicitly</h2>
+
+When writing the template <code>custom-scripts.html</code>, one can explicitly include the default content using <code>template:content</code>:
+
+<pre><code>&lt;script src="/myscript.js" type="text/javascript" /&gt;
+&lt;template:content /&gt;</code></pre>
+
+Output:
+<pre>&lt;head&gt;
+  &lt;script src="/myscript.js" type="text/javascript" /&gt;
+  &lt;script src="/json.js" type="text/javascript" /&gt;
+&lt;/head&gt;</pre><pre></pre>
+
+</template:include>
