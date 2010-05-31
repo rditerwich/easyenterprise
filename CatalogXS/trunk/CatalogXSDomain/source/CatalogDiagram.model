@@ -9,7 +9,7 @@ import Metaphor.Eclipse.DomainDiagrams.Reference
 import Metaphor.Eclipse.DomainDiagrams.SuperClassReference
 
 DomainDiagram {
-    name = AgileXS
+    name = CatalogDiagram
     package = /packages:AgileXS/packages:Domain/packages:Catalog
     classes = {
         DiagramClass {
@@ -297,12 +297,12 @@ DomainDiagram {
     }
     superClassReferences = {
         SuperClassReference {
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Product
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
+            source = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Product
+            target = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
         SuperClassReference {
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:ProductGroup
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
+            source = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:ProductGroup
+            target = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
     }
 }

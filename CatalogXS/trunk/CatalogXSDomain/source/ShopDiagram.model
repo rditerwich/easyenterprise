@@ -9,7 +9,7 @@ import Metaphor.Eclipse.DomainDiagrams.Reference
 import Metaphor.Eclipse.DomainDiagrams.SuperClassReference
 
 DomainDiagram {
-    name = AgileXS
+    name = ShopDiagram
     package = /packages:AgileXS/packages:Domain/packages:Shop
     classes = {
         DiagramClass {
@@ -101,11 +101,27 @@ DomainDiagram {
             domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Transport
         }
         DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 542
+                    y = 408
+                    width = -1
+                    height = -1
+                }
+            }
             domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:OrderHistory
         }
     }
     enumerations = {
         DiagramEnum {
+            bounds = {
+                Rectangle {
+                    x = 697
+                    y = 201
+                    width = -1
+                    height = -1
+                }
+            }
             domainEnum = /packages:AgileXS/packages:Domain/packages:Shop/types:OrderStatus
         }
     }
@@ -140,8 +156,8 @@ DomainDiagram {
     }
     superClassReferences = {
         SuperClassReference {
-            source = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:VolumeDiscountPromotion
-            target = /domainDiagrams:AgileXS/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:Promotion
+            source = /domainDiagrams:ShopDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:VolumeDiscountPromotion
+            target = /domainDiagrams:ShopDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:Promotion
         }
     }
 }
