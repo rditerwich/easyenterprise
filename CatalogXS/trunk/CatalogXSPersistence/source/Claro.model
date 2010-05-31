@@ -1,0 +1,19 @@
+root /packages
+
+import Metaphor.Core.ModelPackage
+import Metaphor.PSM.Jpa.JpaPackage
+
+ModelPackage {
+    name = Claro
+    packages = {
+        ModelPackage {
+            name = ClaroPersistence
+            packages = {
+                JpaPackage {
+                    name = "Jpa"
+                    javaPackageName = "claro.jpa"
+                }        
+            }
+        }        
+    }
+}
