@@ -17,7 +17,15 @@ class Boot extends Bootable {
     } else {
       LiftRules.statelessDispatchTable.append(Dispatch)
       LiftRules.viewDispatch.append(ViewDispatch)
-
+//      LiftRules.rewrite.append {
+//		case RewriteRequest(
+//		ParsePath(List("account",acctName),_,_,_),_,_) =>
+//		RewriteResponse("viewAcct" :: Nil, Map("name" -> acctName))
+//		case RewriteRequest(
+//		ParsePath(List("account",acctName, tag),_,_,_),_,_) =>
+//		RewriteResponse("viewAcct" :: Nil, Map("name" -> acctName,
+//		"tag" -> tag)))
+//		}
       Cms.website = new Website(websiteUri)
       Cms.logger.info(Cms.website.printInfo(""))
     }

@@ -31,7 +31,7 @@ object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePassw
   def encrypt(password : String) : String = {
     val md = MessageDigest.getInstance("SHA-1")
     val salt = "SALT&PEPPER"
-    val charset = Charset.forName("UTF-8")
+    val charset = "UTF-8"
     md.update(salt.getBytes(charset))
     md.update(password.getBytes(charset))
     val bytes = md.digest.map(_.asInstanceOf[Int] & 0xff)

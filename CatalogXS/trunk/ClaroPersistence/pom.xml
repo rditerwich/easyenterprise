@@ -14,7 +14,33 @@
 
 	<dependencies>
 	</dependencies>
+	
+	<repositories>
+	  <repository>
+	    <id>scala-tools.org</id>
+	    <name>Scala-Tools Maven2 Repository</name>
+	    <url>http://scala-tools.org/repo-releases</url>
+	  </repository>
+	  <repository>
+	    <id>scala-tools.org-SNAPSHOT</id>
+	    <name>Scala-Tools Maven2 Repository</name>
+	    <url>http://scala-tools.org/repo-snapshots</url>
+	  </repository>
+	</repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+	  <pluginRepository>
+	    <id>scala-tools.org-SNAPSHOT</id>
+	    <name>Scala-Tools Maven2 Repository</name>
+	    <url>http://scala-tools.org/repo-snapshots</url>
+	  </pluginRepository>
+  </pluginRepositories>
+  
 	<build>
 		<sourceDirectory>generated</sourceDirectory>
 		<testSourceDirectory>src/test/scala</testSourceDirectory>
