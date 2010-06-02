@@ -6,6 +6,7 @@ import xml.Node
 import java.util.Locale
 import javax.persistence.{EntityManager,EntityManagerFactory}
 import javax.servlet.http.HttpServletRequest
+import claro.common.util.Locales
 import claro.common.util.Conversions._
 
 object Cms {

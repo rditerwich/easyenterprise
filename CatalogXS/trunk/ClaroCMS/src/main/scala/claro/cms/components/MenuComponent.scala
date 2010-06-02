@@ -1,5 +1,6 @@
 package claro.cms.components
 
+import net.liftweb.http.S
 import claro.cms.Request
 import claro.cms.Component
 
@@ -22,7 +23,7 @@ case class MenuItem(link : String) {
   
   def getClass(s : String) : String = {
     val elts = s.split(';')
-    if (Request.path.startsWith(link)) 
+    if (S.uri.startsWith(link)) 
       if (elts.size > 0) elts(0)
       else ""
     else 
