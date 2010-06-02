@@ -5,7 +5,7 @@ import javax.persistence.{EntityManager,EntityManagerFactory}
 
 class Dao(dataSource : String) {
 
-  val factory : EntityManagerFactory = Cms.website.entityManagerFactory(dataSource)
+  val factory : EntityManagerFactory = Website.instance.entityManagerFactory(dataSource)
   def createEntityManager = factory.createEntityManager
   private object currentEntityManager extends RequestVar[Option[EntityManager]](None)
     

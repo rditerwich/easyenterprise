@@ -6,7 +6,7 @@ import net.liftweb.http.{S,SHtml,RequestVar}
 import net.liftweb.util.Mailer.{To,Subject,PlainMailBodyType}
 import claro.common.util.Conversions._
 import claro.jpa
-import claro.cms.{Form,Cms,Mail}
+import claro.cms.{Form,Mail,Website}
 
 object RegistrationForm extends RequestVar[RegistrationForm](new RegistrationForm(
     new jpa.party.User useIn 
@@ -36,11 +36,11 @@ class RegistrationForm(val user : jpa.party.User) extends Form {
 
       // send confirmation email
       val msg = "Dear " + user.getParty.getName + ",\n\n" +
-        "Thank you for registering with " + Cms.website.name + ".\n\n" + 
+        "Thank you for registering with " + Website.instance.name + ".\n\n" + 
         "Please select the following link to set your password and activate your account:\n\n" +
         ChangePasswordForm.createLink(changePasswordHref, user.getEmail)
 
-      Mail.mail(Subject("Confirm " + Cms.website.name + " registration"),
+      Mail.mail(Subject("Confirm " + Website.instance.name + " registration"),
         To(user.getEmail),
         PlainMailBodyType(msg))
 

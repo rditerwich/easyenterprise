@@ -59,19 +59,19 @@ class ResourceContentCache {
 
 class ResourceCache(store : ResourceStore) {
 
-  private val resourceCache = new ConcurrentHashMap[(ResourceLocator,Locale),Option[Resource]]()
+  private val resourceCache = new ConcurrentHashMap[(ResourceLocator,String),Option[Resource]]()
 
-  def apply(locator : ResourceLocator, locale : Locale) : Option[Resource] =
+  def apply(locator : ResourceLocator, locale : String) : Option[Resource] =
     if (Cms.caching) {
       resourceCache.get((locator,locale)) match {
         case null => 
-          val resource = store.find(locator, Locales.getAlternatives(locale))
+          val resource = store.find(locator, Locales.getAlternatives(new Locale(locale)))
           resourceCache.put((locator,locale), resource)
           resource
         case resource => resource
       }
     }
-    else store.find(locator, Locales.getAlternatives(locale)) 
+    else store.find(locator, Locales.getAlternatives(new Locale(locale))) 
 }
 
 trait ResourceStore {

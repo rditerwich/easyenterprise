@@ -12,12 +12,12 @@ import scala.collection.JavaConversions._
 import claro.jpa
 import claro.common.util.{Delegate,Lazy,KeywordMap,Locales,ProjectionMap}
 import claro.common.util.Conversions._
-import claro.cms.Cms
+import claro.cms.Website
 
 object WebshopModel {
 
   var shopCache = Lazy(new WebshopCache) 
-  object shop extends RequestVar[Shop](shopCache.get.shopsById(rich(Cms.website.config.properties)("shop.id", "1"))) 
+  object shop extends RequestVar[Shop](shopCache.get.shopsById(rich(Website.instance.config.properties)("shop.id", "1"))) 
 
   object currentProductVar extends RequestVar[Option[String]](None)
   object currentProductGroupVar extends RequestVar[Option[String]](None)

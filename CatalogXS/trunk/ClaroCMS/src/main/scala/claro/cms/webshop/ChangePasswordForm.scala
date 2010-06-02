@@ -24,8 +24,8 @@ object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePassw
     confirmation.setExpirationTime(now + 24 * Hours)
     WebshopDao.transaction(_.merge(confirmation))
     
-    val req = Request.httpRequest
-    req.getScheme + "://" + req.getServerName + ":" + req.getServerPort + Request.context.openOr("/") + href + "?email=" + email + "&key=" + key
+    val req = S.request.open_!.request
+    req.scheme + "://" + req.serverName + ":" + req.serverPort + req.contextPath + href + "?email=" + email + "&key=" + key
   }
   
   def encrypt(password : String) : String = {
@@ -43,8 +43,8 @@ object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePassw
 }
 
 class ChangePasswordForm extends Form {
-  val email = Request.httpRequest.getParameter("email")
-  val confirmationKey = Request.httpRequest.getParameter("key")
+  val email = S.request.open_!.param("email").getOrElse("")
+  val confirmationKey = S.request.open_!.param("key").getOrElse("")
   var password = ""
   var repeatPassword = ""
 

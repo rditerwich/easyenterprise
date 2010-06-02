@@ -1,41 +1,51 @@
 package claro.cms
 
-
-import xml.{Elem,NodeSeq}
-import java.util.Properties
+import java.util.{Locale,Properties}
 import java.io.{File,FileReader}
 import java.net.URI
 import javax.persistence.Persistence
+import xml.{Elem,NodeSeq}
+import net.liftweb.util.Log
 import claro.common.util.SubDirs
 import claro.common.util.Conversions._
-import net.liftweb.util.Log
 
 object Website {
-  val defaultWebsite = new Website(new File(System.getProperty("user.home") + "/websites/default/website.config").toURI)
-  val unsortedWebsites : List[Website] = findWebsites(System.getProperty("websites") getOrElse (""))
-  val websites : Seq[Website] = unsortedWebsites.sort((s1,s2) => s1.config.path.length > s2.config.path.length)
-  val websitesByServer : scala.collection.Map[String,Seq[Website]] = websites.groupBy (_.server) 
+//  val defaultWebsite = new Website(new File(System.getProperty("user.home") + "/websites/default/website.config").toURI)
+//  val unsortedWebsites : List[Website] = findWebsites(System.getProperty("websites") getOrElse (""))
+//  val websites : Seq[Website] = unsortedWebsites.sort((s1,s2) => s1.config.path.length > s2.config.path.length)
+//  val websitesByServer : scala.collection.Map[String,Seq[Website]] = websites.groupBy (_.server) 
   
-  def findWebsites(path : String) : List[Website] = {
-    val uris : List[URI] = path split(",") filter(!_.trim.isEmpty) map(new URI(_).canonical) toList 
-    val websiteFiles : List[URI] = uris flatMap (_.find(4, _.name == "website.config"))
-    val websiteFiles2 : List[URI] = uris map (_.child("website.config")) filter(!websiteFiles.contains(_)) filter(_.exists)
-    (websiteFiles ++ websiteFiles2) map (uri => new Website(uri)) match { 
-      case Nil => defaultWebsite :: Nil
-      case list => list
+  var instance : Website = null
+  
+  
+//  def findWebsites(path : String) : List[Website] = {
+//    val uris : List[URI] = path split(",") filter(!_.trim.isEmpty) map(new URI(_).canonical) toList 
+//    val websiteFiles : List[URI] = uris flatMap (_.find(4, _.name == "website.config"))
+//    val websiteFiles2 : List[URI] = uris map (_.child("website.config")) filter(!websiteFiles.contains(_)) filter(_.exists)
+//    (websiteFiles ++ websiteFiles2) map (uri => new Website(uri)) match { 
+//      case Nil => defaultWebsite :: Nil
+//      case list => list
+//    }
+//  }
+  
+  def register(websiteUri : String) = {
+    val uri = new URI(websiteUri).canonical.child("website.config")
+    if (!uri.exists) {
+      throw new Exception("Website configuration file not found:'" + uri)
     }
+    instance = new Website(uri)
   }
-
-  def findWebsite(server : String, contextPath : List[String]) : Option[Website] = {
-    val websites = websitesByServer get(server) match {
-      case Some(websites) => websites
-      case None => websitesByServer get("") match {
-        case Some(websites) => websites
-        case None => Seq()
-      }
-    }
-    websites find (website => contextPath.startsWith (website.contextPath))
-  }
+  
+//  def find(server : String, contextPath : List[String]) : Option[Website] = {
+//    val websites = websitesByServer get(server) match {
+//      case Some(websites) => websites
+//      case None => websitesByServer get("") match {
+//        case Some(websites) => websites
+//        case None => Seq()
+//      }
+//    }
+//    websites find (website => contextPath.startsWith (website.contextPath))
+//  }
 }
 
 class Website(websiteFile : URI) {
@@ -115,6 +125,8 @@ class WebsiteConfig(val uri : URI) {
   val components : List[String] = properties.list("website.components")
   val location = configFile.parent
   val locations = if (!explicitLocations.isEmpty) explicitLocations else List(location)
+  val locales = properties.list("website.locales").toSet
+  val defaultLocale = properties("website.defaultLocale", "")
   def id : String = name getOrElse location.toString
   def extent : List[WebsiteConfig] = this :: parents.flatMap(_.extent)
   

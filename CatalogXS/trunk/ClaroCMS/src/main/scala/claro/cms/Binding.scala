@@ -324,13 +324,13 @@ trait BindingHelpers {
   implicit def toBinding(ctor : OptionBindingCtor) = ctor.toLabeledBinding
   implicit def toBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
   
-  def website : Website = Cms.website
+  def locale = Cms.locale
  
-  def locale = Request.locale
- 
-  def current : Elem = Cms.website.rootBinding.currentElement
+  def website = Website.instance 
   
-  def currentContext : BindingContext = Cms.website.rootBinding.currentContext
+  def current : Elem = website.rootBinding.currentElement
+  
+  def currentContext : BindingContext = website.rootBinding.currentContext
 
   def currentAttributes(excl : String*) = 
     current.attributes filter(a => !excl.contains(a.key))
@@ -353,7 +353,7 @@ trait BindingHelpers {
  
   def bindingsFor(obj : Any) = obj match {
     case null => Bindings(obj, Map[String,Binding]())
-    case obj => Bindings(obj, Cms.website.rootBinding.cache(obj))
+    case obj => Bindings(obj, Website.instance.rootBinding.cache(obj))
   }
   
   def findBoundObject(prefix : String) = currentContext.bindings.get(prefix) match {

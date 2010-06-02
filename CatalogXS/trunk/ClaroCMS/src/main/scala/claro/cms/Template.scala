@@ -81,7 +81,7 @@ class TemplateComponent extends Component {
       val (templateNodes,contentNodes) = node.child.partition(node => node.prefix == prefix && node.label == "define")
       val templateMap : Map[String,NodeSeq] = Map(templateNodes.toSeq map(n => (attr(n, "template"), NodeSeq.fromSeq(n.child))):_*)
       val content : NodeSeq = contentNodes.toSeq
-      val template : NodeSeq = currentTemplates.get(name) getOrElse (website.templateCache(name, locale) match {
+      val template : NodeSeq = currentTemplates.get(name) getOrElse (website.templateCache(name, new Locale(locale)) match {
         case Some(template) => template.xml
         case None => content
       })

@@ -11,7 +11,7 @@ object Mail {
   def mail(subject : Subject, rest : MailTypes*) = {
     
     // confg mailer
-    lazy val mailProperties = Cms.website.config.properties.findAll("mail.")
+    lazy val mailProperties = Website.instance.config.properties.findAll("mail.")
     System.setProperty("mail.smtp.auth", "true")
     System.setProperty("mail.smtp.starttls.enable", "true")
     for ((p, value) <- mailProperties) System.setProperty(p, value)

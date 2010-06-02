@@ -5,7 +5,7 @@ import net.liftweb.http.js.JsCmds
 import net.liftweb.util.Mailer.{To,Subject,PlainMailBodyType}
 import xml.{Node, NodeSeq, MetaData}
 import claro.jpa
-import claro.cms.{Form,Mail,Cms}
+import claro.cms.{Form,Mail,Website}
 
 object LoginForm extends RequestVar[LoginForm](new LoginForm) 
 
@@ -33,7 +33,7 @@ class LoginForm extends Form {
     SHtml.a(() => forgotPassword(href, changePasswordHref), xml) % currentAttributes()
   
   private def forgotPassword(href : String, changePasswordHref : String) = {
-    Mail.mail(Subject("Set Password " + Cms.website.name),
+    Mail.mail(Subject("Set Password " + Website.instance.name),
       To(email),
       PlainMailBodyType("Please use the following link to set your password and activate your account:\n\n" +
       ChangePasswordForm.createLink(changePasswordHref, email)))

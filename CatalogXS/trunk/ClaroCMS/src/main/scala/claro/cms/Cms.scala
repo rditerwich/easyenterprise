@@ -15,7 +15,7 @@ object Cms {
   val locales = Set(Locale.getAvailableLocales map (_ toString) :_*)
   val logger = Logger("CMS")
 
-  def entityManager(name : String) = Cms.website.entityManagerFactory(name).createEntityManager
+  def entityManager(name : String) = Website.instance.entityManagerFactory(name).createEntityManager
 
   var caching = true
 
@@ -24,9 +24,8 @@ object Cms {
   components.append(() => new claro.cms.components.Utils)
   components.append(() => new claro.cms.components.MenuComponent)
 
-  var website : Website = null
-
-
+  object locale extends RequestVar[Locale](Locales.empty)
+  
 //    LiftRules.calculateContextPath = Request.calculateContextPath _
     
 //    LiftRules.jsArtifacts = MyJsArtifacts
@@ -37,7 +36,7 @@ object Cms {
     
 //	LiftRules.viewDispatch.append {
 //	  case ViewDispatch(template) => Left(() => {
-//		Cms.website.rootBinding.bind(template.xml) match {
+//		Website.instance.rootBinding.bind(template.xml) match {
 //		  case xml if (xml.first.label == "html") => Full(xml)
 //		  case _ => Empty
 //		}

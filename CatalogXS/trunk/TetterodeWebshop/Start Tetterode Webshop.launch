@@ -34,6 +34,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jetty.start.StartJetty"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="${workspace_loc}/TetterodeWebshop/src/main/webapp"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="${workspace_loc}/TetterodeWebshop/src/main/webapp 8060"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TetterodeWebshop"/>
 </launchConfiguration>

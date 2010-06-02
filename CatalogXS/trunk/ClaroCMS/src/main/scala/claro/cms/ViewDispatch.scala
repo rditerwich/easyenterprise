@@ -8,36 +8,47 @@ import xml.NodeSeq
 
 object ViewDispatch extends LiftRules.ViewDispatchPF {
   
-  def isDefinedAt(path : List[String]): Boolean = Cms.website != null
-  def apply(path : List[String]) = viewDispatch(Request.get, path)
+  def isDefinedAt(path : List[String]): Boolean = true
+ 
+  def apply(path0 : List[String]) = {
   
-  private def viewDispatch(request : Request, rawPath : List[String]) = {
-    val tempPath = rawPath.drop(request.contextPath.size) match {
-      case Nil => "index" :: Nil
-      case path => path
+    val website = Website.instance
+    var path = path0
+    var locale = website.config.defaultLocale 
+      
+    // default path
+    if (path.isEmpty) 
+      path = "index" :: Nil 
+    
+    // extract locale
+    if (website.config.locales.contains(path.head)) {
+      locale = path.head
+      path = path.tail
     }
-    val path = Cms.website.rewrite.foldLeft(tempPath)((b, a) => a(b)) 
+    Cms.locale.set(locale);
+    
+    // component rewrite
+    path = Website.instance.rewrite.foldLeft(path)((b, a) => a(b)) 
+
     if (path != Nil) {
       val template = Template(path)
-      Cms.website.templateCache(template, request.locale) match {
+      Website.instance.templateCache(template, new Locale(locale)) match {
         case Some(template) => 
-          request.template = Some(template)
-          request.path = path
-          Left(() => render(Cms.website, rawPath, template))
+          Left(() => render(Website.instance, path0, template))
         case None => 
-          Log.info("No template found for path: " + rawPath.mkString("/", "/", ""))
+          Log.info("No template found for path: " + path0.mkString("/", "/", ""))
           Left(() => Empty)
       }
     } else Left(() => Empty)
   }
 
-  private def render(website : Website, rawPath : List[String], template : ConcreteTemplate) : Box[NodeSeq] = {
-    val result = Cms.website.rootBinding.bind(template.xml) 
+  private def render(website : Website, path0 : List[String], template : ConcreteTemplate) : Box[NodeSeq] = {
+    val result = Website.instance.rootBinding.bind(template.xml) 
     /*match {
       case xml if (xml.first.label == "html") => Full(xml)
       case _ => Empty
     }*/
-    Log.info("Rendered template: " + template.resource.uri + " for path: " + rawPath.mkString("/", "/", ""))
+    Log.info("Rendered template: " + template.resource.uri + " for path: " + path0.mkString("/", "/", ""))
     Full(result)
   }
 }

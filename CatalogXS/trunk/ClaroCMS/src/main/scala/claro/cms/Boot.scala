@@ -1,33 +1,25 @@
 package claro.cms
 
 import java.net.URI
-import net.liftweb.http.{Bootable, LiftRules}
+import net.liftweb.http.{Bootable, LiftRules,RewriteRequest}
 import claro.common.util.Conversions._
 
 class Boot extends Bootable {
   var website : Option[URI] = None
   
   def boot = {
-    val websiteUri = new URI(LiftRules.context.initParam("website").openOr(""))
+    val websiteUri = LiftRules.context.initParam("website").getOrElse("")
 
-    if (websiteUri.getPath == "") {
-      Cms.logger.error("No website specified, please add a 'website' context-param in web.xml")
-    } else if (!websiteUri.exists) {
-      Cms.logger.error("Website configuration file '" + websiteUri + "' does not exist")
-    } else {
-      LiftRules.statelessDispatchTable.append(Dispatch)
-      LiftRules.viewDispatch.append(ViewDispatch)
-//      LiftRules.rewrite.append {
-//		case RewriteRequest(
-//		ParsePath(List("account",acctName),_,_,_),_,_) =>
-//		RewriteResponse("viewAcct" :: Nil, Map("name" -> acctName))
-//		case RewriteRequest(
-//		ParsePath(List("account",acctName, tag),_,_,_),_,_) =>
-//		RewriteResponse("viewAcct" :: Nil, Map("name" -> acctName,
-//		"tag" -> tag)))
-//		}
-      Cms.website = new Website(websiteUri)
-      Cms.logger.info(Cms.website.printInfo(""))
+    if (websiteUri == "") {
+      throw new Exception("No website specified, please add a 'website' context-param in web.xml")
     }
+    Website.register(websiteUri)
+    
+    LiftRules.dispatch.append(Dispatch)
+    LiftRules.viewDispatch.append(ViewDispatch)
+    LiftRules.urlDecorate.append(UrlDecorate)
+    
+    Cms.logger.info(Website.instance.printInfo(""))
   }
+  
 }

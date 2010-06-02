@@ -32,7 +32,7 @@ class Form extends Bindable {
   
   override def bind(node : Node, context : BindingContext) : NodeSeq = {
     if (parent == null) {
-      <form method="post" action={Request.path.mkString("/", "/", "")}>
+      <form method="post" action={S.uri}>
         { super.bind(node, context) }
       </form>
     } else super.bind(node, context)
