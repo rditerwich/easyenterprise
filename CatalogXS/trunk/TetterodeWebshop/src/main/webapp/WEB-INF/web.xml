@@ -11,7 +11,7 @@
 	</filter-mapping>
 	
 	<context-param>
-		<param-name>websites</param-name>
+		<param-name>website</param-name>
 		<param-value>classpath:claro.tetterode.webshop.website</param-value>
 	</context-param>
 </web-app>
