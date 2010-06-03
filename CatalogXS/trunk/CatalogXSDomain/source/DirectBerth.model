@@ -26,18 +26,18 @@ Package {
                     type = primitive:String
                 }
                 Attribute {
-                    name = description
-                    type = berth:Label
+                    name = description2
+                    type = berth:Label2
                 }
                 Attribute {
                     name = profile
-                    type = berth:Label
+                    type = berth:Label2
                     lower = 0
                 }
             }
         }
         Class {
-            name = Label
+            name = Label2
             attributes = {
                 /**
                  * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
