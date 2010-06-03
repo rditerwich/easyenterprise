@@ -20,6 +20,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,22 +42,25 @@ public class ProductView extends Composite implements View {
   private final FlowPanel propertiesDeck = new FlowPanel();
   private final FlowPanel propertyValuesPanel = new FlowPanel();
   private final HTML pvHeader = new HTML(i18n.h3(i18n.propertyValues()));
-  
+  final ListBox productGroup = new ListBox();
+
 //  private final FlowPanel labels = new FlowPanel();
   private final Table productTable = new Table();
 
 //  private Label lastSelected;
 
-  public ProductView() {
+  public ProductView(boolean inlineNewProductButton) {
     initWidget(deck);
 
-    deck.add(new HTML(i18n.noProductsInGroup()));
+    deck.add(new HTML(i18n.noProducts()));
     //Overview table
     final DockLayoutPanel overviewPanel = new DockLayoutPanel(Unit.PX);
 
     deck.add(overviewPanel);
     final HorizontalPanel tophp = new HorizontalPanel();
-    tophp.add(newProductButton);
+    if (inlineNewProductButton) {
+      tophp.add(newProductButton);
+    }
     overviewPanel.addNorth(tophp, 30);
     final ScrollPanel spo = new ScrollPanel(productTable);
 
@@ -79,20 +84,25 @@ public class ProductView extends Composite implements View {
     sp.getElement().getStyle().setPadding(10, Unit.PX);
     detailPanel.add(sp);
     productPanel.add(pname);
-    final HorizontalPanel properties = new HorizontalPanel();
+//    final HorizontalPanel properties = new HorizontalPanel();
+//
+//    productPanel.add(properties);
+//    properties.add(propertiesDeck);
+    final FlowPanel fpp = new FlowPanel();
+    final FlowPanel fp = new FlowPanel();
 
-    productPanel.add(properties);
-//    properties.add(labels);
-//    labels.addStyleName("propertiesGroupName");
-    properties.add(propertiesDeck);
-//    propertiesDeck.getElement().getStyle().setPadding(10, Unit.PX);
-//    propertiesDeck.setStyleName("properties");
+    fp.add(new InlineLabel(i18n.explainOwnerGroup()));
+    fp.add(productGroup);
+    productGroup.getElement().getStyle().setMarginLeft(10, Unit.PX);
+    add(fpp, i18n.group(), fp);
+    productPanel.add(fpp);
+    productPanel.add(propertiesDeck);
     sp.getElement().getStyle().setPadding(10, Unit.PX);
   }
 
   public void clear() {
-//    labels.clear();
     propertiesDeck.clear();
+    productGroup.clear();
     propertyValuesPanel.clear();
     propertyValuesPanel.removeFromParent();
   }
@@ -105,43 +115,22 @@ public class ProductView extends Composite implements View {
     add(propertyValuesPanel, name, widget);
   }
 
-  public void add(String name, Widget widget) {
-    final FlowPanel fp = new FlowPanel();
-
-    add(fp, name, widget);
-    propertiesDeck.add(fp);
-  }
-
   private void add(FlowPanel parent, String name, Widget widget) {
-    final HTML lbl = new HTML(i18n.h3(name)); 
+    final HTML lbl = new HTML(i18n.h3(name));
 
     parent.getElement().getStyle().setPadding(8, Unit.PX);
     parent.getElement().getStyle().setMarginBottom(8, Unit.PX);
     parent.setStyleName("properties");
     parent.add(lbl);
     parent.add(widget);
-/*    final int i = propertiesDeck.getWidgetCount() - 1;
-
-    labels.add(lbl);
-    lbl.addStyleName("propertyGroupName");
-    lbl.addClickHandler(new ClickHandler(){
-
-      @Override public void onClick(ClickEvent event) {
-        lastSelected.removeStyleName("propertyGroupNameSelected");
-
-        lbl.addStyleName("propertyGroupNameSelected");
-        lastSelected = lbl;
-        propertiesDeck.showWidget(i);
-      }});
-    if (i == 0) {
-      lastSelected = lbl;
-      lbl.addStyleName("propertyGroupNameSelected");
-      propertiesDeck.showWidget(i);
-    }*/
   }
 
   public HasClickHandlers backClickHandlers() {
     return back;
+  }
+
+  public Button getNewProductButton() {
+    return newProductButton;
   }
 
   public HasClickHandlers newProductButtonClickHandlers() {
@@ -152,8 +141,12 @@ public class ProductView extends Composite implements View {
     return saveButton;
   }
 
+  public ListBox getGroupListBox() {
+    return productGroup;
+  }
+
   /**
-   * Diplays button for status when saving in progress. 
+   * Diplays button for status when saving in progress.
    */
   public void setSaving(boolean saving) {
     if (saving) {
@@ -204,14 +197,10 @@ public class ProductView extends Composite implements View {
     setSaving(false); //reset save button
     int i = 0;
     switch (show) {
-    case NO_PRODUCTS: i = 0; break;
-    case PRODUCTS: i = 1; break;
+    case NO_PRODUCTS: i = 0; productTable.setVisible(false); break;
+    case PRODUCTS: i = 1; productTable.setVisible(true); break;
     case PRODUCT: i = 2; break;
     }
     deck.showWidget(i);
-  }
-
-  public void setProductsTableEmpty(boolean empty) {
-    productTable.setVisible(!empty);
   }
 }

@@ -12,7 +12,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -20,49 +19,31 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CatalogView extends Composite implements View {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
+  protected final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
+  protected final FlowPanel topPanel = new FlowPanel();
+  protected final Button publishButton = new Button(i18n.publish());
+  protected final ListBox languageList = new ListBox();
+  protected final HTML name = new HTML();
+
   private final SplitLayoutPanel panel = new SplitLayoutPanel();
   private final ExtendedTree tree = new ExtendedTree();
-  private final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
-  private final Button newProductGroupButton = new Button(i18n.newGroup());
-  private final Button publishButton = new Button(i18n.publish());
-  private final HTML name = new HTML();
-  private final ListBox languageList = new ListBox();
-
+  
   public CatalogView() {
     initWidget(panel);
     panel.addWest(tree, 300);
-    final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
-
     panel.add(detailPanel);
-    final FlowPanel buttonBar = new FlowPanel();
-
-    buttonBar.add(newProductGroupButton);
+    detailPanel.addNorth(topPanel, 75);
     publishButton.setTitle(i18n.explainPublish());
-    buttonBar.add(languageList);
-    buttonBar.add(publishButton);
     publishButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
     languageList.getElement().getStyle().setMarginLeft(40, Unit.PX);
     languageList.addStyleName("languageField");
-    buttonBar.add(name);
-    detailPanel.addNorth(buttonBar, 75);
-    buttonBar.getElement().getStyle().setMargin(10, Unit.PX);
-    detailPanel.add(tp);
-
-  }
-
-  public void addTab(View view, String text) {
-    tp.add(view.asWidget(), text);
-  }
-
-  public void addTabSelectionHandler(SelectionHandler<Integer> selectionHandler) {
-    tp.addSelectionHandler(selectionHandler);
+    topPanel.getElement().getStyle().setMargin(10, Unit.PX);
   }
 
   @Override
@@ -74,10 +55,6 @@ public class CatalogView extends Composite implements View {
     return languageList;
   }
 
-  public HasClickHandlers getNewProductGroupButtonClickHandler() {
-    return newProductGroupButton;
-  }
-
   public HasClickHandlers getPublishButtonClickHandler() {
     return publishButton;
   }
@@ -86,16 +63,8 @@ public class CatalogView extends Composite implements View {
     return languageList.getValue(languageList.getSelectedIndex());
   }
 
-  public int getSelectedTab() {
-    return tp.getSelectedIndex();
-  }
-
   public ExtendedTree getTree() {
     return tree;
-  }
-
-  public void selectedTab(int i) {
-    tp.selectTab(i);
   }
 
   /**
@@ -115,9 +84,5 @@ public class CatalogView extends Composite implements View {
 
   public void setName(String name) {
     this.name.setHTML(i18n.h2(name));
-  }
-
-  public void setTabVisible(int index, boolean visible) {
-    tp.getTabWidget(index).getParent().setVisible(visible);
   }
 }

@@ -18,7 +18,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
+import agilexs.catalogxsadmin.businesslogic.query.AllProductsQuery;
 import agilexs.catalogxsadmin.jpa.catalog.Catalog;
+import agilexs.catalogxsadmin.jpa.catalog.Item;
 import agilexs.catalogxsadmin.jpa.catalog.Label;
 import agilexs.catalogxsadmin.jpa.catalog.Language;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
@@ -30,6 +32,7 @@ import agilexs.catalogxsadmin.jpa.shop.Shop;
 @Stateless
 public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadmin.businesslogic.Catalog {
 
+  @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public List<PropertyValue> findAllProductGroupNames(Catalog catalog) {
     final Query query = entityManager.createQuery("select pv from PropertyValue pv, in(pv.property.labels) lbl where type(pv.item) in (ProductGroup) and lbl.label = 'Name' and pv.item.catalog = :catalog");
@@ -43,6 +46,64 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     return result;
   }
 
+  @Override
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public List<Product> findAllProducts(Integer fromIndex, Integer pageSize, AllProductsQuery filter) {
+    // Validate the input arguments
+    if (fromIndex == null || fromIndex < 0) {
+        throw new IllegalArgumentException("fromIndex < 0, from index must be 0 at least");
+    }
+    if (pageSize == null || pageSize < 1) {
+        throw new IllegalArgumentException("pageSize < 1, page size must be 1 at least");
+    }
+    final List<Long> parents = new ArrayList<Long>();
+    final List<ProductGroup> queue = new ArrayList<ProductGroup>();
+//    final List<Long> done = new ArrayList<Long>();
+
+    queue.add(filter.getProductGroup());
+    while(!queue.isEmpty()) {
+      final String queryString = "select p from ProductGroup p, IN(p.parents) pg where pg = :productgroup";
+      final Query query = entityManager.createQuery(queryString);
+      final ProductGroup item = queue.remove(0);
+      
+      query.setParameter("productgroup", item);
+//      done.add(item.getId());
+      parents.add(item.getId());
+      for (ProductGroup pg : (List<ProductGroup>)query.getResultList()) {
+//        if (!done.contains(pg.getId())) {
+        if (!parents.contains(pg.getId())) {
+          queue.add(pg);
+        }
+      }
+    }
+    final StringBuffer sb = new StringBuffer();
+
+    sb.append("(");
+    for (int i = 0; i < parents.size(); i++) {
+      if (i > 0) {
+        sb.append(",");
+      }
+      sb.append(parents.get(i));
+    }
+    sb.append(")");
+    final boolean filterString = filter.getStringValue() != null && !"".equals(filter.getStringValue());
+    final String queryString =
+      "select distinct p from Product p, in(p.propertyValues) pv, in(p.parents) parent" + 
+      " where p.catalog = :catalog" +
+      (filterString ? " and pv.stringValue like :stringValue": "") +
+      (!parents.isEmpty() ? " and parent.id in " + sb.toString() : "");
+    final Query query = entityManager.createQuery(queryString);
+
+    query.setParameter("catalog", filter.getShop().getCatalog());
+    if (filterString) {
+      query.setParameter("stringValue", "%" + filter.getStringValue() + "%");
+    }
+    query.setFirstResult(fromIndex);
+    query.setMaxResults(pageSize);
+    return query.getResultList();
+  }
+
+  @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public Catalog findCatalogById(Long id) {
     final Catalog catalog = super.findCatalogById(id);
@@ -188,6 +249,49 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
         }
         return result;
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Collection<ProductGroup> findAllItemParents(Shop shop, Item item) {
+      Query query;
+      if (item == null) {
+        //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
+        query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
+        
+        //query.setParameter("view", view);
+      } else {
+        //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
+        //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
+        query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.children) child where child = :child");
+        
+        //query.setParameter("taxonomy", taxonomy);
+        query.setParameter("child", item);
+      }
+      final List<ProductGroup> result = query.getResultList();
+      if (result != null) {
+        for (ProductGroup productGroup : result) {
+          //check, because db containsProduct table may be null
+          if (productGroup.getContainsProducts() == null) {
+            productGroup.setContainsProducts(Boolean.FALSE);
+          }
+          productGroup.setCatalog(productGroup.getCatalog());
+          for (Property property : productGroup.getProperties()) {
+            property.setLabels(property.getLabels());
+            for (Label lbl : property.getLabels()) {
+              lbl.setEnumValue(lbl.getEnumValue());
+            }
+            property.setEnumValues(property.getEnumValues());
+            property.setItem(property.getItem());
+          }
+          for (PropertyValue value : productGroup.getPropertyValues()) {
+            value.setItem(value.getItem());
+            value.setProperty(value.getProperty());
+          }
+        }
+      }
+      return result;
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public String publish() {
@@ -207,8 +311,6 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
       } catch (IOException e) {
         e.printStackTrace();
       }
-        
-        //TODO implement call to webshop
-        return null;
+      return null;
     }
 }

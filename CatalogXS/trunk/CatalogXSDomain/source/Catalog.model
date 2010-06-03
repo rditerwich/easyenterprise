@@ -242,7 +242,13 @@ Package {
                     upper = {}
                     opposite = catalog:EnumValue/attributes:property
                 }
-                
+//                Attribute {
+//                    name = propertyValues
+//                    type = catalog:PropertyValue
+//                    lower = 0
+//                    upper = {}
+//                    opposite = catalog:PropertyValue/attributes:property
+//                }
             }
         }
         Class {
@@ -314,6 +320,7 @@ Package {
                 Attribute {
                     name = property
                     type = catalog:Property
+                    //opposite = catalog:Property/attributes:propertyValues
                 }
                 /**
                  * IETF language tag. See http://en.wikipedia.org/wiki/IETF_language_tag.
@@ -405,7 +412,6 @@ Package {
                 Attribute {
                     name = item
                     type = catalog:Item
-                    lower = 0
                     opposite = catalog:Item/attributes:propertyValues
                 }
             }
@@ -669,6 +675,24 @@ Package {
                 Parameter {
                     name = parent
                     type = catalog:ProductGroup
+                }
+            }
+        }
+        @comment "Returns the parents of the given Item, if null is
+                  passed the current object is returned."
+        Operation {
+            name = findAllItemParents
+            type = catalog:ProductGroup
+            lower = 0
+            upper = {}
+            parameters = {
+                Parameter {
+                    name = shop
+                    type = shop:Shop
+                }
+                Parameter {
+                    name = item
+                    type = catalog:Item
                 }
             }
         }

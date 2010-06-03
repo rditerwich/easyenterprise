@@ -3,6 +3,7 @@ package agilexs.catalogxsadmin.presentation.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
@@ -30,20 +31,22 @@ public class ProductPresenter implements Presenter<ProductView> {
   private final static int DELETE_COL = 1; // when update, change FIRST_DATA_COL
   private final static int FIRST_DATA_COL = 2;
 
-  private final ProductView view = new ProductView();
+  private final ProductView view;
   private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
+
+  protected List<Product> currentProducts;
+  protected SHOW show = SHOW.PRODUCTS;
 
   private String currentLanguage = "en";
   private ProductGroup currentProductGroup;
-  private Product currentProduct;
   private Product orgProduct;
-  private List<Product> currentProducts;
+  private Product currentProduct;
   private int fromIndex = 0;
   private int pageSize = 1000;
-  private SHOW show = SHOW.PRODUCTS;
   private Shop shop;
 
-  public ProductPresenter() {
+  public ProductPresenter(boolean inlineNewProductButton) {
+    view = new ProductView(inlineNewProductButton);
     view.getProductTable().addClickHandler(new ClickHandler(){
       @Override
       public void onClick(ClickEvent event) {
@@ -138,8 +141,12 @@ public class ProductPresenter implements Presenter<ProductView> {
   }
 
   public void show(Shop shop, ProductGroup productGroup) {
+   show(shop, productGroup, false);
+  }
+
+  public void show(Shop shop, ProductGroup productGroup, boolean forceRefresh) {
     this.shop = shop;
-    if (currentProductGroup != productGroup) {
+    if (forceRefresh || currentProductGroup != productGroup) {
       currentProductGroup = productGroup;
       if (currentProductGroup != null) {
         loadProducts(shop, currentProductGroup);
@@ -151,13 +158,19 @@ public class ProductPresenter implements Presenter<ProductView> {
     }
   }
 
-  private void show(SHOW show) {
+  protected void show(SHOW show) {
     this.show = show;
     switch(show) {
     case NO_PRODUCTS:
       break;
     case PRODUCTS:
-      showProducts();
+      if (currentProducts == null) {
+        loadProducts(shop, currentProductGroup);
+      } else if (currentProducts.size() > 0) {
+        showProducts();
+      } else {
+        show = SHOW.NO_PRODUCTS;
+      }
       break;
     case PRODUCT:
       if ((orgProduct == null || orgProduct.getId() != currentProduct.getId())
@@ -172,58 +185,77 @@ public class ProductPresenter implements Presenter<ProductView> {
 
   private void showProducts() {
     view.getProductTable().clear();
-    if (currentProducts == null) {
-      loadProducts(shop, currentProductGroup);
-    } else if (currentProducts.size() > 0) {
-      view.setProductsTableEmpty(false);
-      view.getProductTable().resizeRows(currentProducts.size());
-      final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
+    view.getProductTable().resizeRows(currentProducts.size());
+    final List<PropertyValue[]> header = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), currentProducts.get(0));
 
-      view.setProductTableHeader(EDIT_COL, " ");
-      view.setProductTableHeader(DELETE_COL, " "); 
-      int h = FIRST_DATA_COL;
-      for (PropertyValue[] pvhlangs : header) {
-        for (PropertyValue pvh : pvhlangs) {
-          if (currentLanguage.equals(pvh.getLanguage())) {
-            view.setProductTableHeader(h, Util.getLabel(pvh, currentLanguage, true).getLabel());
-            h++;
-          }
+    view.setProductTableHeader(EDIT_COL, " ");
+    view.setProductTableHeader(DELETE_COL, " ");
+    int h = FIRST_DATA_COL;
+    for (PropertyValue[] pvhlangs : header) {
+      for (PropertyValue pvh : pvhlangs) {
+        if (currentLanguage.equals(pvh.getLanguage())) {
+          view.setProductTableHeader(h, Util.getLabel(pvh, currentLanguage, true).getLabel());
+          h++;
         }
       }
-      for (int i = 0; i < currentProducts.size(); i++) {
-        final Product product = currentProducts.get(i);
-        final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
+    }
+    for (int i = 0; i < currentProducts.size(); i++) {
+      final Product product = currentProducts.get(i);
+      final List<PropertyValue[]> pvl = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
 
-        view.setProductTableCellImage(i, EDIT_COL, rb.editImage());
-        view.setProductTableCellImage(i, DELETE_COL, rb.deleteImage());
-        int j = FIRST_DATA_COL;
-        for (PropertyValue[] pvlangs : pvl) {
-          PropertyValue dpv = null;
-          PropertyValue lpv = null;
+      view.setProductTableCellImage(i, EDIT_COL, rb.editImage());
+      view.setProductTableCellImage(i, DELETE_COL, rb.deleteImage());
+      int j = FIRST_DATA_COL;
+      for (PropertyValue[] pvlangs : pvl) {
+        PropertyValue dpv = null;
+        PropertyValue lpv = null;
 
-          for (PropertyValue pv : pvlangs) {
-            if (currentLanguage.equals(pv.getLanguage())) {
-              lpv = pv;
-            } else if (pv.getLanguage() ==  null) {
-              dpv = pv;
-            }
+        for (PropertyValue pv : pvlangs) {
+          if (currentLanguage.equals(pv.getLanguage())) {
+            lpv = pv;
+          } else if (pv.getLanguage() ==  null) {
+            dpv = pv;
           }
-          view.setProductTableCell(i, j, Util.isEmpty(lpv) ? dpv : lpv);
-          j++;
         }
+        view.setProductTableCell(i, j, Util.isEmpty(lpv) ? dpv : lpv);
+        j++;
       }
-    } else {
-      view.setProductsTableEmpty(true);
     }
   }
 
   private void showProduct() {
     view.clear();
     valuesPresenters.clear();
-    final List<Long> parents = Util.findParents(currentProductGroup);
+    //parent might not be zero..., product has only one parent.
+    final ProductGroup parentGroup = currentProduct.getParents() != null
+        && !currentProduct.getParents().isEmpty() ? 
+            CatalogCache.get().getProductGroup(currentProduct.getParents().get(0).getId()) : null;
+
+    if (parentGroup == null) {
+      CatalogServiceAsync.findAllItemParents(shop, currentProduct, new AsyncCallback<List<ProductGroup>>(){
+        @Override public void onFailure(Throwable caught) {
+          show(SHOW.PRODUCTS);
+        }
+
+        @Override public void onSuccess(List<ProductGroup> result) {
+          for (ProductGroup productGroup : result) {
+            CatalogCache.get().put(productGroup);
+          }
+          showProduct();
+        }});
+      return;
+    }
+    final List<Long> parents = Util.findParents(parentGroup);
     final Long nameGId = CatalogCache.get().getProductGroupName().getId();
-    
-    parents.add(currentProductGroup.getId());
+
+    //TODO show only product groups that can contain products
+    for (Map.Entry<Long, String> names : CatalogCache.get().getProductGroupNamesByLang(currentLanguage)) {
+      view.getGroupListBox().addItem(names.getValue(), "" + names.getKey());
+      if (currentProductGroup != null && names.getKey().equals(parentGroup.getId())) {
+        view.getGroupListBox().setItemSelected(view.getGroupListBox().getItemCount()-1, true);
+      }
+    }
+    parents.add(parentGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
       final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), parent, currentProduct);
@@ -242,7 +274,7 @@ public class ProductPresenter implements Presenter<ProductView> {
     }
   }
 
-  private void loadProducts(Shop shop, ProductGroup pg) {
+  protected void loadProducts(Shop shop, ProductGroup pg) {
     CatalogServiceAsync.findAllByProductGroupProducts(fromIndex, pageSize, pg, new AsyncCallback<List<Product>>() {
 
       @Override public void onFailure(Throwable caught) {
@@ -255,7 +287,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         for (Product p : result) {
           CatalogCache.get().put(p);
         }
-        show = SHOW.PRODUCTS;
+        show = result.isEmpty() ? SHOW.NO_PRODUCTS : SHOW.PRODUCTS;
         show(show);
       }
     });

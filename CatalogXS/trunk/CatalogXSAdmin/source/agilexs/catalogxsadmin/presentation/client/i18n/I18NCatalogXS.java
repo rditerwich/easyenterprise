@@ -25,7 +25,7 @@ public interface I18NCatalogXS extends Messages {
 
   String newProduct();
 
-  String noProductsInGroup();
+  String noProducts();
 
   String backToProductOverview();
 
@@ -138,4 +138,18 @@ public interface I18NCatalogXS extends Messages {
   String noProperties(String groupName);
 
   String filter();
+
+  String taxonomy();
+
+  String allProducts();
+
+  String refresh();
+
+  String explainOwnerGroup();
+
+  String orderDateDetail();
+
+  String orderCustomerDetail();
+
+  String orderStatusDetail();
 }

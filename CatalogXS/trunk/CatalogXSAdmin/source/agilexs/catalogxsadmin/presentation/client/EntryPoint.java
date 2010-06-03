@@ -16,7 +16,9 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
-  private final CatalogPresenter cp = new CatalogPresenter();
+  private final ProductsPresenter pp = new ProductsPresenter();
+  private final TaxonomiesPresenter taxp = new TaxonomiesPresenter(); 
+//  private final CatalogPresenter cp = new CatalogPresenter();
   private final NavigationPresenter np = new NavigationPresenter();
   private final PromotionPresenter p = new PromotionPresenter();
   private final OrderPresenter o = new OrderPresenter();
@@ -35,7 +37,8 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
     dlp.addNorth(topPanel, 70);
     dlp.add(tp);
 
-    tp.add(cp.getView(), i18n.catalog());
+    tp.add(pp.getView(), i18n.allProducts());
+    tp.add(taxp.getView(), i18n.taxonomy());
     tp.add(np.getView(), i18n.navigation());
     tp.add(p.getView(), i18n.promotions());
     tp.add(o.getView().asWidget(), i18n.orders());
@@ -45,18 +48,21 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
       public void onSelection(SelectionEvent<Integer> event) {
         switch (event.getSelectedItem().intValue()) {
         case 0:
-          cp.show();
+          pp.show();
           break;
         case 1:
-          np.show();
+          taxp.show();
           break;
         case 2:
-          p.show();
+          np.show();
           break;
         case 3:
-          o.show();
+          p.show();
           break;
         case 4:
+          o.show();
+          break;
+        case 5:
           s.show();
           break;
         default:

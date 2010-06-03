@@ -25,42 +25,19 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class CatalogPresenter implements Presenter<CatalogView> {
+public abstract class CatalogPresenter<V extends CatalogView> implements Presenter<V> {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
-  public enum SHOW {
-    PRODUCT_GROUP, PRODUCT
-  }
+  protected final V view;
+  protected final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
 
-  private final CatalogView view = new CatalogView();
-  private final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
-  private final int TAB_PRODUCT = 0;
-  private final int TAB_GROUP = 1;
+  protected Shop activeShop;
+  protected ProductGroup currentProductGroup;
+  protected String currentLanguage = "en";
 
-  private Shop activeShop;
-  private ProductGroup currentProductGroup;
-  private String currentLanguage = "en";
-  final ProductGroupPresenter pgp = new ProductGroupPresenter();
-  final ProductPresenter pp = new ProductPresenter();
-
-  public CatalogPresenter() {
-    view.addTab(pp.getView(), i18n.products());
-    view.addTab(pgp.getView(), i18n.group());
-
-    view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        final Long lastPG = treemap.get(view.getTree().getSelectedItem());
-        
-        view.setName("&lt;" + i18n.newGroup() + "&gt;");
-        currentProductGroup =
-          pgp.setNewProductGroup(activeShop, lastPG != null ? CatalogCache.get().getProductGroup(lastPG) : null);
-        pp.show(activeShop, currentProductGroup);
-
-        //view.getTree().deSelectItem();
-        view.selectedTab(TAB_GROUP);
-      }});
+  public CatalogPresenter(V cview) {
+    this.view = cview;
     view.getPublishButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
@@ -73,15 +50,6 @@ public class CatalogPresenter implements Presenter<CatalogView> {
             StatusMessage.get().show(i18n.publishSucess());
           }});
     }});
-    view.addTabSelectionHandler(new SelectionHandler<Integer>() {
-      @Override
-      public void onSelection(SelectionEvent<Integer> event) {
-        if (event.getSelectedItem().intValue() == TAB_GROUP) {
-          pgp.show(currentProductGroup);
-        } else {
-          pp.show(activeShop, currentProductGroup);
-        }
-      }});
     view.getTree().addOpenHandler(new OpenHandler<TreeItem>() {
       @Override
       public void onOpen(OpenEvent<TreeItem> event) {
@@ -110,33 +78,21 @@ public class CatalogPresenter implements Presenter<CatalogView> {
 
           view.setName(name==null ? "" : name.getValue());
           currentProductGroup = CatalogCache.get().getProductGroup(pgId);
-
-          if (Boolean.FALSE.equals(currentProductGroup.getContainsProducts())) {
-            view.setTabVisible(TAB_PRODUCT, false);
-            view.selectedTab(TAB_GROUP);
-          } else {
-            view.setTabVisible(TAB_PRODUCT, true);
-          }
+          show(currentProductGroup);
           if (view.getTree().isTreeItemEmpty(item)) {
             loadChildren(activeShop, item);
-          }
-          if (view.getSelectedTab() == TAB_GROUP) {
-            pgp.show(currentProductGroup);
-          } else {
-            pp.show(activeShop, currentProductGroup);
           }
         } else {
           //FIXME ?? can this happen?
         }
       }
-    });
 
+    });
     view.getLanguageChangeHandler().addChangeHandler(new ChangeHandler(){
       @Override
       public void onChange(ChangeEvent event) {
         currentLanguage = view.getSelectedLanguage();
-        pgp.switchLanguage(currentLanguage);
-        pp.switchLanguage(currentLanguage);
+        switchLanguage(currentLanguage);
       }});
     CatalogCache.get().getShop(1L, new AsyncCallback<Shop>() {
       @Override public void onFailure(Throwable caught) {
@@ -160,7 +116,7 @@ public class CatalogPresenter implements Presenter<CatalogView> {
   }
 
   @Override
-  public CatalogView getView() {
+  public V getView() {
     return view;
   }
 
@@ -168,7 +124,11 @@ public class CatalogPresenter implements Presenter<CatalogView> {
     view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
   }
   
-  private void loadChildren(Shop shop, final TreeItem parent) {
+  protected abstract void show(ProductGroup currentProductGroup);
+
+  protected abstract void switchLanguage(String newLang);
+
+  protected void loadChildren(Shop shop, final TreeItem parent) {
     final ProductGroup parentPG = CatalogCache.get().getProductGroup(treemap.get(parent));
 
     CatalogServiceAsync.findAllProductGroupChildren(

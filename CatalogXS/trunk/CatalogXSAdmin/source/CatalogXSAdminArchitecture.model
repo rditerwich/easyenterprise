@@ -659,6 +659,55 @@ JavaEEArchitectureJpaEjbGwt {
              }
         }
         Query {
+            name = "Query for all products"
+            methodNamePrefix = findAll
+            filter = domain:Query/types:AllProductsQuery
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllProductsView
+                     kind = all
+                     views = {
+                         ClassAttributeView {
+                             name = ParentView
+                             kind = all
+                             referringAttributes = catalog:Item/attributes:parents
+                         }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                 }
+             }
+        }
+        Query {
             name = "Query for products"
             methodNamePrefix = findByStringValueShop
             filter = domain:Query/types:ProductShopQuery

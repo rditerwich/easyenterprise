@@ -120,6 +120,7 @@ public class CatalogCache {
 
   public ArrayList<Map.Entry<Long, String>> getProductGroupNamesByLang(String lang) {
     final ArrayList<Map.Entry<Long, String>> list = new ArrayList<Map.Entry<Long, String>>();
+
     for (Long pid : productGroupNamesCache.keySet()) {
       list.add(getProductGroupName(pid, lang));
     }

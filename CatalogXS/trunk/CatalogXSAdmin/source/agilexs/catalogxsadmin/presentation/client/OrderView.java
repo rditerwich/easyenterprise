@@ -42,19 +42,20 @@ public class OrderView extends Composite implements View {
   private final FlowPanel orderDetail = new FlowPanel();
   private final Grid customerDetails = new Grid(3, 2);
   private final ListBox statusFilter = new ListBox();
-  private final Button refresh = new Button(i18n.refresh()); 
-  
+  private final Button refresh = new Button(i18n.refresh());
+
   public OrderView() {
     initWidget(panel);
     panel.getElement().getStyle().setPadding(10, Unit.PX);
     final FlowPanel ordersFP = new FlowPanel();
-    
+
     ordersFP.add(refresh);
+    refresh.getElement().getStyle().setMarginRight(20, Unit.PX);
     ordersFP.add(new InlineLabel(i18n.filter()));
     ordersFP.add(statusFilter);
     statusFilter.addItem("<no filter>", "");
     for (OrderStatus os : OrderStatus.values()) {
-      statusFilter.addItem(os.toString());      
+      statusFilter.addItem(os.toString());
     }
     final ScrollPanel ordersSP = new ScrollPanel();
 
@@ -70,12 +71,12 @@ public class OrderView extends Composite implements View {
     orderDetail.add(new HTML(i18n.h2("Order Details")));
 
     orderDetail.add(customerDetails);
-    customerDetails.setText(0, 0, "Order Date:");
-    customerDetails.setText(1, 0, "Customer:");
-    customerDetails.setText(2, 0, "Order Status:");
+    customerDetails.setText(0, 0, i18n.orderDateDetail());
+    customerDetails.setText(1, 0, i18n.orderCustomerDetail());
+    customerDetails.setText(2, 0, i18n.orderStatusDetail());
     customerDetails.setWidget(2, 1, orderStatus);
 
-    orderDetail.add(new HTML(i18n.h3("Products")));
+    orderDetail.add(new HTML(i18n.h3(i18n.products())));
     orderDetail.add(productOrdersSP);
     productOrdersSP.add(productOrderGrid);
   }

@@ -35,6 +35,24 @@ Package {
                 }
             }
         }
+        Class {
+            name = AllProductsQuery
+            superClass = query:Query
+            attributes = {
+                Attribute {
+                    name = productGroup
+                    type = catalog:ProductGroup
+                }
+                Attribute {
+                    name = stringValue
+                    type = primitive:String 
+                }
+                Attribute {
+                    name = shop
+                    type = shop:Shop 
+                }
+            }
+        }
 /*
         Class {
             name = PropertyQuery
