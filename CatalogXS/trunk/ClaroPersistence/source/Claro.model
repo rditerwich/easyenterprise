@@ -2,6 +2,8 @@ root /packages
 
 import Metaphor.Core.ModelPackage
 import Metaphor.PSM.Jpa.JpaPackage
+import Metaphor.PSM.Rdbms.RdbmsPackage
+
 
 ModelPackage {
     name = Claro
@@ -12,6 +14,10 @@ ModelPackage {
                 JpaPackage {
                     name = "Jpa"
                     javaPackageName = "claro.jpa"
+                }        
+                RdbmsPackage {
+                    name = "Rdbms"
+                    schema = "catalogxs"
                 }        
             }
         }        
