@@ -11,21 +11,19 @@ import claro.common.util.Conversions._
 
 object Cms {
 
-  val templateClasspath = RulesSeq[String]
   val components = RulesSeq[() => Component]
-  val locales = Set(Locale.getAvailableLocales map (_ toString) :_*)
   val logger = Logger("CMS")
 
   def entityManager(name : String) = Website.instance.entityManagerFactory(name).createEntityManager
 
-  var caching = true
+  var caching = false
 
   components.append(() => new TemplateComponent)
   components.append(() => new claro.cms.components.StdComponent)
   components.append(() => new claro.cms.components.Utils)
   components.append(() => new claro.cms.components.MenuComponent)
 
-  object locale extends RequestVar[Locale](Locales.empty)
+  object locale extends RequestVar[Locale](Website.instance.defaultLocale)
   
 //    LiftRules.calculateContextPath = Request.calculateContextPath _
     

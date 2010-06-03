@@ -6,7 +6,7 @@ import java.net.URI
 import javax.persistence.Persistence
 import xml.{Elem,NodeSeq}
 import net.liftweb.util.Log
-import claro.common.util.SubDirs
+import claro.common.util.{SubDirs,Locales}
 import claro.common.util.Conversions._
 
 object Website {
@@ -65,6 +65,7 @@ class Website(websiteFile : URI) {
   val templateCache = new TemplateCache(templateStore)
   val bindings = components flatMap (_.bindings.toList)
   val rewrite = components flatMap (_.rewrite.toList)
+  val defaultLocale = Locales(config.defaultLocale) 
 
   val rootBinding = new RootBinding(this)
   

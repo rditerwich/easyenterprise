@@ -15,7 +15,7 @@ object Locales {
   
   def apply(locale : String) = availableLocales.get(locale.getOrElse("")) match {
     case Some(locale) => locale
-    case None => new Locale("")
+    case None => empty
   }
   
   def getAlternatives(locale : Locale) = {
@@ -23,7 +23,8 @@ object Locales {
       var alternatives = empty :: Nil
       if (locale.getCountry != "") alternatives = new Locale(locale.getLanguage) :: alternatives
       if (locale.getVariant != "") alternatives = new Locale(locale.getLanguage, locale.getCountry) :: alternatives
-      locale :: alternatives
+      if (locale == empty) empty :: Nil
+      else locale :: alternatives
     })
   }
 }

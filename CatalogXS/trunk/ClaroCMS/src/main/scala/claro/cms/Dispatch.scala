@@ -9,53 +9,57 @@ import claro.common.util.Conversions._
 
 object Dispatch extends LiftRules.DispatchPF {
 
+  val response = new ThreadLocal[() => Box[LiftResponse]]
+  
   val emptyResponse : () => Box[LiftResponse] = () => Empty
   
-  def isDefinedAt(req : Req): Boolean = true
+  def isDefinedAt(req : Req): Boolean = {
+    dispatch(req) match {
+      case Some(response) =>
+        this.response.set(response)
+        true
+      case _ => false
+    }
+  }
   
-  def apply(req : Req) : () => Box[LiftResponse] = {
+  def apply(req : Req) : () => Box[LiftResponse] = this.response.get() 
+    
   
-    // parse suffix
-    val uri = req.uri 
-    var suffix = ""
-    var end = uri.length
-    val start = uri.lastIndexOf('/', end - 1)
-    if (start + 1 < end) {
-      val dot = uri.lastIndexOf('.', end - 1)
-      if (dot >= start) {
-        suffix = uri.substring(dot + 1)
-        end = dot
+  private def fixSuffix(path : List[String], suffix : String) : (List[String], String) = {
+    if (suffix == "" && !path.isEmpty) {
+      val r = path.reverse
+      val s = r(0)
+      val i = s.lastIndexOf('.')
+      if (i > 0) {
+        return ((s.substring(0, i) :: r.tail).reverse, s.substring(i + 1))
       }
     }
+    return (path, suffix)
+  }
+  
+  private def dispatch(req : Req) : Option[() => Box[LiftResponse]] = {
     
-    // parse path
-    var path : List[String] = Nil
-    while (end >= 0) {
-      val start = uri.lastIndexOf('/', end - 1)
-      if (start + 1 < end) {
-        path = uri.substring(start + 1, end) :: path
-      }
-      end = start
-    }
+    val (path, suffix) = fixSuffix(req.path.partPath, req.path.suffix)
     
+    // too bad, locales are not available, since urlDecorate does not append locale string to images, css etc
     val locale = Cms.locale.is
 
     suffix match {
-  	  case "css" => () => dispatchCSS(path, suffix, locale)
+  	  case "css" => Some(() => dispatchCSS(path, suffix, locale))
   	  case "js" => path match {
-        case "classpath" :: rest => () => dispatchClasspathResource(path, suffix, locale, "text/javascript")
-        case "ajax_request" :: "liftAjax" :: Nil => () => dispatchLiftAjax(path, suffix, locale)
-        case _ => () => dispatchResource(path, suffix, locale, "text/javascript")
+        case "classpath" :: rest => Some(() => dispatchClasspathResource(path, suffix, locale, "text/javascript"))
+        case "ajax_request" :: "liftAjax" :: Nil => Some(() => dispatchLiftAjax(path, suffix, locale))
+        case _ => Some(() => dispatchResource(path, suffix, locale, "text/javascript"))
       }
-  	  case "png" => () => dispatchResource(path, suffix, locale, "image/png")
-  	  case "jpg" => () => dispatchResource(path, suffix, locale, "image/jpg")
-  	  case "gif" => () => dispatchResource(path, suffix, locale, "image/gif")
-  	  case "pdf" => () => dispatchLarge(path, suffix, locale, "application/pdf")
-      case _ => emptyResponse
+  	  case "png" => Some(() => dispatchResource(path, suffix, locale, "image/png"))
+  	  case "jpg" => Some(() => dispatchResource(path, suffix, locale, "image/jpg"))
+  	  case "gif" => Some(() => dispatchResource(path, suffix, locale, "image/gif"))
+  	  case "pdf" => Some(() => dispatchLarge(path, suffix, locale, "application/pdf"))
+      case _ => None
   	}
   }
 
-  private def dispatchLiftAjax(path : List[String], suffix : String, locale : String) : Box[LiftResponse] = {
+  private def dispatchLiftAjax(path : List[String], suffix : String, locale : Locale) : Box[LiftResponse] = {
     val script = net.liftweb.http.js.ScriptRenderer.ajaxScript
     val modTime = System.currentTimeMillis
     Full(JavaScriptResponse(script,
@@ -64,7 +68,7 @@ object Dispatch extends LiftRules.DispatchPF {
                             Nil, 200))
   }
   
-  private def dispatchClasspathResource(path : List[String], suffix : String, locale : String, mimeType : String) : Box[LiftResponse] = {
+  private def dispatchClasspathResource(path : List[String], suffix : String, locale : Locale, mimeType : String) : Box[LiftResponse] = {
     val name = ResourceServer.baseResourceLocation + path.drop(1).mkString("/", "/", "") + "." + suffix
     def is = getClass.getClassLoader.getResourceAsStream(name)
     try {
@@ -80,7 +84,7 @@ object Dispatch extends LiftRules.DispatchPF {
     }
   }
   
-  private def dispatchResource(path : List[String], suffix : String, locale : String, mimeType : String) : Box[LiftResponse] = {
+  private def dispatchResource(path : List[String], suffix : String, locale : Locale, mimeType : String) : Box[LiftResponse] = {
       val locator = ResourceLocator(path, suffix, List(Scope.global))
       Website.instance.resourceCache(locator, locale) match {
       case Some(resource) => 
@@ -95,7 +99,7 @@ object Dispatch extends LiftRules.DispatchPF {
       }
   }
   
-  private def dispatchCSS(path : List[String], suffix : String, locale : String) : Box[LiftResponse] = {
+  private def dispatchCSS(path : List[String], suffix : String, locale : Locale) : Box[LiftResponse] = {
     val locator = ResourceLocator(path, "css", List(Scope.global))
     Website.instance.resourceCache(locator, locale) match {
       case Some(resource) =>
@@ -114,7 +118,7 @@ object Dispatch extends LiftRules.DispatchPF {
     }
   }
   
-  private def dispatchLarge(path : List[String], suffix : String, locale : String, mimeType : String) : Box[LiftResponse] = {
+  private def dispatchLarge(path : List[String], suffix : String, locale : Locale, mimeType : String) : Box[LiftResponse] = {
     val locator = ResourceLocator(path, suffix, List(Scope.global))
     Website.instance.resourceCache(locator, locale) match {
       case Some(resource) => {

@@ -5,6 +5,7 @@ import net.liftweb.http.LiftRules
 import net.liftweb.common.{Box,Full,Empty}
 import net.liftweb.util.{Log}
 import xml.NodeSeq
+import claro.common.util.Locales
 
 object ViewDispatch extends LiftRules.ViewDispatchPF {
   
@@ -14,7 +15,7 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
   
     val website = Website.instance
     var path = path0
-    var locale = website.config.defaultLocale 
+    var locale = Cms.locale.is 
       
     // default path
     if (path.isEmpty) 
@@ -22,17 +23,17 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
     
     // extract locale
     if (website.config.locales.contains(path.head)) {
-      locale = path.head
+      locale = Locales(path.head)
       path = path.tail
+      Cms.locale.set(locale);
     }
-    Cms.locale.set(locale);
     
     // component rewrite
     path = Website.instance.rewrite.foldLeft(path)((b, a) => a(b)) 
 
     if (path != Nil) {
       val template = Template(path)
-      Website.instance.templateCache(template, new Locale(locale)) match {
+      Website.instance.templateCache(template, locale) match {
         case Some(template) => 
           Left(() => render(Website.instance, path0, template))
         case None => 

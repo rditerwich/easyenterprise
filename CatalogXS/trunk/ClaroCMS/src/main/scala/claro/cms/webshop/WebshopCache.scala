@@ -17,7 +17,7 @@ class WebshopCache {
   val shopsByServerName : collection.Map[String, Seq[Shop]] = shops groupBy (_.serverName)
   
   def findAllShops : Seq[jpa.shop.Shop] =
-    Cms.entityManager("AgileXS.CatalogXS.Jpa.PersistenceUnit").createQuery("select shop from Shop shop").getResultList.asInstanceOf[java.util.List[jpa.shop.Shop]]
+    Cms.entityManager("claro.jpa.PersistenceUnit").createQuery("select shop from Shop shop").getResultList.asInstanceOf[java.util.List[jpa.shop.Shop]]
 }
 
 class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.Shop) {

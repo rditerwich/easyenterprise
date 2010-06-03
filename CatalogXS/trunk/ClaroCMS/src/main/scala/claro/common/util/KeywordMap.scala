@@ -16,7 +16,7 @@ class KeywordMap[A] extends mutable.HashMap[String, mutable.Set[A]] with mutable
 
   override def addBinding(keyword : String, obj : A) = { 
     for (s <- keyword.toLowerCase.split("\\W"); if s.length > 1) {
-    	super.add(s, obj)
+    	super.addBinding(s, obj)
     }
     this
   }

@@ -85,8 +85,8 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val productGroupsById : collection.Map[Long, ProductGroup] = 
     productGroups mapBy (_.id)
     
-  val topLevelProductGroups : Set[ProductGroup] = 
-	cacheData.topLevelProductGroups map (mapping.productGroups) toSet
+  val topLevelProductGroups : Set[ProductGroup] =
+    cacheData.topLevelProductGroups map (mapping.productGroups) toSet
 
   val products : Set[Product] =
     cacheData.products map (mapping.products) toSet
@@ -104,10 +104,10 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(productGroup) {
+class ProductGroup(productGroup : jpa.catalog.ProductGroup, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(productGroup) {
 
   // terminate recursion
-  mapping.productGroups += (productGroup -> this)
+  mapping.productGroups(productGroup) = this
   
   val id = productGroup.getId.longValue
   
@@ -176,10 +176,10 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val product : Option
 class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var mapping : Mapping) extends Delegate(product) {
   
   // terminate recursion
-  mapping.products += (product -> this)
+  mapping.products(product) = this
   
   // product has its own mappings
-  mapping = new Mapping(Some(this), cacheData)
+//  mapping = new Mapping(Some(this), cacheData)
 
   val id : Long = product.getId.longValue
   

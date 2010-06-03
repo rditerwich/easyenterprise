@@ -3,7 +3,7 @@ package claro.cms.webshop
 import claro.jpa
 import claro.cms.Dao
 
-object WebshopDao extends Dao("AgileXS.CatalogXS.Jpa.PersistenceUnit") {
+object WebshopDao extends Dao("claro.jpa.PersistenceUnit") {
   
   def findUserById(id : Long) : Option[jpa.party.User] = 
     querySingle("Select u from User u where u.id = :id", "id" -> id)
