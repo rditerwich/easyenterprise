@@ -58,13 +58,18 @@ public class OrderPresenter implements Presenter<OrderView> {
     view.getStatusFilterHandler().addChangeHandler(new ChangeHandler(){
       @Override public void onChange(ChangeEvent event) {
         final OrderStatus os = view.getSelectedOrderStatusFilter();
-        
+
         if (os == null) {
           filter = null;
         } else {
           filter = new Order();
           filter.setStatus(os);
         }
+        show();
+      }
+    });
+    view.getRefreshClickHandler().addClickHandler(new ClickHandler() {
+      @Override public void onClick(ClickEvent event) {
         show();
       }
     });

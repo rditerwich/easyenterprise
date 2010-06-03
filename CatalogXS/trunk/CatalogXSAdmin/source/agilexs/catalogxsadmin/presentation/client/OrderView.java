@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -40,12 +41,15 @@ public class OrderView extends Composite implements View {
   private final ListBox orderStatus = new ListBox();
   private final FlowPanel orderDetail = new FlowPanel();
   private final Grid customerDetails = new Grid(3, 2);
-  private final ListBox  statusFilter = new ListBox();
+  private final ListBox statusFilter = new ListBox();
+  private final Button refresh = new Button(i18n.refresh()); 
   
   public OrderView() {
     initWidget(panel);
     panel.getElement().getStyle().setPadding(10, Unit.PX);
     final FlowPanel ordersFP = new FlowPanel();
+    
+    ordersFP.add(refresh);
     ordersFP.add(new InlineLabel(i18n.filter()));
     ordersFP.add(statusFilter);
     statusFilter.addItem("<no filter>", "");
@@ -82,6 +86,10 @@ public class OrderView extends Composite implements View {
 
   public HasChangeHandlers getStatusFilterHandler() {
     return statusFilter;
+  }
+
+  public HasClickHandlers getRefreshClickHandler() {
+    return refresh;
   }
 
   public OrderStatus getSelectedOrderStatus() {
