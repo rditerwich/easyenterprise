@@ -114,7 +114,10 @@ public class ProductPresenter implements Presenter<ProductView> {
       orgProduct.setPropertyValues(Util.filterEmpty(orgProduct.getPropertyValues()));
     }
     final Product saveProduct = currentProduct.clone(new HashMap());
+    final Long pg = Long.valueOf(view.getGroupListBox().getValue(view.getGroupListBox().getSelectedIndex()));
 
+    saveProduct.getParents().clear();
+    saveProduct.getParents().add(CatalogCache.get().getProductGroup(pg));
     saveProduct.setProperties(null);
     saveProduct.setPropertyValues(Util.filterEmpty(saveProduct.getPropertyValues()));
     currentProducts = null;
@@ -231,7 +234,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         && !currentProduct.getParents().isEmpty() ? 
             CatalogCache.get().getProductGroup(currentProduct.getParents().get(0).getId()) : null;
 
-    if (parentGroup == null) {
+    if (currentProduct.getId() != null && parentGroup == null) {
       CatalogServiceAsync.findAllItemParents(shop, currentProduct, new AsyncCallback<List<ProductGroup>>(){
         @Override public void onFailure(Throwable caught) {
           show(SHOW.PRODUCTS);
