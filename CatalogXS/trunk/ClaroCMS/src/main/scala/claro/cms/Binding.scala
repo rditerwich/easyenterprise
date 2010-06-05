@@ -43,11 +43,6 @@ class AnyBindingCtor(label : String, f : => Any) {
   def toLabeledBinding = (label, new AnyBinding(f))
 }
 
-case class BindingContext(root : RootBinding, parent : BindingContext, bindings : Map[String,Bindings], repeatSeen : Flag) {
-  def + (binding : (String, Bindings)) = BindingContext(root, this, bindings + binding, repeatSeen)
-  def initRepeatSeen = BindingContext(root, this, bindings, Flag())
-}
-
 object Flag {
   def apply() = new Flag(false)
   def apply(value : Boolean) = new Flag(value)
@@ -75,8 +70,7 @@ object Binding {
   def bind(xml : NodeSeq, context : BindingContext) : NodeSeq = {
     xml flatMap {
       case s : Elem => 
-        context.root.currentElement = s
-        context.root.currentContext = context
+        BindingContext.current.set(context, s)
         try {
             val bindings = if (s.prefix == null) None else context.bindings.get(s.prefix)  
             bindings match {
@@ -299,21 +293,25 @@ class RootBinding(val website : Website) {
 
   val cache = new BindingCache(website)
   
-  val context = BindingContext(this, null, Map(bindings:_*), Flag())
-  
-  var currentElement : Elem = null
-  
-  var currentContext : BindingContext = context
+  val context = BindingContext(null, Map(bindings:_*), Flag())
   
   def componentBindings = website.components map (component => (component.prefix, Bindings(component, cache(component))))
 
   def bindings = componentBindings ++ Map("object" -> Bindings(null, "none" -> Binding.empty))
   
   def bind(xml : NodeSeq) : NodeSeq = {
-    currentElement = RootBinding.emptyElem
-    currentContext = context
+    BindingContext.current.set((context, RootBinding.emptyElem))
     Binding.bind(xml, context)
   }
+}
+
+object BindingContext {
+  val current = new ThreadLocal[(BindingContext, Elem)]
+}
+
+case class BindingContext(parent : BindingContext, bindings : Map[String,Bindings], repeatSeen : Flag) {
+  def + (binding : (String, Bindings)) = BindingContext(this, bindings + binding, repeatSeen)
+  def initRepeatSeen = BindingContext(this, bindings, Flag())
 }
 
 trait BindingHelpers {
@@ -328,9 +326,9 @@ trait BindingHelpers {
  
   def website = Website.instance 
   
-  def current : Elem = website.rootBinding.currentElement
+  def current : Elem = BindingContext.current.get._2
   
-  def currentContext : BindingContext = website.rootBinding.currentContext
+  def currentContext : BindingContext = BindingContext.current.get._1
 
   def currentAttributes(excl : String*) = 
     current.attributes filter(a => !excl.contains(a.key))

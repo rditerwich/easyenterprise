@@ -281,13 +281,14 @@ public class Util {
    * @return
    */
   public static boolean isEmpty(PropertyValue pv) {
-    return (pv.getStringValue() == null || "".equals(pv.getStringValue()))
+    return pv == null || (   
+        (pv.getStringValue() == null || "".equals(pv.getStringValue()))
         && pv.getIntegerValue() == null
         && pv.getEnumValue() == null && pv.getRealValue() == null
         && pv.getBooleanValue() == null
         && (pv.getMoneyValue() == null || "".equals(pv.getMoneyValue()))
         && pv.getMoneyCurrency() == null && pv.getMediaValue() == null
-        && pv.getMimeType() == null;
+        && pv.getMimeType() == null);
   }
 
   /**

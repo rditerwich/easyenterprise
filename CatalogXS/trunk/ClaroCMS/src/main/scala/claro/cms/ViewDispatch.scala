@@ -49,7 +49,7 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
       case xml if (xml.first.label == "html") => Full(xml)
       case _ => Empty
     }*/
-    Log.info("Rendered template: " + template.resource.uri + " for path: " + path0.mkString("/", "/", ""))
+//    Log.info("Rendered template: " + template.resource.uri + " for path: " + path0.mkString("/", "/", ""))
     Full(result)
   }
 }

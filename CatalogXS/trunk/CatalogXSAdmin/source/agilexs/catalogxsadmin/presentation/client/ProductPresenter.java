@@ -220,7 +220,10 @@ public class ProductPresenter implements Presenter<ProductView> {
             dpv = pv;
           }
         }
-        view.setProductTableCell(i, j, Util.isEmpty(lpv) ? dpv : lpv);
+        PropertyValue pv = Util.isEmpty(lpv) ? dpv : lpv;
+        if (pv != null) {
+          view.setProductTableCell(i, j, pv);
+        }
         j++;
       }
     }

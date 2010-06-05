@@ -44,6 +44,13 @@ object Dispatch extends LiftRules.DispatchPF {
     // too bad, locales are not available, since urlDecorate does not append locale string to images, css etc
     val locale = Cms.locale.is
 
+    // component dispatch
+    for (dispatch <- Website.instance.dispatch) {
+      if (dispatch.isDefinedAt((path, suffix))) {
+        return Some(() => Full(dispatch(path, suffix)))
+      }
+    }
+    
     suffix match {
   	  case "css" => Some(() => dispatchCSS(path, suffix, locale))
   	  case "js" => path match {
@@ -64,7 +71,9 @@ object Dispatch extends LiftRules.DispatchPF {
     val modTime = System.currentTimeMillis
     Full(JavaScriptResponse(script,
                             List("Last-Modified" -> toInternetDate(modTime),
-                            "Expires" -> toInternetDate(modTime + 60.minutes)),
+                            "Expires" -> toInternetDate(modTime + 60.minutes),
+                            "Cache-Control" -> "public, max-age=3600", 
+                            "Content-Type" -> "text/javascript"),
                             Nil, 200))
   }
   

@@ -65,6 +65,8 @@ class Website(websiteFile : URI) {
   val templateCache = new TemplateCache(templateStore)
   val bindings = components flatMap (_.bindings.toList)
   val rewrite = components flatMap (_.rewrite.toList)
+  val dispatch = components flatMap (_.dispatch.toList)
+  val locales = config.locales.map(Locales(_))
   val defaultLocale = Locales(config.defaultLocale) 
 
   val rootBinding = new RootBinding(this)

@@ -35,12 +35,13 @@ trait WebshopBindingHelpers extends BindingHelpers {
   def formatMoney(amount : Double, currency : String) = {
     //Unparsed doesn't seem to work in combination with ajax calls...
     //Therefore we use the symbol tokens instead of html symbols.
-    Text(currency match {
-        case "EUR" => "€"; //"&euro;"
-        case "GBP" => "£"; //"&pound;";
-        case "USD" => "$";
-        case _ => "&euro;";
-    }) ++
+    val sign : Node = currency match {
+        case "EUR" => <span>&euro;</span>
+        case "GBP" => <span>£</span>
+        case "USD" => <span>$</span>
+        case _ => <span>&euro;</span>
+    }
+    sign ++
     Text(" ") ++
     Text(String.format("%.2f", double2Double(amount / 100.0)))
   }
@@ -51,8 +52,12 @@ trait WebshopBindingHelpers extends BindingHelpers {
         case jpa.catalog.PropertyType.Media => 
           if (property.mediaValue == null) 
             <img src={"/images/image-"+property.valueId+".jpg"} />
+          else if (property.mimeType == "application/x-shockwave-flash") 
+            <object type="application/x-shockwave-flash" data={"/catalog/media/" + property.valueId}/> 
+          else if (property.mimeType == "application/pdf")
+            <a href={"/catalog/media/" + property.valueId}><img style="padding-bottom:-8px" src="/images/pdf.gif"/></a>
 	        else if (property.mimeType.startsWith("image/")) 
-		      <img src={"image/" + property.valueId} />
+	          <img src={"/catalog/media/" + property.valueId} /> % currentAttributes()
 	         else
   		       Text(property.mediaValue.toString());
         case jpa.catalog.PropertyType.Money if (property.value != null && property.value.getMoneyValue != null) =>

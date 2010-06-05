@@ -1,6 +1,6 @@
 package claro.cms.webshop
 
-import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,RewriteResponse,ParsePath}
+import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,RewriteResponse,ParsePath,InMemoryResponse,NotFoundResponse}
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
 import scala.xml.{Node,NodeSeq,Text}
 import claro.jpa
@@ -164,6 +164,20 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     	Scope.global)
   }
 
+  dispatch.append {
+    case ("catalog" :: "media" :: id :: Nil, suffix) => 
+      WebshopModel.shop.mediaValues.get(id.toLongOr(0)) match {
+      case Some((mimeType, image)) => 
+        val headers = List(
+          ("Cache-Control", "public, max-age=3600"), 
+          ("Pragma", "public"), 
+          ("Content-Length", image.length.toString),
+          ("Content-Type", mimeType)) 
+        InMemoryResponse(image, headers, Nil, 200)
+      case _ =>  NotFoundResponse()
+    }
+  }
+  
   rewrite.append {
     case "index" :: Nil => "index" :: Nil
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil

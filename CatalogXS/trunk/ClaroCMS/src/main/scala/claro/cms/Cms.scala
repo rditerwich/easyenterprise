@@ -16,7 +16,7 @@ object Cms {
 
   def entityManager(name : String) = Website.instance.entityManagerFactory(name).createEntityManager
 
-  var caching = false
+  def caching = false
 
   components.append(() => new TemplateComponent)
   components.append(() => new claro.cms.components.StdComponent)
@@ -24,22 +24,4 @@ object Cms {
   components.append(() => new claro.cms.components.MenuComponent)
 
   object locale extends RequestVar[Locale](Website.instance.defaultLocale)
-  
-//    LiftRules.calculateContextPath = Request.calculateContextPath _
-    
-//    LiftRules.jsArtifacts = MyJsArtifacts
-
-//    LiftRules.viewDispatch.append {
-//    	case Dispatch(response) => Left(response)
-//    }
-    
-//	LiftRules.viewDispatch.append {
-//	  case ViewDispatch(template) => Left(() => {
-//		Website.instance.rootBinding.bind(template.xml) match {
-//		  case xml if (xml.first.label == "html") => Full(xml)
-//		  case _ => Empty
-//		}
-//      })
-//    }
-
 }

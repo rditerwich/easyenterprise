@@ -38,7 +38,7 @@ object WebshopModel {
 	  case Some(searchString) => 
       val products = shop.keywordMap.find(searchString) 
       currentProductGroup match {
-        case Some(group) => products filter group.products toSeq
+        case Some(group) => products filter group.productExtent toSeq
         case None => products.toSeq
       }
       

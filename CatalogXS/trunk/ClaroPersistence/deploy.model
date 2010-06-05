@@ -12,7 +12,14 @@ DeploymentConfiguration {
     productConfigurations = {
         Glassfish2Configuration {
             ideIntegration = true
-
+            installDir = "d:/glassfishv3/glassfish"
+            
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = true
+                gwtJavaScriptStyle = pretty
+            }
+            
             dbConfiguration = PostgreSQLConfiguration {
                 loggingLevel = FINE
             }

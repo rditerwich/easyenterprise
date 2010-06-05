@@ -58,8 +58,11 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
   val productPropertyValues : Map[jpa.catalog.Product, Seq[jpa.catalog.PropertyValue]] =
     products makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
+  val allPropertyValues : Set[jpa.catalog .PropertyValue] = 
+    products.flatMap(productPropertyValues(_)) ++ productGroups.flatMap(productGroupPropertyValues(_))
+  
   val mediaPropertyValues : Seq[jpa.catalog.PropertyValue] = 
-    products flatMap (productPropertyValues(_)) filter (_.getProperty.getType == jpa.catalog.PropertyType.Media) filter(_.getMediaValue != null) toSeq
+      allPropertyValues filter (_.getProperty.getType == jpa.catalog.PropertyType.Media) filter(_.getMediaValue != null) toSeq
   
   val mediaValues : Map[Long, (String, Array[Byte])] =
     Map(mediaPropertyValues map (v => (v.getId.longValue, (v.getMimeType, v.getMediaValue))):_*)

@@ -21,8 +21,8 @@ class SearchForm extends Bindable {
     "submit" -> SHtml.submit("Search", () => if (searchString != dummySearch) S.redirectTo(pathPrefix + "/search/" + searchString)) % currentAttributes()))
   
   override def bind(node : Node, context : BindingContext) : NodeSeq = {
-    <lift:snippet type={"Shop:ident"} form="POST">
+    <form method="post" action={S.uri}>
       { super.bind(node, context) }
-    </lift:snippet>
+    </form>
   }
 }

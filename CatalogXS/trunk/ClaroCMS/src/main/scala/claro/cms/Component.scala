@@ -1,11 +1,12 @@
 package claro.cms
 
-import net.liftweb.http.RulesSeq
+import net.liftweb.http.{RulesSeq,LiftResponse}
 
 trait Component extends BindingHelpers {
   val prefix : String
   val bindings = RulesSeq[PartialFunction[Any,Map[String,Binding]]]
-  var rewrite = RulesSeq[Function[List[String],List[String]]]
+  val dispatch = RulesSeq[PartialFunction[(List[String],String),LiftResponse]]
+  val rewrite = RulesSeq[Function[List[String],List[String]]]
   val templateLocators = RulesSeq[PartialFunction[Template,ResourceLocator]]
 
   implicit def toList(a : Scope) = List(a)
