@@ -8,6 +8,12 @@ import claro.cms.Form
 
 class AddressForm(address : jpa.party.Address) extends Form {
 
+  if (address.getAddress1 == null) address.setAddress1("")
+  if (address.getAddress2 == null) address.setAddress2("")
+  if (address.getTown == null) address.setTown("")
+  if (address.getCountry == null) address.setCountry("")
+  if (address.getPostalCode == null) address.setPostalCode("")
+  
   val address1Field = TextField(address.getAddress1, address.setAddress1(_))  
   val address2Field = TextField(address.getAddress2, address.setAddress2(_))  
   val postalCodeField = TextField(address.getPostalCode, address.setPostalCode(_))  

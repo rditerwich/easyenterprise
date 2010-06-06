@@ -29,6 +29,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "logout-link" -> logoutLink,
       "user-info-form" -> UserInfoForm.get -> "form",
       "register-form" -> RegistrationForm.get -> "form",
+      "shipping-options-form" -> ShippingOptionsForm.get -> "form",
       "change-password-form" -> ChangePasswordForm.get -> "form")
     
     case promotion : VolumeDiscountPromotion => Map(         
@@ -65,10 +66,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "items" -> cart.order.productOrders -> "item",
       "add" -> cart.addProduct(@@("product-prefix", "product")),
       "add-promotion" -> cart.addPromotion(@@("promotion-prefix", "promotion")),
+      "shipping-costs" -> format(cart.order.shippingCosts),
       "total-prices" -> cart.order.totalPrices -> "total-price",
+      "total-prices-plus-shipping" -> cart.order.totalPricesPlusShipping -> "total-price",
       "clear" -> cart.clear,
       "link" -> Link("/cart"),
-      "place-order-link" -> cart.placeOrderLink)
+      "place-order" -> cart.placeOrderLink,
+      "proceed-order-link" -> cart.proceedOrderLink)
     
     case order : Order => Map(
       "items" -> order.order.getProductOrders -> "item",
@@ -112,9 +116,21 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "name-field" -> form.partyForm.nameField -> "field",
       "phone-field" -> form.partyForm.phoneField -> "field",
       "address-form" -> form.partyForm.addressForm -> "form",
+      "delivery-address-form" -> form.partyForm.deliveryAddressForm -> "form",
       "party" -> form.partyForm -> "party",
       "change-password-link" -> form.changePasswordLink(@@("change-password-href", "/changepassword")),
       "store-button" -> form.storeButton(@@("label", "Store")))
+      
+    case form : ShippingOptionsForm => Map(
+      "errors" -> form.errors -> "error",
+      "shipping-options" -> form.shippingOptions -> "shipping-option",
+      "delivery-address-form" -> form.deliveryAddressForm -> "form",
+      "proceed-order-link" -> form.proceedOrderLink)
+      
+    case shippingOption : SelectedShippingOption => Map(
+      "description" -> shippingOption.option.description,
+      "field" -> shippingOption.field,
+      "price" -> format(shippingOption.option.price))
         
     case form : ChangePasswordForm => Map(
       "errors" -> form.errors -> "error",

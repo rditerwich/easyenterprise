@@ -38,6 +38,34 @@
   <tr><td>Telephone</td><td><field:field /></td><field:error>
   <td><span class="error"><error:message/></span></td></field:error></tr>
 </form:phone-field>
+
+
+<tr class="heading"><td colspan="2"><h2>Delivery Address</h2></td></tr>
+<form:delivery-address-form>
+<form:address1-field>
+  <tr><td>Address</td><td><field:field /></td><field:error>
+  <td><span class="error"><error:message/></span></td></field:error></tr>
+</form:address1-field>
+<form:address2-field>
+  <tr><td></td><td><field:field /></td><field:error>
+  <td><span class="error"><error:message/></span></td></field:error></tr>
+</form:address2-field>
+<form:postal-code-field>
+  <tr><td>Postal Code</td><td><field:field /></td><field:error>
+  <td><span class="error"><error:message/></span></td></field:error></tr>
+</form:postal-code-field>
+<form:town-field>
+  <tr><td>Town</td><td><field:field /></td><field:error>
+  <td><span class="error"><error:message/></span></td></field:error></tr>
+</form:town-field>
+<form:country-field>
+  <tr><td>Country</td><td><field:field /></td><field:error>
+  <td><span class="error"><error:message/></span></td></field:error></tr>
+</form:country-field>
+</form:delivery-address-form>
+
+<tr class="heading"><td colspan="2">&#160;</td></tr>
+
 <form:user><user:is-confirmed><object:none><tr><td span="2">This account has not been activated yet</td></tr></object:none></user:is-confirmed></form:user>
 </table>
   <form:store-button/>

@@ -22,8 +22,8 @@ public class TaxonomiesPresenter extends CatalogPresenter<TaxonomiesView> {
 
     public TaxonomiesPresenter() {
       super(new TaxonomiesView());
-      view.addTab(pp.getView(), i18n.products());
       view.addTab(pgp.getView(), i18n.group());
+      view.addTab(pp.getView(), i18n.products());
 
       view.getNewProductGroupButtonClickHandler().addClickHandler(new ClickHandler() {
         @Override

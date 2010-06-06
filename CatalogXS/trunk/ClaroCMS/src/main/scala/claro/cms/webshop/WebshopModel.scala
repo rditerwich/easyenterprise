@@ -23,6 +23,7 @@ object WebshopModel {
   object currentProductGroupVar extends RequestVar[Option[String]](None)
   object currentSearchStringVar extends RequestVar[Option[String]](None)
   object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
+  object currentOrder extends SessionVar[Order](new Order(new jpa.shop.Order, shop.mapping))
   
   def currentProduct : Option[Product] = currentProductVar.is match {
     case Some(id) => Some(shop.productsById(id.toLong))
@@ -315,6 +316,10 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
   
   def totalPrices : Seq[Money] = currencies.toSeq map(c => Money(totalPrice(c), c)) 
 
+  var shippingCosts = Money(1500, "EUR")
+  
+  def totalPricesPlusShipping : Seq[Money] = totalPrices.map(m => if (m.currency == shippingCosts.currency) Money(m.amount + shippingCosts.amount, m.currency) else m)
+  
   /**
    * Adds a product to the order list. If the product already is present update
    * the volume count for that product.
@@ -329,9 +334,11 @@ class Order(val order : jpa.shop.Order, mapping : Mapping) extends Delegate(orde
         product.priceProperty match {
           case Some(property) => 
             productOrder.setPrice(property.moneyValue)
-            productOrder.setPriceCurrency(property.moneyCurrency)
+            // TODO what is the default currency?
+            productOrder.setPriceCurrency(property.moneyCurrency getOrElse "euro")
           case None => 
         }
+        productOrder.setOrder(delegate)
         delegate.getProductOrders.add(productOrder)
     }
   }
@@ -348,6 +355,7 @@ class ProductOrder(val productOrder : jpa.shop.ProductOrder, val order : Order, 
   def remove = {
     order.delegate.getProductOrders.filter(_.getProduct.getId != product.id)
   }
-
 }
+
+case class ShippingOption(description : String, price : Money) 
 

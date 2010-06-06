@@ -20,9 +20,9 @@ object ShoppingCart extends ShoppingCart {}
 
 class ShoppingCart private extends Bindable with Redrawable {
 
-  object order extends SessionVar[Order](new Order(new jpa.shop.Order, WebshopModel.shop.get.mapping))
-
   override def bindings = bindingsFor(this)
+  
+  def order = WebshopModel.currentOrder.get
 
   def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
@@ -38,6 +38,11 @@ class ShoppingCart private extends Bindable with Redrawable {
         NodeSeq.Empty
     }
   }
+
+  def shippingCosts = Money(15, "EUR")
+  
+  def proceedOrderLink = (xml : NodeSeq) => 
+    <a href="/shipping">{xml}</a> % currentAttributes()
   
   def placeOrderLink = (xml : NodeSeq) => {
     val redraws = CurrentRedraws.get
@@ -59,7 +64,7 @@ class ShoppingCart private extends Bindable with Redrawable {
               em.merge(order.order)
               
               // clear shopping basket
-              order.remove()
+              WebshopModel.currentOrder.remove()
               S.notice("Order has been placed")
             case None =>
           }

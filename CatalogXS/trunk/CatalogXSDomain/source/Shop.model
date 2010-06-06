@@ -141,6 +141,11 @@ Package {
                     opposite = shop:ProductOrder/attributes:order
                 }
                 Attribute {
+                    name = deliveryAddress
+                    type = party:Address
+                    lower = 0
+                }
+                Attribute {
                     name = transport
                     type = shop:Transport
                     isComposite = true
