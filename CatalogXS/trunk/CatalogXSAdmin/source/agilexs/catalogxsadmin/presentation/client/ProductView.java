@@ -69,9 +69,12 @@ public class ProductView extends Composite implements View {
 
     //Detail page
     final DockLayoutPanel detailPanel = new DockLayoutPanel(Unit.PX);
+
     deck.add(detailPanel);
     final HorizontalPanel toph = new HorizontalPanel();
+
     back.setHTML(i18n.backToProductOverview());
+    back.getElement().getStyle().setCursor(Cursor.POINTER);
     toph.add(back);
     saveButton.getElement().getStyle().setMarginLeft(200, Unit.PX);
     toph.add(saveButton);
@@ -185,7 +188,11 @@ public class ProductView extends Composite implements View {
     if (column >= productTable.getColumnCount()) {
       productTable.resizeColumns(column+1);
     }
-    productTable.setWidget(row, column, new PropertyValueWidget(pv));
+    if (pv == null) {
+      productTable.setHTML(row, column, "&nbsp;");
+    } else {
+      productTable.setWidget(row, column, new PropertyValueWidget(pv));
+    }
   }
 
   @Override

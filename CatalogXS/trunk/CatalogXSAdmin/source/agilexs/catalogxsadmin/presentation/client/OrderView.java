@@ -8,6 +8,7 @@ import agilexs.catalogxsadmin.presentation.client.shop.OrderStatus;
 import agilexs.catalogxsadmin.presentation.client.widget.Table;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -68,6 +69,7 @@ public class OrderView extends Composite implements View {
     panel.add(orderDetail);
     orderDetail.add(back);
     back.setHTML(i18n.backToOrdersOverview());
+    back.getElement().getStyle().setCursor(Cursor.POINTER);
     orderDetail.add(new HTML(i18n.h2("Order Details")));
 
     orderDetail.add(customerDetails);

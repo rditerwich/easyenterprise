@@ -18,6 +18,9 @@ body {
 a, a:visited, a:hover {
   color: #0000AA;
 }
+a:hover {
+	text-decoration:underline;
+}
 .gwt-Reference-catalogxs {
   height: 5px;
   width: 5px;
