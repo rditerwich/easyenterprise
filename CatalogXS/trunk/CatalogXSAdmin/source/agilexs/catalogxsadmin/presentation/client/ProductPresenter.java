@@ -220,10 +220,7 @@ public class ProductPresenter implements Presenter<ProductView> {
             dpv = pv;
           }
         }
-        PropertyValue pv = Util.isEmpty(lpv) ? dpv : lpv;
-        if (pv != null) {
-          view.setProductTableCell(i, j, pv);
-        }
+        view.setProductTableCell(i, j, Util.isEmpty(lpv) ? dpv : lpv);
         j++;
       }
     }
@@ -264,18 +261,21 @@ public class ProductPresenter implements Presenter<ProductView> {
     parents.add(parentGroup.getId());
     for (Long pid : parents) {
       final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-      final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), parent, currentProduct);
 
-      if (!pv.isEmpty()) {
-        final ItemValuesPresenter presenter = new ItemValuesPresenter();
-        final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
-        final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
-        final String name = nameGId.equals(pid) ? "" : (pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue());
-
-        valuesPresenters.add(presenter);
-        view.addPropertyValues(name, presenter.getView());
-        //Util.getPropertyValueByName(parent.getPropertyValues(), Util.NAME, currentLanguage).getStringValue()
-        presenter.show(currentLanguage, pv);
+      if (parent != null) {
+        final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), parent, currentProduct);
+  
+        if (!pv.isEmpty()) {
+          final ItemValuesPresenter presenter = new ItemValuesPresenter();
+          final PropertyValue pvName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, currentLanguage);
+          final PropertyValue pvDName = Util.getPropertyValueByName(parent.getPropertyValues(),Util.NAME, null);
+          final String name = nameGId.equals(pid) ? "" : (pvName == null || Util.isEmpty(pvName) ? (pvDName == null ?  "" : pvDName.getStringValue()) : pvName.getStringValue());
+  
+          valuesPresenters.add(presenter);
+          view.addPropertyValues(name, presenter.getView());
+          //Util.getPropertyValueByName(parent.getPropertyValues(), Util.NAME, currentLanguage).getStringValue()
+          presenter.show(currentLanguage, pv);
+        }
       }
     }
   }

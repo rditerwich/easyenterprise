@@ -254,6 +254,12 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Collection<ProductGroup> findAllItemParents(Shop shop, Item item) {
+      return findAllItemParents(shop, item, new ArrayList<ProductGroup>());
+    }
+
+    @SuppressWarnings("unchecked")
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    private Collection<ProductGroup> findAllItemParents(Shop shop, Item item, Collection<ProductGroup> parents) {
       Query query;
       if (item == null) {
         //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
@@ -269,6 +275,12 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
         query.setParameter("child", item);
       }
       final List<ProductGroup> result = query.getResultList();
+
+      for (ProductGroup productGroup : result) {
+        if (!parents.contains(productGroup)) {
+          parents.add(productGroup);
+        }
+      }
       if (result != null) {
         for (ProductGroup productGroup : result) {
           //check, because db containsProduct table may be null
@@ -288,9 +300,16 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
             value.setItem(value.getItem());
             value.setProperty(value.getProperty());
           }
+          if (productGroup.getParents() != null) {
+            for (ProductGroup parent : productGroup.getParents()) {
+              if (parent != null && !parents.contains(parent)) {
+                findAllItemParents(shop, parent, parents);
+              }
+            }
+          }
         }
       }
-      return result;
+      return parents;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
