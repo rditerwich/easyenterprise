@@ -16,14 +16,19 @@ import com.google.gwt.user.client.ui.TreeItem;
  */
 public class ExtendedTree extends Tree {
 
+  public ExtendedTree() {
+    addItem(new InlineLabel("Loading..."));
+  }
+
   public TreeItem addItem(TreeItem parent, String text) {
     final TreeItem item = new TreeItem(text);
+
+    if (isTreeItemEmpty(parent)) {
+      setTreeItemAsEmpty(parent);
+    }
     if (parent == null) {
       addItem(item);
     } else {
-      if (isTreeItemEmpty(parent)) {
-        setTreeItemAsEmpty(parent);
-      }
       parent.addItem(item);
     }
     //add dummy to always show +/- icons...
@@ -34,14 +39,40 @@ public class ExtendedTree extends Tree {
   public void deSelectItem() {
     super.setSelectedItem(null);    
   }
+
+  public TreeItem getItem(TreeItem parent, int index) {
+    return parent == null ? getItem(index) : parent.getChild(index);
+  }
+
+  public int getItemCount(TreeItem item) {
+    return item == null ? getItemCount() : item.getChildCount();
+  }
   
   public boolean isTreeItemEmpty(TreeItem item) {
-    return item != null && item.getChild(0) != null && item.getChild(0).getWidget() != null;
+    if (item == null) {
+      return getItem(0) != null && getItem(0).getWidget() != null;  
+    } else {
+      return item.getChild(0) != null && item.getChild(0).getWidget() != null;
+    }
+  }
+
+  public void removeItem(TreeItem parent, TreeItem item) {
+    if (parent == null) {
+      removeItem(item);
+    } else {
+      parent.removeItem(item);
+    }
   }
 
   public void setTreeItemAsEmpty(TreeItem item) {
-    if (item.getChildCount() == 1) {
-      item.removeItem(item.getChild(0));
+    if (item == null) {
+      if (getItemCount() == 1) {
+        removeItem(getItem(0));
+      }
+    } else {
+      if (item.getChildCount() == 1) {
+        item.removeItem(item.getChild(0));
+      }
     }
   }
 }

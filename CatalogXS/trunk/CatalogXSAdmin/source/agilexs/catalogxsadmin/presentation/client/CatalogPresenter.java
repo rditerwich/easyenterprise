@@ -59,9 +59,7 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
           final Long pgId = treemap.get(item);
 
           if (pgId != null) {
-            if (view.getTree().isTreeItemEmpty(item)) {
-              loadChildren(activeShop, item);
-            }
+            loadChildren(activeShop, item);
           }
         }
       }
@@ -79,9 +77,7 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
           view.setName(name==null ? "" : name.getValue());
           currentProductGroup = CatalogCache.get().getProductGroup(pgId);
           show(currentProductGroup);
-          if (view.getTree().isTreeItemEmpty(item)) {
-            loadChildren(activeShop, item);
-          }
+          loadChildren(activeShop, item);
         } else {
           //FIXME ?? can this happen?
         }
@@ -123,12 +119,15 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
   public void show() {
     view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
   }
-  
+
   protected abstract void show(ProductGroup currentProductGroup);
 
   protected abstract void switchLanguage(String newLang);
 
   protected void loadChildren(Shop shop, final TreeItem parent) {
+    if (!view.getTree().isTreeItemEmpty(parent)) {
+      return;
+    }
     final ProductGroup parentPG = CatalogCache.get().getProductGroup(treemap.get(parent));
 
     CatalogServiceAsync.findAllProductGroupChildren(
@@ -154,8 +153,20 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
               for (ProductGroup pPG : productGroup.getParents()) {
                 CatalogCache.get().put(pPG);
               }
-              treemap.put(
-                  view.getTree().addItem(parent, value != null ? value.getStringValue() : "<No Name>"), productGroup.getId());
+              boolean present = false;
+              for (int i = 0; i < view.getTree().getItemCount(parent); i++) {
+                final TreeItem item = view.getTree().getItem(parent, i);
+
+                if (treemap.containsKey(item)
+                    && productGroup.getId().equals(treemap.get(item))) {
+                  present = true;
+                }
+              }
+              if (!present) {
+                treemap.put(view.getTree().addItem(parent,
+                    value != null ? value.getStringValue() : "<No Name>"),
+                    productGroup.getId());
+              }
             }
           }
         });
