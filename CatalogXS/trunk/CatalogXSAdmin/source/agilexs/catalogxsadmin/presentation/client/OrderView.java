@@ -152,6 +152,12 @@ public class OrderView extends Composite implements View {
     return i;
   }
 
+  public void setOrderGridSize(int row) {
+    if (row <= orderGrid.getRowCount()) {
+      orderGrid.resizeRows(row);
+    }
+  }
+
   public void setDetailOrderDate(Date orderDate) {
     customerDetails.setText(0, 1, DateTimeFormat.getMediumDateFormat().format(orderDate));
   }

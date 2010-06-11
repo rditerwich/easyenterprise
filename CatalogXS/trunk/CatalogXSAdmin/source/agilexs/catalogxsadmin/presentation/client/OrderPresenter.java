@@ -35,6 +35,7 @@ public class OrderPresenter implements Presenter<OrderView> {
     view.getChangeStatusHandler().addChangeHandler(new ChangeHandler(){
       @Override public void onChange(ChangeEvent event) {
         final OrderStatus nos = view.getSelectedOrderStatus();
+
         if (currentOrder != null && !currentOrder.getStatus().equals(nos)) {
           final Order no = new Order();
           final Order oo = new Order();
@@ -75,7 +76,7 @@ public class OrderPresenter implements Presenter<OrderView> {
     });
     view.backClickHandlers().addClickHandler(new ClickHandler() {
       @Override public void onClick(ClickEvent event) {
-        view.showPage(SHOW.ORDERS);
+        show();
       }});
   }
 
@@ -103,6 +104,7 @@ public class OrderPresenter implements Presenter<OrderView> {
             showProductOrder(row, order);
             row++;
           }
+          view.setOrderGridSize(row);
         }
       }});
   }
