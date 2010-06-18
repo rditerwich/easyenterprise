@@ -1,0 +1,40 @@
+root /packages:EasyEnterprise/packages
+
+import Metaphor.PSM.GWT.EntryPoint
+import Metaphor.PSM.GWT.ExtendProperty
+import Metaphor.PSM.GWT.FlexTable
+import Metaphor.PSM.GWT.GwtFileDownloadServlet
+import Metaphor.PSM.GWT.GwtFileUploadServlet
+import Metaphor.PSM.GWT.GwtMethod
+import Metaphor.PSM.GWT.GwtModule
+import Metaphor.PSM.GWT.GwtPackage
+import Metaphor.PSM.GWT.GwtService
+import Metaphor.PSM.GWT.TextBox
+import Metaphor.PSM.GWT.VerticalPanel
+import Metaphor.PSM.Java.Expression.VariableAccess
+import Metaphor.PSM.Java.JavaBeanPropertyView
+import Metaphor.PSM.Java.JavaBeanView
+import Metaphor.PSM.UIToGwt.Page
+
+
+GwtPackage {
+    name = Presentation
+    modules = {
+        GwtModule {
+            name = EasyEnterprise
+            inherits = "com.google.gwt.user.datepicker.DatePicker"
+        }
+    }
+/*
+    specialPurposeServlets = {
+        GwtFileDownloadServlet {
+            name = DownloadMedia
+        }
+        GwtFileUploadServlet {
+            name = UploadMedia
+        }
+    }
+*/
+    servlets = {
+    }
+}

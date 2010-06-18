@@ -1,0 +1,31 @@
+root /deployment
+
+import Metaphor.Core.DeploymentConfiguration
+import Metaphor.PSM.GWT.GwtWebConfiguration
+
+import Metaphor.PSM.Glassfish2.EclipseLinkConfiguration
+import Metaphor.PSM.Glassfish2.Glassfish2Configuration
+import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
+
+DeploymentConfiguration {
+    id = agilexs.catalogxsadmin.deployment.local
+    name = "EasyEnterprise Deployment Local"
+    productConfigurations = {
+        Glassfish2Configuration {
+            ideIntegration = true
+            installDir = "D:/glassfishv3/glassfish"
+
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = true
+            }
+
+            dbConfiguration = PostgreSQLConfiguration {
+                loggingLevel = FINE
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}

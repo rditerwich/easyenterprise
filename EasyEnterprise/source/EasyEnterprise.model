@@ -1,0 +1,13 @@
+root /packages
+
+import Metaphor.Core.ModelPackage
+import Metaphor.PIM.Domain.Package
+
+ModelPackage {
+    name = EasyEnterprise
+    packages = {
+        Package {
+            name = Domain
+        }
+    }
+}

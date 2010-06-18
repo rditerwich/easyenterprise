@@ -1,0 +1,32 @@
+root /architecture
+
+import Metaphor.PIM.Domain.View.ClassAttributeView
+import Metaphor.PIM.Domain.View.ClassView
+import Metaphor.PSM.DomainToRdbms.ColumnTemplates
+import Metaphor.PSM.DomainToRdbms.DomainToRdbms
+import Metaphor.PSM.GWT.EntryPoint
+import Metaphor.PSM.GWT.GwtModule
+import Metaphor.PSM.JavaEE.Persistence
+import Metaphor.PSM.JavaEEArchitectureJpaEjbGwt
+import Metaphor.PSM.JavaEEAspects.Crud
+import Metaphor.PSM.JavaEEAspects.Query
+import Metaphor.PSM.Rdbms.Column
+import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
+
+
+path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
+path domain = /packages:AgileXS/packages:Domain/packages
+path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path party = /packages:AgileXS/packages:Domain/packages:Party/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
+
+JavaEEArchitectureJpaEjbGwt {
+    name = EasyEnterpriseArchitecture
+    providerPackage = /packages:EasyEnterprise
+    productPackage = /packages:EasyEnterprise
+    jpaVendor = EclipseLink
+    databaseVendor = postgresql
+    generateBaseClasses = true
+    aspects = {
+    }
+}

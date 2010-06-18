@@ -1,0 +1,23 @@
+root /packages:EasyEnterprise/packages:Domain/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Enumeration
+import Metaphor.PIM.Domain.Literal
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+import Metaphor.PIM.Domain.Parameter
+
+path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
+path party=/packages:EasyEnterprise/packages:Domain/packages:Party/types
+
+Package {
+    name = Child
+    types = {
+        Class {
+            name = Child
+            superClass = party:Relation
+        }
+    }   
+}

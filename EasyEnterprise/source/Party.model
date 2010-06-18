@@ -1,0 +1,144 @@
+root /packages:EasyEnterprise/packages:Domain/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Enumeration
+import Metaphor.PIM.Domain.Literal
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+import Metaphor.PIM.Domain.Parameter
+
+path primitive=/packages:Metaphor/packages:PIM/packages:Domain/types
+path party=/packages:EasyEnterprise/packages:Domain/packages:Party/types
+
+Package {
+    name = Party
+    types = {
+        Class {
+            name = Party
+            attributes = {
+                Attribute {
+                    name = name
+                    type = primitive:String
+                }
+                Attribute {
+                   name = phoneNumber
+                   type = primitive:String
+                }
+                
+                Attribute {
+                   name = website
+                   type = primitive:String
+                   lower = 0
+                }
+                Attribute {
+                    name = address
+                    type = party:Address
+                }
+                Attribute {
+                    name = shippingAddress
+                    type = party:Address
+                    lower = 0
+                }
+                Attribute {
+                    name = deliveryAddress
+                    type = party:Address
+                    lower = 0
+                }
+                Attribute {
+                    name = billingName
+                    type = primitive:String
+                    lower = 0
+                }
+                Attribute {
+                    name = billingAddress
+                    type = party:Address
+                    lower = 0
+                }
+                Attribute {
+                    name = relations
+                    type = party:Relation
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                    opposite = party:Relation/attributes:source
+                }
+            }
+        }
+        Class {
+            name = Relation
+            attributes = {
+                Attribute {
+                    name = source
+                    type = party:Party
+                    opposite = party:Party/attributes:relations
+                }
+                Attribute {
+                    name = target
+                    type = party:Party
+                }
+            }
+        }
+        Class {
+           name = User
+           attributes = {
+               Attribute {
+                   name = email
+                   type = primitive:String
+               }
+               Attribute {
+                   name = password
+                   type = primitive:String
+               }
+               Attribute {
+                   name = party
+                   type = party:Party
+               }
+           }
+       }
+       Class {
+           name = EmailConfirmation
+           attributes = {
+               Attribute {
+                   name = email
+                   type = primitive:String
+               }
+               Attribute {
+                   name = confirmationKey
+                   type = primitive:String
+               }
+               Attribute {
+                   name = expirationTime
+                   type = primitive:Long
+               }
+           }
+       }
+       Class {
+           name = Address
+           attributes = {
+               Attribute {
+                   name = address1
+                   type = primitive:String
+               }
+               Attribute {
+                   name = address2
+                   type = primitive:String
+                   lower = 0
+               }
+               Attribute {
+                   name = town
+                   type = primitive:String
+               }
+               Attribute {
+                   name = postalCode
+                   type = primitive:String
+               }
+               Attribute {
+                   name = country
+                   type = primitive:String
+               }
+           }
+       }   
+    }
+}
