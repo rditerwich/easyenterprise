@@ -9,7 +9,7 @@ public class EntryPoint implements com.google.gwt.core.client.EntryPoint {
 
   @Override
   public void onModuleLoad() {
-    MainPanel mainPanel = new MainPanel("HIIIIIIIIIIIII");
+    MainPanel mainPanel = new MainPanel("iiii");
     Document.get().getBody().appendChild(mainPanel.getElement());
   }
 

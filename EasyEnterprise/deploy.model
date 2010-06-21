@@ -17,7 +17,7 @@ DeploymentConfiguration {
 
             webConfiguration = GwtWebConfiguration {
                 userAgent = All
-                skipGwtCompilation = true
+                skipGwtCompilation = false
             }
 
             dbConfiguration = PostgreSQLConfiguration {
