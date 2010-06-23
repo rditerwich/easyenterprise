@@ -1,13 +1,17 @@
-package easyenterprise.presentation.client.citykids.resources;
+package easyenterprise.presentation.client.citykids.topmenu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface CityKidsResources extends ClientBundle {
+public interface Resources extends ClientBundle {
 
-	public static final CityKidsResources INSTANCE =  GWT.create(CityKidsResources.class);
+	public static final Resources instance =  GWT.create(Resources.class);
 
+	@Source("TopMenu.css")
+  CssResource css();
+  
 	@Source("BuitenSchoolseOpvangButton.png")
 	public ImageResource buitenSchoolseOpvangButton();
 
