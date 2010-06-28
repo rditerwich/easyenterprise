@@ -9,7 +9,6 @@
 			font-weight: bold;
 		}
 		div {
-			border:1px solid yellow;
 			}
 		#leftButtonBar div {
 			color:#333;

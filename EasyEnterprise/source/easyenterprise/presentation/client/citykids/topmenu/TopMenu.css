@@ -1,15 +1,1 @@
 
-
-@external bso
-@sprite .bso  {
-	gwt-image: 'buitenSchoolseOpvangButton';
-}
-
-
-.bso{
-	width: 100px;
-	height: 60px;
-}
-.bso:hover {
-	border: 2px solid blue;
-}

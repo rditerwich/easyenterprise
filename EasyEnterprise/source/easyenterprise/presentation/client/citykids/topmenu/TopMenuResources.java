@@ -5,9 +5,9 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface Resources extends ClientBundle {
+public interface TopMenuResources extends ClientBundle {
 
-	public static final Resources instance =  GWT.create(Resources.class);
+	public static final TopMenuResources instance =  GWT.create(TopMenuResources.class);
 
 	@Source("TopMenu.css")
   CssResource css();
