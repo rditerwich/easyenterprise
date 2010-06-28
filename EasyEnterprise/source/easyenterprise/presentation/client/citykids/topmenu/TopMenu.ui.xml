@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+ 
+  <ui:with field='res' type='easyenterprise.presentation.client.citykids.topmenu.TopMenuResources'/>
+ 
+   <ui:style>
+     .top-menu-button {
+     	cursor: hand;
+     	margin-right: 6px;
+     }
+     .content-panel {
+     	width: 1000px;
+     	height: 400px;
+     	border: 4px solid black;
+	}
+   </ui:style>
+ 
+  <g:HTMLPanel>
+    <g:HorizontalPanel>
+	  	<g:ToggleButton ui:field="buitenSchoolseOpvangButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.buitenSchoolseOpvangButton}"></g:upFace>
+	  	 	<g:downFace image="{res.buitenSchoolseOpvangButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="kinderDagVerblijfButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.kinderDagVerblijfButton}"></g:upFace>
+	  	 	<g:downFace image="{res.kinderDagVerblijfButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="gastouderBureauButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.gastouderBureauButton}"></g:upFace>
+	  	 	<g:downFace image="{res.gastouderBureauButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="scholenButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.scholenButton}"></g:upFace>
+	  	 	<g:downFace image="{res.scholenButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="verenigingButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.verenigingButton}"></g:upFace>
+	  	 	<g:downFace image="{res.verenigingButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="stichtingKindEnVrijeTijdButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.stichtingKindEnVrijeTijdButton}"></g:upFace>
+	  	 	<g:downFace image="{res.stichtingKindEnVrijeTijdButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+	  	<g:ToggleButton ui:field="externeDeskundigenButton" styleName="{style.top-menu-button}">
+	  	 	<g:upFace image="{res.externeDeskundigenButton}"></g:upFace>
+	  	 	<g:downFace image="{res.externeDeskundigenButtonSelected}"></g:downFace>
+	  	</g:ToggleButton>
+  	</g:HorizontalPanel>
+    <div ui:field="contentPanel" class="{style.content-panel}">
+    This is some content
+    </div>
+  </g:HTMLPanel>
+
+</ui:UiBinder>
