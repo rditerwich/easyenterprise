@@ -24,7 +24,7 @@ class RichIterable[A](it : Iterable[A]) {
    * Convert elements to a immutable hash map. 
    */
   def makeMap[B,C](f : A => Option[(B,C)]) : immutable.Map[B, C] = 
-   immutable.Map((for (a <- it.toSeq; elt = f(a); if (elt != None)) yield elt.get ):_*)
+   immutable.Map((for (a <- it.toSeq; elt = f(a); if (elt != None)) yield elt.get):_*)
  
   def makeMapWithValues[B](map : A => B) : immutable.Map[A, B] = 
     immutable.Map((for (a <- it.toSeq; b = map(a)) yield (a, b)):_*)
@@ -74,7 +74,7 @@ class RichArray[A](array : Array[A]) {
 
 class RichPartialFunctionIterable[A,B](it : Iterable[PartialFunction[A,B]]) {
   def findFirst(a : A) : Option[B] = {
-    for (f <- it; if (f.isDefinedAt(a))) return Some(f(a))
+    for (f <- it) if (f.isDefinedAt(a)) return Some(f(a))
     None
   }
 }

@@ -20,6 +20,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "products" -> WebshopModel.shop.get.products -> "product",
       "group" -> WebshopModel.shop.get.productGroupsByName.get(@@("name")) -> "group",
       "top-level-groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
+      "filters" -> Filter.filters -> "filter",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-all" -> searchAllLink,
@@ -88,6 +89,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
       "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
+   case filter : Filter => Map(
+       "title" -> filter.title,
+       "values" -> filter.values -> "value")
+      
+   case value : FilterValue => Map(
+       "value" -> value.value) 
+       
     case login : LoginForm => Map(
       "email-field" -> login.emailField,
       "password-field" -> login.passwordField,

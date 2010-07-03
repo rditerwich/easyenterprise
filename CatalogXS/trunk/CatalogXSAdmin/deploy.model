@@ -13,7 +13,8 @@ DeploymentConfiguration {
     productConfigurations = {
         Glassfish2Configuration {
             ideIntegration = true
-            installDir = "E:/tools/GlassFish-Tools-Bundle-For-Eclipse-1.2/glassfishv3/glassfish"
+            installDir = "D:/glassfishv3/glassfish"
+            debugDeployment = false
 
             webConfiguration = GwtWebConfiguration {
                 userAgent = All
