@@ -22,20 +22,7 @@
        <div style="clear:both" />
       
 	    <group:products include-sub-groups="true">
-		  <table class="product_table">
- 		    <thead>
-		      <th class="id_col"><lift:loc>Product</lift:loc></th>
-		      <th class="desc_col"><lift:loc></lift:loc></th>
-		      <th class="price_col"><lift:loc>Price</lift:loc></th>
-		    </thead>
-		    <list:repeat>
-		      <tr>
-            <td class="id_col"><product:link><product:value property="ArticleNumber" /></product:link></td>
-		        <td class="desc_col"><product:value property="Description"/></td>
-		        <td class="price_col"><product:value property="Price" /></td>
-		      </tr>
-		    </list:repeat>
-		  </table>
+	    <template:include template="templates/product"></template:include>
 	    </group:products>
   </webshop:current-product-group>
 </template:include>

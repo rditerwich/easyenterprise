@@ -316,7 +316,7 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     public String publish() {
       final int port = 80;
       try {
-        final URL url = new URL("http://localhost:" + port + "/flushcache");
+        final URL url = new URL("http://localhost:" + port + "/tetterode/flushcache");
         BufferedReader in = null;
 
         try {

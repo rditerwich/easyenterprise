@@ -8,7 +8,7 @@
   <name>Tetterode Webshop</name>
   <inceptionYear>2010</inceptionYear>
   <properties>
-    <scala.version>2.8.0.RC3</scala.version>
+    <scala.version>2.8.0.RC7</scala.version>
     <lift.version>2.0-scala280-SNAPSHOT</lift.version>
   </properties>
 

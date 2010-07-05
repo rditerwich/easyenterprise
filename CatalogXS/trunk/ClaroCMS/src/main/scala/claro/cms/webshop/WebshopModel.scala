@@ -112,15 +112,18 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val productqwer : Op
   
   val id = productGroup.getId.longValue
   
-  val parents : Set[ProductGroup] = 
-    cacheData.productGroupParents(productGroup) map (mapping.productGroups) toSet
+  val parents : Seq[ProductGroup] = 
+    productGroup.getParents.toSeq.classFilter(classOf[jpa.catalog.ProductGroup]).map(mapping.productGroups) 
   
-  val children : Set[ProductGroup] =
-    cacheData.productGroupChildGroups(productGroup) map (mapping.productGroups) toSet
+  val children : Seq[ProductGroup] =
+    productGroup.getChildren.toSeq.classFilter(classOf[jpa.catalog.ProductGroup]).map(mapping.productGroups)
     
   val products : Set[Product] =
     cacheData.productGroupProducts(this) map(mapping.products) toSet 
-  
+
+  val productExtent : Set[Product] =
+    cacheData.itemChildExtent(productGroup).classFilter(classOf[jpa.catalog.Product]) map (mapping.products) 
+
   val groupProperties : Seq[Property] = 
     cacheData.productGroupPropertyValues(productGroup) map (v => 
 	    new Property(v.getProperty, v, None, cacheData, mapping)) 
@@ -163,9 +166,6 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val productqwer : Op
       case None => ""
     }
     
-  lazy val productExtent : Set[Product] =
-    cacheData.productGroupProductExtent(productGroup) map(mapping.products) toSet
-    
   lazy val productExtentPromotions : Set[Promotion] = {
     val promotions = cacheData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
     if (promotions isEmpty) Set.empty else Set(promotions.toSeq first) 
@@ -185,14 +185,19 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
   val id : Long = product.getId.longValue
   
   val properties : Seq[Property] =
-  	cacheData.productPropertyValues(product) map (v => 
+  	cacheData.itemPropertyValues(product) map (v => 
   	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) 
 
   val productGroups : Set[ProductGroup] = 
-    product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet 
+    product.getParents.toSet.
+    classFilter(classOf[jpa.catalog.ProductGroup]).
+    filter(!cacheData.excludedItems.contains(_)).
+    map(mapping.productGroups)  
   
-  val productGroupExtent : Set[ProductGroup] = 
-    product.getParents filter(!cacheData.excludedItems.contains(_)) map(mapping.productGroups) toSet
+  val productGroupExtent : Set[ProductGroup] =
+    cacheData.itemParentExtent(product).
+    classFilter(classOf[jpa.catalog.ProductGroup]).
+    map(mapping.productGroups) 
 
   val propertyNames : Set[String] = 
   	properties.map(_.name).toSet

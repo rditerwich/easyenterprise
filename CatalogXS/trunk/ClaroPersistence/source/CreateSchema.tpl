@@ -366,6 +366,7 @@ INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 (2080, 2082),
 
 /* Xingraphics Plates under Print */
+(2049, 2002), 
 (2049, 2081), 
 
 /* Xingraphics Plates */
@@ -376,27 +377,30 @@ INSERT INTO catalogxs.item_parents (parents_id,children_id) VALUES
 
 /* Product 5001 Property Values */
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10010, 1010, 5001, null, '188078');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10011, 1011, 5001, null, 'Blue Ink');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10011, 1011, 5001, null, 'Yellow Ink');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue, moneycurrency) VALUES (10012, 1014, 5001, null, 1295, 'EUR');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10013, 1020, 5001, null, 'blue');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10013, 1020, 5001, null, 'yellow');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10014, 1021, 5001, null, '39K HKS');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10015, 1023, 5001, null, 'Rol');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (500112, 1012, 5001, null, null);
 
 /* Product 5002 Property Values */
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10020, 1010, 5002, null, '128116');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10021, 1011, 5002, null, 'Red Ink');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10021, 1011, 5002, null, 'Cyan Ink');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue, moneycurrency) VALUES (10022, 1014, 5002, null, 2295, 'EUR');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10023, 1020, 5002, null, 'red');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10023, 1020, 5002, null, 'cyan');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10024, 1021, 5002, null, '275-C NP');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10025, 1023, 5002, null, 'Rol');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (500212, 1012, 5002, null, null);
 
 /* Product 5003 Property Values */
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10030, 1010, 5003, null, '175778');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10031, 1011, 5003, null, 'Yellow Ink');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10031, 1011, 5003, null, 'Magenta Ink');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue, moneycurrency) VALUES (10032, 1014, 5003, null, 855, 'EUR');
-INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10033, 1020, 5003, null, 'yellow');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10033, 1020, 5003, null, 'magenta');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10034, 1021, 5003, null, '51K* HKS');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (10035, 1023, 5003, null, 'Blik');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (500312, 1012, 5003, null, null);
 
 /* Product 5010 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5010,'catalog.product');
@@ -407,6 +411,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501004, 1020, 5010, null, 'black');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501005, 1023, 5010, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501006, 1015, 5010, null, 'Standard density Black ink for coated papers. Specifically formulated to react quickly to changes in temperature.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501012, 1012, 5010, null, null);
 
 /* Product 5011 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5011,'catalog.product');
@@ -417,6 +422,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501104, 1020, 5011, null, 'Cyan');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501105, 1023, 5011, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501106, 1015, 5011, null, 'Standard density Cyan ink for coated papers. Specifically formulated to react quickly to changes in temperature.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501112, 1012, 5011, null, null);
 
 /* Product 5012 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5012,'catalog.product');
@@ -427,6 +433,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501204, 1020, 5012, null, 'Magenta');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501205, 1023, 5012, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501206, 1015, 5012, null, 'Standard density Magenta ink for coated papers. Specifically formulated to react quickly to changes in temperature.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501212, 1012, 5012, null, null);
 
 /* Product 5013 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5013,'catalog.product');
@@ -437,6 +444,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501304, 1020, 5013, null, 'black');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501305, 1023, 5013, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501306, 1015, 5013, null, 'Black bio process ink for best results at a high speed.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501312, 1012, 5013, null, null);
 
 /* Product 5014 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5014,'catalog.product');
@@ -447,6 +455,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501404, 1020, 5014, null, 'Cyan');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501405, 1023, 5014, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501406, 1015, 5014, null, 'Cyan bio process ink for best results at a high speed.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501412, 1012, 5014, null, null);
 
 /* Product 5015 Saphira Ink */
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5015,'catalog.product');
@@ -457,6 +466,7 @@ INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,moneyvalue,
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501504, 1020, 5015, null, 'Magenta');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501505, 1023, 5015, null, 'Box');
 INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501506, 1015, 5015, null, 'Magenta bio process ink for best results at a high speed.');
+INSERT INTO catalogxs.propertyvalue (id,property_id,item_id,language,stringvalue) VALUES (501512, 1012, 5015, null, null);
 
 /* Product 5080 Xingraphics eCO Prima 1x1*/
 INSERT INTO catalogxs.item (catalog_id,id,type) VALUES (1,5080,'catalog.product');
@@ -501,7 +511,6 @@ INSERT INTO catalogxs.shop_toplevelproductgroups (shop_id,toplevelproductgroups_
 
 /* Promotion examples */
 INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-20','2011-01-20',1,5001,1000,'EUR',3,1);
-INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-22','2011-02-20',2,5001,700,'EUR',4,1);
 INSERT INTO catalogxs.promotion (type,startdate,enddate,id,product_id,price,pricecurrency,volumediscount,shop_id) VALUES ('shop.volumediscountpromotion','2010-01-10','2011-03-10',3,5002,800,'EUR',5,1);
 
 [/template]

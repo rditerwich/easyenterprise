@@ -57,6 +57,7 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
+				<excludes><exclude>claro/persistence/I*Template.java</exclude></excludes>
 				</configuration>
 			</plugin>
   		<plugin>

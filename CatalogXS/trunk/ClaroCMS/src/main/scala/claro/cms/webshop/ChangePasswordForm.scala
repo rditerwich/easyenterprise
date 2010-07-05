@@ -5,7 +5,7 @@ import java.security.MessageDigest
 import java.nio.charset.Charset
 import claro.common.util.Conversions._
 import claro.jpa
-import claro.cms.{Form,Request}
+import claro.cms.{Form}
 
 object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePasswordForm) {
   

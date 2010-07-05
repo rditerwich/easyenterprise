@@ -33,17 +33,19 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
 
   val promotions : Set[jpa.shop.Promotion] = 
     shop.getPromotions toSet
-  
-  val productGroups : Set[jpa.catalog.ProductGroup] = 
-	catalog.getItems.toSet classFilter (classOf[jpa.catalog.ProductGroup]) filter (!excludedItems.contains(_)) toSet 
 
-  val productGroupChildGroups : Map[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]] = 
-    new mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]] useIn 
-	  (productGroupChildGroups(catalog.getItems.toSet classFilter(classOf[jpa.catalog.ProductGroup]), new mutable.HashSet[jpa.catalog.ProductGroup], _)) toMap  
+  val productGroups : Set[jpa.catalog.ProductGroup] = 
+    catalog.getItems.toSet filter (!excludedItems.contains(_)) classFilter (classOf[jpa.catalog.ProductGroup])  
+
+  val itemChildExtent : Map[jpa.catalog.Item, Set[jpa.catalog.Item]] = 
+    (new mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]] useIn 
+	    (itemChildExtent(catalog.getItems.toSet, new mutable.HashSet[jpa.catalog.Item], _))).
+	      toMap.withDefault(_ => Set.empty)  
     
-  val productGroupParents : Map[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]] = 
-    new mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]] useIn 
-	  (productGroupParents(catalog.getItems.toSet classFilter(classOf[jpa.catalog.ProductGroup]), new mutable.HashSet[jpa.catalog.ProductGroup], _)) toMap  
+  val itemParentExtent : Map[jpa.catalog.Item, Set[jpa.catalog.Item]] = 
+    (new mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]] useIn 
+      (itemParentExtent(catalog.getItems.toSet classFilter(classOf[jpa.catalog.ProductGroup]), new mutable.HashSet[jpa.catalog.Item], _))).  
+	      toMap.withDefault(_ => Set.empty)  
     
   val topLevelProductGroups : Set[jpa.catalog.ProductGroup] = 
 	shop.getTopLevelProductGroups toSet
@@ -52,6 +54,30 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
     new mutable.HashSet[jpa.catalog.Product] useIn 
       (products(shop.getTopLevelProductGroups, new mutable.HashSet[jpa.catalog.ProductGroup], _)) toSet
 
+  val items : Set[jpa.catalog.Item] = 
+    topLevelProductGroups ++ topLevelProductGroups.map(itemChildExtent(_)).flatten
+      
+  val itemProperties : Map[jpa.catalog.Item, Seq[jpa.catalog.Property]] =
+    Map(items.toSeq.map(item => (item, item.getProperties.toSeq.filterNot(excludedProperties))):_*).
+      withDefault(_ => Seq.empty)
+    
+  val itemPropertyExtent : Map[jpa.catalog.Item, Seq[jpa.catalog.Property]] = Map(
+    items.toSeq.map(item =>
+      (item, (itemParentExtent(item).toSeq ++ Seq(item)).
+          flatMap(itemProperties(_)))):_*
+    ).withDefault(_ => Seq.empty)
+    
+  val itemPropertyValues : Map[jpa.catalog.Item, scala.Seq[jpa.catalog.PropertyValue]] =
+    items.makeMapWithValues (
+      _.getPropertyValues.toSeq.
+        filter (v => v.getProperty != null && !excludedProperties.contains(v.getProperty))).
+      withDefault(_ => Seq.empty)
+
+  val itemPropertyValueExtent : Map[jpa.catalog.Item, scala.Seq[jpa.catalog.PropertyValue]] =
+    (new mutable.HashMap[jpa.catalog.Item, Seq[jpa.catalog.PropertyValue]] useIn 
+      (itemPropertyValueExtent(items, new mutable.HashSet[jpa.catalog.Item], _))).
+        toMap.withDefault(_ => Seq.empty)  
+        
   val productGroupPropertyValues : Map[jpa.catalog.ProductGroup, Seq[jpa.catalog.PropertyValue]] =
     productGroups makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
@@ -70,53 +96,43 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
   val productGroupProducts : Map[jpa.catalog.ProductGroup, Set[jpa.catalog.Product]] =
     productGroups makeMapWithValues (_.getChildren.toSet classFilter(classOf[jpa.catalog.Product]) toSet)   
 	  
-  val productGroupProductExtent : Map[jpa.catalog.ProductGroup, collection.Set[jpa.catalog.Product]] = 
-    new mutable.HashMap[jpa.catalog.ProductGroup, mutable.Set[jpa.catalog.Product]] useIn 
-    (productGroupProductExtent(shop.getTopLevelProductGroups, _)) toMap
-
-  private def productGroupChildGroups(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
-    for (group <- groups) if (!visited.contains(group)) {
-      visited += group
-      val children = group.getChildren.toSet classFilter(classOf[jpa.catalog.ProductGroup])
-      productGroupChildGroups(children, visited, result)
-      var direct = children filter (!excludedItems.contains(_))
-      val indirect = children filter (excludedItems.contains(_)) flatMap (result.getOrElse(_, Set.empty))
-      result(group) = direct ++ indirect toSet
+  private def itemChildExtent(items : Iterable[jpa.catalog.Item], visited : mutable.Set[jpa.catalog.Item], result : mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]]) : Unit = {
+    for (item <- items) if (!visited.contains(item)) {
+      visited += item
+      itemChildExtent(item.getChildren, visited, result)
+      val direct = item.getChildren filterNot (excludedItems)
+      val indirect = item.getChildren filterNot (excludedItems) flatMap (result.getOrElse(_, Set.empty))
+      result(item) = direct ++ indirect toSet
     }
   }
   
-  private def productGroupParents(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashMap[jpa.catalog.ProductGroup, Set[jpa.catalog.ProductGroup]]) : Unit = {
-    for (group <- groups) if (!visited.contains(group)) {
-      visited += group
-      productGroupChildGroups(group.getParents, visited, result)
-      var direct = group.getParents filter (!excludedItems.contains(_))
-      val indirect = group.getParents filter (excludedItems.contains(_)) flatMap (result.getOrElse(_, Set.empty))
-      result(group) = direct ++ indirect toSet
+  private def itemParentExtent(items : Iterable[jpa.catalog.Item], visited : mutable.Set[jpa.catalog.Item], result : mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]]) : Unit = {
+    for (item <- items) if (!visited.contains(item)) {
+      visited += item
+      itemParentExtent(item.getParents, visited, result)
+      val direct = item.getParents filterNot (excludedItems)
+      val indirect = item.getParents filterNot (excludedItems) flatMap (result.getOrElse(_, Set.empty))
+      result(item) = direct ++ indirect toSet
     }
   }
 
+  private def itemPropertyValueExtent(items : Iterable[jpa.catalog.Item], visited : mutable.Set[jpa.catalog.Item], result : mutable.HashMap[jpa.catalog.Item, Seq[jpa.catalog.PropertyValue]]) : Unit = {
+    for (item <- items) if (!visited.contains(item)) {
+      visited += item
+      itemPropertyValueExtent(item.getParents, visited, result)
+      val itemValues = itemPropertyValues(item)
+      val itemProperties = itemValues.map(_.getProperty).toSet
+      val parentValues = item.getParents.flatMap(result(_)).filter(v => !itemProperties.contains(v.getProperty)) 
+      result(item) = itemValues ++ parentValues
+    }
+  }
+    
   private def products(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashSet[jpa.catalog.Product]) : Unit = {
     for (group <- groups) if (!visited.contains(group)) {
       visited += group
       products(group.getChildren.toSet classFilter(classOf[jpa.catalog.ProductGroup]), visited, result)
       result ++= group.getChildren.toSet classFilter(classOf[jpa.catalog.Product]) 
     }
-  }
-
-  private def productGroupProductExtent(groups : Iterable[jpa.catalog.ProductGroup], result : mutable.Map[jpa.catalog.ProductGroup, mutable.Set[jpa.catalog.Product]]) : mutable.Set[jpa.catalog.Product] = {
-    var allProducts = new mutable.HashSet[jpa.catalog.Product]
-    for (group <- groups) {
-      if (!result.contains(group)) {
-	      var products = new mutable.HashSet[jpa.catalog.Product]
-	      result += ((group, products))
-	      products ++= productGroupProductExtent(group.getChildren.toSet classFilter(classOf[jpa.catalog.ProductGroup]), result)
-	      products ++= group.getChildren.toSet classFilter(classOf[jpa.catalog.Product])
-	      allProducts ++= products
-      } else {
-        allProducts ++= result(group)
-      }
-    }
-    allProducts
   }
 
   def template(obj : Object, template : String) : Option[NodeSeq] = {

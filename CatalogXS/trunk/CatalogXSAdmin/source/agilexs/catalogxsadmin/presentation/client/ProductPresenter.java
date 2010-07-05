@@ -7,6 +7,7 @@ import java.util.Map;
 
 import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -78,7 +79,7 @@ public class ProductPresenter implements Presenter<ProductView> {
         orgProduct = null;
         currentProduct = new Product();
         currentProduct.setCatalog(currentProductGroup.getCatalog());
-        currentProduct.setParents(new ArrayList<ProductGroup>());
+        currentProduct.setParents(new ArrayList<Item>());
         currentProduct.getParents().add(currentProductGroup);
         show(SHOW.PRODUCT);
       }});

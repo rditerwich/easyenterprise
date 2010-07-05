@@ -1,7 +1,6 @@
 package claro.cms.components
 
 import net.liftweb.http.S
-import claro.cms.Request
 import claro.cms.Component
 
 class MenuComponent extends Component {

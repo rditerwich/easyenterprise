@@ -33,23 +33,7 @@
   </head>
 <body> 
   <div id="page"> 
-    <div id="page_header"> 
-      <a href="/"><div class="page_logo"></div></a>
-      <div style="align:center">
-      <lift:msgs>
-        <lift:notice_class>page_messages</lift:notice_class>
-        <lift:notice_msg>&#160;</lift:notice_msg>
-      </lift:msgs>
-      </div>
-		  <webshop:current-user>
-      <div class="page_login">
-        Welcome, <user:name/>
-        &#160;<a href="/userinfo">settings</a>
-        &#160;<webshop:logout-link>logout</webshop:logout-link>
-       </div>
-       </webshop:current-user>
-      <template:include template="nested"/> 
-    </div>
+	  <template:include template="templates/header"/>
     <table id="page_center">
       <tr valign="top"> 
         <td id="page_left"> 

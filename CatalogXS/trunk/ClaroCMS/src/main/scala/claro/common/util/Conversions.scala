@@ -1,6 +1,7 @@
 package claro.common.util
 
 //import scala.collection.{Map,Set}
+import scala.collection.JavaConversions._
 
 object Conversions {
 
@@ -13,7 +14,6 @@ object Conversions {
 //  implicit def convertMap[T,E](map : java.util.Map[T,E]) = jcl.Map(map)
 //  implicit def convertSortedMap[T,E](map : java.util.SortedMap[T,E]) = jcl.SortedMap(map)
 //  implicit def convertIterable[A](it : java.util.Collection[A]) = new scala.collection.jcl.IterableWrapper[A] { override def underlying = it }
-//  implicit def convertCollection[A](collection : java.util.Collection[A]) = new RichCollection[A](collection)
   implicit def rich(properties : java.util.Properties) = new RichProperties(properties)
   
   implicit def rich[A](option : Option[A]) = new RichOption(option)
@@ -26,7 +26,7 @@ object Conversions {
   implicit def rich(value : java.lang.Long) = new RichLong(value)
   implicit def rich(value : java.lang.Float) = new RichFloat(value)
   implicit def rich(value : java.lang.Double) = new RichDouble(value)
-  implicit def rich[A](it : Iterable[A]) = new RichIterable[A](it)
+  implicit def rich[A](it : Traversable[A]) = new RichTraversable[A](it)
 //  implicit def richCollection[A](collection : Collection[A]) = new RichCollection[A](collection)
   implicit def rich[A](seq : Seq[A]) = new RichSeq[A](seq)
   implicit def rich[A](list : List[A]) = new RichList[A](list)

@@ -8,20 +8,9 @@
         <p>No search results found</p>
 	      <webshop:current-product-group> <webshop:search-all class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all></webshop:current-product-group>		  
       </list:none>
-      <webshop:current-product-group> <webshop:search-all class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all></webshop:current-product-group>		  
-      <table class="product_table">
-        <thead>
-          <th class="id_col"><lift:loc>Product</lift:loc></th>
-          <th class="desc_col"><lift:loc></lift:loc></th>
-          <th class="price_col"><lift:loc>Price</lift:loc></th>
-        </thead>
+      <div><webshop:current-product-group> <webshop:search-all class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all></webshop:current-product-group></div>		  
         <list:repeat>
-          <tr>
-            <td class="id_col"><product:link><product:value property="ArticleNumber" /></product:link></td>
-            <td class="desc_col"><product:value property="Description"/></td>
-            <td class="price_col"><product:value property="Price" /></td>
-          </tr>
+	    <template:include template="templates/product"></template:include>
         </list:repeat>
-      </table>
   </webshop:current-search-products>
 </template:include>

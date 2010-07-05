@@ -63,10 +63,17 @@ Package {
                 }
                 Attribute {
                     name = parents
-                    type = catalog:ProductGroup
+                    type = catalog:Item
                     lower = 0
                     upper = {}
-                    opposite = catalog:ProductGroup/attributes:children
+                    opposite = catalog:Item/attributes:children
+                }
+                Attribute {
+                    name = children
+                    type = catalog:Item
+                    lower = 0
+                    upper = {}
+                    opposite = catalog:Item/attributes:parents
                 }
                 Attribute {
                     name = propertyGroups
@@ -118,13 +125,6 @@ Package {
             name = ProductGroup
             superClass = catalog:Item
             attributes = {
-                Attribute {
-                    name = children
-                    type = catalog:Item
-                    lower = 0
-                    upper = {}
-                    opposite = catalog:Item/attributes:parents
-                }
                 Attribute {
                     name = containsProducts
                     type = primitive:Boolean

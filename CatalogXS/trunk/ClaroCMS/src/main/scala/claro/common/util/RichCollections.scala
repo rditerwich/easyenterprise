@@ -1,13 +1,13 @@
 package claro.common.util
 
-import scala.collection.{immutable,mutable,Set,Map}
+import scala.collection.{immutable,mutable}
 import scala.collection.generic.CanBuildFrom
 import claro.common.util.Conversions._
 
 /**
  * Extensions to the collection classes
  */
-class RichIterable[A](it : Iterable[A]) {
+class RichTraversable[A](it : Traversable[A]) {
 
   /** 
    * Convert the iterable to an immutable set
@@ -16,9 +16,11 @@ class RichIterable[A](it : Iterable[A]) {
 
   /**
    * Filters element that are not of specified type.
-   */
-  def classFilter[B <: A](c : java.lang.Class[B])(implicit bf: CanBuildFrom[A, B, Iterable[B]]) : Iterable[B] = 
+  def classFilter[B <: A](c : java.lang.Class[B])(implicit bf: CanBuildFrom[A, B, RichTraversable[B]]) : Traversable[B] = 
     it filter (c.isInstance(_)) map (_.asInstanceOf[B])
+   */
+    def classFilter[B <: A](c : java.lang.Class[B]) : Traversable[B] = 
+      it filter (c.isInstance(_)) map (_.asInstanceOf[B])
  
   /**
    * Convert elements to a immutable hash map. 
@@ -47,20 +49,30 @@ class RichIterable[A](it : Iterable[A]) {
       (m => it foreach { a => m getOrElseUpdate (f(a), new mutable.ArrayBuffer) += a })).toSeq:_*)
 }
 
-class RichCollection[A](col : Collection[A]) extends RichIterable[A](col) {
+class RichCollection[A](col : Collection[A]) extends RichTraversable[A](col) {
   
 }
 
 class RichSeq[A](seq : Seq[A]) extends RichCollection[A](seq) {
+  /**
+   * Filters element that are not of specified type.
+   */
+  override def classFilter[B <: A](c : java.lang.Class[B]) : Seq[B] = 
+    seq filter (c.isInstance(_)) map (_.asInstanceOf[B])
+
 }
 
 class RichList[A](list : List[A]) extends RichSeq[A](list) {
 }
 
-class RichSet[A](set : Set[A]) {
-  def classFilter[B <: A](c : java.lang.Class[B]) : Set[B] = 
-   Set((set filter (c.isInstance(_)) toSeq) map (_.asInstanceOf[B]):_*)
-   def immutable = collection.immutable.Set(set.toSeq:_*)
+class RichSet[A](set : Set[A]) extends RichCollection[A](set) {
+  /**
+   * Filters element that are not of specified type.
+   */
+  override def classFilter[B <: A](c : java.lang.Class[B]) : Set[B] = 
+    set filter (c.isInstance(_)) map (_.asInstanceOf[B])
+    
+  def immutable = collection.immutable.Set(set.toSeq:_*)
 }
 
 class RichMap[A,B](map : Map[A,B]) {

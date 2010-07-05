@@ -104,8 +104,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 354
-                    y = 110
+                    x = 371
+                    y = 94
                     width = 163
                     height = 100
                 }
@@ -115,8 +115,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 589
-                    y = 137
+                    x = 639
+                    y = 94
                     width = 81
                     height = 53
                 }
@@ -177,15 +177,6 @@ DomainDiagram {
         Reference {
             bendPoints = {
                 Point {
-                    x = 298
-                    y = 207
-                }
-            }
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup/attributes:children
-        }
-        Reference {
-            bendPoints = {
-                Point {
                     x = 338
                     y = 546
                 }
@@ -211,19 +202,13 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Product/attributes:templates
         }
         Reference {
-            bendPoints = {
-                Point {
-                    x = 551
-                    y = 177
-                }
-            }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Relation/attributes:relatedTo
         }
         Reference {
             bendPoints = {
                 Point {
-                    x = 551
-                    y = 155
+                    x = 592
+                    y = 103
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:relations
@@ -299,6 +284,23 @@ DomainDiagram {
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:PropertyGroup/attributes:labels
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 602
+                    y = 169
+                }
+                Point {
+                    x = 664
+                    y = 188
+                }
+                Point {
+                    x = 600
+                    y = 222
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:children
         }
     }
     superClassReferences = {

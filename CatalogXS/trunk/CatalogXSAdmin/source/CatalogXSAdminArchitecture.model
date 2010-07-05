@@ -170,7 +170,7 @@ JavaEEArchitectureJpaEjbGwt {
                         ClassAttributeView {
                             name = ChildrenView
                             kind = all
-                            referringAttributes = catalog:ProductGroup/attributes:children
+                            referringAttributes = catalog:Item/attributes:children
                         }
                         ClassAttributeView {
                             name = PropertyValuesView
@@ -322,7 +322,7 @@ JavaEEArchitectureJpaEjbGwt {
                 ClassView {
                     name = CrudProductGroupView
                     kind = all
-                    excluded = catalog:ProductGroup/attributes:children
+                    excluded = catalog:Item/attributes:children
                     views = {
                         ClassAttributeView {
                             name = CatalogView

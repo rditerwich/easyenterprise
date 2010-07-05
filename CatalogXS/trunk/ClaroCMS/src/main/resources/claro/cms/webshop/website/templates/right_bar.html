@@ -17,13 +17,20 @@
       </table> 
     </form> 
   </div>
-  <webshop:filter-groups>
+  <webshop:filters>
   <hr/> 
   <div class="side_bar_panel"> 
   <h1>Filter</h1>
-  <list:repeat><group:name/></list:repeat>
+  <list:repeat>
+    <select>
+	  <option>-- <filter:title/> --</option>
+	  <filter:values>
+	  <option><value:value/></option>
+	  </filter:values>
+	</select>
+</list:repeat>
   </div>
-  </webshop:filter-groups>
+  </webshop:filters>
   <cms:locales><list:plural>
   <hr/> 
   <div class="side_bar_panel loginpanel"> 
