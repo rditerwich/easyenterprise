@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
@@ -150,7 +151,7 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
                 CatalogCache.get().setProductGroupProduct(productGroup);
               }
               CatalogCache.get().put(productGroup);
-              for (ProductGroup pPG : productGroup.getParents()) {
+              for (Item pPG : productGroup.getParents()) {
                 CatalogCache.get().put(pPG);
               }
               boolean present = false;

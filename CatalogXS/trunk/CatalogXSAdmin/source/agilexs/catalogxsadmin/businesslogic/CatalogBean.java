@@ -301,7 +301,7 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
             value.setProperty(value.getProperty());
           }
           if (productGroup.getParents() != null) {
-            for (ProductGroup parent : productGroup.getParents()) {
+            for (Item parent : productGroup.getParents()) {
               if (parent != null && !parents.contains(parent)) {
                 findAllItemParents(shop, parent, parents);
               }

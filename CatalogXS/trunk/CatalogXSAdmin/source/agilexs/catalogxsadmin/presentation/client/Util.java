@@ -304,9 +304,9 @@ public class Util {
     return parents;
   }
 
-  private static void findParents(ProductGroup productGroup, List<Long> parents) {
+  private static void findParents(Item productGroup, List<Long> parents) {
     if (productGroup != null && productGroup.getParents() != null) {
-      for (ProductGroup parent : productGroup.getParents()) {
+      for (Item parent : productGroup.getParents()) {
         if (!parents.contains(parent.getId())) {
           findParents(parent, parents);
           parents.add(parent.getId());

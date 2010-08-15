@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -176,7 +177,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
             }
             for (ProductGroup productGroup : result) {
               CatalogCache.get().put(productGroup);
-              for (ProductGroup pPG : productGroup.getParents()) {
+              for (Item pPG : productGroup.getParents()) {
                 CatalogCache.get().put(pPG);
               }
 //              CatalogCache.get().putParent(productGroup, parentPG);

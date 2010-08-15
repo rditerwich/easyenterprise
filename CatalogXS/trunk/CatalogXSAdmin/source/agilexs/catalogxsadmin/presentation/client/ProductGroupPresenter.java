@@ -8,6 +8,7 @@ import java.util.Map;
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
@@ -44,7 +45,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
     pgpp = new ItemPropertiesPresenter(currentLanguage);
     parentsP.setDeleteHandler(new DeleteHandler<Long>() {
       @Override public void onDelete(Long data) {
-        for (ProductGroup parent : currentProductGroup.getParents()) {
+        for (Item parent : currentProductGroup.getParents()) {
           if (data.equals(parent.getId())) {
             currentProductGroup.getParents().remove(parent);
             break;
@@ -56,7 +57,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       @Override public void onAdd(Long pid) {
         boolean present = false;
 
-        for (ProductGroup parent : currentProductGroup.getParents()) {
+        for (Item parent : currentProductGroup.getParents()) {
           if (pid.equals(parent.getId())) {
             present = true;
           }
@@ -92,12 +93,12 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       newPG.setProperties(new ArrayList<Property>());
       newPG.setContainsProducts(Boolean.FALSE);
       if (parent != null) {
-        final List<ProductGroup> parents = new ArrayList<ProductGroup>();
+        final List<Item> parents = new ArrayList<Item>();
 
         parents.add(parent);
         newPG.setParents(parents);
       } else {
-        newPG.setParents(new ArrayList<ProductGroup>());
+        newPG.setParents(new ArrayList<Item>());
       }
       view.containsProducts().setValue(newPG.getContainsProducts());
       show(newPG);
@@ -184,7 +185,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         //parents product groups
         final List<Map.Entry<Long, String>> curParents = new ArrayList<Map.Entry<Long, String>>();
 
-        for (ProductGroup cp : currentProductGroup.getParents()) {
+        for (Item cp : currentProductGroup.getParents()) {
           curParents.add(CatalogCache.get().getProductGroupName(cp.getId(), currentLanguage));
         }
         parentsP.show(currentProductGroup, curParents, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
