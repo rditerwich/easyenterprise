@@ -4,16 +4,16 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-common/2.0/lift-common-2.0.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-common/2.0/lift-common-2.0-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-webkit/2.0/lift-webkit-2.0.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-webkit/2.0/lift-webkit-2.0-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-util/2.0/lift-util-2.0.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-util/2.0/lift-util-2.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/lift-common-2.0-scala280-SNAPSHOT.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-common/2.0-scala280-SNAPSHOT/lift-common-2.0-scala280-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="lib/lift-webkit-2.0-scala280-SNAPSHOT.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-webkit/2.0-scala280-SNAPSHOT/lift-webkit-2.0-scala280-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="lib/lift-util-2.0-scala280-SNAPSHOT.jar" sourcepath="C:/Users/ruud/.m2/repository/net/liftweb/lift-util/2.0-scala280-SNAPSHOT/lift-util-2.0-scala280-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.5.jar" sourcepath="C:/Users/ruud/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/persistence-api-1.0.jar" sourcepath="C:/Users/ruud/.m2/repository/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.1.jar" sourcepath="C:/Users/ruud/.m2/repository/javax/mail/mail/1.4.1/mail-1.4.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/google-collections-1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-json/2.0/lift-json-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-actor/2.0/lift-actor-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ruud/.m2/repository/net/liftweb/lift-mapper/2.0/lib/lift-mapper-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/lift-json-2.0-scala280-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/lift-actor-2.0-scala280-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/lift-mapper-2.0-scala280-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>

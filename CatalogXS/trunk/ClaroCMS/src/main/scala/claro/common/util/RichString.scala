@@ -31,6 +31,11 @@ class RichString(s: String) {
     else None
   }
   
+  def parsePostfix (postfix : String) : Option[String] = {
+    if (s.endsWith(postfix)) Some(s.substring(0, s.length - postfix.length))
+    else None
+  }
+  
   def afterLast(pattern : String) : String = {
     val source = getOrElse("")
   	val index = source.lastIndexOf(pattern);

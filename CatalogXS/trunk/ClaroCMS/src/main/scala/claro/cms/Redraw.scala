@@ -9,7 +9,7 @@ import collection.mutable
  * Redrawing
  */
 
-object CurrentRedraws extends RequestVar(new Redraws)
+object CurrentRedraws extends RequestVar[Redraws](new Redraws)
 
 class Redraws extends mutable.HashMap[String,() => NodeSeq] {
   def toJsCmd = {

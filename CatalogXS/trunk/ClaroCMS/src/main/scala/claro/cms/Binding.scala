@@ -1,10 +1,10 @@
 package claro.cms
-
 import claro.common.util.Conversions._
-import xml.{Elem,Group,Node,NodeSeq,Text}
 import collection.{mutable}
 import java.util.concurrent.ConcurrentMap
 import scala.collection.JavaConversions._
+
+import xml.{Elem, Group, MetaData, Node, NodeSeq, Text, Attribute, UnprefixedAttribute, PrefixedAttribute, TopScope}
 
 class BindingCtor(label : String) {
   def -> (binding : Binding) = (label, binding)
@@ -75,10 +75,35 @@ object Binding {
             val bindings = if (s.prefix == null) None else context.bindings.get(s.prefix)  
             bindings match {
             case Some(Bindings(obj, bindings)) => bindings.get(s.label) match {
-            case Some(binding) => binding.bind(s, context)
-            case None => NodeSeq.Empty
+              case Some(binding) => binding.bind(s, context)
+              case None => NodeSeq.Empty
             }
-            case None => Elem(s.prefix, s.label, s.attributes, s.scope, bind(s.child, context) :_*)
+            case None => 
+              var attrs : MetaData = s.attributes 
+              for (attr <- s.attributes) attr match {
+                case PrefixedAttribute(prefix, label, value, _) => context.bindings.get(prefix) match {
+                  case Some(Bindings(obj, bindings)) => bindings.get(label) match {
+                    case Some(binding) => 
+                      val str = value.toString
+                      val i = str.indexOf('=')
+                      val i2 = str.indexOf(':', i)
+                      val l = if (i <= 0) str else str.substring(0, i) 
+                      val v = if (i <= 0) "" else 
+                        if (i2 < 0) str.substring(i + 1) 
+                        else str.substring(i + 1, i2)
+                      if (binding.toBoolean(attr, context))
+                        attrs = new UnprefixedAttribute(l, v, attrs.filter(_ != attr))
+                      else 
+                        if (i2 < 0) attrs = attrs.filter(_ != attr)
+                        else attrs = new UnprefixedAttribute(l, str.substring(i2 + 1), attrs.filter(_ != attr))
+                    case None => 
+                    }
+                  case None => 
+                }
+                case _ => 
+              }
+              attrs = MetaData.normalize(attrs, TopScope)
+              Elem(s.prefix, s.label, attrs, s.scope, bind(s.child, context) :_*)
             }
         } catch {
           case e => <div>ERROR:{e.printStackTrace;e}</div> 
@@ -86,16 +111,19 @@ object Binding {
       case Group(nodes) => Group(bind(nodes, context))
       case n => n
     }
+
   }
 
-  val ident = new Binding {
+  object ident extends Binding {
     def bind(node : Node, context: BindingContext) = 
       Binding.bind(node.child, context)
+    override def toBoolean(attr : MetaData, context: BindingContext) = true 
   }
   
-  val empty = new Binding {
+  object empty extends Binding {
     def bind(node : Node, context: BindingContext) = 
       NodeSeq.Empty
+    override def toBoolean(attr : MetaData, context: BindingContext) = false 
   }
   
   def apply(identNotEmpty : Boolean) = if (identNotEmpty) ident else empty 
@@ -104,10 +132,43 @@ object Binding {
       case Some(attr) => attr.value.toString
       case None => defaultPrefix
     }
+    
+  private def toBoolean(binding : Binding, s : Elem, context : BindingContext) : Boolean = {
+    if (binding == ident) true
+    else if (binding == empty) false
+    else binding.bind(s, context) match {
+      case Text(s) => 
+        if (s.equalsIgnoreCase("true")) return true
+        try {
+          if (s.toInt > 0) return true
+        } catch {
+          case e : NumberFormatException =>
+        }
+        return false
+      case NodeSeq.Empty => return false
+      case _ => return true
+    }
+  }
 }
 
 trait Binding extends BindingHelpers {
   def bind(node : Node, context : BindingContext) : NodeSeq
+  def toBoolean(attr : MetaData, context : BindingContext) : Boolean = false
+  def toBoolean(a : Any) = {
+    a match {
+      case b : Boolean => b
+      case i : Int => i > 0
+      case n : Number => n.intValue > 0
+      case it : Iterable[Any] => !it.isEmpty
+      case null => false
+      case obj : Any => 
+        try {
+          obj.toString.toInt > 0
+        } catch {
+          case e : NumberFormatException => false
+        }
+    }
+  }
 }
 
 class AnyBinding(f : => Any) extends Binding {
@@ -117,12 +178,14 @@ class AnyBinding(f : => Any) extends Binding {
       case value => Text(f.toString)
     }
   }
+  override def toBoolean(attr : MetaData, context : BindingContext) : Boolean = toBoolean(f)
 }
 
 class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
   def bind(node : Node, context : BindingContext) : NodeSeq = {
     Binding.bind(f(node.child), context)
   }
+  override def toBoolean(attr : MetaData, context : BindingContext) = toBoolean(f(attr.value))
 }
 
 class AnyComplexBinding(prefix : Node => String, f : => Any) extends Binding {
@@ -138,7 +201,8 @@ class AnyComplexBinding(prefix : Node => String, f : => Any) extends Binding {
       case value =>
         Binding.bind(node.child, context + (prefix(node) -> bindingsFor(value)))
     }
-  }  
+  }
+  override def toBoolean(attr : MetaData, context : BindingContext) = toBoolean(f)
 }
 
 class BindableBinding(f : => Bindable) extends Binding {
@@ -171,6 +235,8 @@ object CollectionBinding {
         val listBindings = listPrefix -> Bindings(elt, Map(
           "first" -> Binding(index == 1),
           "last" -> Binding(index == size),
+          "even" -> Binding(index % 2 == 0),
+          "odd" -> Binding(index % 2 != 0),
           "skip-first" -> Binding(index > 1),
           "skip-last" -> Binding(index < size),
           "none" -> Binding.empty,
@@ -254,6 +320,8 @@ object EmptyBindings {
   val bindings = Bindings(null, Map(
   "first" -> Binding.empty,
   "last" -> Binding.empty,
+  "even" -> Binding.ident,
+  "odd" -> Binding.empty,
   "skip-first" -> Binding.empty,
   "skip-last" -> Binding.empty,
   "once" -> Binding.empty,

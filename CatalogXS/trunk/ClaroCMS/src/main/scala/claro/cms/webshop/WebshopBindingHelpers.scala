@@ -33,18 +33,23 @@ trait WebshopBindingHelpers extends BindingHelpers {
   def format(money : Money) = formatMoney(money.amount, money.currency)
   
   def formatMoney(amount : Double, currency : String) = {
-    //Unparsed doesn't seem to work in combination with ajax calls...
-    //Therefore we use the symbol tokens instead of html symbols.
-    val sign : Node = currency match {
-        case "EUR" => <span>&euro;</span>
-        case "GBP" => <span>£</span>
-        case "USD" => <span>$</span>
-        case _ => <span>&euro;</span>
-    }
-    sign ++
-    Text(" ") ++
-    Text(String.format("%.2f", double2Double(amount / 100.0)))
-  }
+    val sign = currency match {
+        case "EUR" => <span class="money-sign">&euro;</span>
+        case "GBP" => <span class="money-sign">£</span>
+        case "USD" => <span class="money-sign">$</span>
+        case _ => <span class="money-sign">&euro;</span>
+      }  
+
+    val whole : Int = (amount / 100.0).asInstanceOf[Int]
+    val cents : Int = (amount / 100.0 - whole).asInstanceOf[Int]
+    <span class="money">
+      {sign } 
+      <span class="money-space"></span>  
+      <span class="money-whole">{String.format("%d", int2Integer(whole))}</span>  
+      <span class="money-sep">,</span> 
+      <span class="money-cents">{String.format("%02d", int2Integer(cents))}</span>
+    </span>
+  } 
   
   private def propertyValue(property : Option[Property]) = {
     property match { 

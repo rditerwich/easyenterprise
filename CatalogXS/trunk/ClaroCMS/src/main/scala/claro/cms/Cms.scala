@@ -16,7 +16,7 @@ object Cms {
 
   def entityManager(name : String) = Website.instance.entityManagerFactory(name).createEntityManager
 
-  def caching = true
+  def caching = false
 
   components.append(() => new TemplateComponent)
   components.append(() => new claro.cms.components.StdComponent)

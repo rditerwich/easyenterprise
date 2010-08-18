@@ -115,8 +115,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 639
-                    y = 94
+                    x = 631
+                    y = 114
                     width = 81
                     height = 53
                 }
