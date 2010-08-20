@@ -1,0 +1,186 @@
+/* ThemePanelMenu Style Sheet */
+
+.ThemePanelMenu {
+	background-color:transparent;
+	width:100%;
+	border-collapse:separate;
+}
+
+.ThemePanelMenu TD {
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.ThemePanelMenu DIV {
+	text-align: left;
+	color:#032D67;
+	font-size: 13px;
+	*font-size:12px;
+	font-weight:bold;
+	width:100%;
+	height: 10px;
+	margin-top:0px;
+	margin-bottom:2px;
+	padding-left:10px;
+}
+
+
+.ThemePanelMainItemHover DIV, .ThemePanelMainItemActive DIV {
+	color:#F47320;
+}
+
+.ThemePanelMainItem {}
+
+.ThemePanelMainFolderLeft, .ThemePanelMainItemLeft {
+	width:0px;
+}
+
+.ThemePanelMainFolderText, .ThemePanelMainItemText {
+	color:#032D67;
+	padding:0px;
+	padding-left:10px;
+	padding-top:3px;
+	padding-bottom:3px;
+	font-size:13px;
+	font-weight:bold;
+	border:1px solid transparent;
+	_border:1px solid #E8E9EB;
+}
+
+
+.ThemePanelMainFolderRight, .ThemePanelMainItemRight {
+	padding:0px !important;
+}
+
+
+
+.ThemePanelMainItemHover .ThemePanelMainItemText {
+	color:#F41651;
+	background-color:#f5f5f5;
+	border:1px solid #9298B7;
+	border-right:0px;
+	*border:1px solid #9298B7;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderText {
+	color:#F41651;
+	background-color:#f5f5f5;
+	border:1px solid #9298B7;
+	border-right:0px;
+	*border:1px solid #9298B7;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderRight {
+	background-color:#f5f5f5;
+	border-top:1px solid #9298B7;
+	border-bottom:1px solid #9298B7;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainItemRight {
+	background-color:#f5f5f5;
+	border:1px solid #9298B7;
+	border-left:0px;
+	*border:0px;
+}
+
+.ThemePanelMainItemHover .ThemePanelMainFolderRight .ItemRightDiv {
+	position:absolute;
+	width:7px;
+	height:20px;
+	padding:0px;
+	background-color:#f5f5f5;
+	margin-top:-11px;
+	margin-left:10px;
+	border-top:1px solid #898FA7;
+	border-bottom:1px solid #898FA7;
+	z-index:100;
+}
+
+.ItemRightDiv {
+	*display:none;
+}
+
+
+
+
+
+
+
+/* sub menus sub components */
+.ThemePanelSubMenu {
+	position:absolute;
+	visibility:hidden;
+	left:0px;
+	top:0px;
+	margin:0px;
+	margin-left:6px;
+	margin-top:-5px;
+	padding:0px;
+	padding-right:-2px;
+	padding-top:5px;
+	padding-bottom:10px;
+	background-color:#f5f5f5;
+	border:1px solid #898FA7;
+	filter:alpha(opacity=90);
+	-moz-opacity:.90;
+	opacity:.90;
+}
+
+.ThemePanelSubMenuTable {
+	*margin-left:-1px;
+}
+
+.ThemePanelSubMenu TD {
+	font-size: 13px;
+	*font-size:12px;
+	font-weight:bold;
+	text-align:left;
+	cursor:pointer;
+	color:#032D67;
+	white-space:nowrap;
+	margin-right:-1px;
+}
+
+.ThemePanelMenuItem:first-child .ThemePanelMenuItemLeft, .ThemePanelMenuItem:first-child .ThemePanelMenuFolderLeft {
+	border-left:1px solid #f5f5f5 !important;
+	*border-left:1px solid #898FA7 !important;
+	padding:0px;
+}
+
+.ThemePanelMenuItemHover:first-child .ThemePanelMenuItemLeft, .ThemePanelMenuItemHover:first-child .ThemePanelMenuFolderLeft {
+	border-left:1px solid #f5f5f5 !important;
+	*border-left:1px solid #898FA7 !important;
+}
+
+.ThemePanelMenuItemHover .ThemePanelMenuFolderRight .ItemRightDiv {
+	position:absolute;
+	width:7px;
+	height:20px;
+	background-color:#f5f5f5;
+	margin-top:-11px;
+	margin-left:10px;
+	border-top:1px solid #898FA7;
+	border-bottom:1px solid #898FA7;
+	z-index:100;
+	*display:none;
+}
+
+
+
+.ThemePanelMenuItemHover TD, .ThemePanelMenuItemActive TD {
+	color:#F41651;
+}
+
+.ThemePanelMenuFolderLeft, .ThemePanelMenuItemLeft {
+	width:10px;
+}
+
+.ThemePanelMenuFolderRight, .ThemePanelMenuItemRight {
+	width:10px;
+}
+
+.ThemePanelMenuFolderText, .ThemePanelMenuItemText {
+	padding-top:3px;
+	padding-bottom:3px;
+	border-bottom:2px dotted #638DA7 !important;
+}

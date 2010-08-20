@@ -252,6 +252,8 @@ class Property(property : jpa.catalog.Property, val value : jpa.catalog.Property
     else if (value.getMoneyValue != null) "&euro; " + value.getMoneyValue.toString
     else if (value.getRealValue != null) value.getRealValue.toString
     else ""
+      
+    override def toString = name
 }
 
 object groupByLocale {

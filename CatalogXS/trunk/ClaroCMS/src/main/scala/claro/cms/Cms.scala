@@ -14,7 +14,7 @@ object Cms {
   val components = RulesSeq[() => Component]
   val logger = Logger("CMS")
 
-  def entityManager(name : String) = Website.instance.entityManagerFactory(name).createEntityManager
+  def entityManager = Website.instance.entityManagerFactory("claro.jpa.PersistenceUnit").createEntityManager
 
   def caching = false
 

@@ -292,12 +292,12 @@ DomainDiagram {
                     y = 169
                 }
                 Point {
-                    x = 664
-                    y = 188
+                    x = 651
+                    y = 169
                 }
                 Point {
-                    x = 600
-                    y = 222
+                    x = 652
+                    y = 197
                 }
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:children

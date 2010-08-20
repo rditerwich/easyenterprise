@@ -13,9 +13,6 @@
 </style>
 </head>
 <body>
-	<webshop:promotions>
-<div class="any" list:first="class=first" list:last="class=last"></div>
-		</webshop:promotions>
 <div id="header">
 	<div id="logo">
 		<h1>WebsiteName.com</h1>
@@ -65,9 +62,17 @@
 		<!--
 			Use class="active" to permanently highlight a given menu item
 		-->
-		<webshop:top-level-groups>
-			<li list:first="class=first"><group:link><group:group-value property="Name"/></group:link></li>
-		</webshop:top-level-groups>
+		<li class="first"><a href="">Clothing</a></li>
+		<li><a href="">Shoes</a></li>
+		<li><a href="">Baby</a></li>
+		<li><a href="">Electronics</a></li>
+		<li><a href="">Home</a></li>
+		<li><a href="">Kitchen</a></li>
+		<li><a href="">Bath</a></li>
+		<li><a href="">Outdoors</a></li>
+		<li><a href="">Furniture</a></li>
+		<li><a href="">Toys</a></li>
+		<li><a href="">Sporting Goods</a></li>
 	</ul>
 </div>
 <!-- end #categories -->
@@ -81,16 +86,42 @@
 			</div>
 			<div class="content">
 				<ul class="list2">
-					<webshop:promotions>
-					<li list:even="class=alt">
-						<promotion:product>
-						<p class="image"><a href="#"><product:value property="Image" height="84px" class="border" /></a></p>
-						<h3><a href="#"><product:value property="Description"/></a></h3>
-						<p><product:value property="Synopsis"/>Delenit augue duis dolore sed feugait eleifend option.</p>
-						<p><a href="#" class="add">Add to Cart</a> <b><product:value property="Price"/></b></p>
-						</promotion:product>
+					<li>
+						<p class="image"><a href="#"><img src="images/subpage2_01.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
 					</li>
-					</webshop:promotions>
+					<li class="alt">
+						<p class="image"><a href="#"><img src="images/homepage17.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
+					</li>
+					<li>
+						<p class="image"><a href="#"><img src="images/homepage18.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
+					</li>
+					<li class="alt">
+						<p class="image"><a href="#"><img src="images/homepage19.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
+					</li>
+					<li>
+						<p class="image"><a href="#"><img src="images/homepage20.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
+					</li>
+					<li class="alt">
+						<p class="image"><a href="#"><img src="images/homepage21.jpg" alt="" width="84" height="84" class="border" /></a></p>
+						<h3><a href="#">Lorem ipsum dolor</a></h3>
+						<p>Delenit augue duis dolore sed feugait eleifend option.</p>
+						<p><a href="#" class="add">Add to Cart</a> <b><span>$64</span><sup>99</sup></b></p>
+					</li>
 				</ul>
 			</div>
 		</div>
