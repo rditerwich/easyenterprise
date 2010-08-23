@@ -73,6 +73,11 @@ class Website(websiteFile : URI) {
   
   lazy val emProperties = config.properties.parseAll("entitymanager.")
   
+  Dao.setProperties(emProperties)
+  
+  /**
+   * @deprecated
+   */
   def entityManagerFactory(name : String) =  
 	  Persistence.createEntityManagerFactory(name, emProperties toJava)
 

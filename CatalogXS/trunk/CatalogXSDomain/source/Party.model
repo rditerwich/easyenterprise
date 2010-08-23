@@ -75,6 +75,10 @@ Package {
                    name = party
                    type = party:Party
                }
+               Attribute {
+                   name = isCatalogUser
+                   type = primitive:Boolean
+               }
            }
        }
        Class {

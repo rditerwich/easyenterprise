@@ -2,6 +2,7 @@ package claro.cms.webshop
 
 import net.liftweb.http.{RequestVar,Req,S,SHtml,LiftRules,RewriteRequest,RewriteResponse,ParsePath,InMemoryResponse,NotFoundResponse}
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
+import claro.cms.catalog.{StandardCatalogData}
 import scala.xml.{Node,NodeSeq,Text}
 import claro.jpa
 import claro.common.util.Conversions._
@@ -10,6 +11,10 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   
   val prefix = "webshop"
 
+  def boot = {
+    StandardCatalogData.fillDatabase
+  }
+    
   bindings.append {
     case _ : WebshopComponent => Map (
       "id" -> WebshopModel.shop.get.id,
