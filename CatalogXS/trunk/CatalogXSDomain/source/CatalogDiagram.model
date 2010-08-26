@@ -43,13 +43,13 @@ DomainDiagram {
                     height = 97
                 }
             }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Category
         }
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 109
-                    y = 418
+                    x = 84
+                    y = 423
                     width = 189
                     height = 157
                 }
@@ -59,8 +59,8 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 399
-                    y = 412
+                    x = 412
+                    y = 416
                     width = -1
                     height = -1
                 }
@@ -302,6 +302,15 @@ DomainDiagram {
             }
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Item/attributes:children
         }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 303
+                    y = 23
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:root
+        }
     }
     superClassReferences = {
         SuperClassReference {
@@ -309,7 +318,7 @@ DomainDiagram {
             target = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
         SuperClassReference {
-            source = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:ProductGroup
+            source = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Category
             target = /domainDiagrams:CatalogDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Catalog\/types\:Item
         }
     }

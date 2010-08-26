@@ -19,4 +19,8 @@ class CatalogComponent extends Component {
   rewrite.append {
      case path => path
   }
+  
+  override def boot { 
+    CatalogDao.createInitialCatalog(StandardCatalogData.createSampleData)
+  }
 }

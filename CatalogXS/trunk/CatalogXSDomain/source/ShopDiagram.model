@@ -43,7 +43,7 @@ DomainDiagram {
                     height = -1
                 }
             }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:ProductGroup
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Category
         }
         DiagramClass {
             bounds = {
@@ -111,6 +111,17 @@ DomainDiagram {
             }
             domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:OrderHistory
         }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 213
+                    y = 173
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:TopLevelNavigation
+        }
     }
     enumerations = {
         DiagramEnum {
@@ -148,10 +159,16 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:catalog
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:topLevelProductGroups
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:history
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:history
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:topLevelNavigation
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:root
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:TopLevelNavigation/attributes:category
         }
     }
     superClassReferences = {

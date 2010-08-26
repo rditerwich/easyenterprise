@@ -16,7 +16,7 @@ class LoginForm extends Form {
   var password : String = dummyPassword
   var failure : Option[LoginFailure] = None 
   
-  val pathPrefix = WebshopModel.currentProductGroup match {
+  val pathPrefix = WebshopModel.currentCategory match {
     case Some(group) => "/group/" + group.id
     case None => ""
   }

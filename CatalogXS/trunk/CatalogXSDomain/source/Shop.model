@@ -44,8 +44,9 @@ Package {
                     lower = 0
                 } 
                 Attribute {
-                    name = topLevelProductGroups
-                    type = catalog:ProductGroup
+                    name = navigation
+                    type = shop:Navigation
+                    isComposite = true
                     lower = 0
                     upper = {}
                 }
@@ -75,6 +76,27 @@ Package {
                     lower = 0
                     upper = {}
                     isComposite = true
+                }
+            }
+        }
+        Class {
+            name = Navigation
+            attributes = {
+                Attribute {
+                    name = category
+                    type = catalog:Category
+                    lower = 0
+                }
+                Attribute {
+                    name = index
+                    type = primitive:Integer
+                }
+                Attribute {
+                    name = subNavigation
+                    type = shop:Navigation
+                    isComposite = true
+                    lower = 0
+                    upper = {}
                 }
             }
         }

@@ -16,6 +16,8 @@ object Dao {
     S.addCleanupFunc(() => is.map(_._2.close))
   }
   
+  private object threadLocalEntityManagers extends ThreadLocal[Map[String,EntityManager]]
+  
   def setProperties(properties : Map[String, String]) = factories.synchronized {
     for ((key, value) <- properties) {
       this.properties.put(key, value)
@@ -24,7 +26,7 @@ object Dao {
   }
   
   private def getFactory(dataSource : String) = factories.synchronized {
-    
+    factories.getOrElseUpdate(dataSource, Persistence.createEntityManagerFactory(dataSource, properties))
   }
   
   def getEntityManager(dataSource : String) = {
@@ -35,21 +37,41 @@ object Dao {
   }
 }
 
-class Dao(val dataSource : String) {
+trait Dao {
 
-  def transaction[A](f : EntityManager => A) : A = {
+  val dataSource : String
 
-    val entityManager = Dao.getEntityManager(dataSource)
-    val tx = entityManager.getTransaction
+  def entityManager[A](f : EntityManager => A) : A = {
+    val entityManagers = Dao.threadLocalEntityManagers.get() match {
+      case null => Map[String, EntityManager]()
+      case map => map
+    }
+    val entityManager = entityManagers.get(dataSource) match {
+      case Some(em) => em
+      case None => {
+        val em = Dao.getFactory(dataSource).createEntityManager
+        Dao.threadLocalEntityManagers.set(entityManagers + ((dataSource, em)))
+        em
+      }
+    }
+    f(entityManager)
+  }
+  
+  def transaction[A](f : EntityManager => A) : A = entityManager { em =>
+    val tx = em.getTransaction
     val newTx = !tx.isActive
     try {
-      if (newTx) tx.begin
-      val result = f(entityManager)
-      if (newTx) tx.commit
+      if (newTx) {
+        tx.begin
+      }
+      val result = f(em)
+      if (newTx) {
+        tx.commit
+      }
       result
     } catch {
       case e => 
-        if (tx.isActive) 
+        if (newTx) 
           tx.rollback()
         throw e
     }

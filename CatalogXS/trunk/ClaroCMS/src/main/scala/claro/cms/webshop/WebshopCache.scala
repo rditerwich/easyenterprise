@@ -34,8 +34,8 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
   val promotions : Set[jpa.shop.Promotion] = 
     shop.getPromotions toSet
 
-  val productGroups : Set[jpa.catalog.ProductGroup] = 
-    catalog.getItems.toSet filter (!excludedItems.contains(_)) classFilter (classOf[jpa.catalog.ProductGroup])  
+  val categories : Set[jpa.catalog.Category] = 
+    catalog.getItems.toSet filter (!excludedItems.contains(_)) classFilter (classOf[jpa.catalog.Category])  
 
   val itemChildExtent : Map[jpa.catalog.Item, Set[jpa.catalog.Item]] = 
     (new mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]] useIn 
@@ -44,18 +44,24 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
     
   val itemParentExtent : Map[jpa.catalog.Item, Set[jpa.catalog.Item]] = 
     (new mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]] useIn 
-      (itemParentExtent(catalog.getItems.toSet classFilter(classOf[jpa.catalog.ProductGroup]), new mutable.HashSet[jpa.catalog.Item], _))).  
+      (itemParentExtent(catalog.getItems.toSet classFilter(classOf[jpa.catalog.Category]), new mutable.HashSet[jpa.catalog.Item], _))).  
 	      toMap.withDefault(_ => Set.empty)  
     
-  val topLevelProductGroups : Set[jpa.catalog.ProductGroup] = 
-	shop.getTopLevelProductGroups toSet
+  def navigation(nav : Iterable[jpa.shop.Navigation]) : Set[jpa.shop.Navigation] = { 
+    println(nav.map(_.getId)+ ",")
+    if (nav.isEmpty) nav.toSet
+    else nav.toSet ++ navigation(nav.flatMap(_.getSubNavigation))
+  }
+    
+  def topLevelCategories : Set[jpa.catalog.Category] = 
+    navigation(shop.getNavigation).map(_.getCategory)
 
   val products : Set[jpa.catalog.Product] = 
     new mutable.HashSet[jpa.catalog.Product] useIn 
-      (products(shop.getTopLevelProductGroups, new mutable.HashSet[jpa.catalog.ProductGroup], _)) toSet
+      (products(topLevelCategories, new mutable.HashSet[jpa.catalog.Category], _)) toSet
 
   val items : Set[jpa.catalog.Item] = 
-    topLevelProductGroups ++ topLevelProductGroups.map(itemChildExtent(_)).flatten
+    topLevelCategories ++ topLevelCategories.map(itemChildExtent(_)).flatten
       
   val itemProperties : Map[jpa.catalog.Item, Seq[jpa.catalog.Property]] =
     Map(items.toSeq.map(item => (item, item.getProperties.toSeq.filterNot(excludedProperties))):_*).
@@ -78,14 +84,14 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
       (itemPropertyValueExtent(items, new mutable.HashSet[jpa.catalog.Item], _))).
         toMap.withDefault(_ => Seq.empty)  
         
-  val productGroupPropertyValues : Map[jpa.catalog.ProductGroup, Seq[jpa.catalog.PropertyValue]] =
-    productGroups makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
+  val categoryPropertyValues : Map[jpa.catalog.Category, Seq[jpa.catalog.PropertyValue]] =
+    categories makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
   val productPropertyValues : Map[jpa.catalog.Product, Seq[jpa.catalog.PropertyValue]] =
     products makeMapWithValues (_.getPropertyValues filter(_.getProperty != null) toSeq)
 
   val allPropertyValues : Set[jpa.catalog .PropertyValue] = 
-    products.flatMap(productPropertyValues(_)) ++ productGroups.flatMap(productGroupPropertyValues(_))
+    products.flatMap(productPropertyValues(_)) ++ categories.flatMap(categoryPropertyValues(_))
   
   val mediaPropertyValues : Seq[jpa.catalog.PropertyValue] = 
       allPropertyValues filter (_.getProperty.getType == jpa.catalog.PropertyType.Media) filter(_.getMediaValue != null) toSeq
@@ -93,8 +99,8 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
   val mediaValues : Map[Long, (String, Array[Byte])] =
     Map(mediaPropertyValues map (v => (v.getId.longValue, (v.getMimeType, v.getMediaValue))):_*)
     	
-  val productGroupProducts : Map[jpa.catalog.ProductGroup, Set[jpa.catalog.Product]] =
-    productGroups makeMapWithValues (_.getChildren.toSet classFilter(classOf[jpa.catalog.Product]) toSet)   
+  val categoryProducts : Map[jpa.catalog.Category, Set[jpa.catalog.Product]] =
+    categories makeMapWithValues (_.getChildren.toSet classFilter(classOf[jpa.catalog.Product]) toSet)   
 	  
   private def itemChildExtent(items : Iterable[jpa.catalog.Item], visited : mutable.Set[jpa.catalog.Item], result : mutable.HashMap[jpa.catalog.Item, Set[jpa.catalog.Item]]) : Unit = {
     for (item <- items) if (!visited.contains(item)) {
@@ -127,10 +133,10 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
     }
   }
     
-  private def products(groups : Iterable[jpa.catalog.ProductGroup], visited : mutable.Set[jpa.catalog.ProductGroup], result : mutable.HashSet[jpa.catalog.Product]) : Unit = {
+  private def products(groups : Iterable[jpa.catalog.Category], visited : mutable.Set[jpa.catalog.Category], result : mutable.HashSet[jpa.catalog.Product]) : Unit = {
     for (group <- groups) if (!visited.contains(group)) {
       visited += group
-      products(group.getChildren.toSet classFilter(classOf[jpa.catalog.ProductGroup]), visited, result)
+      products(group.getChildren.toSet classFilter(classOf[jpa.catalog.Category]), visited, result)
       result ++= group.getChildren.toSet classFilter(classOf[jpa.catalog.Product]) 
     }
   }

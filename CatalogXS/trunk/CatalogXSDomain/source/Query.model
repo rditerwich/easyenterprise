@@ -40,8 +40,8 @@ Package {
             superClass = query:Query
             attributes = {
                 Attribute {
-                    name = productGroup
-                    type = catalog:ProductGroup
+                    name = category
+                    type = catalog:Category
                 }
                 Attribute {
                     name = stringValue
@@ -59,8 +59,8 @@ Package {
             superClass = query:Query
             attributes = {
                 Attribute {
-                    name = productGroup
-                    type = catalog:ProductGroup 
+                    name = category
+                    type = catalog:Category 
                 }
             }
         }

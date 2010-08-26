@@ -11,20 +11,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   
   val prefix = "webshop"
 
-  def boot = {
-    StandardCatalogData.fillDatabase
-  }
-    
   bindings.append {
     case _ : WebshopComponent => Map (
       "id" -> WebshopModel.shop.get.id,
-      "current-product-group" -> WebshopModel.currentProductGroup -> "group",
+      "current-product-group" -> WebshopModel.currentCategory -> "group",
       "current-product" -> WebshopModel.currentProduct -> "product",
       "current-search-string" -> WebshopModel.currentSearchStringVar.is,
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
-      "group" -> WebshopModel.shop.get.productGroupsByName.get(@@("name")) -> "group",
-      "top-level-groups" -> WebshopModel.shop.get.topLevelProductGroups -> "group",
+      "group" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "group",
+      "navigation" -> WebshopModel.shop.navigation -> "navigation",
       "filters" -> Filter.filters -> "filter",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
@@ -38,6 +34,10 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "shipping-options-form" -> ShippingOptionsForm.get -> "form",
       "change-password-form" -> ChangePasswordForm.get -> "form")
     
+    case navigation : Navigation => Map (
+        "category" -> navigation.category -> "category",
+        "sub-navigation" -> navigation.subNavigation -> "navigation")
+      
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
@@ -51,11 +51,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "properties" -> product.properties -> "property",
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
-      "groups" -> product.productGroups -> "group",
+      "groups" -> product.categories -> "group",
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
-    case group : ProductGroup => Map(   
+    case group : Category => Map(   
       "id" -> group.id.toString,
       "name" -> group.name,
       "sub-groups" -> group.children -> "group",
@@ -186,7 +186,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   templateLocators.append {
     case Template(name, product : Product) => ResourceLocator(List(name + "-product"), "html",
     	Scope(product.id), 
-    	product.productGroupExtent map (g => 
+    	product.categoryExtent map (g => 
     	  Scope("group" -> g.id)),
         Scope("shop" -> WebshopModel.shop.id),
         Scope("catalog" -> WebshopModel.shop.catalogId),
@@ -210,9 +210,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   rewrite.append {
     case "index" :: Nil => "index" :: Nil
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
-    case "group" :: id :: Nil => WebshopModel.currentProductGroupVar(Some(id)); "group" :: Nil
+    case "group" :: id :: Nil => WebshopModel.currentCategoryVar(Some(id)); "group" :: Nil
     case "group" :: id :: "search" :: s :: Nil => 
-      WebshopModel.currentProductGroupVar(Some(id))
+      WebshopModel.currentCategoryVar(Some(id))
       WebshopModel.currentSearchStringVar(Some(s))
       "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil

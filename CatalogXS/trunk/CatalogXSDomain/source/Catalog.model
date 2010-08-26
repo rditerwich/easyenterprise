@@ -32,6 +32,11 @@ Package {
                     opposite = catalog:Item/attributes:catalog
                 }
                 Attribute {
+                    name = root
+                    lower = 0
+                    type = catalog:Category
+                }
+                Attribute {
                     name = shops
                     type = shop:Shop
                     lower = 0
@@ -122,7 +127,7 @@ Package {
             }
         }
         Class {
-            name = ProductGroup
+            name = Category
             superClass = catalog:Item
             attributes = {
                 Attribute {
@@ -132,6 +137,7 @@ Package {
                 }
             }
         }
+        
         Class {
             name = PropertyGroup
             attributes = {
@@ -212,7 +218,7 @@ Package {
                     opposite = catalog:Label/attributes:property
                 }
                 Attribute {
-                    name = productGroupProperty
+                    name = categoryProperty
                     type = primitive:Boolean
                     default = false
                 }
@@ -645,9 +651,9 @@ Package {
     }
     operations = {
         @comment "Returns all PropertyValues for Property 'Name' for all
-                  ProductGroup entries." 
+                  Category entries." 
         Operation {
-            name = findAllProductGroupNames
+            name = findAllCategoryNames
             type = catalog:PropertyValue
             isOrdered = true
             lower = 0
@@ -659,12 +665,12 @@ Package {
                 }
             }
         }
-        @comment "Returns the children of the given ProductGroup, if null is
-                  passed the topLevelProductGroups of the current taxonomy are
+        @comment "Returns the children of the given Category, if null is
+                  passed the topLevelCategories of the current taxonomy are
                   returned."
         Operation {
-            name = findAllProductGroupChildren
-            type = catalog:ProductGroup
+            name = findAllCategoryChildren
+            type = catalog:Category
             lower = 0
             upper = {}
             parameters = {
@@ -674,7 +680,7 @@ Package {
                 }
                 Parameter {
                     name = parent
-                    type = catalog:ProductGroup
+                    type = catalog:Category
                 }
             }
         }
@@ -682,7 +688,7 @@ Package {
                   passed the current object is returned."
         Operation {
             name = findAllItemParents
-            type = catalog:ProductGroup
+            type = catalog:Category
             lower = 0
             upper = {}
             parameters = {

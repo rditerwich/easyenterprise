@@ -74,6 +74,9 @@ class Website(websiteFile : URI) {
   lazy val emProperties = config.properties.parseAll("entitymanager.")
   
   Dao.setProperties(emProperties)
+
+  // boot components
+  components.map(_.boot)
   
   /**
    * @deprecated

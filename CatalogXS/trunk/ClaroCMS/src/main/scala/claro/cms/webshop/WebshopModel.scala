@@ -17,10 +17,10 @@ import claro.cms.Website
 object WebshopModel {
 
   var shopCache = Lazy(new WebshopCache) 
-  object shop extends RequestVar[Shop](shopCache.get.shopsById(rich(Website.instance.config.properties)("shop.id", "1"))) 
+  object shop extends RequestVar[Shop](shopCache.get.shopsByName(rich(Website.instance.config.properties)("shop.name", "Shop"))) 
 
   object currentProductVar extends RequestVar[Option[String]](None)
-  object currentProductGroupVar extends RequestVar[Option[String]](None)
+  object currentCategoryVar extends RequestVar[Option[String]](None)
   object currentSearchStringVar extends RequestVar[Option[String]](None)
   object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
   object currentOrder extends SessionVar[Order](new Order(new jpa.shop.Order, shop.mapping))
@@ -30,15 +30,15 @@ object WebshopModel {
     case None => None
   }
   
-  def currentProductGroup : Option[ProductGroup] = currentProductGroupVar.is match {
-    case Some(id) => shop.productGroupsById.get(id.toLong)
+  def currentCategory : Option[Category] = currentCategoryVar.is match {
+    case Some(id) => shop.categoriesById.get(id.toLong)
     case None => None
   }
     
   def currentSearchProducts : Seq[Product] = currentSearchStringVar.is match {
 	  case Some(searchString) => 
       val products = shop.keywordMap.find(searchString) 
-      currentProductGroup match {
+      currentCategory match {
         case Some(group) => products filter group.productExtent toSeq
         case None => products.toSeq
       }
@@ -54,7 +54,7 @@ object WebshopModel {
 }
 
 class Mapping(product : Option[Product], cacheData : WebshopCacheData) {
-  lazy val productGroups = ProjectionMap((g : jpa.catalog.ProductGroup) => new ProductGroup(g, product, cacheData, this))
+  lazy val categories = ProjectionMap((g : jpa.catalog.Category) => new Category(g, product, cacheData, this))
   lazy val products = ProjectionMap((p : jpa.catalog.Product) => new Product(p, cacheData, this))
   lazy val properties = ProjectionMap((p : jpa.catalog.Property) => new Property(p, noPropertyValue, product, cacheData, this))
   lazy val promotions = ProjectionMap( (p : jpa.shop.Promotion) => p match { 
@@ -74,20 +74,23 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)
   val defaultLanguage = shop.getDefaultLanguage getOrElse "en"
   
+  val navigation : Seq[Navigation] = 
+    shop.getNavigation.toSeq.sortBy(_.getIndex.getOrElse(0)).map(Navigation(_, mapping))
+  
   val excludedProperties : Set[Property] = 
     cacheData.excludedProperties map (mapping.properties) toSet
 
   val promotions : Set[Promotion] = 
     cacheData.promotions map (mapping.promotions) toSet
   
-  val productGroups : Set[ProductGroup] = 
-	cacheData.productGroups map (mapping.productGroups) toSet
+  val categories : Set[Category] = 
+	cacheData.categories map (mapping.categories) toSet
 
-  val productGroupsById : collection.Map[Long, ProductGroup] = 
-    productGroups mapBy (_.id)
+  val categoriesById : collection.Map[Long, Category] = 
+    categories mapBy (_.id)
     
-  val topLevelProductGroups : Set[ProductGroup] =
-    cacheData.topLevelProductGroups map (mapping.productGroups) toSet
+  val topLevelCategories : Set[Category] =
+    cacheData.topLevelCategories map (mapping.categories) toSet
 
   val products : Set[Product] =
     cacheData.products map (mapping.products) toSet
@@ -95,8 +98,8 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val productsById : Map[Long, Product] = 
     products mapBy (_.id)
     
-  val productGroupsByName : Map[String, ProductGroup] = 
-    productGroups mapBy (_.name)
+  val categoriesByName : Map[String, Category] = 
+    categories mapBy (_.name)
   
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cacheData.mediaValues
@@ -105,27 +108,35 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class ProductGroup(productGroup : jpa.catalog.ProductGroup, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(productGroup) {
+case class Navigation(navigation : jpa.shop.Navigation, mapping : Mapping) {
+
+    val subNavigation : Seq[Navigation] = 
+      navigation.getSubNavigation.toSeq.sortBy(_.getIndex.getOrElse(0)).map(new Navigation(_, mapping))
+
+    val category = mapping.categories(navigation.getCategory)
+}
+
+class Category(category : jpa.catalog.Category, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(category) {
 
   // terminate recursion
-  mapping.productGroups(productGroup) = this
+  mapping.categories(category) = this
   
-  val id = productGroup.getId.longValue
+  val id = category.getId.longValue
   
-  val parents : Seq[ProductGroup] = 
-    productGroup.getParents.toSeq.classFilter(classOf[jpa.catalog.ProductGroup]).map(mapping.productGroups) 
+  val parents : Seq[Category] = 
+    category.getParents.toSeq.classFilter(classOf[jpa.catalog.Category]).map(mapping.categories) 
   
-  val children : Seq[ProductGroup] =
-    productGroup.getChildren.toSeq.classFilter(classOf[jpa.catalog.ProductGroup]).map(mapping.productGroups)
+  val children : Seq[Category] =
+    category.getChildren.toSeq.classFilter(classOf[jpa.catalog.Category]).map(mapping.categories)
     
   val products : Set[Product] =
-    cacheData.productGroupProducts(this) map(mapping.products) toSet 
+    cacheData.categoryProducts(this) map(mapping.products) toSet 
 
   val productExtent : Set[Product] =
-    cacheData.itemChildExtent(productGroup).classFilter(classOf[jpa.catalog.Product]) map (mapping.products) 
+    cacheData.itemChildExtent(category).classFilter(classOf[jpa.catalog.Product]) map (mapping.products) 
 
   val groupProperties : Seq[Property] = 
-    cacheData.productGroupPropertyValues(productGroup) map (v => 
+    cacheData.categoryPropertyValues(category) map (v => 
 	    new Property(v.getProperty, v, None, cacheData, mapping)) 
   
   val groupPropertyNames : Set[String] = 
@@ -148,7 +159,7 @@ class ProductGroup(productGroup : jpa.catalog.ProductGroup, val productqwer : Op
   }
 
   val properties : Seq[Property] =
-    productGroup.getProperties map(mapping.properties) toSeq
+    category.getProperties map(mapping.properties) toSeq
 
   val propertiesByName : Map[String, Property] = 
     properties mapBy (_.name)
@@ -188,16 +199,16 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
   	cacheData.itemPropertyValues(product) map (v => 
   	  new Property(v.getProperty, v, Some(this), cacheData, mapping)) 
 
-  val productGroups : Set[ProductGroup] = 
+  val categories : Set[Category] = 
     product.getParents.toSet.
-    classFilter(classOf[jpa.catalog.ProductGroup]).
+    classFilter(classOf[jpa.catalog.Category]).
     filter(!cacheData.excludedItems.contains(_)).
-    map(mapping.productGroups)  
+    map(mapping.categories)  
   
-  val productGroupExtent : Set[ProductGroup] =
+  val categoryExtent : Set[Category] =
     cacheData.itemParentExtent(product).
-    classFilter(classOf[jpa.catalog.ProductGroup]).
-    map(mapping.productGroups) 
+    classFilter(classOf[jpa.catalog.Category]).
+    map(mapping.categories) 
 
   val propertyNames : Set[String] = 
   	properties.map(_.name).toSet
