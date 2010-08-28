@@ -379,6 +379,10 @@ hr {
 	background: url(images/homepage05.gif) no-repeat left top;
 }
 
+#categories li.group-first {
+	border-left: 1px solid red;
+}
+
 #categories a {
 	display: block;
 	float: left;

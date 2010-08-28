@@ -15,6 +15,7 @@ class BindingCtor(label : String) {
   def -> (f : NodeSeq => NodeSeq) = (label, new XmlBinding(f))
   def -> (f : => NodeSeq) = (label, new XmlBinding(_ => f))
   def -> (f : => java.util.Collection[Any]) = new JavaCollectionBindingCtor(label, f)
+  def -> (f : GroupedCollection) = new GroupedCollectionBindingCtor(label, f)
   def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
   def -> (f : => Option[Any]) = new OptionBindingCtor(label, f)
   def -> (f : => Any) = new AnyBindingCtor(label, f)
@@ -31,6 +32,12 @@ class CollectionBindingCtor(label : String, f : => Collection[Any]) {
   def toLabeledBinding : Tuple2[String,Binding] = (label, new CollectionBinding(f, _ => obj => new AnyBinding(obj)))
 }
 
+class GroupedCollectionBindingCtor(label : String, f : => GroupedCollection) {
+  def -> (defaultPrefix : String) = (label, new GroupedCollectionBinding(f.getCollection, node => obj => 
+    new AnyComplexBinding(_ => Binding.prefix(node, defaultPrefix), obj)))
+  def toLabeledBinding : Tuple2[String,Binding] = (label, new GroupedCollectionBinding(f.getCollection, _ => obj => new AnyBinding(obj)))
+}
+
 class JavaCollectionBindingCtor(label : String, f : => java.util.Collection[Any]) 
 	extends CollectionBindingCtor(label, f) 
 
@@ -42,6 +49,10 @@ class OptionBindingCtor(label : String, f : => Option[Any]) extends BindingHelpe
 class AnyBindingCtor(label : String, f : => Any) {
   def -> (defaultPrefix : String) = (label, new AnyComplexBinding(node => Binding.prefix(node, defaultPrefix), f))
   def toLabeledBinding = (label, new AnyBinding(f))
+}
+
+class GroupedCollection(f : => Collection[Collection[Any]]) {
+  def getCollection = f
 }
 
 object Flag {
@@ -310,10 +321,39 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
             yield(array(j))
       }
       
-      (groups, (node : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], groupSize, eltBinding))
+      (groups, (node : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], eltBinding))
     }
     
     CollectionBinding.bind(groups, eltBinding, groupBinding, listPrefix, node, context)
+  }  
+}
+
+/**
+ */
+class GroupedCollectionBinding(f : => Collection[Collection[Any]], eltBinding : Node => Any => Binding) extends Binding {
+
+  override def bind(node : Node, context: BindingContext) : NodeSeq = {
+
+    // get the collection
+    var collection = f
+    var size = collection.size
+    val listPrefix = attr(node, "list-prefix", "list")
+    
+    // determine groups
+    var groupScatter = attr(node, "group-scatter", "false").toBoolean
+    
+    if (groupScatter) {
+      val groupCount = collection.foldLeft(0)((x,y) => Math.max(x, y.size))
+      val totalSize = groupCount * size
+      val padding = totalSize - collection.size
+      val array = if (padding > 0) collection.toSeq ++ Array.make(padding, null) else collection.toSeq
+      collection =  for (i <- 0 until groupCount) 
+          yield for (j <- i until(totalSize, groupCount)) 
+            yield(array(j))
+    }
+    
+    val groupBinding = (node : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], eltBinding)
+    CollectionBinding.bind(collection, eltBinding, groupBinding, listPrefix, node, context)
   }  
 }
 
@@ -347,7 +387,7 @@ class CollectionRepeatBinding(collectionNode : Node, collection : Collection[Any
   }  
 }
 
-class CollectionGroupBinding(collection : Collection[Any], groupSize : Int, eltBinding : Node => Any => Binding) extends Binding {
+class CollectionGroupBinding(collection : Collection[Any], eltBinding : Node => Any => Binding) extends Binding {
   override def bind(node : Node, context: BindingContext) : NodeSeq = {
     val groupPrefix = attr(node, "list-prefix", "group")
     CollectionBinding.bind(collection, eltBinding, EmptyEltBinding, groupPrefix, node, context)
@@ -390,6 +430,8 @@ trait BindingHelpers {
   implicit def toBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
   implicit def toBinding(ctor : OptionBindingCtor) = ctor.toLabeledBinding
   implicit def toBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
+  
+  def grouped(f : => Collection[Collection[Any]]) = new GroupedCollection(f)
   
   def locale = Cms.locale
  

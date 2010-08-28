@@ -10,7 +10,7 @@ import claro.common.util.Conversions._
 class WebshopComponent extends Component with WebshopBindingHelpers {
   
   val prefix = "webshop"
-
+    
   bindings.append {
     case _ : WebshopComponent => Map (
       "id" -> WebshopModel.shop.get.id,
@@ -19,8 +19,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-search-string" -> WebshopModel.currentSearchStringVar.is,
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
-      "group" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "group",
-      "navigation" -> WebshopModel.shop.navigation -> "navigation",
+      "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
+      "navigation" -> grouped(WebshopModel.shop.navigation) -> "category",
       "filters" -> Filter.filters -> "filter",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
@@ -34,10 +34,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "shipping-options-form" -> ShippingOptionsForm.get -> "form",
       "change-password-form" -> ChangePasswordForm.get -> "form")
     
-    case navigation : Navigation => Map (
-        "category" -> navigation.category -> "category",
-        "sub-navigation" -> navigation.subNavigation -> "navigation")
-      
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
@@ -51,22 +47,22 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "properties" -> product.properties -> "property",
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
-      "groups" -> product.categories -> "group",
+      "categories" -> product.categories -> "category",
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
-    case group : Category => Map(   
-      "id" -> group.id.toString,
-      "name" -> group.name,
-      "sub-groups" -> group.children -> "group",
-      "parent-groups" -> group.parents -> "group",
-      "group-properties" -> group.groupProperties(locale) -> "property",
-      "group-property" -> group.groupProperty(locale, @@("name")) -> "property",
-      "group-value" -> value(group.groupProperty(locale, @@("property"))),
-      "properties" -> group.properties -> "property",
-      "products" -> @@?("include-sub-groups", group.productExtent, group.products) -> "product",
-      "promotions" -> group.productExtentPromotions -> "promotion",
-      "link" -> Link(group))
+    case category : Category => Map(   
+      "id" -> category.id.toString,
+      "name" -> category.name,
+      "sub-categories" -> category.children -> "category",
+      "parent-categories" -> category.parents -> "category",
+      "category-properties" -> category.groupProperties(locale) -> "property",
+      "category-property" -> category.groupProperty(locale, @@("name")) -> "property",
+      "category-value" -> value(category.groupProperty(locale, @@("property"))),
+      "properties" -> category.properties -> "property",
+      "products" -> @@?("include-sub-groups", category.productExtent, category.products) -> "product",
+      "promotions" -> category.productExtentPromotions -> "promotion",
+      "link" -> Link(category))
       
     case cart : ShoppingCart => Map(
       "items" -> cart.order.productOrders -> "item",

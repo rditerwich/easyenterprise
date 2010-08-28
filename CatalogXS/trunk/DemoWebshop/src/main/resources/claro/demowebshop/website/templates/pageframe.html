@@ -65,9 +65,16 @@
 		<!--
 			Use class="active" to permanently highlight a given menu item
 		-->
-		<webshop:top-level-groups>
-			<li list:first="class=first"><group:link><group:group-value property="Name"/></group:link></li>
-		</webshop:top-level-groups>
+		<webshop:navigation>
+			<list:group>
+				<list:first>
+					<li group:first="class=first"><category:link><category:category-value property="Name"/></category:link></li>
+				</list:first>
+				<list:skip-first>
+					<li group:first="class=group-first"><category:link><category:category-value property="Name"/></category:link></li>
+				</list:skip-first>
+			</list:group>
+		</webshop:navigation>
 	</ul>
 </div>
 <!-- end #categories -->

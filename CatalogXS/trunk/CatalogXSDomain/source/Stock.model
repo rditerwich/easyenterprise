@@ -1,0 +1,106 @@
+root /packages:AgileXS/packages:Domain/packages
+
+import Metaphor.PIM.Archetypes.CrmArchetype
+import Metaphor.PIM.Domain.Attribute
+import Metaphor.PIM.Domain.Class
+import Metaphor.PIM.Domain.Enumeration
+import Metaphor.PIM.Domain.Literal
+import Metaphor.PIM.Domain.Operation
+import Metaphor.PIM.Domain.Package
+import Metaphor.PIM.Domain.Parameter
+
+path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
+path stock = /packages:AgileXS/packages:Domain/packages:Stock/types
+
+Package {
+    name = Stock
+    types = {
+        Class {
+            name = Exchange
+            attributes = {
+                Attribute {
+                    name = Name
+                    type = primitive:String 
+                }
+            }
+        }
+        Class {
+            name = Underlying
+        }
+        Class {
+            name = OptionChain
+            attributes = {
+                Attribute {
+                    name = exchange
+                    type = stock:Exchange
+                }
+                Attribute {
+                    name = underlying
+                    type = stock:Underlying
+                }
+                Attribute {
+                    name = symbol
+                    type = primitive:String
+                }
+                Attribute {
+                    name = options
+                    type = stock:Option
+                    lower = 0
+                    upper = {}
+                    isComposite = true
+                }
+            }
+        }
+        Class {
+            name = Option
+            attributes = {
+                Attribute {
+                    name = expirationDate
+                    type = primitive:Date
+                }
+                Attribute {
+                    name = strike
+                    type = primitive:Money 
+                }
+                Attribute {
+                    name = ids
+                    type = stock:OptionId
+                    lower = 1
+                    upper = {}
+                    isComposite = true
+                }
+            }
+        }
+        Class {
+            name = PutOption
+            superClass = stock:Option
+        }
+        Class {
+            name = CallOption
+            superClass = stock:Option
+        }
+        Class {
+            name = OptionIdType
+            attributes = {
+                Attribute {
+                    name = Name
+                    type = primitive:String
+                }
+            }
+        }
+        Class {
+            name = OptionId
+            attributes = {
+                Attribute {
+                    name = type
+                    type = stock:OptionIdType
+                }
+                Attribute {
+                    name = id
+                    type = primitive:String 
+                }
+            }
+        }
+    }
+}
+ 

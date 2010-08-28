@@ -114,13 +114,13 @@ DomainDiagram {
         DiagramClass {
             bounds = {
                 Rectangle {
-                    x = 213
-                    y = 173
+                    x = 246
+                    y = 177
                     width = -1
                     height = -1
                 }
             }
-            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:TopLevelNavigation
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation
         }
     }
     enumerations = {
@@ -162,13 +162,30 @@ DomainDiagram {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:history
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:topLevelNavigation
-        }
-        Reference {
             sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:root
         }
         Reference {
-            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:TopLevelNavigation/attributes:category
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:navigation
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation/attributes:category
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 367
+                    y = 221
+                }
+                Point {
+                    x = 371
+                    y = 257
+                }
+                Point {
+                    x = 314
+                    y = 258
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation/attributes:subNavigation
         }
     }
     superClassReferences = {

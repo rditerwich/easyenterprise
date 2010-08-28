@@ -74,8 +74,8 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)
   val defaultLanguage = shop.getDefaultLanguage getOrElse "en"
   
-  val navigation : Seq[Navigation] = 
-    shop.getNavigation.toSeq.sortBy(_.getIndex.getOrElse(0)).map(Navigation(_, mapping))
+  val navigation : Collection[Collection[Category]] =
+    cacheData.topLevelNavigation.map(_.map(n => mapping.categories(n.getCategory)))
   
   val excludedProperties : Set[Property] = 
     cacheData.excludedProperties map (mapping.properties) toSet
@@ -106,14 +106,6 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   
   val keywordMap =
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
-}
-
-case class Navigation(navigation : jpa.shop.Navigation, mapping : Mapping) {
-
-    val subNavigation : Seq[Navigation] = 
-      navigation.getSubNavigation.toSeq.sortBy(_.getIndex.getOrElse(0)).map(new Navigation(_, mapping))
-
-    val category = mapping.categories(navigation.getCategory)
 }
 
 class Category(category : jpa.catalog.Category, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(category) {

@@ -47,14 +47,18 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
       (itemParentExtent(catalog.getItems.toSet classFilter(classOf[jpa.catalog.Category]), new mutable.HashSet[jpa.catalog.Item], _))).  
 	      toMap.withDefault(_ => Set.empty)  
     
-  def navigation(nav : Iterable[jpa.shop.Navigation]) : Set[jpa.shop.Navigation] = { 
-    println(nav.map(_.getId)+ ",")
-    if (nav.isEmpty) nav.toSet
-    else nav.toSet ++ navigation(nav.flatMap(_.getSubNavigation))
+	private def navigation(nav : Iterable[jpa.shop.Navigation]) : Seq[Seq[jpa.shop.Navigation]] = {
+    val sorted = nav.toSeq.sortBy(_.getIndex.getOrElse(0))
+    val filled = sorted.filter(_.getCategory != null)
+    val filledSeq = if (filled.isEmpty) Seq() else Seq(sorted.filter(_.getCategory != null))
+    val empty = sorted.filter(_.getCategory == null)
+    if (empty.isEmpty) filledSeq
+    else filledSeq ++ empty.flatMap(nav => navigation(nav.getSubNavigation))
   }
     
-  def topLevelCategories : Set[jpa.catalog.Category] = 
-    navigation(shop.getNavigation).map(_.getCategory)
+  def topLevelNavigation = navigation(shop.getNavigation)
+  
+  def topLevelCategories : Set[jpa.catalog.Category] = topLevelNavigation.flatMap(_.map(_.getCategory)).toSet
 
   val products : Set[jpa.catalog.Product] = 
     new mutable.HashSet[jpa.catalog.Product] useIn 
