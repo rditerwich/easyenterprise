@@ -62,7 +62,7 @@ trait WebshopBindingHelpers extends BindingHelpers {
           else if (property.mimeType == "application/pdf")
             <a href={"/catalog/media/" + property.valueId}><img style="padding-bottom:-8px" src="/images/pdf.gif"/></a>
 	        else if (property.mimeType.startsWith("image/")) 
-	          <img src={"/catalog/media/" + property.valueId} height="40px"/> % currentAttributes()
+	          <img src={"/catalog/media/" + property.valueId} /> % currentAttributes()
 	         else
   		       Text(property.mediaValue.toString());
         case jpa.catalog.PropertyType.Money if (property.value != null && property.value.getMoneyValue != null) =>

@@ -1,6 +1,7 @@
 package claro.cms.catalog
 
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
+import claro.cms.catalog.data.StandardCatalogData
 import claro.jpa.catalog._
 
 class CatalogComponent extends Component {
@@ -22,5 +23,8 @@ class CatalogComponent extends Component {
   
   override def boot { 
     CatalogDao.createInitialCatalog(StandardCatalogData.createSampleData)
+//    CatalogDao.withCatalog(CatalogDao.catalog("Catalog").get) {
+//        StandardCatalogData.createSampleData
+//    }
   }
 }

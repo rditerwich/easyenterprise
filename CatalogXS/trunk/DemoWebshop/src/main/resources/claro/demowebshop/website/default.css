@@ -371,16 +371,17 @@ hr {
 #categories li {
 	float: left;
 	height: 47px;
-	padding-right: 15px;
+	padding-right: 4px;
 }
 
 #categories li.first {
-	padding-left: 10px;
+	padding-left: 17px;
 	background: url(images/homepage05.gif) no-repeat left top;
 }
 
 #categories li.group-first {
-	border-left: 1px solid red;
+	padding-left: 8px;
+	background: url(images/homepage17.gif) no-repeat left top;
 }
 
 #categories a {

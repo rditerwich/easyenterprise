@@ -64,10 +64,10 @@ object CatalogDao extends Dao {
       }
     }
   }
-  
-  def shop(name : String) : Option[Shop] = {
-    querySingle("SELECT s FROM Shop s WHERE s.name = :name", "name" -> name)
-  }
+
+  def catalog(name : String) : Option[Catalog] = querySingle("SELECT c FROM Catalog c WHERE c.name = :name", "name" -> name)
+
+  def shop(name : String) : Option[Shop] = querySingle("SELECT s FROM Shop s WHERE s.name = :name", "name" -> name)
   
   def getOrCreateShop(name : String) : Shop = {
     shop(name) match {
@@ -118,8 +118,30 @@ object CatalogDao extends Dao {
     property.getType match {
       case PropertyType.String => propertyValue.setStringValue(value.asInstanceOf[String])
       case PropertyType.Money => propertyValue.setMoneyValue(value.asInstanceOf[Double])
+      case PropertyType.Media => 
+        propertyValue.setMediaValue(value.asInstanceOf[Array[Byte]])
+        
     }
   }
+  
+  def setImage(item : Item, property : Property, cl : java.lang.Class[_ <: Any], name : String, language : String = null) = {
+    val propertyValue = item.getPropertyValues.find(v => v.getProperty == property && v.getLanguage == language) getOrElse new PropertyValue useIn(item.getPropertyValues.add(_))
+    propertyValue.setItem(item)
+    propertyValue.setProperty(property)
+    propertyValue.setLanguage(language)
+    val bytes = cl.getResourceAsStream(name).readBytes
+    propertyValue.setMediaValue(bytes)
+    if (name.endsWith(".jpg")) {
+      propertyValue.setMimeType("image/jpeg")
+    }
+    if (name.endsWith(".gif")) {
+      propertyValue.setMimeType("image/gif")
+    }
+    if (name.endsWith(".png")) {
+      propertyValue.setMimeType("image/png")
+    }
+  }
+  
   
   def getOrCreateLabel(property : Property, name : String, language : String = null) = {
     val label = property.getLabels.find(l => l.getProperty == property && l.getLanguage == language) getOrElse new Label useIn (property.getLabels.add(_))
