@@ -57,18 +57,16 @@ object StandardCatalogData extends Dao {
     ink.getChildren.add(saphiraInks)
     machines.getChildren.add(cutters)
     
-    val saphiraBioMag = CatalogDao.getOrCreateProduct("Saphira Ink Bio-speed Magenta") useIn { product =>
-      CatalogDao.set(product, Properties.articleNumber, "SU18364577")
-      CatalogDao.set(product, Properties.description, "Magenta bio process ink for best results at a high speed")
-      CatalogDao.set(product, Properties.price, 8.55)
-      CatalogDao.setImage(product, Properties.image, getClass, "saphiraBioMag.jpg")
-      ink.getChildren.add(product)
-    }
+    val saphiraBioMag = CatalogDao.createProduct("Saphira Ink Bio-speed Magenta", "SU18364577", "Magenta bio process ink for best results at a high speed", 8.55, getClass, "saphiraBioMag.jpg", ink)
+    CatalogDao.createProduct("Saphira Ink Bio-speed Yellow", "SU18364578", "Yellow bio process ink for best results at a high speed", 8.55, getClass, "saphiraBioYellow.jpg", ink)
+    CatalogDao.createProduct("Saphira Ink Bio-speed Blue", "SU18364579", "Blue bio process ink for best results at a high speed", 8.55, getClass, "saphiraBioBlue.jpg", ink)
+    CatalogDao.createProduct("Saphira Ink Bio-speed Blue", "SU18364579", "Blue bio process ink for best results at a high speed", 8.55, getClass, "saphiraBioBlue.jpg", ink)
+    
     val polar66 = CatalogDao.getOrCreateProduct("Polar 66 Quickcutter") useIn { product => 
       CatalogDao.set(product, Properties.articleNumber, "MA18364876")
       CatalogDao.set(product, Properties.description, "Polar snijmachine, model 66", "nl")
       CatalogDao.set(product, Properties.synopsis, "De Polar 66 is een echte 'dienstverlener' in de copy-shop branche, huisdrukkerij en ieder die in de steeds groeiende franchisemarkt een betrouwbare snijmachine zoekt. <p>Meer informatie over de Polar 66? Bel met Tetterode, Sales Support Finishing, tel. 020 44 66 999 of vul het contactformulier in, dan nemen wij contact met u op.", "nl")
-      CatalogDao.set(product, Properties.price, 1800.00)
+      CatalogDao.set(product, Properties.price, 180000.00)
       CatalogDao.setImage(product, Properties.image, getClass, "polar66.png")
       cutters.getChildren.add(product)
     }

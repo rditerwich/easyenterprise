@@ -1,0 +1,49 @@
+<template:include template="templates/pageframe">
+	<webshop:current-category>
+		<div id="content">
+			  <head><title>Category <category:category-value property="Name"/></title></head>
+			<div id="box1" class="boxA">
+				<div class="title">
+					  <h1><category:category-value property="Name"/></h1>
+				</div>
+			</div>
+			<div class="content">
+				<ul class="list2">
+			    <category:products include-sub-groups="true">
+					<li list:even="class=alt">
+						<p class="image"><a href="#"><product:value property="Image" height="84px" class="border" /></a></p>
+						<h3><a href="#"><product:value property="Name"/></a></h3>
+						<p><product:value property="Description"/></p>
+						<p><a href="#" class="add">Add to Cart</a> <b><product:value property="Price"/></b></p>
+					</li>
+			    </category:products>
+				</ul>
+			</div>
+		</div>
+		<!-- end #content -->
+		<div id="sidebar">
+			<category:sub-categories>
+				<div id="box2" class="boxA">
+					<div class="title">
+						<h1>Sub Categories</h1>
+					</div>
+					<div class="content">
+						<ul class="list1">
+							<list:repeat>
+								<li list:first="class=first"><category:link><category:category-value property="Name"/></category:link></li>
+							</list:repeat>
+						</ul>
+					</div>
+				</div>	
+			</category:sub-categories>
+			<!-- end #box2.boxA -->
+			<div id="box3" class="boxA">
+				<div class="title">
+					<h1>Volutpat Sed Tempus</h1>
+				</div>
+				<div class="content"><a href="#"><img src="images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
+			</div>
+			<!-- end #box3.boxA -->
+		</div>
+	</webshop:current-category>
+</template:include>

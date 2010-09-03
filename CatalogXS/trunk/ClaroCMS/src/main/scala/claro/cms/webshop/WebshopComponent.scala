@@ -13,7 +13,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   bindings.append {
     case _ : WebshopComponent => Map (
       "id" -> WebshopModel.shop.get.id,
-      "current-product-group" -> WebshopModel.currentCategory -> "group",
+      "current-category" -> WebshopModel.currentCategory -> "category",
       "current-product" -> WebshopModel.currentProduct -> "product",
       "current-search-string" -> WebshopModel.currentSearchStringVar.is,
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
@@ -205,9 +205,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   rewrite.append {
     case "index" :: Nil => "index" :: Nil
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
-    case "group" :: id :: Nil => WebshopModel.currentCategoryVar(Some(id)); "group" :: Nil
-    case "group" :: id :: "search" :: s :: Nil => 
-      WebshopModel.currentCategoryVar(Some(id))
+    case "category" :: urlName :: Nil => WebshopModel.currentCategoryVar(Some(urlName)); "category" :: Nil
+    case "category" :: urlName :: "search" :: s :: Nil => 
+      WebshopModel.currentCategoryVar(Some(urlName))
       WebshopModel.currentSearchStringVar(Some(s))
       "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil

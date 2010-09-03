@@ -45,7 +45,7 @@ object WebshopUtil {
 
 object Link extends BindingHelpers {
   def apply(group : Category) = (xml : NodeSeq) => 
-    new Elem(null, "a", new UnprefixedAttribute("href", "/group/" + group.id, current.attributes), TopScope, xml:_*);
+    new Elem(null, "a", new UnprefixedAttribute("href", "/category/" + group.urlName, current.attributes), TopScope, xml:_*);
   
   def apply(product : Product) = (xml : NodeSeq) => 
     new Elem(null, "a", new UnprefixedAttribute("href", "/product/" + product.id, current.attributes), TopScope, xml:_*);

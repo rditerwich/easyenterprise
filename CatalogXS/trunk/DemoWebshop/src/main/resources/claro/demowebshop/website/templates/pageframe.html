@@ -4,8 +4,8 @@
 <title></title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link href="default.css" rel="stylesheet" type="text/css" />
-<link href="layout.css" rel="stylesheet" type="text/css" />
+<link href="/default.css" rel="stylesheet" type="text/css" />
+<link href="/layout.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 <!--
  @import url("layout.css");
@@ -78,58 +78,11 @@
 	</ul>
 </div>
 <!-- end #categories -->
-<div id="banner"><a href="#"><img src="images/homepage08.jpg" alt="" width="900" height="131" /></a></div>
+<div id="banner"><a href="#"><img src="/images/homepage08.jpg" alt="" width="900" height="131" /></a></div>
 <!-- end #banner -->
 <div id="page">
-	<div id="content">
-		<div id="box1" class="boxA">
-			<div class="title">
-				<h1>Featured Items</h1>
-			</div>
-			<div class="content">
-				<ul class="list2">
-					<webshop:promotions>
-					<li list:even="class=alt">
-						<promotion:product>
-						<p class="image"><a href="#"><product:value property="Image" height="84px" class="border" /></a></p>
-						<h3><a href="#"><product:value property="Name"/></a></h3>
-						<p><product:value property="Description"/></p>
-						<p><a href="#" class="add">Add to Cart</a> <b><product:value property="Price"/></b></p>
-						</promotion:product>
-					</li>
-					</webshop:promotions>
-				</ul>
-			</div>
-		</div>
-		<!-- end #box1.boxA -->
-	</div>
-	<!-- end #content -->
-	<div id="sidebar">
-		<div id="box2" class="boxA">
-			<div class="title">
-				<h1>Blandit Consequat</h1>
-			</div>
-			<div class="content">
-				<ul class="list1">
-					<li class="first"><a href="#">Lorem ipsum dolor amet</a></li>
-					<li><a href="#">Augue duis dolore sed</a></li>
-					<li><a href="#">Feugiat elefeind consequat</a></li>
-					<li><a href="#">Sed volutpat etiam tempus</a></li>
-					<li><a href="#">Nullam sed volutpat</a></li>
-					<li><a href="#">Aliquam sit nonummy</a></li>
-					<li><a href="#">Consequat etiam dolore</a></li>
-				</ul>
-			</div>
-		</div>
-		<!-- end #box2.boxA -->
-		<div id="box3" class="boxA">
-			<div class="title">
-				<h1>Volutpat Sed Tempus</h1>
-			</div>
-			<div class="content"><a href="#"><img src="images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
-		</div>
-		<!-- end #box3.boxA -->
-	</div>
+	<template:content/>
+
 	<!-- end #sidebar -->
 	<div style="clear: both;">&#160;</div>
 </div>

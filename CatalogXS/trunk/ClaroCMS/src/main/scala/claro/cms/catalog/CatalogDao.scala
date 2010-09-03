@@ -64,6 +64,17 @@ object CatalogDao extends Dao {
       }
     }
   }
+  
+  def createProduct(name : String, articleNumber : String, description : String, price : Double, imageClass : Class[_], imageName : String, categories : Category*) = {
+	val product = new Product
+	set(product, Properties.name, name)
+	set(product, Properties.articleNumber, articleNumber)
+	set(product, Properties.description, description)
+	set(product, Properties.price, price)
+	setImage(product, Properties.image, imageClass, imageName)
+	categories foreach (_.getChildren.add(product))
+	product
+  }
 
   def catalog(name : String) : Option[Catalog] = querySingle("SELECT c FROM Catalog c WHERE c.name = :name", "name" -> name)
 
@@ -124,7 +135,7 @@ object CatalogDao extends Dao {
     }
   }
   
-  def setImage(item : Item, property : Property, cl : java.lang.Class[_ <: Any], name : String, language : String = null) = {
+  def setImage(item : Item, property : Property, cl : java.lang.Class[_], name : String, language : String = null) = {
     val propertyValue = item.getPropertyValues.find(v => v.getProperty == property && v.getLanguage == language) getOrElse new PropertyValue useIn(item.getPropertyValues.add(_))
     propertyValue.setItem(item)
     propertyValue.setProperty(property)

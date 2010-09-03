@@ -31,7 +31,7 @@ object WebshopModel {
   }
   
   def currentCategory : Option[Category] = currentCategoryVar.is match {
-    case Some(id) => shop.categoriesById.get(id.toLong)
+    case Some(urlName) => shop.categoriesByUrlName.get(urlName)
     case None => None
   }
     
@@ -101,6 +101,9 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val categoriesByName : Map[String, Category] = 
     categories mapBy (_.name)
   
+  val categoriesByUrlName : collection.Map[String, Category] = 
+	categories mapBy (_.urlName)
+    
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cacheData.mediaValues
   
@@ -168,6 +171,8 @@ class Category(category : jpa.catalog.Category, val productqwer : Option[Product
       case Some(property) => property.value.getStringValue
       case None => ""
     }
+  
+  val urlName : String = name.replace(" ", "").toLowerCase
     
   lazy val productExtentPromotions : Set[Promotion] = {
     val promotions = cacheData.promotions map(mapping.promotions) filter (p => !(p.products ** productExtent).isEmpty)  
