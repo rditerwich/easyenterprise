@@ -85,6 +85,10 @@ p, ul, ol, dl {
 	text-decoration: underline;
 }
 
+.list2 li h3 {
+	height: 40px;
+}
+
 .list2 .add {
 	float: left;
 	width: 69px;
