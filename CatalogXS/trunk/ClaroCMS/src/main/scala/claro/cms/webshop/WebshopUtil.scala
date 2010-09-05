@@ -44,8 +44,13 @@ object WebshopUtil {
 
 
 object Link extends BindingHelpers {
-  def apply(group : Category) = (xml : NodeSeq) => 
-    new Elem(null, "a", new UnprefixedAttribute("href", "/category/" + group.urlName, current.attributes), TopScope, xml:_*);
+  def apply(category : Category) = (xml : NodeSeq) => {  
+	val href = "/category/" + category.urlName + (WebshopModel.currentSearchStringVar.get match {
+		case Some(s) if (attr(current, "include-search-result", "false") == "true") => "/search/" + s
+		case _ => ""
+	})
+    new Elem(null, "a", new UnprefixedAttribute("href", href, current.attributes), TopScope, xml:_*);
+  }
   
   def apply(product : Product) = (xml : NodeSeq) => 
     new Elem(null, "a", new UnprefixedAttribute("href", "/product/" + product.id, current.attributes), TopScope, xml:_*);
@@ -54,7 +59,7 @@ object Link extends BindingHelpers {
 }
 
 object LinkAttr {
-	def apply(group : Category) = new LinkAttr(Text("/group/" + group.id))
+	def apply(category : Category) = new LinkAttr(Text("/category/" + category.urlName))
 	def apply(product : Product) = new LinkAttr(Text("/product/" + product.id))
 	def apply(path : String) = new LinkAttr(Text(path))
 }

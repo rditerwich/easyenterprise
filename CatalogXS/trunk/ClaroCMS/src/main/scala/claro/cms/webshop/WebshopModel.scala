@@ -24,7 +24,7 @@ object WebshopModel {
   object currentSearchStringVar extends RequestVar[Option[String]](None)
   object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
   object currentOrder extends SessionVar[Order](new Order(new jpa.shop.Order, shop.mapping))
-  
+
   def currentProduct : Option[Product] = currentProductVar.is match {
     case Some(id) => Some(shop.productsById(id.toLong))
     case None => None
@@ -44,6 +44,13 @@ object WebshopModel {
       }
       
 	  case _ => Seq.empty
+  }
+  
+  def isCategorySelected(category : Category) : Boolean = {
+    currentCategory match {
+      case Some(c) => c == category || c.parentExtent.contains(category)
+      case None => false
+    }
   }
   
   def flush = {
@@ -121,6 +128,9 @@ class Category(category : jpa.catalog.Category, val productqwer : Option[Product
   val parents : Seq[Category] = 
     category.getParents.toSeq.classFilter(classOf[jpa.catalog.Category]).map(mapping.categories) 
   
+  val parentExtent : Set[Category] = 
+    cacheData.itemParentExtent (category).classFilter(classOf[jpa.catalog.Category]) map (mapping.categories) 
+    
   val children : Seq[Category] =
     category.getChildren.toSeq.classFilter(classOf[jpa.catalog.Category]).map(mapping.categories)
     

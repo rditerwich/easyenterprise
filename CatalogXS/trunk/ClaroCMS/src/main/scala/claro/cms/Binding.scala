@@ -114,6 +114,11 @@ object Binding {
                 }
                 case _ => 
               }
+              // concat classes
+              val classes = attrs.filter(_.key == "class").map(_.value).mkString(" ") match {
+            	  case "" =>
+            	  case value => attrs = new UnprefixedAttribute("class", value, attrs)
+              }
               attrs = MetaData.normalize(attrs, TopScope)
               Elem(s.prefix, s.label, attrs, s.scope, bind(s.child, context) :_*)
             }

@@ -61,6 +61,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "properties" -> category.properties -> "property",
       "products" -> @@?("include-sub-groups", category.productExtent, category.products) -> "product",
       "promotions" -> category.productExtentPromotions -> "promotion",
+      "is-selected" -> WebshopModel.isCategorySelected(category),
       "link" -> Link(category))
       
     case cart : ShoppingCart => Map(

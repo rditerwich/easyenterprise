@@ -10,7 +10,7 @@ class SearchForm extends Bindable {
   var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse(dummySearch)
   
   val pathPrefix = WebshopModel.currentCategory match {
-    case Some(group) => "/group/" + group.id
+    case Some(category) => "/category/" + category.urlName
     case None => ""
   }
   

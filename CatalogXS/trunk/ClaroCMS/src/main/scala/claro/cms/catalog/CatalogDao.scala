@@ -66,14 +66,14 @@ object CatalogDao extends Dao {
   }
   
   def createProduct(name : String, articleNumber : String, description : String, price : Double, imageClass : Class[_], imageName : String, categories : Category*) = {
-	val product = new Product
-	set(product, Properties.name, name)
-	set(product, Properties.articleNumber, articleNumber)
-	set(product, Properties.description, description)
-	set(product, Properties.price, price)
-	setImage(product, Properties.image, imageClass, imageName)
-	categories foreach (_.getChildren.add(product))
-	product
+  	val product = getOrCreateProduct(name)
+  	set(product, Properties.name, name)
+  	set(product, Properties.articleNumber, articleNumber)
+  	set(product, Properties.description, description)
+  	set(product, Properties.price, price)
+  	setImage(product, Properties.image, imageClass, imageName)
+  	categories foreach (_.getChildren.add(product))
+  	product
   }
 
   def catalog(name : String) : Option[Catalog] = querySingle("SELECT c FROM Catalog c WHERE c.name = :name", "name" -> name)
