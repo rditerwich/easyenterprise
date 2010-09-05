@@ -34,13 +34,13 @@
 <!-- end #header -->
 <div id="forms">
 	<div id="search">
-		<form method="get" action="">
+    <webshop:search-form form="POST"> 
 			<fieldset>
-			<input type="text" id="query" name="query" value="" />
-			<input type="submit" id="search-submit" value="Search" />
+      <search:search-string id="query"/> 
+      <search:submit id="search-submit" />
 			<a href="#">Advanced Search</a>
 			</fieldset>
-		</form>
+    </webshop:search-form> 
 	</div>
 	<!-- end #search -->
 	<div id="currency">
@@ -65,28 +65,23 @@
 		<!--
 			Use class="active" to permanently highlight a given menu item
 		-->
+		<li class="first"><a href="/">Home</a></li>
 		<webshop:navigation>
 			<list:group>
 				<list:first>
-					<li group:first="class=first"><category:link><category:category-value property="Name"/></category:link></li>
+					<li  category:is-selected="class=active"><category:link include-search-result="true"><category:category-value property="Name"/></category:link></li>
 				</list:first>
 				<list:skip-first>
-					<li group:first="class=group-first"><category:link><category:category-value property="Name"/></category:link></li>
+					<li category:is-selected="class=active" group:first="class=group-first"><category:link include-search-result="true"><category:category-value property="Name"/></category:link></li>
 				</list:skip-first>
 			</list:group>
 		</webshop:navigation>
 	</ul>
 </div>
 <!-- end #categories -->
-<div id="banner"><a href="#"><img src="/images/homepage08.jpg" alt="" width="900" height="131" /></a></div>
-<!-- end #banner -->
-<div id="page">
-	<template:content/>
 
-	<!-- end #sidebar -->
-	<div style="clear: both;">&#160;</div>
-</div>
-<!-- end #page -->
+<template:content/>
+
 <div id="footer">
 	<p class="links"><a href="#">Privacy Policy</a> &#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Legal Information</a> &#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Terms of Use</a></p>
 	<p class="legal">Copyright (c) 2008 Websitename.com. All rights reserved.</p>
