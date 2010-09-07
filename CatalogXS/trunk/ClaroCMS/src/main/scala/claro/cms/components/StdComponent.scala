@@ -4,7 +4,7 @@ import java.util.Locale
 import xml.NodeSeq
 import net.liftweb.http.{S,SHtml}
 import net.liftweb.http.js.JsCmd
-import claro.cms.{Cms,FormField,FormFieldError,Component,Website}
+import claro.cms.{Cms,FormField,FormFieldError,Component,Website,PagingBindable}
 import claro.common.util.Locales
 
 class StdComponent extends Component {
@@ -13,7 +13,8 @@ class StdComponent extends Component {
   
   bindings.append {
     case component : StdComponent => Map(
-      "locales" -> Website.instance.locales -> "locale"
+      "locales" -> Website.instance.locales -> "locale",
+      "paging" -> PagingBindable
     )
         
     case locale : Locale => Map(

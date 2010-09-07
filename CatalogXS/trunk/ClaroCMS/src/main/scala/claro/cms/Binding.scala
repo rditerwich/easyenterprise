@@ -292,6 +292,16 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
     var size = collection.size
     val listPrefix = attr(node, "list-prefix", "list")
     
+    // paging
+    val pageSize = attr(node, "page-size", "0").toInt
+    if (pageSize > 0 && pageSize < size) {
+    	Paging.sizeEstimate = size
+    	Paging.pageSize = pageSize
+    	val startIndex = Paging.currentPage * pageSize
+    	collection = collection slice (startIndex, startIndex + pageSize)
+    	size = collection.size
+    }
+    
     // determine groups
     var groupSize = attr(node, "group-size", "1").toInt
     var groupCount = attr(node, "group-count", "-1").toInt

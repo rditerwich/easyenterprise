@@ -12,5 +12,6 @@ object UrlDecorate extends LiftRules.URLDecoratorPF {
     if (locale == Website.instance.config.defaultLocale) url
     else if (locale.toString != "") "/" + locale + url
     else url
+    LiftRules.context.path + "/" + locale
   }
 }
