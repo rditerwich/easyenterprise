@@ -90,3 +90,31 @@ html, body {
 	margin: 0px auto;
 }
 
+/** PAGING */
+
+.paging {
+	float:right;
+	padding-right: 8px;
+}
+
+ .paging-previous.inactive {
+	display: none;
+}
+
+
+.paging .inactive {
+	color: grey;
+}
+
+.paging .active {
+	color: white;
+}
+
+.paging .paging-nr {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+.paging .current {
+	color: black
+}
