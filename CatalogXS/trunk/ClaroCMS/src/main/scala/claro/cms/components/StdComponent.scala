@@ -31,7 +31,6 @@ class StdComponent extends Component {
       "message" -> error.message
     )
   }
-
   
   
   def changeLocaleLink(locale : Locale) : NodeSeq => NodeSeq = { xml =>

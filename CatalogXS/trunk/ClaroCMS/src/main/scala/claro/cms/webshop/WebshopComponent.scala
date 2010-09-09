@@ -206,10 +206,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
   rewrite.append {
     case "index" :: Nil => "index" :: Nil
     case "product" :: id :: Nil => WebshopModel.currentProductVar(Some(id)); "product" :: Nil
-    case "category" :: urlName :: "page" :: page :: Nil => 
-    	WebshopModel.currentCategoryVar(Some(urlName))
-    	Paging.currentPage = page.toInt
-    	"category" :: Nil
     case "category" :: urlName :: Nil => WebshopModel.currentCategoryVar(Some(urlName)); "category" :: Nil
     case "category" :: urlName :: "search" :: s :: Nil => 
       WebshopModel.currentCategoryVar(Some(urlName))

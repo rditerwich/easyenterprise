@@ -19,7 +19,6 @@ class Boot extends Bootable {
     LiftRules.viewDispatch.append(ViewDispatch)
     LiftRules.urlDecorate.append(UrlDecorate)
     LiftRules.rewrite.append(Rewrite)
-    
     Cms.logger.info(Website.instance.printInfo(""))
   }
   

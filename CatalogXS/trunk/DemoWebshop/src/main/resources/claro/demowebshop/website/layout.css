@@ -97,10 +97,14 @@ html, body {
 	padding-right: 8px;
 }
 
+.paging a {
+	text-decoration: none;
+	color: white;
+}
+
  .paging-previous.inactive {
 	display: none;
 }
-
 
 .paging .inactive {
 	color: grey;
@@ -116,5 +120,5 @@ html, body {
 }
 
 .paging .current {
-	color: black
+	font-size: 110%;
 }

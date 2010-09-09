@@ -1,7 +1,8 @@
 package claro.cms
 
 import java.util.Locale
-import net.liftweb.http.LiftRules
+import net.liftweb.http.{S,LiftRules}
+import net.liftweb.common.{Full,Empty}
 
 object UrlDecorate extends LiftRules.URLDecoratorPF {
 
@@ -12,6 +13,6 @@ object UrlDecorate extends LiftRules.URLDecoratorPF {
     if (locale == Website.instance.config.defaultLocale) url
     else if (locale.toString != "") "/" + locale + url
     else url
-    LiftRules.context.path + "/" + locale
   }
 }
+

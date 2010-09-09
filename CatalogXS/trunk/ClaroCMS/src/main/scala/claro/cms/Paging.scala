@@ -1,26 +1,26 @@
 package claro.cms
 
 import xml.{Node, NodeSeq}
-import net.liftweb.http.{RequestVar}
+import net.liftweb.http.{RequestVar,S}
 
 object Paging extends RequestVar[Paging](new Paging)
 
 class Paging {
-	var currentPage = 0
+	var currentPage = 1
 	var sizeEstimate = 0
 	var pageSize = 1
 	def surroundingPages(max : Int) : (Boolean, Seq[Int], Boolean) = {
-		var startPage = currentPage - max / 2
-		val maxPage = Math.max(Math.ceil(sizeEstimate / pageSize).toInt - 1, currentPage)
+		var startPage = currentPage - 1 - max / 2
+		val maxPage = Math.max(Math.ceil(sizeEstimate / pageSize).toInt, (currentPage - 1))
 		startPage = Math.min(startPage, maxPage - max)
 		startPage = Math.max(0, startPage)
 		val endPage = Math.min(startPage + max, maxPage)
 		
-		(startPage != 0, startPage.to(endPage), endPage != maxPage)
+		(startPage != 0, (startPage + 1).to(endPage + 1), endPage != maxPage)
 	}
 
-	def hasPrevious = currentPage > 0
-	def hasNext = sizeEstimate > (currentPage + 1) * pageSize
+	def hasPrevious = currentPage > 1
+	def hasNext = sizeEstimate > currentPage * pageSize
 }
 
 object PagingBindable extends Bindable {
@@ -29,12 +29,28 @@ object PagingBindable extends Bindable {
       val paging = Paging.is
       val (less, pages, more) = paging.surroundingPages(5)
       val bindings : Bindings = Bindings(paging, 
-          "previous" -> new XmlBinding(xml => <a class={if (paging.hasPrevious) "paging-previous active" else "paging-previous inactive"}>{xml}</a>),
+          "previous" -> new XmlBinding(xml => 
+	        if (paging.hasPrevious) <a class="paging-previous active" href={href(paging.currentPage - 1)}>{xml}</a>
+	        else <a class="paging-previous inactive">{xml}</a>),
           "page" -> new XmlBinding(xml => pages.map { page => 
-            <a class={if (page == paging.currentPage) "paging-nr current" else "paging-nr"}>{page}</a>
-          }),
-          "next" -> new XmlBinding(xml => <a class={if (paging.hasNext) "paging-next active" else "paging-next inactive"}>{xml}</a>))
+            if (page == paging.currentPage) <a class="paging-nr current">{page}</a>
+            else <a class="paging-nr" href={href(page)}>{page}</a>}),
+          "next" -> new XmlBinding(xml => 
+          	if (paging.hasNext) <a class="paging-next active" href={href(paging.currentPage + 1)}>{xml}</a>
+          	else <a class="paging-next inactive">{xml}</a>))
       Binding.bind(xml, context + ("paging", bindings))
 //  	 	  "next" -> new XmlBinding(xml => <a class={if (paging.hasNext) "active" else "inactive"}>{xml.child}</a>)
+  }
+  
+  def href(page : Int) = {
+	  val uri = if (Paging.currentPage > 0) {
+	 	  val uri = S.uri
+		  val i2 = S.uri.lastIndexOf('/')
+		  val i = S.uri.lastIndexOf('/', i2 - 1)
+		  if (uri.substring(i).startsWith("/page/")) uri.substring(0, i)
+		  else uri
+	  } else S.uri 
+	  if (page > 1) uri + "/page/" + page
+	  else uri
   }
 }

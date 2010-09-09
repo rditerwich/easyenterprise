@@ -297,7 +297,7 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
     if (pageSize > 0 && pageSize < size) {
     	Paging.sizeEstimate = size
     	Paging.pageSize = pageSize
-    	val startIndex = Paging.currentPage * pageSize
+    	val startIndex = (Paging.currentPage - 1) * pageSize
     	collection = collection slice (startIndex, startIndex + pageSize)
     	size = collection.size
     }
