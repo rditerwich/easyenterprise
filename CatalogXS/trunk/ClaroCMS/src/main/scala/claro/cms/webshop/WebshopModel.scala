@@ -24,6 +24,7 @@ object WebshopModel {
   object currentSearchStringVar extends RequestVar[Option[String]](None)
   object currentUserVar extends SessionVar[Option[jpa.party.User]](None)
   object currentOrder extends SessionVar[Order](new Order(new jpa.shop.Order, shop.mapping))
+  object currentStickyFilters extends SessionVar[mutable.ArrayBuffer[StickyFilter]](mutable.ArrayBuffer())
 
   def currentProduct : Option[Product] = currentProductVar.is match {
     case Some(id) => Some(shop.productsById(id.toLong))
@@ -44,6 +45,19 @@ object WebshopModel {
       }
       
 	  case _ => Seq.empty
+  }
+  
+  def currentProducts : Seq[Product] = {
+	val products = currentSearchStringVar.is match {
+	  case Some(searchString) =>
+	  	val products = shop.keywordMap.find(searchString)
+	  	currentCategory match {
+	  	  case Some(group) => products filter group.productExtent toSeq
+	  	  case None => products.toSeq
+	  	}
+	  case None => shop.products.toSeq
+	}
+	currentStickyFilters.foldLeft (products) ((x, y) => x filter y.filter)
   }
   
   def isCategorySelected(category : Category) : Boolean = {

@@ -94,12 +94,21 @@ html, body {
 
 .paging {
 	float:right;
-	padding-right: 8px;
+	padding-right: 5px;
+}
+
+.paging .paging-previous {
+	padding-left: 3px;
+}
+
+.paging .paging-next {
+	padding-right: 3px;
 }
 
 .paging a {
 	text-decoration: none;
 	color: white;
+	padding-top: 20px;
 }
 
  .paging-previous.inactive {

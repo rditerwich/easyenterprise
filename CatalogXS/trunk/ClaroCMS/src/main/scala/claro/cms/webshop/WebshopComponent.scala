@@ -15,12 +15,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "id" -> WebshopModel.shop.get.id,
       "current-category" -> WebshopModel.currentCategory -> "category",
       "current-product" -> WebshopModel.currentProduct -> "product",
+      "current-products" -> WebshopModel.currentProducts -> "product",
       "current-search-string" -> WebshopModel.currentSearchStringVar.is,
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
       "navigation" -> grouped(WebshopModel.shop.navigation) -> "category",
-      "filters" -> Filter.filters -> "filter",
+      "filters" -> WebshopModel.currentStickyFilters.get -> "filter",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart -> "shopping-cart",
       "search-all" -> searchAllLink,
@@ -62,7 +63,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "products" -> @@?("include-sub-groups", category.productExtent, category.products) -> "product",
       "promotions" -> category.productExtentPromotions -> "promotion",
       "is-selected" -> WebshopModel.isCategorySelected(category),
-      "link" -> Link(category))
+      "link" -> Link(category),
+      "add-filter-link" -> AddFilterLink(category))
       
     case cart : ShoppingCart => Map(
       "items" -> cart.order.productOrders -> "item",
@@ -90,9 +92,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
       "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
-   case filter : Filter => Map(
+   case filter : StickyFilter => Map(
        "title" -> filter.title,
-       "values" -> filter.values -> "value")
+       "remove" -> WebshopModel.currentStickyFilters(WebshopModel.currentStickyFilters.get.filter(_ != filter)))
       
    case value : FilterValue => Map(
        "value" -> value.value) 
