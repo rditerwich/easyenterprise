@@ -65,9 +65,10 @@ object CatalogDao extends Dao {
     }
   }
   
-  def createProduct(name : String, articleNumber : String, description : String, price : Double, imageClass : Class[_], imageName : String, categories : Category*) = {
+  def createProduct(name : String, variant : String, articleNumber : String, description : String, price : Double, imageClass : Class[_], imageName : String, categories : Category*) = {
   	val product = getOrCreateProduct(name)
   	set(product, Properties.name, name)
+  	set(product, Properties.variant, variant)
   	set(product, Properties.articleNumber, articleNumber)
   	set(product, Properties.description, description)
   	set(product, Properties.price, price)
@@ -93,6 +94,7 @@ object CatalogDao extends Dao {
   
   object Properties {
     def name = getOrCreateProperty(catalog.getRoot, "Name", PropertyType.String)
+    def variant = getOrCreateProperty(catalog.getRoot, "Variant", PropertyType.String)
     def articleNumber = getOrCreateProperty(catalog.getRoot, "ArticleNumber", PropertyType.String)
     def description = getOrCreateProperty(catalog.getRoot, "Description", PropertyType.String)
     def image = getOrCreateProperty(catalog.getRoot, "Image", PropertyType.Media)

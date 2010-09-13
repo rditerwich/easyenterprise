@@ -23,12 +23,14 @@ class Paging {
 	def hasNext = sizeEstimate > currentPage * pageSize
 }
 
-object PagingBindable extends Bindable {
+object PagingBindable extends Binding {
   override def bind(node : Node, context : BindingContext) = {
       val xml = Binding.bind(node.child, context)
       val paging = Paging.is
       val (less, pages, more) = paging.surroundingPages(5)
       val bindings : Bindings = Bindings(paging, 
+          "single-page" -> new AnyBinding(pages.size <= 1),
+          "multi-page" -> new AnyBinding(pages.size > 1),
           "previous" -> new XmlBinding(xml => 
 	        if (paging.hasPrevious) <a class="paging-previous active" href={href(paging.currentPage - 1)}>{xml}</a>
 	        else <a class="paging-previous inactive">{xml}</a>),
@@ -39,7 +41,6 @@ object PagingBindable extends Bindable {
           	if (paging.hasNext) <a class="paging-next active" href={href(paging.currentPage + 1)}>{xml}</a>
           	else <a class="paging-next inactive">{xml}</a>))
       Binding.bind(xml, context + ("paging", bindings))
-//  	 	  "next" -> new XmlBinding(xml => <a class={if (paging.hasNext) "active" else "inactive"}>{xml.child}</a>)
   }
   
   def href(page : Int) = {

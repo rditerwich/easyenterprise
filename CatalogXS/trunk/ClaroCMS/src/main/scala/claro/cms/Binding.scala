@@ -98,7 +98,7 @@ object Binding {
                     case Some(binding) => 
                       val str = value.toString
                       val i = str.indexOf('=')
-                      val i2 = str.indexOf(':', i)
+                      val i2 = str.indexOf('|', i)
                       val l = if (i <= 0) str else str.substring(0, i) 
                       val v = if (i <= 0) "" else 
                         if (i2 < 0) str.substring(i + 1) 

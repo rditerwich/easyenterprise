@@ -93,18 +93,18 @@ Package {
                     type = primitive:Integer
                 }
                 Attribute {
-                    name = parentShop
-                    type = shop:Shop
-                    lower = 0
-                    opposite = shop:Shop/attributes:navigation
-                }
-                Attribute {
                     name = subNavigation
                     type = shop:Navigation
                     isComposite = true
                     lower = 0
                     upper = {}
                     opposite = shop:Navigation/attributes:parentNavigation 
+                }
+                Attribute {
+                    name = parentShop
+                    type = shop:Shop
+                    lower = 0
+                    opposite = shop:Shop/attributes:navigation
                 }
                 Attribute {
                     name = parentNavigation

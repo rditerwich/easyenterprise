@@ -47,7 +47,7 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
       (itemParentExtent(catalog.getItems.toSet classFilter(classOf[jpa.catalog.Category]), new mutable.HashSet[jpa.catalog.Item], _))).  
 	      toMap.withDefault(_ => Set.empty)  
     
-	private def navigation(nav : Iterable[jpa.shop.Navigation]) : Seq[Seq[jpa.shop.Navigation]] = {
+  private def navigation(nav : Iterable[jpa.shop.Navigation]) : Seq[Seq[jpa.shop.Navigation]] = {
     val sorted = nav.toSeq.sortBy(_.getIndex.getOrElse(0))
     val filled = sorted.filter(_.getCategory != null)
     val filledSeq = if (filled.isEmpty) Seq() else Seq(sorted.filter(_.getCategory != null))

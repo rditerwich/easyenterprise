@@ -95,6 +95,7 @@ html, body {
 .paging {
 	float:right;
 	padding-right: 5px;
+	margin-top: -2px;
 }
 
 .paging .paging-previous {
@@ -129,5 +130,5 @@ html, body {
 }
 
 .paging .current {
-	font-size: 110%;
+	font-size: 115%;
 }
