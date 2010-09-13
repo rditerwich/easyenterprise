@@ -7,7 +7,7 @@ import java.util.Map;
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Relation;
 import agilexs.catalogxsadmin.presentation.client.catalog.RelationType;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -23,7 +23,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
   private String currentLang = "en";
   private DeleteHandler<Relation> deleteHandler;
   private AddHandler<Long> addHandler;
-  private ProductGroup productGroup;
+  private Category productGroup;
 
   public RelatedToPresenter(final ItemParentsView view) {
     this.view = view;
@@ -32,7 +32,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
       public void onClick(ClickEvent event) {
         final Relation r = new Relation();
         final Long newPG = Long.valueOf(view.getAllParentsListBox().getValue(view.getSelectedNewParent()));
-        final ProductGroup pg = new ProductGroup();
+        final Category pg = new Category();
         final RelationType rt = new RelationType();
         
         pg.setId(newPG);
@@ -41,7 +41,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
         rt.setName("");
         r.setRelationType(rt);
         relatedTo.add(r);
-        allGroups.remove(CatalogCache.get().getProductGroupName(newPG, currentLang));
+        allGroups.remove(CatalogCache.get().getCategoryName(newPG, currentLang));
         show(currentLang);
         if (addHandler != null) {
           addHandler.onAdd(newPG);
@@ -53,7 +53,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
         final Relation removed = relatedTo.remove(index.intValue());
 
         if (removed != null) {
-          allGroups.add(CatalogCache.get().getProductGroupName(removed.getRelatedTo().getId(), currentLang));
+          allGroups.add(CatalogCache.get().getCategoryName(removed.getRelatedTo().getId(), currentLang));
         }
         show(currentLang);
         if (deleteHandler != null) {
@@ -75,7 +75,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
     return relatedTo;
   }
 
-  public void show(ProductGroup productGroup, String lang, ArrayList<Map.Entry<Long, String>> allItems) {
+  public void show(Category productGroup, String lang, ArrayList<Map.Entry<Long, String>> allItems) {
     this.productGroup = productGroup;
     currentLang = lang;
     relatedTo.clear();
@@ -85,10 +85,10 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
     allGroups.clear();
     allGroups.addAll(allItems);
     if (productGroup != null) {
-      allGroups.remove(CatalogCache.get().getProductGroupName(productGroup.getId(), currentLang));
+      allGroups.remove(CatalogCache.get().getCategoryName(productGroup.getId(), currentLang));
     }
     for (Relation r : relatedTo) {
-      allGroups.remove(CatalogCache.get().getProductGroupName(r.getRelatedTo().getId(), lang));
+      allGroups.remove(CatalogCache.get().getCategoryName(r.getRelatedTo().getId(), lang));
     }
     show(lang);
   }
@@ -97,7 +97,7 @@ public class RelatedToPresenter implements Presenter<ItemParentsView> {
     currentLang = lang;
     view.clearParentTable();
     for (Relation pg : relatedTo) {
-      view.addParentToList(CatalogCache.get().getProductGroupName(pg.getRelatedTo().getId(), lang).getValue());
+      view.addParentToList(CatalogCache.get().getCategoryName(pg.getRelatedTo().getId(), lang).getValue());
     }
     view.getAllParentsListBox().clear();
     for (Map.Entry<Long, String> pp : allGroups) {

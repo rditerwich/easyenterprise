@@ -10,7 +10,7 @@ import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Language;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.Relation;
@@ -26,28 +26,28 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Presenter for the ProductGroup page
+ * Presenter for the Category page
  */
-public class ProductGroupPresenter implements Presenter<ProductGroupView> {
+public class CategoryPresenter implements Presenter<CategoryView> {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
-  private final ProductGroupView view = new ProductGroupView();
+  private final CategoryView view = new CategoryView();
   private ItemParentsPresenter parentsP = new ItemParentsPresenter(new ItemParentsView());
   private RelatedToPresenter relatedToP = new RelatedToPresenter (new ItemParentsView());
   private ItemPropertiesPresenter pgpp;
   private String currentLanguage = "en";
-  private ProductGroup currentProductGroup;
-  private ProductGroup orgProductGroup;
+  private Category currentCategory;
+  private Category orgCategory;
   private final ArrayList<ItemValuesPresenter> valuesPresenters = new ArrayList<ItemValuesPresenter>();
 
-  public ProductGroupPresenter() {
+  public CategoryPresenter() {
     pgpp = new ItemPropertiesPresenter(currentLanguage);
     parentsP.setDeleteHandler(new DeleteHandler<Long>() {
       @Override public void onDelete(Long data) {
-        for (Item parent : currentProductGroup.getParents()) {
+        for (Item parent : currentCategory.getParents()) {
           if (data.equals(parent.getId())) {
-            currentProductGroup.getParents().remove(parent);
+            currentCategory.getParents().remove(parent);
             break;
           }
         }
@@ -57,7 +57,7 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       @Override public void onAdd(Long pid) {
         boolean present = false;
 
-        for (Item parent : currentProductGroup.getParents()) {
+        for (Item parent : currentCategory.getParents()) {
           if (pid.equals(parent.getId())) {
             present = true;
           }
@@ -65,18 +65,18 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
         if (!present) {
           //Create an empty product group, so only this group is send to the
           //server which will then not be checked for changes.
-          final ProductGroup pg = new ProductGroup();
+          final Category pg = new Category();
 
           pg.setId(pid);
-          currentProductGroup.getParents().add(pg);
+          currentCategory.getParents().add(pg);
         }
       }
     });
     view.containsProductsClickHandlers().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        if (currentProductGroup != null) {
-          currentProductGroup.setContainsProducts(view.containsProducts().getValue());
+        if (currentCategory != null) {
+          currentCategory.setContainsProducts(view.containsProducts().getValue());
         }
       }});
     view.saveButtonClickHandlers().addClickHandler(new ClickHandler() {
@@ -85,9 +85,9 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
       }});
   }
 
-  public ProductGroup setNewProductGroup(Shop shop, ProductGroup parent) {
-      orgProductGroup = null;
-      final ProductGroup newPG = new ProductGroup();
+  public Category setNewCategory(Shop shop, Category parent) {
+      orgCategory = null;
+      final Category newPG = new Category();
       newPG.setCatalog(shop.getCatalog());
       newPG.setPropertyValues(new ArrayList<PropertyValue>());
       newPG.setProperties(new ArrayList<Property>());
@@ -106,55 +106,55 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
   }
 
   @Override
-  public ProductGroupView getView() {
+  public CategoryView getView() {
     return view;
   }
 
   private void save() {
     view.setSaving(true);
-    if (orgProductGroup != null) {
-      orgProductGroup.getChildren().clear();
-      orgProductGroup.setProperties(Util.filterEmpty(orgProductGroup.getProperties()));
-      orgProductGroup.setPropertyValues(Util.filterEmpty(orgProductGroup.getPropertyValues()));
+    if (orgCategory != null) {
+      orgCategory.getChildren().clear();
+      orgCategory.setProperties(Util.filterEmpty(orgCategory.getProperties()));
+      orgCategory.setPropertyValues(Util.filterEmpty(orgCategory.getPropertyValues()));
     }
-    final ProductGroup saveProductGroup = currentProductGroup.clone(new HashMap());
+    final Category saveCategory = currentCategory.clone(new HashMap());
 
-    saveProductGroup.getChildren().clear();
-    saveProductGroup.setProperties(Util.filterEmpty(currentProductGroup.getProperties()));
-    for (Property p : saveProductGroup.getProperties()) {
-      if (currentProductGroup.equals(p.getItem())) {
-        p.setItem(saveProductGroup);
+    saveCategory.getChildren().clear();
+    saveCategory.setProperties(Util.filterEmpty(currentCategory.getProperties()));
+    for (Property p : saveCategory.getProperties()) {
+      if (currentCategory.equals(p.getItem())) {
+        p.setItem(saveCategory);
       }
     }
-    saveProductGroup.getParents().clear();
+    saveCategory.getParents().clear();
     for (Long parent : parentsP.getValues()) {
-      final ProductGroup p = new ProductGroup();
+      final Category p = new Category();
       
       p.setId(parent);
-      saveProductGroup.getParents().add(p);
+      saveCategory.getParents().add(p);
     }
-    saveProductGroup.getRelations().clear();
+    saveCategory.getRelations().clear();
     for (Relation relation : relatedToP.getValues()) {
-      saveProductGroup.getRelations().add(relation);
+      saveCategory.getRelations().add(relation);
     }
-    saveProductGroup.setPropertyValues(Util.filterEmpty(saveProductGroup.getPropertyValues()));
-    CatalogServiceAsync.updateProductGroup(orgProductGroup,
-        saveProductGroup, new AsyncCallback<ProductGroup>() {
+    saveCategory.setPropertyValues(Util.filterEmpty(saveCategory.getPropertyValues()));
+    CatalogServiceAsync.updateCategory(orgCategory,
+        saveCategory, new AsyncCallback<Category>() {
           @Override
           public void onFailure(Throwable caught) {
             view.setSaving(false);
           }
 
           @Override
-          public void onSuccess(ProductGroup result) {
+          public void onSuccess(Category result) {
             view.setSaving(false);
             if (result != null) {
               final PropertyValue name = Util.getPropertyValueByName(result.getPropertyValues(), Util.NAME, currentLanguage);
               
               StatusMessage.get().show(i18n.productGroupSaved(name==null?"":name.getStringValue()));
               CatalogCache.get().put(result);
-              currentProductGroup = null; //force redraw of product group
-              orgProductGroup = null;
+              currentCategory = null; //force redraw of product group
+              orgCategory = null;
               show(result);
             } else {
               StatusMessage.get().show(i18n.productGroupSaved(""));
@@ -165,45 +165,45 @@ public class ProductGroupPresenter implements Presenter<ProductGroupView> {
 
   public void switchLanguage(String lang) {
     currentLanguage = lang;
-    show(currentProductGroup);
+    show(currentCategory);
   }
 
-  public void show(ProductGroup productGroup) {
+  public void show(Category productGroup) {
     final List<Language> langs = CatalogCache.get().getActiveCatalog().getLanguages();
 
-    if (currentProductGroup != productGroup) {
-      currentProductGroup = productGroup;
-      if (currentProductGroup != null) {
-        if ((orgProductGroup == null || orgProductGroup.getId() != currentProductGroup.getId())
-            && currentProductGroup.getId() != null) {
-          orgProductGroup = currentProductGroup.clone(new HashMap());
+    if (currentCategory != productGroup) {
+      currentCategory = productGroup;
+      if (currentCategory != null) {
+        if ((orgCategory == null || orgCategory.getId() != currentCategory.getId())
+            && currentCategory.getId() != null) {
+          orgCategory = currentCategory.clone(new HashMap());
         }
       }
     }
-      if (currentProductGroup != null) {
-        view.containsProducts().setValue(currentProductGroup.getContainsProducts());
+      if (currentCategory != null) {
+        view.containsProducts().setValue(currentCategory.getContainsProducts());
         //parents product groups
         final List<Map.Entry<Long, String>> curParents = new ArrayList<Map.Entry<Long, String>>();
 
-        for (Item cp : currentProductGroup.getParents()) {
-          curParents.add(CatalogCache.get().getProductGroupName(cp.getId(), currentLanguage));
+        for (Item cp : currentCategory.getParents()) {
+          curParents.add(CatalogCache.get().getCategoryName(cp.getId(), currentLanguage));
         }
-        parentsP.show(currentProductGroup, curParents, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
-        relatedToP.show(currentProductGroup, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
+        parentsP.show(currentCategory, curParents, currentLanguage, CatalogCache.get().getCategoryNamesByLang(currentLanguage));
+        relatedToP.show(currentCategory, currentLanguage, CatalogCache.get().getCategoryNamesByLang(currentLanguage));
         //own properties with default values
-        pgpp.show(langs, currentLanguage, currentProductGroup);
+        pgpp.show(langs, currentLanguage, currentCategory);
         //inherited properties from parents
         view.clear();
         valuesPresenters.clear();
         view.add(i18n.parents(), parentsP.getView());
         view.add(i18n.relatedTo(), relatedToP.getView());
         view.add(i18n.properties(), pgpp.getView());
-        final List<Long> parents = Util.findParents(currentProductGroup);
-        final Long nameGId = CatalogCache.get().getProductGroupName().getId();
+        final List<Long> parents = Util.findParents(currentCategory);
+        final Long nameGId = CatalogCache.get().getCategoryName().getId();
 
         for (Long pid : parents) {
-          final ProductGroup parent = CatalogCache.get().getProductGroup(pid);
-          final List<PropertyValue[]> pv = Util.getProductGroupPropertyValues(langs, parent, currentProductGroup);
+          final Category parent = CatalogCache.get().getCategory(pid);
+          final List<PropertyValue[]> pv = Util.getCategoryPropertyValues(langs, parent, currentCategory);
 
           if (!pv.isEmpty()) {
             final ItemValuesPresenter presenter = new ItemValuesPresenter();

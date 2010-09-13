@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProductGroupView extends Composite implements View {
+public class CategoryView extends Composite implements View {
 
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
@@ -29,7 +29,7 @@ public class ProductGroupView extends Composite implements View {
   private final FlowPanel propertyValuesPanel = new FlowPanel();
   private final HTML pvHeader = new HTML(i18n.h3(i18n.propertyValues()));
 
-  public ProductGroupView() {
+  public CategoryView() {
     initWidget(detailPanel);
     final FlowPanel fp = new FlowPanel();
     fp.getElement().getStyle().setPadding(8, Unit.PX);

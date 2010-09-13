@@ -2,7 +2,9 @@ package agilexs.catalogxsadmin.presentation.client;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import agilexs.catalogxsadmin.presentation.client.binding.Binding;
 import agilexs.catalogxsadmin.presentation.client.binding.BindingConverters;
@@ -15,11 +17,12 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Language;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValueBinding;
+import agilexs.catalogxsadmin.presentation.client.shop.Navigation;
 import agilexs.catalogxsadmin.presentation.client.widget.EnumValuesEditWidget;
 import agilexs.catalogxsadmin.presentation.client.widget.MediaWidget;
 
@@ -76,6 +79,23 @@ public class Util {
 //  static {
 //    EMPTY_LABEL.setLabel("UNKNOWN LABEL");
 //  }
+  
+  public static Set<Category> categories(List<Navigation> navigations) {
+	  Set<Category> result = new HashSet<Category>();
+	  
+	  categories(navigations, result);
+	  
+	  return result;
+  }
+
+	public static void categories(List<Navigation> navigations, Set<Category> result) {
+		for (Navigation navigation : navigations) {
+			result.add(navigation.getCategory());
+			categories(navigation.getSubNavigation(), result);
+		}
+	}
+
+
 
   /**
    * Returns true if the matching languages are both null or if they have the
@@ -92,15 +112,15 @@ public class Util {
 
   /**
    * Returns a list of all PropertyValues based on all properties in a
-   * ProductGroup. If no propertyValue is present, a new one is created.
+   * Category. If no propertyValue is present, a new one is created.
    * The newly created propertyValues are added to the current productGroup.
    *
    * @param pg
    * @param values
    * @return
    */
-  public static List<PropertyValue[]> getProductGroupPropertyValues(
-      List<Language> langs, ProductGroup pg, Item item) {
+  public static List<PropertyValue[]> getCategoryPropertyValues(
+      List<Language> langs, Category pg, Item item) {
     final List<PropertyValue> values = item.getPropertyValues();
     final List<PropertyValue[]> pgValues = new ArrayList<PropertyValue[]>();
     final ArrayList<Language> allLangs = new ArrayList<Language>(langs);
@@ -292,12 +312,12 @@ public class Util {
   }
 
   /**
-   * Returns all ID's of the parents of the given ProductGroup.
+   * Returns all ID's of the parents of the given Category.
    *
    * @param productGroup
    * @return
    */
-  public static List<Long> findParents(ProductGroup productGroup) {
+  public static List<Long> findParents(Category productGroup) {
     final List<Long> parents = new ArrayList<Long>();
 
     findParents(productGroup, parents);
@@ -370,7 +390,7 @@ public class Util {
    * @return
    */
   public static String productToString(Product product, String language) {
-    final List<PropertyValue[]> pvs = Util.getProductGroupPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getProductGroupProduct(), product);
+    final List<PropertyValue[]> pvs = Util.getCategoryPropertyValues(CatalogCache.get().getActiveCatalog().getLanguages(), CatalogCache.get().getCategoryProduct(), product);
     final StringBuffer s = new StringBuffer();
 
     for (PropertyValue[] pvhlangs : pvs) {

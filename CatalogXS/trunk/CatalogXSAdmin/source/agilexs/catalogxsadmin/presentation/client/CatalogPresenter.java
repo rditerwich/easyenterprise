@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
@@ -34,7 +34,7 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
   protected final HashMap<TreeItem, Long> treemap = new HashMap<TreeItem, Long>();
 
   protected Shop activeShop;
-  protected ProductGroup currentProductGroup;
+  protected Category currentCategory;
   protected String currentLanguage = "en";
 
   public CatalogPresenter(V cview) {
@@ -73,11 +73,11 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
 
         if (pgId != null) {
           final Entry<Long, String> name =
-              CatalogCache.get().getProductGroupName(pgId, currentLanguage);
+              CatalogCache.get().getCategoryName(pgId, currentLanguage);
 
           view.setName(name==null ? "" : name.getValue());
-          currentProductGroup = CatalogCache.get().getProductGroup(pgId);
-          show(currentProductGroup);
+          currentCategory = CatalogCache.get().getCategory(pgId);
+          show(currentCategory);
           loadChildren(activeShop, item);
         } else {
           //FIXME ?? can this happen?
@@ -98,20 +98,20 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
       @Override public void onSuccess(Shop result) {
         activeShop = result;
         view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
-        CatalogCache.get().loadProductGroupNames(new AsyncCallback<String>() {
+        CatalogCache.get().loadCategoryNames(new AsyncCallback<String>() {
           @Override public void onFailure(Throwable caught) {
           }
 
           @Override public void onSuccess(String result) {
             loadChildren(activeShop, null); //initial tree
-            for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
+            for (Category pg : Util.categories(activeShop.getNavigation())) {
               CatalogCache.get().put(pg);
             }
           }
       });
     }});
   }
-
+  
   @Override
   public V getView() {
     return view;
@@ -121,7 +121,7 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
     view.setLanguages(CatalogCache.get().getActiveCatalog().getLanguages(), "en");
   }
 
-  protected abstract void show(ProductGroup currentProductGroup);
+  protected abstract void show(Category currentCategory);
 
   protected abstract void switchLanguage(String newLang);
 
@@ -129,26 +129,26 @@ public abstract class CatalogPresenter<V extends CatalogView> implements Present
     if (!view.getTree().isTreeItemEmpty(parent)) {
       return;
     }
-    final ProductGroup parentPG = CatalogCache.get().getProductGroup(treemap.get(parent));
+    final Category parentPG = CatalogCache.get().getCategory(treemap.get(parent));
 
-    CatalogServiceAsync.findAllProductGroupChildren(
-        shop, parentPG, new AsyncCallback<List<ProductGroup>>() {
+    CatalogServiceAsync.findAllCategoryChildren(
+        shop, parentPG, new AsyncCallback<List<Category>>() {
           @Override
           public void onFailure(Throwable caught) {
             //StatusMessage.get().show(caught.getMessage(), 30);
           }
 
           @Override
-          public void onSuccess(List<ProductGroup> result) {
+          public void onSuccess(List<Category> result) {
             if (result.isEmpty()) {
               view.getTree().setTreeItemAsEmpty(parent);
             }
-            for (ProductGroup productGroup : result) {
+            for (Category productGroup : result) {
               final PropertyValue value = Util.getPropertyValueByName(productGroup.getPropertyValues(), Util.NAME, currentLanguage);
 
-              if (CatalogCache.get().getProductGroupName() == null && value != null && productGroup.getId().equals(value.getProperty().getItem().getId())) {
-                CatalogCache.get().setProductGroupName(productGroup);
-                CatalogCache.get().setProductGroupProduct(productGroup);
+              if (CatalogCache.get().getCategoryName() == null && value != null && productGroup.getId().equals(value.getProperty().getItem().getId())) {
+                CatalogCache.get().setCategoryName(productGroup);
+                CatalogCache.get().setCategoryProduct(productGroup);
               }
               CatalogCache.get().put(productGroup);
               for (Item pPG : productGroup.getParents()) {

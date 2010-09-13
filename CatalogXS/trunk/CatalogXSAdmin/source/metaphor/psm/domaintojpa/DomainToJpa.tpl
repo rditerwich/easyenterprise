@@ -73,6 +73,9 @@ method void PatchAttributeToProperty(IAttributeToProperty attrToColToProp, IAbst
 
     let IJpaProperty prop is Match(IAttributeToProperty.Attributes.target, Container(jpaClass.properties))
         prop.name = UniqueId(attr.name, prop, jpaClass.properties, false)
+                        if prop.name.equals("parents") || prop.name.equals("children")  
+                        System.out.println("XXXX A2P prop: " + prop.name)
+                        /if
 
         if attr.isDerived
             prop.isTransient = true
@@ -100,7 +103,15 @@ method void PatchAttributeToProperty(IAttributeToProperty attrToColToProp, IAbst
                     // bi-directional
                     
                     let IAttributeToProperty oppositeAttributeMapping is RequireTransformed(DomainToJpaUtil.findJpaAttributeMapping(oppositeAttribute, attrToColToProp))
-                        var IJpaProperty oppositeProperty is oppositeAttributeMapping.target
+                        let IJpaProperty oppositeProperty is oppositeAttributeMapping.target
+                        if prop.name.equals("parents") || prop.name.equals("children")  
+                        if (oppositeProperty == null)
+                        System.out.println("prop: " + prop.name + " opposite: aaaahhhhh! Mapping: " + oppositeAttributeMapping.name + " source: " + oppositeAttributeMapping.source)
+                        else
+                        System.out.println("prop: " + prop.name + " opposite: " + oppositeProperty.name + " Mapping: " + oppositeAttributeMapping.name + " source: " + oppositeAttributeMapping.source)
+                        /if
+                        System.out.println("relationship: " + prop.relationship + " attrsToCols.atc.size(): " + attrToCols.attributeToColumn.size())
+                        /if
                         if DomainToJpaUtil.isMappedBy(prop, oppositeProperty, prop.relationship, attrToCols.attributeToColumn.size() > 0)
                             if attrToCols.joinTable != null
                                 // JoinTable
@@ -111,6 +122,7 @@ method void PatchAttributeToProperty(IAttributeToProperty attrToColToProp, IAbst
                         else
                             prop.mappedBy = oppositeProperty
                         /if
+                        /let
                     /let
                 else
                     // uni-directional

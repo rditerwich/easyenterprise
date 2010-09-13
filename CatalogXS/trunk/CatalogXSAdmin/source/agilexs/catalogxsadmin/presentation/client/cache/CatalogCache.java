@@ -10,7 +10,7 @@ import agilexs.catalogxsadmin.presentation.client.catalog.Catalog;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
@@ -34,14 +34,14 @@ public class CatalogCache {
   private final Map<Long, Map<String, String>> productGroupNamesCache = new HashMap<Long, Map<String, String>>();
 
   private final Map<Long, Shop> shopCache = new HashMap<Long, Shop>();
-  private final Map<Long, ProductGroup> productGroupCache = new HashMap<Long, ProductGroup>();
+  private final Map<Long, Category> productGroupCache = new HashMap<Long, Category>();
   private final Map<Long, Product> productCache = new HashMap<Long, Product>();
   private final Map<Long, Property> propertyCache = new HashMap<Long, Property>();
   private final Map<Long, PropertyValue> propertyValueCache = new HashMap<Long, PropertyValue>();
   private final Map<Long, Promotion> promotionCache = new HashMap<Long, Promotion>();
   private final Map<Long, Label> labelCache = new HashMap<Long, Label>();
-  private ProductGroup productGroupName;
-  private ProductGroup productGroupProduct;
+  private Category productGroupName;
+  private Category productGroupProduct;
 
   private CatalogCache() {
   }
@@ -51,23 +51,23 @@ public class CatalogCache {
   }
 
   /**
-   * Returns the ProductGroup that contains the Property with the label 'Name'.
+   * Returns the Category that contains the Property with the label 'Name'.
    * 
    * @return
    */
-  public ProductGroup getProductGroupName() {
+  public Category getCategoryName() {
     return productGroupName;
   }
 
   /**
-   * Returns the ProductGroup that contains the general product properties, like
+   * Returns the Category that contains the general product properties, like
    * article number, description, price and image. These properties are required
    * for every product and these properties are used to display a product in a
    * table, etc. 
    *
    * @return
    */
-  public ProductGroup getProductGroupProduct() {
+  public Category getCategoryProduct() {
     return productGroupProduct;
   }
 
@@ -75,18 +75,18 @@ public class CatalogCache {
    * This is the Product Group that owns the Name property
    * @param productGroupName
    */
-  public void setProductGroupName(ProductGroup productGroupName) {
+  public void setCategoryName(Category productGroupName) {
     this.productGroupName = productGroupName;
   }
 
-  public void setProductGroupProduct(ProductGroup productGroupProduct) {
+  public void setCategoryProduct(Category productGroupProduct) {
     this.productGroupProduct = productGroupProduct;
   }
 
-  public void loadProductGroupNames(final AsyncCallback callback) {
+  public void loadCategoryNames(final AsyncCallback callback) {
     final Catalog c = new Catalog();
     c.setId(getActiveCatalog().getId());
-    CatalogServiceAsync.findAllProductGroupNames(c, new AsyncCallback<List<PropertyValue>>() {
+    CatalogServiceAsync.findAllCategoryNames(c, new AsyncCallback<List<PropertyValue>>() {
       @Override public void onFailure(Throwable caught) {
         callback.onFailure(caught);
       }
@@ -94,18 +94,18 @@ public class CatalogCache {
         for (PropertyValue pv : result) {
           final String lang = pv.getLanguage() == null ? "" : pv.getLanguage();
 
-          updateProductGroupName(pv.getItem().getId(), lang, pv.getStringValue());
+          updateCategoryName(pv.getItem().getId(), lang, pv.getStringValue());
         }
         callback.onSuccess("loaded");
       }
     });
   }
 
-  public Map.Entry<Long, String> getProductGroupName(ProductGroup pg, String lang) {
-    return getProductGroupName(pg.getId(), lang);
+  public Map.Entry<Long, String> getCategoryName(Category pg, String lang) {
+    return getCategoryName(pg.getId(), lang);
   }
 
-  public Map.Entry<Long, String> getProductGroupName(Long pid, String lang) {
+  public Map.Entry<Long, String> getCategoryName(Long pid, String lang) {
     final Map.Entry<Long, String> tp = new Entry<Long, String>(pid);
 
     if (productGroupNamesCache.containsKey(pid)) {
@@ -118,16 +118,16 @@ public class CatalogCache {
     return tp;
   }
 
-  public ArrayList<Map.Entry<Long, String>> getProductGroupNamesByLang(String lang) {
+  public ArrayList<Map.Entry<Long, String>> getCategoryNamesByLang(String lang) {
     final ArrayList<Map.Entry<Long, String>> list = new ArrayList<Map.Entry<Long, String>>();
 
     for (Long pid : productGroupNamesCache.keySet()) {
-      list.add(getProductGroupName(pid, lang));
+      list.add(getCategoryName(pid, lang));
     }
     return list;
   }
 
-  public void updateProductGroupName(Long pid, String lang, String name) {
+  public void updateCategoryName(Long pid, String lang, String name) {
     if (!productGroupNamesCache.containsKey(pid)) {
       productGroupNamesCache.put(pid, new HashMap<String, String>());
     }
@@ -151,7 +151,7 @@ public class CatalogCache {
     }
   }
 
-  public Collection<ProductGroup> getAllProductGroups() {
+  public Collection<Category> getAllCategorys() {
     return productGroupCache.values();
   }
 
@@ -178,19 +178,19 @@ public class CatalogCache {
     }
   }
 
-  public ProductGroup getProductGroup(Long id) {
+  public Category getCategory(Long id) {
     return productGroupCache.get(id);
   }
 
   public void getproductGroupCache(Long id, final AsyncCallback callback) {
     if (productGroupCache.containsKey(id)) {
-      callback.onSuccess(getProductGroup(id));
+      callback.onSuccess(getCategory(id));
     } else {
-      CatalogServiceAsync.findProductGroupById(id, new AsyncCallback<ProductGroup>() {
+      CatalogServiceAsync.findCategoryById(id, new AsyncCallback<Category>() {
         @Override public void onFailure(Throwable caught) {
           callback.onFailure(caught);
         }
-        @Override public void onSuccess(ProductGroup result) {
+        @Override public void onSuccess(Category result) {
           put(result);
           callback.onSuccess(result);
         }});
@@ -293,7 +293,7 @@ public class CatalogCache {
     }
   }
 
-  public void put(ProductGroup pg) {
+  public void put(Category pg) {
     if (pg != null) {
       productGroupCache.put(pg.getId(), pg);
     }
@@ -308,8 +308,8 @@ public class CatalogCache {
   public void put(Item item) {
     if (item instanceof Product) {
       put((Product)item);
-    } else if (item instanceof ProductGroup) {
-      put((ProductGroup)item);
+    } else if (item instanceof Category) {
+      put((Category)item);
     }
   }
 

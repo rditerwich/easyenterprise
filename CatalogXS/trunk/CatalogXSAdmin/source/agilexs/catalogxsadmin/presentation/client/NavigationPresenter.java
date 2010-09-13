@@ -10,7 +10,7 @@ import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.i18n.I18NCatalogXS;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
@@ -37,7 +37,7 @@ public class NavigationPresenter implements Presenter<NavigationView> {
   private final NavigationView view;
   private final ItemParentsPresenter pp;
   private String currentLanguage = "en";
-  private List<Map.Entry<Long, String>> topLevelProductGroups = new ArrayList<Map.Entry<Long, String>>();
+  private List<Map.Entry<Long, String>> topLevelCategorys = new ArrayList<Map.Entry<Long, String>>();
   private Shop activeShop;
 
   public NavigationPresenter() {
@@ -71,10 +71,10 @@ public class NavigationPresenter implements Presenter<NavigationView> {
         final TreeItem ti = findTreeItem(pid);
 
         if (ti == null) {
-          final Map.Entry<Long, String> productGroupEntry = CatalogCache.get().getProductGroupName(pid, currentLanguage);
+          final Map.Entry<Long, String> productGroupEntry = CatalogCache.get().getCategoryName(pid, currentLanguage);
 
           addTreeItem(null, productGroupEntry);
-          topLevelProductGroups.add(productGroupEntry);
+          topLevelCategorys.add(productGroupEntry);
         }
       }
     });
@@ -87,24 +87,25 @@ public class NavigationPresenter implements Presenter<NavigationView> {
           treemap.remove(ti);
           view.getTree().removeItem(ti);
         }
-        topLevelProductGroups.remove(CatalogCache.get().getProductGroupName(pid, currentLanguage));
+        topLevelCategorys.remove(CatalogCache.get().getCategoryName(pid, currentLanguage));
       }
     });
     view.getSaveButtonClickHandler().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         final Shop oldShop = activeShop.clone(new HashMap());
-        final List<ProductGroup> p = new ArrayList<ProductGroup>();
+        final List<Category> p = new ArrayList<Category>();
 
-        for (Entry<Long, String> pge : topLevelProductGroups) {
-          ProductGroup pg = CatalogCache.get().getProductGroup(pge.getKey());
+        for (Entry<Long, String> pge : topLevelCategorys) {
+          Category pg = CatalogCache.get().getCategory(pge.getKey());
           if (pg == null) {
-            pg = new ProductGroup();
+            pg = new Category();
             pg.setId(pge.getKey());
           }
           p.add(pg);
         }
-        activeShop.setTopLevelProductGroups(p);
+        // 	TODO Change this:
+//        activeShop.setTopLevelCategorys(p);
 
         ShopServiceAsync.updateShop(oldShop, activeShop, new AsyncCallback<Shop>() {
           @Override public void onFailure(Throwable caught) {
@@ -130,16 +131,16 @@ public class NavigationPresenter implements Presenter<NavigationView> {
   public void show(String lang) {
     currentLanguage  = lang;
     activeShop = CatalogCache.get().getShop(1L);
-    topLevelProductGroups.clear();
-    for (ProductGroup pg : activeShop.getTopLevelProductGroups()) {
-      topLevelProductGroups.add(CatalogCache.get().getProductGroupName(pg.getId(), currentLanguage));
+    topLevelCategorys.clear();
+    for (Category pg : Util.categories(activeShop.getNavigation())) {
+      topLevelCategorys.add(CatalogCache.get().getCategoryName(pg.getId(), currentLanguage));
     }
-    pp.show(null, topLevelProductGroups, currentLanguage, CatalogCache.get().getProductGroupNamesByLang(currentLanguage));
-    for (ProductGroup topLPG : activeShop.getTopLevelProductGroups()) {
+    pp.show(null, topLevelCategorys, currentLanguage, CatalogCache.get().getCategoryNamesByLang(currentLanguage));
+    for (Category topLPG : Util.categories(activeShop.getNavigation())) {
       final TreeItem ti = findTreeItem(topLPG.getId());
 
       if (ti == null) {
-        addTreeItem(null, CatalogCache.get().getProductGroupName(topLPG.getId(), currentLanguage));
+        addTreeItem(null, CatalogCache.get().getCategoryName(topLPG.getId(), currentLanguage));
       }
     }
   }
@@ -161,27 +162,27 @@ public class NavigationPresenter implements Presenter<NavigationView> {
     return foundTI;
   }
   private void loadChildren(Shop shop, final TreeItem parent) {
-    final ProductGroup parentPG = CatalogCache.get().getProductGroup(treemap.get(parent));
+    final Category parentPG = CatalogCache.get().getCategory(treemap.get(parent));
 
-    CatalogServiceAsync.findAllProductGroupChildren(
-        shop, parentPG, new AsyncCallback<List<ProductGroup>>() {
+    CatalogServiceAsync.findAllCategoryChildren(
+        shop, parentPG, new AsyncCallback<List<Category>>() {
           @Override
           public void onFailure(Throwable caught) {
             //StatusMessage.get().show(caught.getMessage(), 30);
           }
 
           @Override
-          public void onSuccess(List<ProductGroup> result) {
+          public void onSuccess(List<Category> result) {
             if (result.size() == 0) {
               view.getTree().setTreeItemAsEmpty(parent);
             }
-            for (ProductGroup productGroup : result) {
+            for (Category productGroup : result) {
               CatalogCache.get().put(productGroup);
               for (Item pPG : productGroup.getParents()) {
                 CatalogCache.get().put(pPG);
               }
 //              CatalogCache.get().putParent(productGroup, parentPG);
-              addTreeItem(parent, CatalogCache.get().getProductGroupName(productGroup.getId(), currentLanguage));
+              addTreeItem(parent, CatalogCache.get().getCategoryName(productGroup.getId(), currentLanguage));
             }
           }
         });

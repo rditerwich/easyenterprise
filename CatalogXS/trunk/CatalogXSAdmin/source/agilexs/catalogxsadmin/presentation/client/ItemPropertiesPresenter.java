@@ -18,7 +18,7 @@ import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Item;
 import agilexs.catalogxsadmin.presentation.client.catalog.Label;
 import agilexs.catalogxsadmin.presentation.client.catalog.Language;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.catalog.Property;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyType;
 import agilexs.catalogxsadmin.presentation.client.catalog.PropertyValue;
@@ -77,9 +77,9 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
         final Property p = new Property();
 
         p.setType(PropertyType.String);
-        p.setProductGroupProperty(Boolean.FALSE);
+        p.setCategoryProperty(Boolean.FALSE);
         currentItem.getProperties().add(p);
-        p.setProductGroupProperty(Boolean.FALSE);
+        p.setCategoryProperty(Boolean.FALSE);
         p.setLabels(new ArrayList<Label>(3));
         final Tuple tuple = createRow(rowView);
 
@@ -165,9 +165,9 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
     currentItem = productGroup;
     this.language = language;
     Tuple.setLanguage(language);
-    final List<PropertyValue[]> values = Util.getProductGroupPropertyValues(langs, (ProductGroup)productGroup, productGroup);
+    final List<PropertyValue[]> values = Util.getCategoryPropertyValues(langs, (Category)productGroup, productGroup);
     final Entry<Long, String> name =
-      CatalogCache.get().getProductGroupName(productGroup.getId(), language);
+      CatalogCache.get().getCategoryName(productGroup.getId(), language);
 
     view.setName(name==null ? "" : name.getValue());
     view.resetTable();
@@ -246,7 +246,7 @@ public class ItemPropertiesPresenter implements Presenter<ItemPropertiesView> {
             }
           }
         });
-    CheckBoxBinding.bind(rowView.getPGOnly(), pb.getDefaultBinding().property().productGroupProperty());
+    CheckBoxBinding.bind(rowView.getPGOnly(), pb.getDefaultBinding().property().categoryProperty());
     TextBoxBaseBinding.<List<Label>>bind(rowView.getName(), pb.getBinding().property().labels(), new BindingConverter<List<Label>, String>() {
       private List<Label> labels;
 

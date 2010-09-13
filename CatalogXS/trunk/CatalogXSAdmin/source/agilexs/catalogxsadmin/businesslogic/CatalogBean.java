@@ -24,7 +24,7 @@ import agilexs.catalogxsadmin.jpa.catalog.Item;
 import agilexs.catalogxsadmin.jpa.catalog.Label;
 import agilexs.catalogxsadmin.jpa.catalog.Language;
 import agilexs.catalogxsadmin.jpa.catalog.Product;
-import agilexs.catalogxsadmin.jpa.catalog.ProductGroup;
+import agilexs.catalogxsadmin.jpa.catalog.Category;
 import agilexs.catalogxsadmin.jpa.catalog.Property;
 import agilexs.catalogxsadmin.jpa.catalog.PropertyValue;
 import agilexs.catalogxsadmin.jpa.shop.Shop;
@@ -34,8 +34,8 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
 
   @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public List<PropertyValue> findAllProductGroupNames(Catalog catalog) {
-    final Query query = entityManager.createQuery("select pv from PropertyValue pv, in(pv.property.labels) lbl where type(pv.item) in (ProductGroup) and lbl.label = 'Name' and pv.item.catalog = :catalog");
+  public List<PropertyValue> findAllCategoryNames(Catalog catalog) {
+    final Query query = entityManager.createQuery("select pv from PropertyValue pv, in(pv.property.labels) lbl where type(pv.item) in (Category) and lbl.label = 'Name' and pv.item.catalog = :catalog");
 
     query.setParameter("catalog", catalog);
     final List<PropertyValue> result = query.getResultList();
@@ -57,19 +57,19 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
         throw new IllegalArgumentException("pageSize < 1, page size must be 1 at least");
     }
     final List<Long> parents = new ArrayList<Long>();
-    final List<ProductGroup> queue = new ArrayList<ProductGroup>();
+    final List<Category> queue = new ArrayList<Category>();
 //    final List<Long> done = new ArrayList<Long>();
 
-    queue.add(filter.getProductGroup());
+    queue.add(filter.getCategory());
     while(!queue.isEmpty()) {
-      final String queryString = "select p from ProductGroup p, IN(p.parents) pg where pg = :productgroup";
+      final String queryString = "select p from Category p, IN(p.parents) pg where pg = :productgroup";
       final Query query = entityManager.createQuery(queryString);
-      final ProductGroup item = queue.remove(0);
+      final Category item = queue.remove(0);
       
       query.setParameter("productgroup", item);
 //      done.add(item.getId());
       parents.add(item.getId());
-      for (ProductGroup pg : (List<ProductGroup>)query.getResultList()) {
+      for (Category pg : (List<Category>)query.getResultList()) {
 //        if (!done.contains(pg.getId())) {
         if (!parents.contains(pg.getId())) {
           queue.add(pg);
@@ -109,13 +109,13 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     final Catalog catalog = super.findCatalogById(id);
 
     if (catalog != null) {
-      final Query query = entityManager.createQuery("select pg from ProductGroup pg where pg.catalog = :catalog");
+      final Query query = entityManager.createQuery("select pg from Category pg where pg.catalog = :catalog");
 
       query.setParameter("catalog", catalog);
       final Collection result = query.getResultList();
 
       catalog.setItems(result);
-      for (ProductGroup productGroup : (Collection<ProductGroup>)result) {
+      for (Category productGroup : (Collection<Category>)result) {
         //check, because db containsProduct table may be null
         if (productGroup.getContainsProducts() == null) {
           productGroup.setContainsProducts(Boolean.FALSE);
@@ -177,7 +177,7 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
 
   @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public List<Product> findAllByProductGroupProducts(Integer fromIndex, Integer pageSize, ProductGroup filter) {
+    public List<Product> findAllByCategoryProducts(Integer fromIndex, Integer pageSize, Category filter) {
         // Validate the input arguments
         if (fromIndex == null || fromIndex < 0) {
             throw new IllegalArgumentException("fromIndex < 0, from index must be 0 at least");
@@ -210,24 +210,24 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     @Override
     @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<ProductGroup> findAllProductGroupChildren(Shop shop, ProductGroup parent) {
+    public Collection<Category> findAllCategoryChildren(Shop shop, Category parent) {
         Query query;
         if (parent == null) {
-          //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
-          query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
+          //query = entityManager.createQuery("select p from Category p where p.view = :view");
+          query = entityManager.createQuery("select p from Category p where p.parents is empty");
 
           //query.setParameter("view", view);
         } else {
           //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
-          //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
-          query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.parents) parent where parent = :parent");
+          //invalid => query = entityManager.createQuery("select p from Category p, Taxonomy t, not in(t.excludedCategorys) teg where p.parent = :parent and t = :taxonomy and teg = p");
+          query = entityManager.createQuery("select distinct p from Category p, in(p.parents) parent where parent = :parent");
 
           //query.setParameter("taxonomy", taxonomy);
           query.setParameter("parent", parent);
         }
-        final List<ProductGroup> result = query.getResultList();
+        final List<Category> result = query.getResultList();
         if (result != null) {
-          for (ProductGroup productGroup : result) {
+          for (Category productGroup : result) {
             //check, because db containsProduct table may be null
             if (productGroup.getContainsProducts() == null) {
               productGroup.setContainsProducts(Boolean.FALSE);
@@ -253,36 +253,36 @@ public class CatalogBean extends CatalogBeanBase implements agilexs.catalogxsadm
     @Override
     @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public Collection<ProductGroup> findAllItemParents(Shop shop, Item item) {
-      return findAllItemParents(shop, item, new ArrayList<ProductGroup>());
+    public Collection<Category> findAllItemParents(Shop shop, Item item) {
+      return findAllItemParents(shop, item, new ArrayList<Category>());
     }
 
     @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    private Collection<ProductGroup> findAllItemParents(Shop shop, Item item, Collection<ProductGroup> parents) {
+    private Collection<Category> findAllItemParents(Shop shop, Item item, Collection<Category> parents) {
       Query query;
       if (item == null) {
-        //query = entityManager.createQuery("select p from ProductGroup p where p.view = :view");
-        query = entityManager.createQuery("select p from ProductGroup p where p.parents is empty");
+        //query = entityManager.createQuery("select p from Category p where p.view = :view");
+        query = entityManager.createQuery("select p from Category p where p.parents is empty");
         
         //query.setParameter("view", view);
       } else {
         //FIXME: trying to do exclusions in sql not easy, so we skip that part for now, better put in cache.
-        //invalid => query = entityManager.createQuery("select p from ProductGroup p, Taxonomy t, not in(t.excludedProductGroups) teg where p.parent = :parent and t = :taxonomy and teg = p");
-        query = entityManager.createQuery("select distinct p from ProductGroup p, in(p.children) child where child = :child");
+        //invalid => query = entityManager.createQuery("select p from Category p, Taxonomy t, not in(t.excludedCategorys) teg where p.parent = :parent and t = :taxonomy and teg = p");
+        query = entityManager.createQuery("select distinct p from Category p, in(p.children) child where child = :child");
         
         //query.setParameter("taxonomy", taxonomy);
         query.setParameter("child", item);
       }
-      final List<ProductGroup> result = query.getResultList();
+      final List<Category> result = query.getResultList();
 
-      for (ProductGroup productGroup : result) {
+      for (Category productGroup : result) {
         if (!parents.contains(productGroup)) {
           parents.add(productGroup);
         }
       }
       if (result != null) {
-        for (ProductGroup productGroup : result) {
+        for (Category productGroup : result) {
           //check, because db containsProduct table may be null
           if (productGroup.getContainsProducts() == null) {
             productGroup.setContainsProducts(Boolean.FALSE);

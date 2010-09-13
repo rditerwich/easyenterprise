@@ -15,19 +15,19 @@ public class TaxonomiesView extends CatalogView {
   private final static I18NCatalogXS i18n = GWT.create(I18NCatalogXS.class);
 
   private final TabLayoutPanel tp = new TabLayoutPanel(40, Unit.PX);
-  private final Button newProductGroupButton = new Button(i18n.newGroup());
+  private final Button newCategoryButton = new Button(i18n.newGroup());
 
   public TaxonomiesView() {
     super();
-    topPanel.add(newProductGroupButton);
+    topPanel.add(newCategoryButton);
     topPanel.add(languageList);
     topPanel.add(publishButton);
     topPanel.add(name);
     detailPanel.add(tp);
   }
 
-  public HasClickHandlers getNewProductGroupButtonClickHandler() {
-    return newProductGroupButton;
+  public HasClickHandlers getNewCategoryButtonClickHandler() {
+    return newCategoryButton;
   }
 
   public void addTab(View view, String text) {

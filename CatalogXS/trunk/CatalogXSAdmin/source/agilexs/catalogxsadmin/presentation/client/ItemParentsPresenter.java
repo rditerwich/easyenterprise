@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import agilexs.catalogxsadmin.presentation.client.Util.AddHandler;
 import agilexs.catalogxsadmin.presentation.client.Util.DeleteHandler;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.page.Presenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,7 +31,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
         final Long newPG = Long.valueOf(view.getAllParentsListBox().getValue(view.getSelectedNewParent()));
 
         currentParents.add(newPG);
-        allPossibleParents.remove(CatalogCache.get().getProductGroupName(newPG, currentLang));
+        allPossibleParents.remove(CatalogCache.get().getCategoryName(newPG, currentLang));
         show(currentLang);
         if (addHandler != null) {
           addHandler.onAdd(newPG);
@@ -43,7 +43,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
         final Long removed = currentParents.remove(index.intValue());
 
         if (removed != null) {
-          allPossibleParents.add(CatalogCache.get().getProductGroupName(removed, currentLang));
+          allPossibleParents.add(CatalogCache.get().getCategoryName(removed, currentLang));
         }
         show(currentLang);
         if (deleteHandler != null) {
@@ -65,7 +65,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     return currentParents;
   }
 
-  public void show(ProductGroup productGroup, List<Map.Entry<Long, String>> parents, String lang, ArrayList<Map.Entry<Long, String>> allParents) {
+  public void show(Category productGroup, List<Map.Entry<Long, String>> parents, String lang, ArrayList<Map.Entry<Long, String>> allParents) {
     currentLang = lang;
     currentParents.clear();
     for (Entry<Long, String> pg : parents) {
@@ -74,10 +74,10 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     allPossibleParents.clear();
     allPossibleParents.addAll(allParents);
     if (productGroup != null) {
-      allPossibleParents.remove(CatalogCache.get().getProductGroupName(productGroup.getId(), currentLang));
+      allPossibleParents.remove(CatalogCache.get().getCategoryName(productGroup.getId(), currentLang));
     }
     for (Long pg : currentParents) {
-      allPossibleParents.remove(CatalogCache.get().getProductGroupName(pg, lang));
+      allPossibleParents.remove(CatalogCache.get().getCategoryName(pg, lang));
     }
     show(lang);
   }
@@ -86,7 +86,7 @@ public class ItemParentsPresenter implements Presenter<ItemParentsView> {
     currentLang = lang;
     view.clearParentTable();
     for (Long pg : currentParents) {
-      view.addParentToList(CatalogCache.get().getProductGroupName(pg, lang).getValue());
+      view.addParentToList(CatalogCache.get().getCategoryName(pg, lang).getValue());
     }
     view.getAllParentsListBox().clear();
     for (Map.Entry<Long, String> pp : allPossibleParents) {

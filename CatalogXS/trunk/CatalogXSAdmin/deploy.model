@@ -30,3 +30,34 @@ DeploymentConfiguration {
         }
     }
 }
+
+DeploymentConfiguration {
+    id = agilexs.catalogxs.deployment.local.reinier
+    name = "CatalogXS Deployment Local Reinier"
+    productConfigurations = {
+        Glassfish2Configuration {
+            installDir = "c:/progs/glassfishv3"
+            domain = domain1
+            
+
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = false
+            }
+
+            dbConfiguration = PostgreSQLConfiguration {
+                installDir = "C:/Program Files/PostgreSQL/8.4"
+                server = localhost
+                port = 5432
+                databaseName = CatalogXSDatabase
+                username = postgres
+                password = postgres
+                schemaUpdateKind = full
+                jdbcDriverClasspath = "C:/Program Files/psqlJDBC/postgresql-8.4-701.jdbc3.jar"
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}

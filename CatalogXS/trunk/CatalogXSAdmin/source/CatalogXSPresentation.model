@@ -41,14 +41,14 @@ GwtPackage {
             name = CatalogService
             methods = {
                 GwtMethod {
-                    name = findAllProductGroupNames
+                    name = findAllCategoryNames
                     view = {
                         JavaBeanView {
-                            name = ProductGroupNamesView
+                            name = CategoryNamesView
                             kind = all
                             views = {
                                 JavaBeanPropertyView {
-                                    name = ProductProductGroupView
+                                    name = ProductCategoryView
                                     kind = none
                                     included = catalog:Item/properties:id
                                     referringProperties = catalog:PropertyValue/properties:item
@@ -73,10 +73,10 @@ GwtPackage {
                     }
                 }
                 GwtMethod {
-                    name = findAllProductGroupChildren
+                    name = findAllCategoryChildren
                     view = {
                         JavaBeanView {
-                            name = ProductGroupView
+                            name = CategoryView
                             kind = none
                             included = {
                                 catalog:Item/properties:id
@@ -85,7 +85,7 @@ GwtPackage {
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
                                 catalog:Item/properties:relations
-                                catalog:ProductGroup/properties:containsProducts
+                                catalog:Category/properties:containsProducts
                             }
                             views = {
                                 JavaBeanPropertyView {
@@ -167,7 +167,7 @@ GwtPackage {
                     name = findAllItemParents
                     view = {
                         JavaBeanView {
-                            name = ProductGroupView
+                            name = CategoryView
                             kind = none
                             included = {
                                 catalog:Item/properties:id
@@ -176,7 +176,7 @@ GwtPackage {
                                 catalog:Item/properties:propertyValues
                                 catalog:Item/properties:properties
                                 catalog:Item/properties:relations
-                                catalog:ProductGroup/properties:containsProducts
+                                catalog:Category/properties:containsProducts
                             }
                             views = {
                                 JavaBeanPropertyView {
@@ -255,7 +255,7 @@ GwtPackage {
                     }
                 }
                 GwtMethod {
-                    name = findAllByProductGroupProducts
+                    name = findAllByCategoryProducts
                     view = {
                         JavaBeanView {
                             name = ProductView

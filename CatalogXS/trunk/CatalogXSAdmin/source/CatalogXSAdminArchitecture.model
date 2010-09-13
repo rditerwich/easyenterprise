@@ -39,9 +39,9 @@ JavaEEArchitectureJpaEjbGwt {
                     kind = all
                     views = {
                         ClassAttributeView {
-                            name = TopLevelProductGroups
+                            name = TopLevelCategorys
                             kind = all
-                            referringAttributes = shop:Shop/attributes:topLevelProductGroups
+                            referringAttributes = shop:Shop/attributes:navigation
                         }
                         ClassAttributeView {
                             name = PromotionsView
@@ -314,13 +314,13 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Crud {
-            name = CrudForProductGroup
+            name = CrudForCategory
             participants = {
-                catalog:ProductGroup
+                catalog:Category
             }
             view = {
                 ClassView {
-                    name = CrudProductGroupView
+                    name = CrudCategoryView
                     kind = all
                     excluded = catalog:Item/attributes:children
                     views = {
@@ -644,16 +644,16 @@ JavaEEArchitectureJpaEjbGwt {
             }
         }
         Query {
-            name = "Query for all products by ProductGroup"
-            methodNamePrefix = findAllByProductGroup
-            filter = catalog:ProductGroup
+            name = "Query for all products by Category"
+            methodNamePrefix = findAllByCategory
+            filter = catalog:Category
             participants = { 
                 catalog:Product
             }
             paging = true
             view = {
                  ClassView {
-                     name = QueryForAllByProductGroupView
+                     name = QueryForAllByCategoryView
                      kind = all
                  }
              }

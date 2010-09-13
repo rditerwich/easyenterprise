@@ -5,7 +5,7 @@ import java.util.List;
 import agilexs.catalogxsadmin.presentation.client.ProductView.SHOW;
 import agilexs.catalogxsadmin.presentation.client.cache.CatalogCache;
 import agilexs.catalogxsadmin.presentation.client.catalog.Product;
-import agilexs.catalogxsadmin.presentation.client.catalog.ProductGroup;
+import agilexs.catalogxsadmin.presentation.client.catalog.Category;
 import agilexs.catalogxsadmin.presentation.client.query.AllProductsQuery;
 import agilexs.catalogxsadmin.presentation.client.services.CatalogServiceAsync;
 import agilexs.catalogxsadmin.presentation.client.shop.Shop;
@@ -25,12 +25,12 @@ public class ProductsPresenter extends CatalogPresenter<ProductsView> {
     private Integer pageSize = 1000;
 
     @Override
-    protected void loadProducts(Shop shop, ProductGroup pg) {
+    protected void loadProducts(Shop shop, Category pg) {
       final AllProductsQuery query = new AllProductsQuery();
 
       query.setStringValue(filter);
       query.setShop(activeShop);
-      query.setProductGroup(currentProductGroup);
+      query.setCategory(currentCategory);
       CatalogServiceAsync.findAllProducts(fromIndex, pageSize, query, new AsyncCallback<List<Product>>() {
         @Override public void onFailure(Throwable caught) {
           show = SHOW.NO_PRODUCTS;
@@ -53,7 +53,7 @@ public class ProductsPresenter extends CatalogPresenter<ProductsView> {
     final Timer t = new Timer() {
       @Override public void run() {
         filter = view.getFilterText();
-        pp.show(activeShop, currentProductGroup, true);
+        pp.show(activeShop, currentCategory, true);
       }
     };
 
@@ -67,8 +67,8 @@ public class ProductsPresenter extends CatalogPresenter<ProductsView> {
   }
 
   @Override
-  protected void show(ProductGroup currentProductGroup) {
-    pp.show(activeShop, currentProductGroup);
+  protected void show(Category currentCategory) {
+    pp.show(activeShop, currentCategory);
   }
 
   @Override
