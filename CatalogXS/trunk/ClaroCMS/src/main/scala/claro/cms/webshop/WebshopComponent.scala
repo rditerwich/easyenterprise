@@ -48,6 +48,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
       "categories" -> product.categories -> "category",
+      "add-to-cart" -> ShoppingCart.addProduct(product),
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
@@ -214,7 +215,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       WebshopModel.currentSearchStringVar(Some(s))
       "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
-    case "cart" :: Nil => "shopping_cart" :: Nil
+    case "cart" :: Nil => "shoppingcart" :: Nil
     case "flushcache" :: Nil => 
       WebshopModel.flush 
       "index" :: Nil
