@@ -1,0 +1,50 @@
+<lift:Catalog.catalog eager_eval="true">
+  <catalog:currentProductGroup>
+		<lift:surround with="default" at="content">
+		  <head><title>Group <group:group_value property="Name"/></title></head>
+		  <div class="contentheading"><group:group_value property="Name"/></div>
+		  <div class="groupimage"><group:group_value property="Image"/></div>
+		  <div class="groupdesc"><group:group_value property="Description"/></div>
+		  <group:sub_groups tag="sub">
+			  <div class="subgroup">   	    
+			  	<p><a class="subgroup" sub:href=""><sub:group_value property="Name"/></a></p>
+				</div>
+		  </group:sub_groups>
+		  
+		  <group:promotions>
+			  <h3>Special Offer:</h3>
+	  <div style="width:270px;padding:10px;margin-right:5px;border:1px solid black">
+	    <promotion:product>
+	      <div class="contentheading_not">Article Number: <product:value property="ArticleNumber"/></div>
+	      <p><product:value property="Description"/></p>
+	    </promotion:product> 
+	    <div >
+	      <p><strike><promotion:product><product:value property="PriceOld"/></promotion:product></strike><br/>
+	      <span style="color:red"><promotion:price/></span></p>
+	      <p>Price when order<br/> per <b><promotion:volume_discount/></b> articles</p>
+	      <p style="font-size:10px;">Promotion ends: <promotion:end_date/></p>
+	    </div>
+	    <div >
+	      <a href="" style="padding: 8px 12px;font-size: 12px;text-decoration: none;white-space:nowrap;line-height:20px;border: 1px solid #999;color: #4D4D4D;background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;">Add to Cart</a>
+	      <promotion:product><product:link>More info &gt;&gt;</product:link></promotion:product>
+	    </div>
+	  </div>
+  	  </group:promotions>
+  	  
+		  <table>
+		    <thead>
+		      <th style="width:10%"><lift:loc>ArticleNumber</lift:loc></th>
+		      <th style="width:75%;text-align:center"><lift:loc>Description</lift:loc></th>
+		      <th style="width:15%"><lift:loc>Price</lift:loc></th>
+		    </thead>
+		    <group:products include_sub_groups="yes">
+		      <tr>
+            <td><product:link><product:value property="ArticleNumber" /></product:link></td>
+		        <td><product:value property="Description"/></td>
+		        <td><product:value property="Price" /></td>
+		      </tr>
+		    </group:products>
+		  </table>
+		</lift:surround>
+  </catalog:currentProductGroup>
+</lift:Catalog.catalog>

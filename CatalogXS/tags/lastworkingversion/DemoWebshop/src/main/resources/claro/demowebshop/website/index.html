@@ -1,0 +1,39 @@
+<template:include template="templates/pageframe">
+	<div id="banner"><a href="#"><img src="/images/homepage08.jpg" alt="" width="900" height="131" /></a></div>
+	<!-- end #banner -->
+	<div id="page">
+		<div id="content">
+			<div id="box1" class="boxA">
+				<div class="title">
+					<h1>Featured Items</h1>
+				</div>
+				<div class="content">
+					<ul class="list2">
+						<webshop:promotions>
+						<li list:even="class=alt">
+							<promotion:product>
+							<p class="image"><a href="#"><product:value property="Image" height="84px" class="border" /></a></p>
+							<h3><a href="#"><product:value property="Name"/></a></h3>
+							<p><a href="#" class="add">Add to Cart</a> <b><product:value property="Price"/></b></p>
+							</promotion:product>
+						</li>
+						</webshop:promotions>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="sidebar">
+			<!-- end #box1.boxA -->
+			<div id="box3" class="boxA">
+				<div class="title">
+					<h1>Volutpat Sed Tempus</h1>
+				</div>
+				<div class="content"><a href="#"><img src="images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
+			</div>
+			<!-- end #box3.boxA -->
+		</div>
+		<!-- end #sidebar -->
+		<div style="clear: both;">&#160;</div>
+	</div>
+	<!-- end #page -->
+</template:include>

@@ -1,0 +1,31 @@
+root /deployment
+
+import Metaphor.Core.DeploymentConfiguration
+import Metaphor.PSM.GWT.GwtWebConfiguration
+import Metaphor.PSM.Glassfish2.EclipseLinkConfiguration
+import Metaphor.PSM.Glassfish2.Glassfish2Configuration
+import Metaphor.PSM.PostgreSQL.PostgreSQLConfiguration
+
+DeploymentConfiguration {
+    id = claro.persistene.deployment.local.ruud
+    name = "Claro Persistence Deployment"
+    productConfigurations = {
+        Glassfish2Configuration {
+            ideIntegration = true
+            installDir = "d:/glassfishv3/glassfish"
+            
+            webConfiguration = GwtWebConfiguration {
+                userAgent = All
+                skipGwtCompilation = true
+                gwtJavaScriptStyle = pretty
+            }
+            
+            dbConfiguration = PostgreSQLConfiguration {
+                loggingLevel = FINE
+            }
+
+            jpaConfiguration = EclipseLinkConfiguration {
+            }
+        }
+    }
+}

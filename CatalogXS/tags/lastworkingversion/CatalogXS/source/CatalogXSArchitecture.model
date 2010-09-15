@@ -1,0 +1,40 @@
+root /architecture
+
+import Metaphor.PSM.DomainToRdbms.ColumnTemplates
+import Metaphor.PSM.DomainToRdbms.DomainToRdbms
+import Metaphor.PSM.JavaEE.Persistence
+import Metaphor.PSM.JavaEEArchitectureJpaEjbLift
+import Metaphor.PSM.JavaEEAspects.Crud
+import Metaphor.PSM.JavaEEAspects.Query
+import Metaphor.PSM.Rdbms.Column
+
+
+path domain = /packages:AgileXS/packages:Domain/packages
+path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
+
+JavaEEArchitectureJpaEjbLift {
+    name = CatalogXSArchitecture
+    providerPackage = /packages:AgileXS
+    productPackage = /packages:AgileXS/packages:CatalogXS
+    databaseVendor = postgresql
+    jpaVendor = EclipseLink
+    generateBaseClasses = true
+    aspects = {
+/*        Scala {
+            name = ScalaAspect
+            participants = {
+                /modules:agilexs.catalogxs.presentation
+            }
+        }
+*/
+    }
+    persistence = {
+        DomainToRdbms {
+            name = DomainToRdbms
+            excluded = {
+                domain:Query
+            }
+        }
+    }
+}

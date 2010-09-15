@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="ClaroPersistence" project-version="1.5.0">
+    <wb-module deploy-name="ClaroPersistence">
+        <wb-resource deploy-path="/" source-path="/deploy/EarContent"/>
+        <wb-resource deploy-path="/" source-path="/source"/>
+        <wb-resource deploy-path="/" source-path="/generated"/>
+        <dependent-module deploy-path="/" handle="module:/resource/CatalogXSDomain/CatalogXSDomain">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path"/>
+    </wb-module>
+</project-modules>

@@ -1,0 +1,18 @@
+<div class="promotion">
+  <!-- img src="images/specialoffer.png" style="position:relative;top:0;right:0" /-->
+  <promotion:product>
+    <p><product:value property="Description"/>
+    <br/><product:link>More info &gt;&gt;</product:link></p>
+  <div>
+    <webshop:shopping-cart>
+    <shopping-cart:add-promotion>
+      <span class="add_to_cart">Add to Cart</span>
+    </shopping-cart:add-promotion>
+    </webshop:shopping-cart>
+    <p><strike><product:value property="Price"/></strike><br/>
+    <span style="color:red"><promotion:price/></span></p>
+    <p style="line-height:10pt">Price when ordered <br/>per <b><promotion:volume-discount/></b> articles</p>
+    <p style="font-size:10px;">Promotion ends: <promotion:end-date/></p>
+  </div>
+   </promotion:product>
+</div>

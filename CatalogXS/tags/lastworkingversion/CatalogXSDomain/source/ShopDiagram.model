@@ -1,0 +1,197 @@
+root /domainDiagrams
+
+import Metaphor.Eclipse.Diagrams.Point
+import Metaphor.Eclipse.Diagrams.Rectangle
+import Metaphor.Eclipse.DomainDiagrams.DiagramClass
+import Metaphor.Eclipse.DomainDiagrams.DiagramEnum
+import Metaphor.Eclipse.DomainDiagrams.DomainDiagram
+import Metaphor.Eclipse.DomainDiagrams.Reference
+import Metaphor.Eclipse.DomainDiagrams.SuperClassReference
+
+DomainDiagram {
+    name = ShopDiagram
+    package = /packages:AgileXS/packages:Domain/packages:Shop
+    classes = {
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 83
+                    y = 30
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 311
+                    y = 25
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 309
+                    y = 119
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Catalog/types:Category
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 160
+                    y = 268
+                    width = 116
+                    height = 89
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Promotion
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 147
+                    y = 405
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:VolumeDiscountPromotion
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 420
+                    y = 32
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Order
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 412
+                    y = 212
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:ProductOrder
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 587
+                    y = 34
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Transport
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 542
+                    y = 408
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:OrderHistory
+        }
+        DiagramClass {
+            bounds = {
+                Rectangle {
+                    x = 246
+                    y = 177
+                    width = -1
+                    height = -1
+                }
+            }
+            domainClass = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation
+        }
+    }
+    enumerations = {
+        DiagramEnum {
+            bounds = {
+                Rectangle {
+                    x = 697
+                    y = 201
+                    width = -1
+                    height = -1
+                }
+            }
+            domainEnum = /packages:AgileXS/packages:Domain/packages:Shop/types:OrderStatus
+        }
+    }
+    references = {
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:promotions
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 329
+                    y = 284
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:ProductOrder/attributes:promotion
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:productOrders
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:transport
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:catalog
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Order/attributes:history
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Catalog/types:Catalog/attributes:root
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Shop/attributes:navigation
+        }
+        Reference {
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation/attributes:category
+        }
+        Reference {
+            bendPoints = {
+                Point {
+                    x = 367
+                    y = 221
+                }
+                Point {
+                    x = 371
+                    y = 257
+                }
+                Point {
+                    x = 314
+                    y = 258
+                }
+            }
+            sourceAttribute = /packages:AgileXS/packages:Domain/packages:Shop/types:Navigation/attributes:subNavigation
+        }
+    }
+    superClassReferences = {
+        SuperClassReference {
+            source = /domainDiagrams:ShopDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:VolumeDiscountPromotion
+            target = /domainDiagrams:ShopDiagram/classes:\/packages\:AgileXS\/packages\:Domain\/packages\:Shop\/types\:Promotion
+        }
+    }
+}

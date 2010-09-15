@@ -1,0 +1,764 @@
+root /architecture
+
+import Metaphor.PIM.Domain.View.ClassAttributeView
+import Metaphor.PIM.Domain.View.ClassView
+import Metaphor.PSM.DomainToRdbms.ColumnTemplates
+import Metaphor.PSM.DomainToRdbms.DomainToRdbms
+import Metaphor.PSM.GWT.EntryPoint
+import Metaphor.PSM.GWT.GwtModule
+import Metaphor.PSM.JavaEE.Persistence
+import Metaphor.PSM.JavaEEArchitectureJpaEjbGwt
+import Metaphor.PSM.JavaEEAspects.Crud
+import Metaphor.PSM.JavaEEAspects.Query
+import Metaphor.PSM.Rdbms.Column
+import Metaphor.PSM.UIToGwt.UiToGwtEntryPoint
+
+
+path primitive = /packages:Metaphor/packages:PIM/packages:Domain/types
+path domain = /packages:AgileXS/packages:Domain/packages
+path catalog = /packages:AgileXS/packages:Domain/packages:Catalog/types
+path party = /packages:AgileXS/packages:Domain/packages:Party/types
+path shop = /packages:AgileXS/packages:Domain/packages:Shop/types
+
+JavaEEArchitectureJpaEjbGwt {
+    name = CatalogXSAdminArchitecture
+    providerPackage = /packages:AgileXS
+    productPackage = /packages:AgileXS/packages:CatalogXSAdmin
+    jpaVendor = EclipseLink
+    databaseVendor = postgresql
+    generateBaseClasses = true
+    aspects = {
+        Crud {
+            name = CrudForShop
+            participants = {
+                shop:Shop
+            }
+            view = {
+                ClassView {
+                    name = CrudShopView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = TopLevelCategorys
+                            kind = all
+                            referringAttributes = shop:Shop/attributes:navigation
+                        }
+                        ClassAttributeView {
+                            name = PromotionsView
+                            kind = all
+                            referringAttributes = shop:Shop/attributes:promotions
+                        }
+                        ClassAttributeView {
+                            name = ShopCatalogView
+                            kind = all
+                            referringAttributes = shop:Shop/attributes:catalog
+                        }
+                        ClassAttributeView {
+                            name = CatalogView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:catalog
+                        }
+                        ClassAttributeView {
+                            name = LanguageView
+                            kind = all
+                            referringAttributes = catalog:Catalog/attributes:languages
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForCatalog
+            participants = {
+                catalog:Catalog
+            }
+            view = {
+                ClassView {
+                    name = CrudCatalogView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ShopsView
+                            kind = all
+                            referringAttributes = catalog:Catalog/attributes:shops
+                        }
+                        ClassAttributeView {
+                            name = LanguageView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Catalog/attributes:languages
+                        }
+                        ClassAttributeView {
+                            name = ItemsView
+                            kind = all
+                            referringAttributes =catalog:Catalog/attributes:items
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = ChildrenView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:children
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForProduct
+            participants = {
+                catalog:Product
+            }
+            view = {
+                ClassView {
+                    name = CrudProductView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = CatalogView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:catalog
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForCategory
+            participants = {
+                catalog:Category
+            }
+            view = {
+                ClassView {
+                    name = CrudCategoryView
+                    kind = all
+                    excluded = catalog:Item/attributes:children
+                    views = {
+                        ClassAttributeView {
+                            name = CatalogView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:catalog
+                        }
+                        ClassAttributeView {
+                            name = ParentsView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:parents
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Property/attributes:enumValues
+                        }
+                        ClassAttributeView {
+                            name = EnumValuesLabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:EnumValue/attributes:labels
+                        }
+//                        ClassAttributeView {
+//                            name = PropertyValuePropertyView
+//                            kind = all
+//                            //forceComposite = true
+//                            referringAttributes = catalog:Property/attributes:propertyValues
+//                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            forceComposite = true
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = RelationsView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:relations
+                        }
+                        ClassAttributeView {
+                            name = RelationItemView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = RelationRelatedToView
+                            kind = all
+                            referringAttributes = catalog:Relation/attributes:relatedTo
+                        }
+                        ClassAttributeView {
+                            name = RelationTypeView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = catalog:Relation/attributes:relationType
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForOrder
+            participants = {
+                shop:Order
+                shop:ProductOrder
+            }
+            view = {
+                ClassView {
+                    name = QueryForAllOrdersView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ProductOrderView
+                            kind = all
+                            forceComposite = true
+                            referringAttributes = shop:Order/attributes:productOrders
+                        }
+                        ClassAttributeView {
+                            name = TransportView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:transport
+                        }
+                        ClassAttributeView {
+                            name = UserView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:user
+                        }
+                        ClassAttributeView {
+                            name = PartyView
+                            kind = all
+                            referringAttributes = party:User/attributes:party
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PromotionView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:promotion
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Crud {
+            name = CrudForAll
+            participants = {
+                catalog:Item
+                catalog:PropertyValue                
+                catalog:Property                
+                catalog:Label
+                catalog:EnumValue
+                catalog:Relation
+                catalog:RelationType
+                catalog:Language
+                shop:Promotion
+                shop:VolumeDiscountPromotion
+                shop:Promotion
+                shop:VolumeDiscountPromotion
+                party:User
+                party:Party
+                party:Address
+            }
+        }
+        Query {
+            name = "Query for Promotions"
+            methodNamePrefix = findActual
+            participants = { 
+                shop:Promotion
+            }
+            filter = shop:Promotion
+            paging = true
+            view = {
+                ClassView {
+                    name = QueryForAllPromotionsView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ShopView
+                            kind = all
+                            referringAttributes = shop:Promotion/attributes:shop
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:VolumeDiscountPromotion/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                }
+            }
+        }
+        Query {
+            name = "Query for Orders"
+            methodNamePrefix = findActual
+            participants = { 
+                shop:Order
+            }
+            filter = shop:Order
+            paging = true
+            view = {
+                ClassView {
+                    name = QueryForAllOrdersView
+                    kind = all
+                    views = {
+                        ClassAttributeView {
+                            name = ProductOrderView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:productOrders
+                        }
+                        ClassAttributeView {
+                            name = TransportView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:transport
+                        }
+                        ClassAttributeView {
+                            name = UserView
+                            kind = all
+                            referringAttributes = shop:Order/attributes:user
+                        }
+                        ClassAttributeView {
+                            name = ProductView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:product
+                        }
+                        ClassAttributeView {
+                            name = PromotionView
+                            kind = all
+                            referringAttributes = shop:ProductOrder/attributes:promotion
+                        }
+                        ClassAttributeView {
+                            name = PropertiesView
+                            kind = all
+                            referringAttributes = catalog:Item/attributes:properties
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                        ClassAttributeView {
+                            name = PartyView
+                            kind = all
+                            referringAttributes = party:User/attributes:party
+                        }
+                    }
+                }
+            }
+        }
+        Query {
+            name = "Query for all products by Category"
+            methodNamePrefix = findAllByCategory
+            filter = catalog:Category
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllByCategoryView
+                     kind = all
+                 }
+             }
+        }
+        Query {
+            name = "Query for all products"
+            methodNamePrefix = findAll
+            filter = domain:Query/types:AllProductsQuery
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForAllProductsView
+                     kind = all
+                     views = {
+                         ClassAttributeView {
+                             name = ParentView
+                             kind = all
+                             referringAttributes = catalog:Item/attributes:parents
+                         }
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+                    }
+                 }
+             }
+        }
+        Query {
+            name = "Query for products"
+            methodNamePrefix = findByStringValueShop
+            filter = domain:Query/types:ProductShopQuery
+            participants = { 
+                catalog:Product
+            }
+            paging = true
+            view = {
+                 ClassView {
+                     name = QueryForFindProductsView
+                     kind = all
+                     views = {
+                        ClassAttributeView {
+                            name = PropertyValuesView
+                            kind = all
+                            excluded = catalog:PropertyValue/attributes:mediaValue 
+                            forceComposite = true
+                            referringAttributes = catalog:Item/attributes:propertyValues
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = PropertyValuePropertyView
+                            kind = all
+                            referringAttributes = catalog:PropertyValue/attributes:property
+                        }
+                        ClassAttributeView {
+                            name = PropertyValueItemView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:item
+                        }
+                        ClassAttributeView {
+                            name = LabelsView
+                            kind = all
+                            referringAttributes = catalog:Property/attributes:labels
+                        }
+
+                    } 
+                 }
+             }
+        }
+    }
+    persistence = {
+        DomainToRdbms {
+            name = DomainToRdbms
+            excluded = {
+                domain:Query
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+<lift:surround with="default" at="content">
+  <head><title>CatalogXS Test Page</title></head>
+	<h1>Promotions</h1>
+  <lift:Shop.shop>
+	<h1>Promotions</h1>
+	<shop:promotions>
+  	<h2>Promotion: <promotion:id/></h2>
+  	<promotion:product template="small">
+  		<h3>Promotion Product: <product:id/> (of promotion: <promotion:id/>)</h3>
+  		<product:properties>
+	  		<h4>Property <property:name/>: <property:value/> or <prop:value/></h4>
+	  		<product:properties tag="subproperty">
+		  		<h5>Other <property:name/>.<subproperty:name/>: <subproperty:value/> (promotion: <promotion:id/>)</h5>
+	  		</product:properties>
+  		</product:properties>
+  	</promotion:product>
+	</shop:promotions>
+  </lift:Shop.shop>
+</lift:surround>

@@ -1,0 +1,122 @@
+.pos {position: relative;}
+
+body{background-color:#FFFFFF;color:#333333;margin-left: 0px;margin-top: 0px;margin-right: 0px;margin-bottom:0px;font-size:12px;font-family:"Tahoma","Arial";}
+
+td{color:#333333;}
+
+
+/*-- homepage Styles  --*/
+
+.topmenu a {color:#FFFFFF;background-color:#ec1652;text-decoration:none;display:block;line-height:28px;width:93px;font-weight:bold;}
+.topmenu a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.topmenu1 a {color:#FFFFFF;background-color:#1663aa;text-decoration:none;display:block;line-height:28px;width:93px;font-weight:bold;}
+.topmenu1 a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.topmenu2 a {color:#FFFFFF;background-color:#ec1652;text-decoration:none;display:block;line-height:28px;width:135px;font-weight:bold;}
+.topmenu2 a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.topmenu2a a {color:#FFFFFF;background-color:#1663aa;text-decoration:none;display:block;line-height:28px;width:135px;font-weight:bold;}
+.topmenu2a a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.topmenu3 a {color:#FFFFFF;background-color:#ec1652;text-decoration:none;display:block;line-height:28px;width:103px;font-weight:bold;}
+.topmenu3 a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.topmenu3a a {color:#FFFFFF;background-color:#1663aa;text-decoration:none;display:block;line-height:28px;width:103px;font-weight:bold;}
+.topmenu3a a:hover{color:#FFFFFF;background-color:#1663aa;}
+
+.english a{color:#FFFFFF;text-decoration:none;font-family:Arial;}
+.english a:hover{color:#fbea77;text-decoration:none;}
+
+.profile-t {color:#0e5fa8;font-weight:bold;text-decoration:none;}
+.profile-t a{color:#0e5fa8;font-weight:bold;text-decoration:none;}
+.profile-t a:hover{color:#ec1652;font-weight:bold;text-decoration:none;}
+
+.products-list {width:235px;border:1px solid #77a2c3;}
+.products-listd {margin-top:10px;}
+
+.date {font-size:9px;font-family:Arial;}
+
+.adv {padding-top:5px;}
+.adv-t {padding-top:5px;}
+
+.icp {padding-top:20px;}
+.icp a{padding-top:20px;color:#afafaf;text-decoration:none;}
+.icp a:hover{color:#585858;text-decoration:underline;}
+
+.copy {padding-top:20px;color:#9c9c9c;}
+
+.copy-md {margin-top:20px;}
+
+.copy-menu a{color:#9c9c9c;text-decoration:none;}
+.copy-menu a:hover{color:#0e5fa8;text-decoration:none;}
+
+.table-line {border:1px solid #d7d7d7;padding-top:20px;padding-bottom:20px;}
+
+
+/*-- Scrolling Menu Styles  --*/
+
+.menuFrame{
+	overflow: hidden;
+	position: absolute;
+	top:0px;
+	left:0px;
+	margin-left:-1px;
+	margin-top:1px;
+}
+.menu1{
+	position:relative;
+	height:100%;
+	padding:0px;
+	font-size:12px;
+	}
+
+
+.menu { background-color:#FFFFFF;filter: Alpha(Opacity=80);opacity:0.8;font-weight:bold;display:block;}
+.menu a { background-color:#FFFFFF;filter: Alpha(Opacity=80);opacity:0.8;text-decoration: none;color:#095ba6;display:block;line-height:25px;font-weight:bold;padding-left:18px;padding-right:18px;white-space:nowrap;}
+.menu a:hover{background-color:#b60800;filter: Alpha(Opacity=80);opacity:0.8;text-decoration: none;color:#FFFFFF;height:100%;width:100%;display:block;}
+
+
+
+/*-- subpage Styles  --*/
+
+.submenu-t {color:#000000;font-size:20px;font-family:"Tahoma", "Arial";}
+
+.submenu {color:#707070;font-size:14px;}
+.submenu a {color:#1663aa;text-decoration:underline;}
+.submenu a:hover{color:#1663aa;text-decoration:none;}
+
+.submenu1 a {color:#1663aa;text-decoration:none;font-size:14px;}
+.submenu1 a:hover{color:#1663aa;text-decoration:none;}
+
+.table1-line {border:1px solid #d7d7d7;}
+
+.content {line-height:22px;padding-bottom:30px;}
+
+.se {font-size:9px;}
+
+.news a{color:#333333;text-decoration:none;}
+.news a:hover{color:#0e5fa8;text-decoration:none;}
+
+.news1 a{color:#1663aa;text-decoration:none;}
+.news1 a:hover{color:#1663aa;text-decoration:underline;}
+
+.news-cls {font-weight:bold;font-size:14px;}
+.news-listd {padding-top:10px;padding-left:10px;}
+.news-list {width:250px;}
+
+.news-title {font-weight:bold;font-size:14px;color:#000000;}
+.news-con {padding-top:20px;padding-bottom:20px;}
+
+.products-clspic {padding:10px;}
+
+.pro-t {color:#000000;font-size:16px;font-family:"Tahoma", "Arial";}
+.pro-pro {line-height:17px;}
+.pro-clslist {padding-top:10px;padding-right:10px;padding-bottom:10px;}
+
+.pro-sub a{color:#1663aa;text-decoration:none;}
+.pro-sub a:hover{color:#1663aa;text-decoration:underline;}
+
+.download {color:#0e5fa8;text-decoration:none;}
+.download a{color:#0e5fa8;text-decoration:underline;}
+.download a:hover{color:#0e5fa8;text-decoration:none;}

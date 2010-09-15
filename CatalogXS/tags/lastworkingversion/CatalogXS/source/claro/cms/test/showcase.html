@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<!-- 
+ -->
+<h2>List Bindings</h2>
+<test:blog>
+  <h3><blog:title/></h3>
+  <div style="border:2px solid grey">
+  <blog:entries>
+    <list:once><p><list:single>There is a single entry</list:single><list:plural>There are <list:size /> entries</list:plural></p></list:once>
+    <list:skip-first><hr width="80%" size="1"/></list:skip-first>
+    <h4><entry:title/></h4>
+    <entry:text/>
+    <p>This is entry <list:index/> of <list:size/></p>
+    <p>This entry has <entry:comments><list:once><list:size/>  <list:single>comment</list:single><list:plural>comments</list:plural></list:once> 
+    <list:first> (authors:</list:first><comment:author/><list:last>)</list:last>
+    </entry:comments></p>
+    <entry.text/>
+    <list:last>Title of last entry (out of <list:size />) : <entry:title/></list:last>
+  </blog:entries>
+  </div>
+</test:blog>
+ 
+<h2>Include Templates</h2>
+<template:include template="showcase-section1">
+<template:define template="nested">
+Content of nested Template!
+</template:define>
+</template:include>
+
+<!-- 
+<cms:menu>
+	<menu:item template="home" tag="item">
+		<a item:href="" item="">home</a>
+	</menu:item>
+</cms:menu>
+
+<cms:match-url path="/products/.*"><span class="selected">show products</span></cms:match-url>
+
+  Creates an anchor to an object currently identified by the 'product' tag.
+  A template is chosen that matches the type of object referred.  
+  Attributes
+  tag
+  class
+  style 
+<cms:link tag="product" class="nicelink" style="size:10pt">show product</cms:link>
+  -->
+
+<!-- Creates an href to an object currently identified by the 'product' tag 
+<a cms:link-attr="href:product" class="nicelink" style="size:10pt">show product</a>
+
+<shop:product-groups tag="group">
+  <template:include name="show-group" tag="group">
+  	<template:param name="header">
+  		This is the header
+  	</template:param>
+  </template:include>
+</shop:product-groups>
+-->
+</body>
+</html>

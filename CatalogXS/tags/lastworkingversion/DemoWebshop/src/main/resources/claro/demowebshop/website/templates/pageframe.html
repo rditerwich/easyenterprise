@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title></title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="/default.cssqq" rel="stylesheet" type="text/css" />
+<link href="/layout.cssqq" rel="stylesheet" type="text/css" />
+<script id="jquery" src="/javascripts/jquery-1.4.2.min.js"
+  type="text/javascript" />
+
+<style type="text/css">
+<!--
+@import url("layout.css");
+-->
+</style>
+</head>
+<body>
+<webshop:promotions>
+  <div class="any" list:first="class=first" list:last="class=last"></div>
+</webshop:promotions>
+<div id="header">
+<div id="logo">
+<h1>WebsiteName.com</h1>
+</div>
+<!-- end #logo --> <lift:msgs>
+  <lift:notice_class>page_messages</lift:notice_class>
+  <lift:notice_msg>&#160;</lift:notice_msg>
+</lift:msgs> <!-- end messages -->
+
+<div id="menu">
+<ul>
+  <li class="first"><a href="#" accesskey="1" title="">Customer
+  Service</a></li>
+  <li><a href="#" accesskey="2" title="">Account Login</a></li>
+  <li><a href="#" accesskey="3" title="">Help and Information</a></li>
+  <li><a href="#" accesskey="4" title="">Contact Us</a></li>
+</ul>
+</div>
+<!-- end #menu --></div>
+<!-- end #header -->
+<div id="forms">
+<div id="search"><webshop:search-form form="POST">
+  <fieldset><search:search-string id="query" /> <search:submit
+    id="search-submit" /> <a href="#">Advanced Search</a></fieldset>
+</webshop:search-form></div>
+<!-- end #search -->
+<div id="currency">
+<form method="get" action="">
+<fieldset><select id="unit" name="unit">
+  <option value="USD">U.S. Dollar</option>
+</select> <input type="submit" id="currency-submit" value="Change Currency" /></fieldset>
+</form>
+</div>
+<!-- end #currency --> <webshop:shopping-cart>
+  <shopping-cart:items>
+    <list:once>
+      <div id="cart-items">
+      <p><span>You have <b><list:size /></b> <list:plural>items</list:plural><list:single>item</list:single>
+      in your cart</span> <a href="/cart" class="button">View Cart</a></p>
+      </div>
+    </list:once>
+  </shopping-cart:items>
+</webshop:shopping-cart> <!-- end #cart-items --></div>
+<!-- end #forms -->
+<div id="categories">
+<ul>
+  <!--
+			Use class="active" to permanently highlight a given menu item
+		-->
+  <li class="first"><a href="/">Home</a></li>
+  <webshop:navigation>
+    <list:group>
+      <list:first>
+        <li category:is-selected="class=active"><category:link
+          include-search-result="true">
+          <category:category-value property="Name" />
+        </category:link></li>
+      </list:first>
+      <list:skip-first>
+        <li category:is-selected="class=active"
+          group:first="class=group-first"><category:link
+          include-search-result="true">
+          <category:category-value property="Name" />
+        </category:link></li>
+      </list:skip-first>
+    </list:group>
+  </webshop:navigation>
+</ul>
+</div>
+<!-- end #categories -->
+
+<template:content />
+
+<div id="footer">
+<p class="links"><a href="#">Privacy Policy</a>
+&#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Legal Information</a>
+&#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Terms of Use</a></p>
+<p class="legal">Copyright (c) 2008 Websitename.com. All rights
+reserved.</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>

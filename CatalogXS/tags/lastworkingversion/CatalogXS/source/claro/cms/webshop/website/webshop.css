@@ -1,0 +1,11 @@
+.add_to_cart {
+	float:right;
+	padding: 4px 6px;
+	font-size: 12px;
+	text-decoration: underline;
+	white-space:nowrap;
+	line-height:20px;
+	border: 1px solid #999;
+	color: #4D4D4D;
+	background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;
+}

@@ -1,0 +1,21 @@
+<project name="account-presentation" default="copy-to-lib" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<artifact:pom id="maven.project" file="pom.xml" />
+	
+	<artifact:dependencies filesetId="dependency.fileset" useScope="runtime">
+		 <pom refid="maven.project"/>
+	</artifact:dependencies>
+	
+	
+	<target name="copy-to-lib" description="Copies file needed from maven">
+		<copy todir="${basedir}/lib">
+		  <fileset refid="dependency.fileset" />
+		   
+		  <mapper type="flatten" />
+		</copy>
+	</target>
+
+	<target name="clean" description="Removes all generated code">
+		<delete dir="${basedir}\target" />
+	</target>
+</project>
