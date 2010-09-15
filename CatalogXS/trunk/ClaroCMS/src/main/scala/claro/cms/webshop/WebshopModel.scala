@@ -95,7 +95,7 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)
   val defaultLanguage = shop.getDefaultLanguage getOrElse "en"
   
-  val navigation : Collection[Collection[Category]] =
+  val topLevelCategories : Seq[Seq[Category]] =
     cacheData.topLevelNavigation.map(_.map(n => mapping.categories(n.getCategory)))
   
   val excludedProperties : Set[Property] = 
@@ -110,9 +110,6 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   val categoriesById : collection.Map[Long, Category] = 
     categories mapBy (_.id)
     
-  val topLevelCategories : Set[Category] =
-    cacheData.topLevelCategories map (mapping.categories) toSet
-
   val products : Set[Product] =
     cacheData.products map (mapping.products) toSet
 

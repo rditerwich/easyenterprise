@@ -1,12 +1,12 @@
 package claro.cms.components
 
 import java.util.Locale
-import xml.{Node, NodeSeq}
+import xml.NodeSeq
 import net.liftweb.http.{S,SHtml}
 import net.liftweb.http.js.JsCmd
-import claro.cms.{Cms,FormField,FormFieldError,Component,Website,PagingBindable}
+import claro.cms.{Cms,FormField,FormFieldError,Component,Website,Paging}
 import claro.common.util.Locales
-import claro.cms._
+
 class StdComponent extends Component {
 
   val prefix = "cms"
@@ -14,7 +14,7 @@ class StdComponent extends Component {
   bindings.append {
     case component : StdComponent => Map(
       "locales" -> Website.instance.locales -> "locale",
-      "paging" -> PagingBindable
+      "paging" -> Paging
     )
         
     case locale : Locale => Map(
@@ -30,15 +30,6 @@ class StdComponent extends Component {
     case error : FormFieldError => Map(
       "message" -> error.message
     )
-    
-    case test : StringBuilder => Map(
-    	"val1" -> new Binding {
-    		def bind(node : Node, contxt: BindingContext) = xml.child
-    	},
-    	"val1" -> new Binding {
-    		def bind(xml : Node, contxt: BindingContext) = xml.child
-    	}
-	)
   }
   
   

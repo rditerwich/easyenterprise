@@ -28,6 +28,8 @@ class Form extends Bindable {
   def errors = forms.flatMap(_.fields).flatMap(_.error)
   private var currentField : Field[_] = null
 
+  override val prefix = "form"
+  	
   override def bindings = bindingsFor(this)
   
   override def bind(node : Node, context : BindingContext) : NodeSeq = {

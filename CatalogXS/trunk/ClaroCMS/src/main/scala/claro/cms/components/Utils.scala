@@ -1,7 +1,7 @@
 package claro.cms.components
 
 import xml.{Elem,Group,Node,NodeSeq,Text,MetaData}
-import claro.cms.{Bindable,Bindings,BindingContext,Component}
+import claro.cms.{Binding,Bindings,Bindable,BindingContext,Component}
 
 class Utils extends Component {
 
@@ -14,13 +14,12 @@ class Utils extends Component {
   }
 }
 
-
 class Break(size : Int) extends Bindable {
   override def bind(node : Node, context : BindingContext) = {
-    val result = super.bind(node, context + ("break" -> Bindings(null, Map("more" -> NodeSeq.Empty)))).toString
+    val result = Binding.bind(node.child, context + ("break" -> Bindings(None, Map("more" -> NodeSeq.Empty)))).toString
     if (result.size > size) {
       val more = node.child.find(child => child.prefix == "break" && child.label == "more") getOrElse Text("") 
-      Text(result.substring(0, size)) ++ super.bind(more, context)
+      Text(result.substring(0, size)) ++ Binding.bind(more, context)
     } else {
       Text(result)
     }

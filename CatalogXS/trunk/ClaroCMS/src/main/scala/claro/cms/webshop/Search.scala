@@ -6,6 +6,7 @@ import claro.jpa
 import claro.cms.{Bindable,Bindings,BindingContext}
 
 class SearchForm extends Bindable {
+	override val prefix = "search"
   val dummySearch = "Search"
   var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse(dummySearch)
   
@@ -14,11 +15,11 @@ class SearchForm extends Bindable {
     case None => ""
   }
   
-  override def bindings = Bindings(this, Map(
+  override def bindings = Map(
     "search-string" -> SHtml.text(searchString, s => searchString = if (s == dummySearch) dummySearch else s, 
       ("onclick", "javascript:if (value == '" + dummySearch + "') value = '';"),
       ("onblur", "javascript:if (value == '') value = '" + dummySearch + "';")) % currentAttributes(),
-    "submit" -> SHtml.submit("Search", () => if (searchString != dummySearch) S.redirectTo(pathPrefix + "/search/" + searchString)) % currentAttributes()))
+    "submit" -> SHtml.submit("Search", () => if (searchString != dummySearch) S.redirectTo(pathPrefix + "/search/" + searchString)) % currentAttributes())
   
   override def bind(node : Node, context : BindingContext) : NodeSeq = {
     <form method="post" action={S.uri}>

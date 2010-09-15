@@ -3,11 +3,12 @@ package claro.cms.webshop
 object Filter {
 
   def filters : Seq[Filter] = {
-    WebshopModel.currentCategory match {
-      case Some(group) => (WebshopModel.shop.topLevelCategories - group).toSeq map (
-          new CategoryFilter(_))
-      case None => Seq()
-    }
+//    WebshopModel.currentCategory match {
+//      case Some(group) => (WebshopModel.shop.topLevelCategories - group).toSeq map (
+//          new CategoryFilter(_))
+//      case None => Seq()
+//    }
+	  Seq()
   }
 }
 

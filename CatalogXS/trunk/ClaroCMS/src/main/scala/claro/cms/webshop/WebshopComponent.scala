@@ -20,19 +20,19 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
-      "navigation" -> grouped(WebshopModel.shop.navigation) -> "category",
+      "navigation" -> Navigation,
       "filters" -> WebshopModel.currentStickyFilters.get -> "filter",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
-      "shopping-cart" -> ShoppingCart -> "shopping-cart",
+      "shopping-cart" -> ShoppingCart,
       "search-all" -> searchAllLink,
-      "search-form" -> new SearchForm -> "search",
+      "search-form" -> new SearchForm,
       "current-user" -> WebshopModel.currentUserVar.get -> "user",
-      "login-form" -> LoginForm.is -> "login",
+      "login-form" -> LoginForm,
       "logout-link" -> logoutLink,
-      "user-info-form" -> UserInfoForm.get -> "form",
-      "register-form" -> RegistrationForm.get -> "form",
-      "shipping-options-form" -> ShippingOptionsForm.get -> "form",
-      "change-password-form" -> ChangePasswordForm.get -> "form")
+      "user-info-form" -> UserInfoForm,
+      "register-form" -> RegistrationForm,
+      "shipping-options-form" -> ShippingOptionsForm,
+      "change-password-form" -> ChangePasswordForm)
     
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
@@ -48,7 +48,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
       "categories" -> product.categories -> "category",
-      "add-to-cart" -> ShoppingCart.addProduct(product),
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
@@ -117,8 +116,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "email-field" -> form.emailField -> "field",
       "name-field" -> form.partyForm.nameField -> "field",
       "phone-field" -> form.partyForm.phoneField -> "field",
-      "address-form" -> form.partyForm.addressForm -> "form",
-      "party" -> form.partyForm -> "party",
+      "address-form" -> form.partyForm.addressForm,
+      "party" -> form.partyForm,
       "register-button" -> form.registerButton(@@("label", "Register"), @@("href", "/registered"), @@("change-password-href", "/changepassword")))
     
     case form : UserInfoForm => Map(
@@ -127,16 +126,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "email-field" -> form.emailField -> "field",
       "name-field" -> form.partyForm.nameField -> "field",
       "phone-field" -> form.partyForm.phoneField -> "field",
-      "address-form" -> form.partyForm.addressForm -> "form",
-      "delivery-address-form" -> form.partyForm.deliveryAddressForm -> "form",
-      "party" -> form.partyForm -> "party",
+      "address-form" -> form.partyForm.addressForm,
+      "delivery-address-form" -> form.partyForm.deliveryAddressForm,
+      "party" -> form.partyForm,
       "change-password-link" -> form.changePasswordLink(@@("change-password-href", "/changepassword")),
       "store-button" -> form.storeButton(@@("label", "Store")))
       
     case form : ShippingOptionsForm => Map(
       "errors" -> form.errors -> "error",
       "shipping-options" -> form.shippingOptions -> "shipping-option",
-      "delivery-address-form" -> form.deliveryAddressForm -> "form",
+      "delivery-address-form" -> form.deliveryAddressForm,
       "proceed-order-link" -> form.proceedOrderLink)
       
     case shippingOption : SelectedShippingOption => Map(
@@ -155,7 +154,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case form : PartyForm => Map(
       "name-field" -> form.nameField -> "field",
       "phone-field" -> form.phoneField -> "field",
-      "address-form" -> form.addressForm -> "form")
+      "address-form" -> form.addressForm)
     
     case user : jpa.party.User => Map(
       "email" -> user.getEmail,
@@ -215,7 +214,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       WebshopModel.currentSearchStringVar(Some(s))
       "search" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
-    case "cart" :: Nil => "shoppingcart" :: Nil
+    case "cart" :: Nil => "shopping_cart" :: Nil
     case "flushcache" :: Nil => 
       WebshopModel.flush 
       "index" :: Nil

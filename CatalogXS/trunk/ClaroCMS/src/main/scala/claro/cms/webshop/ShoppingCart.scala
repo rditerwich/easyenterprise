@@ -1,42 +1,54 @@
 package claro.cms.webshop
 
-import claro.jpa
-import claro.cms.{Bindable, Redrawable, CurrentRedraws}
+import collection.mutable
+import javax.servlet.http.HttpServletRequest
+import net.liftweb.http.{RequestVar,SessionVar,S,SHtml}
+import net.liftweb.http.js.{JsCmd,JsCmds}
+import net.liftweb.http.js.JsCmds.SetHtml
+import net.liftweb.http.js.JsCmd
+import scala.xml.{Node,NodeSeq, Text}
 import claro.common.util.Conversions._
-import net.liftweb.http.{S, SHtml}
-import net.liftweb.http.js.JsCmds
-import scala.xml.{NodeSeq, Text}
+import claro.jpa
+import claro.cms.{Bindable,Redrawable,CurrentRedraws}
 
 //TODO correctly calculate promotion prices, currently the original product price is calculated.
 //TODO add button "next step"
 //TODO on shoppingcart page, when emptying shopping cart, table should be refreshed too.
 //FIXME anchor for buttons no are anchor, with # this introduces new history token, or return false or no a, and set style via css, like cursor
 
-object ShoppingCart extends ShoppingCart {}
+object ShoppingCart extends SessionVar[ShoppingCart](new ShoppingCart)
 
-class ShoppingCart private extends Bindable with Redrawable {
+class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redrawable {
 
-  override def bindings = bindingsFor(this)
+	override val prefix = "shopping-cart"
+	
+  override def bindings = Map(
+	"items" -> order.productOrders -> "item",
+    "add" -> addProduct(@@("product-prefix", "product")),
+    "add-promotion" -> addPromotion(@@("promotion-prefix", "promotion")),
+    "shipping-costs" -> format(order.shippingCosts),
+    "total-prices" -> order.totalPrices -> "total-price",
+    "total-prices-plus-shipping" -> order.totalPricesPlusShipping -> "total-price",
+    "clear" -> clear,
+    "link" -> Link("/cart"),
+    "place-order" -> placeOrderLink,
+    "proceed-order-link" -> proceedOrderLink)
   
   def order = WebshopModel.currentOrder.get
 
-  def addProduct(productPrefix : String) : NodeSeq => NodeSeq = {
-    findBoundObject(productPrefix) match {
-      case Some(product : Product) =>
-      	addProduct(product)
-      case None => 
-        _ => NodeSeq.Empty
+  def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
+    val redraws = CurrentRedraws.get
+    def callback(product : Product) = {
+      order.addProduct(product, 1)
+      S.notice("Product added to shopping cart")
+      redraws.toJsCmd
     }
-  }
-  
-  def addProduct(product : Product) : NodeSeq => NodeSeq = xml => {
-	  val redraws = CurrentRedraws.get
-	  def callback = {
-		  order.addProduct(product, 1)
-		  S.notice("Product added to shopping cart")
-		  redraws.toJsCmd
-	  }
-	  SHtml.a(() => callback, xml) % currentAttributes("product-prefix")
+    findBoundObject(productPrefix) match {
+      case Some(product:Product) =>
+        SHtml.a(() => callback(product), xml) % currentAttributes("product-prefix")
+      case None => 
+        NodeSeq.Empty
+    }
   }
 
   def shippingCosts = Money(15, "EUR")

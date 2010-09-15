@@ -5,46 +5,44 @@ import net.liftweb.http.{RequestVar,S}
 
 object Paging extends RequestVar[Paging](new Paging)
 
-class Paging {
+class Paging extends Bindable {
 	var currentPage = 1
 	var sizeEstimate = 0
 	var pageSize = 1
-	def surroundingPages(max : Int) : (Boolean, Seq[Int], Boolean) = {
-		var startPage = currentPage - 1 - max / 2
+	var pageCount = 5
+
+	lazy val calcuated = {
+		var startPage = currentPage - 1 - pageCount / 2
 		val maxPage = Math.max(Math.ceil(sizeEstimate / pageSize).toInt, (currentPage - 1))
-		startPage = Math.min(startPage, maxPage - max)
+		startPage = Math.min(startPage, maxPage - pageCount)
 		startPage = Math.max(0, startPage)
-		val endPage = Math.min(startPage + max, maxPage)
-		
-		(startPage != 0, (startPage + 1).to(endPage + 1), endPage != maxPage)
+		val endPage = Math.min(startPage + pageCount, maxPage)
+		Calcuated(startPage != 0, endPage != maxPage, currentPage > 1, sizeEstimate > currentPage * pageSize, (startPage + 1).to(endPage + 1))
 	}
-
-	def hasPrevious = currentPage > 1
-	def hasNext = sizeEstimate > currentPage * pageSize
-}
-
-object PagingBindable extends Binding {
-  override def bind(node : Node, context : BindingContext) = {
-      val xml = Binding.bind(node.child, context)
-      val paging = Paging.is
-      val (less, pages, more) = paging.surroundingPages(5)
-      val bindings : Bindings = Bindings(paging, 
-          "single-page" -> new AnyBinding(pages.size <= 1),
-          "multi-page" -> new AnyBinding(pages.size > 1),
-          "previous" -> new XmlBinding(xml => 
-	        if (paging.hasPrevious) <a class="paging-previous active" href={href(paging.currentPage - 1)}>{xml}</a>
-	        else <a class="paging-previous inactive">{xml}</a>),
-          "page" -> new XmlBinding(xml => pages.map { page => 
-            if (page == paging.currentPage) <a class="paging-nr current">{page}</a>
-            else <a class="paging-nr" href={href(page)}>{page}</a>}),
-          "next" -> new XmlBinding(xml => 
-          	if (paging.hasNext) <a class="paging-next active" href={href(paging.currentPage + 1)}>{xml}</a>
-          	else <a class="paging-next inactive">{xml}</a>))
-      Binding.bind(xml, context + ("paging", bindings))
-  }
-  
-  def href(page : Int) = {
-	  val uri = if (Paging.currentPage > 0) {
+	
+	override val prefix = "paging"
+	
+	override def bind(node : Node, context : BindingContext) = {
+		pageCount = attr(node, "page-count", _.toInt, 5)
+		val xml = Binding.bind(node.child, context)
+		Binding.bind(xml, childContext(node, context))
+	}
+	
+	override def bindings = Map(
+	  "single-page" -> (calcuated.pages.size <= 1),
+	  "multi-page" -> (calcuated.pages.size > 1),
+	  "previous" -> ((xml : NodeSeq) => 
+		  if (calcuated.previous) <a class="paging-previous active" href={href(currentPage - 1)}>{xml}</a>
+		  else <a class="paging-previous inactive">{xml}</a>),
+	  "next" -> ((xml : NodeSeq) => 
+			if (calcuated.next) <a class="paging-next active" href={href(currentPage + 1)}>{xml}</a>
+			else <a class="paging-next inactive">{xml}</a>),
+	  "page" -> ((xml : NodeSeq) => calcuated.pages.map(page => 
+	    if (page == currentPage) <a class="paging-nr current">{page}</a>
+	    else <a class="paging-nr" href={href(page)}>{page}</a>)))
+	
+	 def href(page : Int) = {
+	  val uri = if (currentPage > 0) {
 	 	  val uri = S.uri
 		  val i2 = S.uri.lastIndexOf('/')
 		  val i = S.uri.lastIndexOf('/', i2 - 1)
@@ -54,4 +52,6 @@ object PagingBindable extends Binding {
 	  if (page > 1) uri + "/page/" + page
 	  else uri
   }
+  
+	case class Calcuated(less : Boolean, more : Boolean, previous : Boolean, next : Boolean, pages : Seq[Int])
 }
