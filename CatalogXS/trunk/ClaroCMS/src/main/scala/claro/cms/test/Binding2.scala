@@ -56,12 +56,15 @@ object BindingHelpers {
 	def textBinder[A](f : => A) = new Binder[A] {
 		def bind(obj : A, node : Node, context : BindingContext) = new Text(f.toString)
 	}
+	
+	def collection[A](f : => Collection[A], binder : Binder[A]) = null
 }
 
 trait BindingHelpers {
 	import BindingHelpers._
 	implicit def labeledCtor(label : String) = new LabeledBindingCtor(label)
-	implicit def binder(f : => Boolean) = text(f) 
+	implicit def binder(f : => Boolean) = textBinder(f) 
+	implicit def binder(f : => Collection[Boolean]) = textBinder(f) 
 	implicit def ctor(f : => Boolean) = text(f) 
 	implicit def ctor(f : => Collection[Boolean]) = text(f) 
 	implicit def ctor(f : => Int) = text(f) 
