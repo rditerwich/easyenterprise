@@ -65,26 +65,23 @@
 </div>
 <!-- end #forms -->
 <div id="categories">
-	<ul>
-		<!--
+<ul>
+  <!--
 			Use class="active" to permanently highlight a given menu item
 		-->
-		<li class="first"><a href="/">Home</a></li>
-		<webshop:navigation><navigation:children>
-		<navigation:name/>
-		<navigation:category>
-			<list:group>
-				<list:first>
-					<li  category:is-selected="class=active"><category:link include-search-result="true"><category:category-value property="Name"/></category:link></li>
-				</list:first>
-				<list:skip-first>
-					<li category:is-selected="class=active" group:first="class=group-first"><category:link include-search-result="true"><category:category-value property="Name"/></category:link></li>
-				</list:skip-first>
-			</list:group>
-			</navigation:category>
-			</navigation:children>
-		</webshop:navigation>
-	</ul>
+  <li class="first"><a href="/">Home</a></li>
+  <webshop:navigation>
+    <navigation:children>
+      <list:group>
+          <li>
+            <navigation:is-selected><attr:set name="class" value="active"/></navigation:is-selected>
+            <group:first><list:skip-first><attr:append name="class" value="group-first"/></list:skip-first></group:first>
+            <navigation:link><navigation:name /></navigation:link>
+          </li>
+      </list:group>
+    </navigation:children>
+  </webshop:navigation>
+</ul>
 </div>
 <!-- end #categories -->
 

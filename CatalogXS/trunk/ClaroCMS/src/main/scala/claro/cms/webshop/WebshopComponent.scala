@@ -21,13 +21,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
       "navigation" -> Navigation,
-      "filters" -> WebshopModel.currentStickyFilters.get -> "filter",
+      "filters" -> "WebshopModel.currentStickyFilters",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
-      "shopping-cart" -> ShoppingCart,
+      "shopping-cart" -> ShoppingCart.is,
       "search-all" -> searchAllLink,
       "search-form" -> new SearchForm,
       "current-user" -> WebshopModel.currentUserVar.get -> "user",
-      "login-form" -> LoginForm,
+      "login-form" -> LoginForm.is,
       "logout-link" -> logoutLink,
       "user-info-form" -> UserInfoForm,
       "register-form" -> RegistrationForm,
@@ -39,11 +39,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
       "end-date" -> WebshopUtil.slashDate.format(promotion.endDate),
       "price" -> formatMoney(promotion.price, promotion.priceCurrency),
-      "volume-discount" -> promotion.volumeDiscount,
+      "volume-discount" -> promotion.volumeDiscount.asInstanceOf[Long],
       "product" -> promotion.product -> "product")
     
     case product : Product => Map(   
-      "id" -> product.id.toString,
+      "id" -> product.id,
       "properties" -> product.properties -> "property",
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
@@ -52,7 +52,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "href" -> LinkAttr(product) -> "href")
     
     case category : Category => Map(   
-      "id" -> category.id.toString,
+      "id" -> category.id,
       "name" -> category.name,
       "sub-categories" -> category.children -> "category",
       "parent-categories" -> category.parents -> "category",
@@ -83,7 +83,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "link" -> Link("/order"))
 
    case productOrder : ProductOrder => Map(   
-      "id" -> productOrder.productOrder.getId.toString,
+      "id" -> productOrder.productOrder.getId.getOrElse(-1),
       "product" -> productOrder.product -> "product",
       "price" -> formatMoney(productOrder.price, productOrder.currency),
       "total-price" -> formatMoney(productOrder.totalPrice, productOrder.currency),
@@ -94,7 +94,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
 
    case filter : StickyFilter => Map(
        "title" -> filter.title,
-       "remove" -> WebshopModel.currentStickyFilters(WebshopModel.currentStickyFilters.get.filter(_ != filter)))
+       "remove" -> "WebshopModel.currentStickyFilters(WebshopModel.currentStickyFilters.get.filter(_ != filter))")
       
    case value : FilterValue => Map(
        "value" -> value.value) 
@@ -148,7 +148,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "email" -> form.email,
       "password-field" -> form.passwordField -> "field",
       "repeat-password-field" -> form.repeatPasswordField -> "field",
-      "is-valid" -> form.isValid -> "",
+      "is-valid" -> form.isValid,
       "change-password-button" -> form.changePasswordButton(@@("label", "Change password"), @@("href", "/passwordchanged")))
         
     case form : PartyForm => Map(
@@ -159,8 +159,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case user : jpa.party.User => Map(
       "email" -> user.getEmail,
       "name" -> user.getParty.getName,
-      "address" -> user.getParty.getAddress,
-      "has-password" -> (user.getPassword.getOrElse("") != "") -> "")
+      "address" -> user.getParty.getAddress -> "address",
+      "has-password" -> (user.getPassword.getOrElse("") != ""))
     
     case address : AddressForm => Map(
       "address1-field" -> address.address1Field -> "field",

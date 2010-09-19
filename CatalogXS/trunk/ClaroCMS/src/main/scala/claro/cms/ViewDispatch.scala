@@ -50,6 +50,6 @@ object ViewDispatch extends LiftRules.ViewDispatchPF {
       case _ => Empty
     }*/
 //    Log.info("Rendered template: " + template.resource.uri + " for path: " + path0.mkString("/", "/", ""))
-    Full(result)
+    Full(Postprocessor.postprocess(result))
   }
 }

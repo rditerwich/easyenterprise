@@ -30,7 +30,7 @@ trait WebshopBindingHelpers extends BindingHelpers {
     }, xml) % currentAttributes()
   }
 
-  def format(money : Money) = formatMoney(money.amount, money.currency)
+  implicit def format(money : Money) = new XmlBinding(_ => formatMoney(money.amount, money.currency))
   
   private def propertyValue(property : Option[Property]) = {
     property match { 

@@ -43,6 +43,7 @@ object WebshopUtil {
 }
 
 object Link extends BindingHelpers {
+	def home = (xml: NodeSeq) => <a href="/">{xml}</a>
   def apply(category: Category) = (xml: NodeSeq) => {
     val href = "/category/" + category.urlName + (WebshopModel.currentSearchStringVar.get match {
       case Some(s) if (attr(current, "include-search-result", "false") == "true") => "/search/" + s

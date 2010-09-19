@@ -90,7 +90,7 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
   
   val shop = cacheData.shop
   val catalogId = shop.getCatalog.getId
-  val id = shop.getId.longValue
+  val id = shop.getId.getOrElse(-1)
   val serverName : String = (shop.getUrlPrefix getOrElse ("") split ("/"))(0)
   val prefixPath : List[String] = (shop.getUrlPrefix getOrElse ("") split ("/") toList) drop(0)
   val defaultLanguage = shop.getDefaultLanguage getOrElse "en"

@@ -15,7 +15,7 @@
   <tr><td><code>&lt;... list-prefix="<i>list</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... group-size="<i>1</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;... group-count="<i>-1</i>"&gt;</code></td><td></td></tr> 
-  <tr><td><code>&lt;... group-scatter="<i>false</i>"&gt;</code></td><td></td></tr> 
+  <tr><td><code>&lt;... group-invert="<i>false</i>"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;list:group list-prefix="group"&gt;</code></td><td></td></tr> 
   <tr><td><code>&lt;group:fill&gt;</code></td><td></td></tr> 
 </table>
@@ -106,10 +106,10 @@
 </table>
 </showcase:sample>
 
-<tr colspan="2"><td><h4>group-scatter</h4></td></tr>
+<tr colspan="2"><td><h4>group-invert</h4></td></tr>
 <showcase:sample>
 <table>
-<world:continents group-count="3" group-scatter="true">
+<world:continents group-count="3" group-invert="true">
 <tr>
   <list:group>
     <td><continent:name/></td>
@@ -144,6 +144,20 @@
       <td>(<list:index/>, <group:index/>) -</td>
     </group:fill>
   </list:group>
+</tr>
+</world:continents>
+</table>
+</showcase:sample>
+
+<tr colspan="2"><td><h4>primitive collections</h4></td></tr>
+<showcase:sample>
+<table border="1">
+<attr:append name="border" value="3"/>
+<world:continents>
+<tr>
+    <td><continent:name/></td>
+    <td><continent:countryNames>(<object:value/>)</continent:countryNames></td>
+    <td><continent:france>(<object:value/>)<object:none>NO FRANCE</object:none></continent:france></td>
 </tr>
 </world:continents>
 </table>

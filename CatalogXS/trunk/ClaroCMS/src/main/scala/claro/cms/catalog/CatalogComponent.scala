@@ -2,6 +2,7 @@ package claro.cms.catalog
 
 import claro.cms.{Cms,Component,Template,ResourceLocator,Scope}
 import claro.cms.catalog.data.StandardCatalogData
+import claro.common.util.Conversions._
 import claro.jpa.catalog._
 
 class CatalogComponent extends Component {
@@ -13,7 +14,7 @@ class CatalogComponent extends Component {
       "products" -> CatalogDao.findProducts(Nil, Nil) -> "product"
     )
     case product : Product => Map(
-      "id" -> product.getId
+      "id" -> product.getId.getOrElse(-1)
     )
   }
   

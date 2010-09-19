@@ -14,7 +14,7 @@ class Utils extends Component {
   }
 }
 
-class Break(size : Int) extends Bindable {
+class Break(size : Int) extends Binding {
   override def bind(node : Node, context : BindingContext) = {
     val result = Binding.bind(node.child, context + ("break" -> Bindings(None, Map("more" -> NodeSeq.Empty)))).toString
     if (result.size > size) {

@@ -14,11 +14,11 @@ class StdComponent extends Component {
   bindings.append {
     case component : StdComponent => Map(
       "locales" -> Website.instance.locales -> "locale",
-      "paging" -> Paging
+      "paging" -> Paging.is
     )
         
     case locale : Locale => Map(
-      "short" -> locale.toString,
+      "short" -> locale.toString.asInstanceOf[String],
       "select-link" -> changeLocaleLink(locale)
     )
     

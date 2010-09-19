@@ -20,9 +20,9 @@ object ShoppingCart extends SessionVar[ShoppingCart](new ShoppingCart)
 
 class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redrawable {
 
-	override val prefix = "shopping-cart"
+	override val defaultPrefix = "shopping-cart"
 	
-  override def bindings = Map(
+  override lazy val bindings = Map(
 	"items" -> order.productOrders -> "item",
     "add" -> addProduct(@@("product-prefix", "product")),
     "add-promotion" -> addPromotion(@@("promotion-prefix", "promotion")),

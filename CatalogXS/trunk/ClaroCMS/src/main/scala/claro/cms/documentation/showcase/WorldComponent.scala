@@ -19,11 +19,14 @@ class WorldComponent extends Component {
   bindings.append {
     case _ : WorldComponent => Map(
         "continents" -> continents -> "continent",
-        "countries" -> continents.flatMap(_.countries) -> "country"
+        "countries" -> continents.flatMap(_.countries) -> "country",
+        "countryNames" -> continents.flatMap(_.countries).map(_.name)
       )
     case continent : Continent => Map(
         "name" -> continent.name,
-        "countries" -> continent.countries -> "country"
+        "countries" -> continent.countries -> "country",
+        "countryNames" -> continent.countries.map(_.name),
+        "france" -> continent.countries.map(_.name).find(_ == "France")
       )
     case country : Country => Map(
     	"name" -> country.name,

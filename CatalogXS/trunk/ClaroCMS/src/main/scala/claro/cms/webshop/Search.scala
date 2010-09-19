@@ -6,7 +6,7 @@ import claro.jpa
 import claro.cms.{Bindable,Bindings,BindingContext}
 
 class SearchForm extends Bindable {
-	override val prefix = "search"
+	override val defaultPrefix = "search"
   val dummySearch = "Search"
   var searchString : String = WebshopModel.currentSearchStringVar.is getOrElse(dummySearch)
   
@@ -15,7 +15,7 @@ class SearchForm extends Bindable {
     case None => ""
   }
   
-  override def bindings = Map(
+  override lazy val bindings = Map(
     "search-string" -> SHtml.text(searchString, s => searchString = if (s == dummySearch) dummySearch else s, 
       ("onclick", "javascript:if (value == '" + dummySearch + "') value = '';"),
       ("onblur", "javascript:if (value == '') value = '" + dummySearch + "';")) % currentAttributes(),

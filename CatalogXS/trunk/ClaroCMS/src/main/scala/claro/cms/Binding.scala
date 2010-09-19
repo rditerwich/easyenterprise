@@ -9,68 +9,6 @@ import scala.collection.JavaConversions._
 
 import xml.{Elem, Group, MetaData, Node, NodeSeq, Text, Attribute, UnprefixedAttribute, PrefixedAttribute, TopScope}
 
-class BindingCtor(label : String) {
-  def -> (binding : Binding) = (label, binding)
-  def -> (bindings : Bindings) = (label, bindings)
-  def -> (bindings : Map[String,Binding]) = (label, bindings)
-  
-  def -> (f : => Bindable) = new BindableBindingCtor(label, f)
-  def -> (f : NodeSeq => NodeSeq) = (label, new XmlBinding(f))
-  def -> (f : RequestVar[_ <: Bindable]) = new BindableBindingCtor(label, f.is)
-  def -> (f : SessionVar[_ <: Bindable]) = new BindableBindingCtor(label, f.is)
-  def -> (f : => NodeSeq) = (label, new XmlBinding(_ => f))
-  def -> (f : => java.util.Collection[Any]) = new JavaCollectionBindingCtor(label, f)
-  def -> (f : => Collection[Collection[Bindable]]) = new GroupedBindableCtor(f)
-  def -> (f : GroupedCollection) = new GroupedCollectionBindingCtor(label, f)
-  def -> (f : => Collection[Any]) = new CollectionBindingCtor(label, f)
-  def -> (f : => Option[Any]) = new OptionBindingCtor(label, f)
-  def -> (f : => Any) = new AnyBindingCtor(label, f)
-  
-  class LabeledBindingCtor(f : => Binding) {
-  	implicit def labeledBinding = (label, f)
-  }
-  class GroupedBindableCtor(f : => Collection[Collection[Bindable]]) extends LabeledBindingCtor(new GroupedBindableBinding(f))
-}
-
-//class LazyBindingCtor(label : String, f : => Binding) {
-//	def toLabeledBinding : Tuple2[String,Binding] = (label, new LazyBinding(f))
-//}
-
-class BindableBindingCtor(label : String, f : => Bindable) {
-	def toLabeledBinding : Tuple2[String,Binding] = (label, new BindableBinding(f))
-}
-
-
-
-class CollectionBindingCtor(label : String, f : => Collection[Any]) {
-	def -> (defaultPrefix : String) = (label, new CollectionBinding(f, node => obj => 
-	new AnyComplexBinding(_ => Binding.prefix(node, defaultPrefix), obj)))
-	def toLabeledBinding : Tuple2[String,Binding] = (label, new CollectionBinding(f, _ => obj => new AnyBinding(obj)))
-}
-
-class GroupedCollectionBindingCtor(label : String, f : => GroupedCollection) {
-  def -> (defaultPrefix : String) = (label, new GroupedCollectionBinding(f.getCollection, node => obj => 
-    new AnyComplexBinding(_ => Binding.prefix(node, defaultPrefix), obj)))
-  def toLabeledBinding : Tuple2[String,Binding] = (label, new GroupedCollectionBinding(f.getCollection, _ => obj => new AnyBinding(obj)))
-}
-
-class JavaCollectionBindingCtor(label : String, f : => java.util.Collection[Any]) 
-	extends CollectionBindingCtor(label, f) 
-
-class OptionBindingCtor(label : String, f : => Option[Any]) extends BindingHelpers {
-  def -> (defaultPrefix : String) = (label, new AnyComplexBinding(node => Binding.prefix(node, defaultPrefix), f getOrNull))
-  def toLabeledBinding = (label, new AnyBinding(f getOrNull))
-}
-
-class AnyBindingCtor(label : String, f : => Any) {
-  def -> (defaultPrefix : String) = (label, new AnyComplexBinding(node => Binding.prefix(node, defaultPrefix), f))
-  def toLabeledBinding = (label, new AnyBinding(f))
-}
-
-class GroupedCollection(f : => Collection[Collection[Any]]) {
-  def getCollection = f
-}
-
 object Flag {
   def apply() = new Flag(false)
   def apply(value : Boolean) = new Flag(value)
@@ -81,10 +19,6 @@ class Flag(var value : Boolean) {
   def unary_! : Boolean = !value
   def set(v : Boolean) = value = v
 } 
-
-//object Bindings {
-//  def apply(boundObject : Option[Any], mappings: (String,Binding)*) = new Bindings(boundObject, Map(mappings:_*)) 
-//}
 
 case class Bindings(boundObject: Option[Any], bindings : Map[String,Binding]) {}
 
@@ -199,82 +133,60 @@ trait Binding extends BindingHelpers {
   }
 }
 
-class AnyBinding(f : => Any) extends Binding {
-  def bind(node : Node, context: BindingContext) : NodeSeq = {
-    f match {
-      case null => NodeSeq.Empty
-      case value => Text(f.toString)
-    }
-  }
-  override def toBoolean(attr : MetaData, context : BindingContext) : Boolean = toBoolean(f)
+trait Bindable extends Binding {
+	val defaultPrefix : String
+	lazy val bindings : Map[String,Binding] = bindingsFor(this)
+	def childContext(context : BindingContext) = context + (defaultPrefix -> Bindings(Some(this), bindings))
+	def bind(node : Node, context : BindingContext) : NodeSeq = Binding.bind(node.child, childContext(context))
 }
 
 class XmlBinding(f : NodeSeq => NodeSeq) extends Binding {
   def bind(node : Node, context : BindingContext) : NodeSeq = {
     Binding.bind(f(node.child), context)
   }
-  override def toBoolean(attr : MetaData, context : BindingContext) = toBoolean(f(attr.value))
 }
 
-trait Bindable extends BindingHelpers {
-  def bind(node : Node, context : BindingContext) = {
-    val bindings = this.bindings
-    Binding.bind(node.child, childContext(node, context))
-  }
-  def childContext(node : Node, context : BindingContext) = if (bindings.isEmpty) context else context + (attr(node, "prefix", prefix) -> Bindings(Some(this), bindings)) 
-  val prefix : String = "object" 
-  def bindings = Map[String,Binding]()
+abstract class OptionBinding[A](f : => A) extends Binding {
+  def bind(node : Node, context : BindingContext) : NodeSeq = f match {
+		case null =>
+  		val nodes = node.child.filter(child => child.prefix == "object" && child.label == "none")
+  		Binding.bind(nodes.flatMap(_.child), context)
+		case value =>
+  		bind(value, node, context).filter(child => child.prefix != "object" || child.label != "none")
+	}
+  def bind(value : A, node : Node, context : BindingContext) : NodeSeq
 }
 
-//trait ComplexBinding extends Binding {
-//  override def bind(node : Node, context : BindingContext) = {
-//    bindChildren(node.child, attr(node, "prefix", prefix), context)
-//  }
-//  def bindChildren(xml : NodeSeq, prefix : String, context : BindingContext) = {
-//  	val bindings = this.bindings
-//  	val boundObject = this.boundObject
-//  	if (toBoolean(boundObject)) {
-//      	val childContext = if (bindings.isEmpty) context else context + (prefix -> Bindings(Some(boundObject), bindings))
-//        Binding.bind(xml, childContext)
-//  	} else { 
-//  		val nodes = xml.filter(child => child.prefix == "object" && child.label == "none").flatMap(_.child)
-//  		nodes.flatMap(Binding.bind(_, context))
-//  	}
-//  }
-//  def prefix : Node => String 
-//  def bindings = Map[String,Binding]()
-//  def boundObject : Any = this
-//  override def toBoolean(attr : MetaData, context : BindingContext) = toBoolean(boundObject)
-//}
-
-class AnyComplexBinding(prefix : Node => String, f : => Any) extends Binding {
-  def bind(node : Node, context : BindingContext) : NodeSeq = {
-    def none = {
-      val nodes = node.child.filter(child => child.prefix == "object" && child.label == "none").flatMap(_.child)
-      nodes.flatMap(Binding.bind(_, context))
-    }
-    f match {
-      case null => none 
-      case false => none 
-      case java.lang.Boolean.FALSE => none 
-      case value =>
-        Binding.bind(node.child, context + (prefix(node) -> Bindings(Some(value), bindingsFor(value))))
-    }
-  }
-  override def toBoolean(attr : MetaData, context : BindingContext) = toBoolean(f)
+class AnyBinding[A](f : => A, xml : A => Node => NodeSeq) extends OptionBinding(f) {
+	def bind(value : A, node : Node, context : BindingContext) = {
+		if (node.child.isEmpty) xml(value)(node)
+		else Binding.bind(node.child, context + ("object" -> Bindings(Some(value), Map("value" -> new Binding {
+			def bind(node : Node, context : BindingContext) = xml(value)(node)
+		}))))
+	}
 }
+private class AnyOptionBinding[A](f : => Option[A], xml : A => Node => NodeSeq) extends AnyBinding[A](f.getOrNull, xml)
+private class AnyCollectionBinding(f : => Collection[Any], xml : Any => Node => NodeSeq) extends CollectionBinding(f, _ => obj => new AnyBinding[Any](obj, xml))
+private class BooleanBinding(f : => Boolean) extends AnyBinding[String](if (f) "true" else null.asInstanceOf[String], _ => _ => NodeSeq.Empty)
 
-//class LazyBinding(f : => Binding) extends Binding {
-//	override def bind(node : Node, context : BindingContext) : NodeSeq = {
-//			f.bind(node, context)
-//	}  
-//}
-
-class BindableBinding(f : => Bindable) extends Binding {
-  override def bind(node : Node, context : BindingContext) : NodeSeq = {
-    f.bind(node, context)
-  }  
+class ComplexBinding[A](f : => A, defaultPrefix : String) extends OptionBinding(f) {
+	lazy val value = f
+	lazy val bindings : Map[String,Binding] = bindingsFor(value)
+	def bind(value : A, node : Node, context : BindingContext) = {
+		Binding.bind(node.child, context + (attr(node, "prefix", defaultPrefix) -> Bindings(Some(value), bindings)))
+	}
 }
+private class ComplexOptionBinding[A](f : => Option[A], defaultPrefix : String) extends ComplexBinding[A](f.getOrNull, defaultPrefix)
+private class ComplexCollectionBinding(f : => Collection[Any], defaultPrefix : String) extends CollectionBinding(f, _ => obj => new ComplexBinding(obj, defaultPrefix))
+
+private class BindingBinding(f : => Binding) extends OptionBinding[Binding](f) {
+	def bind(binding : Binding, node : Node, context : BindingContext) = {
+		binding.bind(node, context)
+	}
+}
+private class BindingOptionBinding(f : => Option[Binding]) extends BindingBinding(f.getOrNull)
+private class BindingCollectionBinding(f : => Collection[Binding]) extends CollectionBinding(f, _ => obj => obj.asInstanceOf[Binding]) 
+private class BindingGroupBinding(f : => Collection[Collection[Binding]]) extends GroupedCollectionBinding(f, _ => obj => obj.asInstanceOf[Binding])
 
 object CollectionBinding {
   
@@ -300,8 +212,8 @@ object CollectionBinding {
           "once" -> Binding(index == 1),
           "single" -> Binding(size == 1),
           "plural" -> Binding(size != 1),
-          "index" -> new AnyBinding(index),
-          "size" -> new AnyBinding(size),
+          "index" -> new XmlBinding(_ => new Text(index.toString)),
+          "size" -> new XmlBinding(_ => new Text(size.toString)),
           "group" -> groupBinding(node)(elt),
           "fill" -> Binding.empty,
           "repeat" -> new CollectionRepeatBinding(node, collection, eltBinding, groupBinding, listPrefix)))
@@ -323,7 +235,7 @@ object CollectionBinding {
   } 
 }
 
-class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Binding) extends Binding {
+private class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Binding) extends Binding {
 
   override def bind(node : Node, context: BindingContext) : NodeSeq = {
 
@@ -345,7 +257,7 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
     // determine groups
     var groupSize = attr(node, "group-size", "1").toInt
     var groupCount = attr(node, "group-count", "-1").toInt
-    var groupScatter = attr(node, "group-scatter", "false").toBoolean
+    var groupInvert = attr(node, "group-invert", "false").toBoolean
     
     if (groupCount < 0) {
       groupCount = Math.ceil(size / groupSize.asInstanceOf[Double]).round.toInt
@@ -358,16 +270,19 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
     }
     
     // grouping?
-    val (groups,groupBinding) = if (groupSize <= 1) (collection, eltBinding)
-    else {
+    if (groupSize <= 1) {
+    	
+    	CollectionBinding.bind(collection, eltBinding, eltBinding, listPrefix, node, context)
+    	
+  	} else {
 
       // pad collection with null values
       val totalSize = groupCount * groupSize
       val padding = totalSize - collection.size
-      val array = if (padding > 0) collection.toSeq ++ Array.make(padding, null) else collection.toSeq
+      val array = if (padding > 0) collection.toSeq ++ Seq.fill(padding)(null) else collection.toSeq
       
       // partition in groups
-      val groups = if (!groupScatter) {
+      val groups = if (!groupInvert) {
         for (i <- 0 until groupCount; start = i * groupSize) 
           yield array.slice(start, start + groupSize)
       } else {
@@ -376,14 +291,12 @@ class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any => Bind
             yield(array(j))
       }
       
-      (groups, (node : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], eltBinding))
+      val groupBinding = (_ : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], eltBinding)
+      CollectionBinding.bind(groups, eltBinding, groupBinding, listPrefix, node, context)
     }
     
-    CollectionBinding.bind(groups, eltBinding, groupBinding, listPrefix, node, context)
   }  
 }
-
-class GroupedBindableBinding(f : => Collection[Collection[Bindable]]) extends GroupedCollectionBinding(f, node => obj => new BindableBinding(obj.asInstanceOf[Bindable])) 
 
 class GroupedCollectionBinding(f : => Collection[Collection[Any]], eltBinding : Node => Any => Binding) extends Binding {
 
@@ -395,9 +308,9 @@ class GroupedCollectionBinding(f : => Collection[Collection[Any]], eltBinding : 
     val listPrefix = attr(node, "list-prefix", "list")
     
     // determine groups
-    var groupScatter = attr(node, "group-scatter", "false").toBoolean
+    var groupInvert = attr(node, "group-invert", "false").toBoolean
     
-    if (groupScatter) {
+    if (groupInvert) {
       val groupCount = collection.foldLeft(0)((x,y) => Math.max(x, y.size))
       val totalSize = groupCount * size
       val padding = totalSize - collection.size
@@ -408,7 +321,7 @@ class GroupedCollectionBinding(f : => Collection[Collection[Any]], eltBinding : 
     }
     
     val groupBinding = (node : Node) => (elt : Any) => new CollectionGroupBinding(elt.asInstanceOf[Collection[Any]], eltBinding)
-    CollectionBinding.bind(collection, eltBinding, groupBinding, listPrefix, node, context)
+    CollectionBinding.bind(collection, _ => _ => Binding.ident, groupBinding, listPrefix, node, context)
   }  
 }
 
@@ -424,8 +337,8 @@ object EmptyBindings {
   "none" -> Binding.empty,
   "single" -> Binding.empty,
   "plural" -> Binding.ident,
-  "index" -> new AnyBinding(""),
-  "size" -> new AnyBinding(0),
+  "index" -> new XmlBinding(_ => NodeSeq.Empty),
+  "size" -> new XmlBinding(_ => new Text("0")),
   "group" -> EmptyEltBinding(null)(null),
   "fill" -> Binding.empty,
   "repeat" -> new CollectionRepeatBinding(null, List(), EmptyEltBinding, EmptyEltBinding, "list")))
@@ -476,62 +389,6 @@ object BindingContext {
 case class BindingContext(parent : BindingContext, bindings : Map[String,Bindings], repeatSeen : Flag) {
   def + (binding : (String, Bindings)) = BindingContext(this, bindings + binding, repeatSeen)
   def initRepeatSeen = BindingContext(this, bindings, Flag())
-}
-
-trait BindingHelpers {
-  
-  implicit def toCtor(label : String) = new BindingCtor(label)
-  implicit def toBinding(ctor : BindableBindingCtor) = ctor.toLabeledBinding
-  implicit def toBinding(ctor : CollectionBindingCtor) = ctor.toLabeledBinding
-  implicit def toBinding(ctor : OptionBindingCtor) = ctor.toLabeledBinding
-  implicit def toBinding(ctor : AnyBindingCtor) = ctor.toLabeledBinding
-  
-  def grouped(f : => Collection[Collection[Any]]) = new GroupedCollection(f)
-  
-  def locale = Cms.locale
- 
-  def website = Website.instance 
-  
-  def current : Elem = BindingContext.current.get._2
-  
-  def currentContext : BindingContext = BindingContext.current.get._1
-
-  def currentAttributes(excl : String*) = 
-    current.attributes filter(a => !excl.contains(a.key))
-
-  def @@(name : String) : String = attr(current, name)
-  
-  def @@(name : String, default : => Any) : String = attr(current, name, default) 
-  
-  def @@?[A](name : String, yes : => A, no : => A) = ifAttr(name, yes, no)
-  
-  def attr(node : Node, name : String) : String = attr(node, name, throw new Exception("Missing attribute: " + name))
-    
-  def attr(node : Node, name : String, default : => Any) : String = 
-    node.attributes.find(at => at.key == name && !at.isPrefixed) match {
-      case Some(attr) => attr.value.toString
-      case None => default.toString
-    }
-
-  def attr[A](node : Node, name : String, map : String => A, default : => A) : A = 
-	  node.attributes.find(at => at.key == name && !at.isPrefixed) match {
-	  case Some(attr) => map(attr.value.toString)
-	  case None => default
-  }
-  
-  def ifAttr[A](name : String, yes : => A, no : => A) = if (attr(current, name, "false") == "true") yes else no
- 
-  def bindingsFor(obj : Any) = obj match {
-    case null => Map[String,Binding]()
-    case obj => Website.instance.rootBinding.cache(obj)
-  }
-  
-  def findBoundObject(prefix : String) = currentContext.bindings.get(prefix) match {
-    case Some(Bindings(obj, _)) => Some(obj)
-    case None => None
-  }
-  
-  def formatMoney(amount : Double, currency : String) = Formatting.formatMoney(amount, currency)
 }
 
 class BindingCache(website : Website) {

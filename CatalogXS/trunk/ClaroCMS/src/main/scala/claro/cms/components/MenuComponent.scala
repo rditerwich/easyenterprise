@@ -9,11 +9,8 @@ class MenuComponent extends Component {
   
   bindings.append {
     case _ : MenuComponent => Map(
-      "list" -> 12 -> "menu-item",
       "item" -> new MenuItem(@@("path","qq")) -> "menu-item")
     case item : MenuItem => Map(
-      "@class" -> item.getClass("W") -> "class",
-      "href" -> item.link -> "href"
     )
   }
 }
