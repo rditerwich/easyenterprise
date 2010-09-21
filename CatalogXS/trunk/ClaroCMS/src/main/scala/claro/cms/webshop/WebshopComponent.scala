@@ -20,7 +20,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
-      "navigation" -> Navigation,
+      "trail" -> Trail -> "trail",
       "filters" -> "WebshopModel.currentStickyFilters",
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart.is,
@@ -48,6 +48,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "property" -> product.property(locale, @@("name")) -> "property",
       "value" -> value(product.property(locale, @@("property"))),
       "categories" -> product.categories -> "category",
+      "is-on-trail" -> Trail.isOnTrail(product),
+      "is-selected" -> Trail.isSelected(product),
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
@@ -62,7 +64,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "properties" -> category.properties -> "property",
       "products" -> @@?("include-sub-groups", category.productExtent, category.products) -> "product",
       "promotions" -> category.productExtentPromotions -> "promotion",
-      "is-selected" -> WebshopModel.isCategorySelected(category),
+      "is-on-trail" -> Trail.isOnTrail(category),
+      "is-selected" -> Trail.isSelected(category),
       "link" -> Link(category),
       "add-filter-link" -> AddFilterLink(category))
       

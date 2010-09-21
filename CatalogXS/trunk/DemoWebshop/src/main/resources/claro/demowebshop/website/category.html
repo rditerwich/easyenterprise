@@ -34,23 +34,28 @@
 		</div>
 		</cms:paging>
 		</div>
-		<div id="sidebar"><category:sub-categories>
+		<div id="sidebar"><webshop:navigation><navigation:children>
 			<div id="box2" class="boxA">
 			<div class="title">
-			<h1>Sub Categories</h1>
+			<h1>Navigation</h1>
 			</div>
 			<div class="content">
 			<ul class="list1">
 				<list:repeat>
-					<li list:first="class=first"><category:link>
-						<category:category-value property="Name" />
-					</category:link></li>
+					<li>
+                      <list:first><attr:set name="class" value="first"/></list:first>
+                      <category:link><category:category-value property="Name" /></category:link>
+                      <navigation:children>
+                        <category:link><category:category-value property="Name" /></category:link>
+                      </navigation:children>
+                    </li>
 				</list:repeat>
 			</ul>
 			</div>
 			</div>
 			<!-- end #box2.boxA -->
-		</category:sub-categories>
+      </navigation:children>
+      </webshop:navigation>
 		<div id="box3" class="boxA">
 		<div class="title">
 		<h1>Volutpat Sed Tempus</h1>

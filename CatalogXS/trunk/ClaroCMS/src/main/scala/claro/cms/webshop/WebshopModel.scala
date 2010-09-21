@@ -48,7 +48,7 @@ object WebshopModel {
   }
   
   def currentProducts : Seq[Product] = {
-	val products = currentSearchStringVar.is match {
+		val products = currentSearchStringVar.is match {
 	  case Some(searchString) =>
 	  	val products = shop.keywordMap.find(searchString)
 	  	currentCategory match {
@@ -120,7 +120,7 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
     categories mapBy (_.name)
   
   val categoriesByUrlName : collection.Map[String, Category] = 
-	categories mapBy (_.urlName)
+  	categories mapBy (_.urlName)
     
   val mediaValues : Map[Long, (String, Array[Byte])] =
     cacheData.mediaValues
@@ -129,7 +129,11 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
     KeywordMap(products map (p => (p.properties map (_.valueAsString), p))) 
 }
 
-class Category(category : jpa.catalog.Category, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(category) {
+trait Item {
+	val name : String
+}
+
+class Category(category : jpa.catalog.Category, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(category) with Item {
 
   // terminate recursion
   mapping.categories(category) = this
@@ -203,7 +207,7 @@ class Category(category : jpa.catalog.Category, val productqwer : Option[Product
   override def toString = name
 }
 
-class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var mapping : Mapping) extends Delegate(product) {
+class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var mapping : Mapping) extends Delegate(product) with Item {
   
   // terminate recursion
   mapping.products(product) = this
@@ -246,7 +250,13 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
     }
     None
   }
-
+  
+  val name : String = 
+    propertiesByLocaleName.get(Locales.empty, "Name") match {
+      case Some(property) => property.value.getStringValue
+      case None => ""
+    }
+  
   val priceProperty : Option[Property] = property(Locales.empty, "Price")
 }
 

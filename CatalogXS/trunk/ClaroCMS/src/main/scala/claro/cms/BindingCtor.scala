@@ -31,6 +31,8 @@ object BindingCtor {
 	class BindableCollectionCollection(label : String, binding : Binding) extends Tuple2(label, binding)
 	class StaticXml(label : String, binding : Binding) extends Tuple2(label, binding)
 	class DynamicXml(label : String, binding : Binding) extends Tuple2(label, binding)
+	class RequestVarSingle(label : String, binding : Binding) extends Tuple2(label, binding)
+	class SessionVarSingle(label : String, binding : Binding) extends Tuple2(label, binding)
 	class ComplexSingle
 	class ComplexOption
 	class ComplexCollection
@@ -54,8 +56,8 @@ object BindingCtor {
 		def -> (f : => Boolean) = new BooleanSingle(label, new BooleanBinding(f))
 		def -> (f : => NodeSeq) = new StaticXml(label, new XmlBinding(_ => f)) {}
 		def -> (f : NodeSeq => NodeSeq) = new DynamicXml(label, new XmlBinding(f))
-		def -> (v : RequestVar[Binding]) = (label, v.is)
-		def -> (v : SessionVar[Binding]) = (label, v.is)
+		def -> (f : => RequestVar[Binding]) = new RequestVarSingle(label, f.is)
+		def -> (f : => SessionVar[Binding]) = new SessionVarSingle(label, f.is)
 		def -> (f : => Collection[Any]) = new ComplexCollection {
 			def -> (defaultPrefix : String) = (label, new ComplexCollectionBinding(f, defaultPrefix))
 		}

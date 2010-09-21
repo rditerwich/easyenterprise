@@ -170,10 +170,10 @@ private class AnyCollectionBinding(f : => Collection[Any], xml : Any => Node => 
 private class BooleanBinding(f : => Boolean) extends AnyBinding[String](if (f) "true" else null.asInstanceOf[String], _ => _ => NodeSeq.Empty)
 
 class ComplexBinding[A](f : => A, defaultPrefix : String) extends OptionBinding(f) {
-	lazy val value = f
-	lazy val bindings : Map[String,Binding] = bindingsFor(value)
+	def bindings(value : A) : Map[String,Binding] = bindingsFor(value)
 	def bind(value : A, node : Node, context : BindingContext) = {
-		Binding.bind(node.child, context + (attr(node, "prefix", defaultPrefix) -> Bindings(Some(value), bindings)))
+		val value : A = f
+		Binding.bind(node.child, context + (attr(node, "prefix", defaultPrefix) -> Bindings(Some(value), bindings(value))))
 	}
 }
 private class ComplexOptionBinding[A](f : => Option[A], defaultPrefix : String) extends ComplexBinding[A](f.getOrNull, defaultPrefix)
@@ -279,7 +279,7 @@ private class CollectionBinding(f : => Collection[Any], eltBinding : Node => Any
       // pad collection with null values
       val totalSize = groupCount * groupSize
       val padding = totalSize - collection.size
-      val array = if (padding > 0) collection.toSeq ++ Seq.fill(padding)(null) else collection.toSeq
+      val array = if (padding > 0) collection.toSeq.padTo(padding, null) else collection.toSeq
       
       // partition in groups
       val groups = if (!groupInvert) {
