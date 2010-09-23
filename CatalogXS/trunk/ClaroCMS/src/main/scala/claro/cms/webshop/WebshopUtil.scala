@@ -58,16 +58,6 @@ object Link extends BindingHelpers {
   def apply(path: String) = (xml: NodeSeq) => <a href={ path }>{ xml }</a>
 }
 
-object AddFilterLink extends BindingHelpers {
-  def apply(category: Category) = (xml: NodeSeq) => {
-    def callback = {
-      WebshopModel.currentStickyFilters.get :+ StickyFilter("Category " + category.name, (product: Product) => category.productExtent.contains(product))
-      JsCmds.Noop
-    }
-    SHtml.a(() => callback, xml) % currentAttributes()
-  }
-}
-
 object LinkAttr {
   def apply(category: Category) = new LinkAttr(Text("/category/" + category.urlName))
   def apply(product: Product) = new LinkAttr(Text("/product/" + product.id))

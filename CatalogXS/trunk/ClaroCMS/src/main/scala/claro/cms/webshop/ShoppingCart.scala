@@ -23,7 +23,7 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
 	override val defaultPrefix = "shopping-cart"
 	
   override lazy val bindings = Map(
-	"items" -> order.productOrders -> "item",
+  	"items" -> order.productOrders -> "item",
     "add" -> addProduct(@@("product-prefix", "product")),
     "add-promotion" -> addPromotion(@@("promotion-prefix", "promotion")),
     "shipping-costs" -> format(order.shippingCosts),

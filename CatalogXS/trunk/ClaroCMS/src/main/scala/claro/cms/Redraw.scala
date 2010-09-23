@@ -18,7 +18,7 @@ class Redraws extends mutable.HashMap[String,() => NodeSeq] {
   }
 }
   
-trait Redrawable extends Bindable {
+trait Redrawable extends Binding {
 
   abstract override def bind(node : Node, context : BindingContext) : NodeSeq = {
     val redraws = CurrentRedraws.get

@@ -23,7 +23,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "top-level-categories" -> grouped(WebshopModel.shop.topLevelCategories) -> "category",
       "trail" -> Trail -> "trail",
       "first-on-trail" -> Trail.firstOnTrail -> "category",
-      "filters" -> Filter.get -> "filter", 
+      "filtering" -> Filtering.get, 
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart.is,
       "search-all" -> searchAllLink,
@@ -74,7 +74,8 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "is-on-trail" -> Trail.isOnTrail(category),
       "is-selected" -> Trail.isSelected(category),
       "link" -> Link(category),
-      "add-filter-link" -> Filter.addFilterLink(category))
+      "is-filtered-on" -> Filtering.hasCategoryFilter(category),
+      "add-filter-link" -> Filtering.addFilterLink(category))
       
     case cart : ShoppingCart => Map(
       "items" -> cart.order.productOrders -> "item",
@@ -102,10 +103,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
       "remove" -> ShoppingCart.removeProductOrder(productOrder))
 
-   case filter : StickyFilter => Map(
-       "title" -> filter.title,
-       "remove" -> "WebshopModel.currentStickyFilters(WebshopModel.currentStickyFilters.get.filter(_ != filter))")
-      
     case login : LoginForm => Map(
       "email-field" -> login.emailField,
       "password-field" -> login.passwordField,
