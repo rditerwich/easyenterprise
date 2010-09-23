@@ -20,8 +20,10 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
+      "top-level-categories" -> grouped(WebshopModel.shop.topLevelCategories) -> "category",
       "trail" -> Trail -> "trail",
-      "filters" -> "WebshopModel.currentStickyFilters",
+      "first-on-trail" -> Trail.firstOnTrail -> "category",
+      "filters" -> Filter.get -> "filter", 
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart.is,
       "search-all" -> searchAllLink,
@@ -34,6 +36,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "shipping-options-form" -> ShippingOptionsForm,
       "change-password-form" -> ChangePasswordForm)
     
+    case filter : Filter => Map(
+    		"title" -> filter.title,
+    		"remove-link" -> filter.removeLink
+		)
+		
     case promotion : VolumeDiscountPromotion => Map(         
       "id" -> promotion.id,
       "start-date" -> WebshopUtil.slashDate.format(promotion.startDate),
@@ -58,16 +65,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "name" -> category.name,
       "sub-categories" -> category.children -> "category",
       "parent-categories" -> category.parents -> "category",
-      "category-properties" -> category.groupProperties(locale) -> "property",
-      "category-property" -> category.groupProperty(locale, @@("name")) -> "property",
-      "category-value" -> value(category.groupProperty(locale, @@("property"))),
-      "properties" -> category.properties -> "property",
-      "products" -> @@?("include-sub-groups", category.productExtent, category.products) -> "product",
+      "properties" -> category.groupProperties(locale) -> "property",
+      "property" -> category.groupProperty(locale, @@("name")) -> "property",
+      "value" -> value(category.groupProperty(locale, @@("property"))),
+      "defined-properties" -> category.properties -> "property",
+      "products" -> @@?("include-sub-categories", category.productExtent, category.products) -> "product",
       "promotions" -> category.productExtentPromotions -> "promotion",
       "is-on-trail" -> Trail.isOnTrail(category),
       "is-selected" -> Trail.isSelected(category),
       "link" -> Link(category),
-      "add-filter-link" -> AddFilterLink(category))
+      "add-filter-link" -> Filter.addFilterLink(category))
       
     case cart : ShoppingCart => Map(
       "items" -> cart.order.productOrders -> "item",
@@ -99,9 +106,6 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
        "title" -> filter.title,
        "remove" -> "WebshopModel.currentStickyFilters(WebshopModel.currentStickyFilters.get.filter(_ != filter))")
       
-   case value : FilterValue => Map(
-       "value" -> value.value) 
-       
     case login : LoginForm => Map(
       "email-field" -> login.emailField,
       "password-field" -> login.passwordField,

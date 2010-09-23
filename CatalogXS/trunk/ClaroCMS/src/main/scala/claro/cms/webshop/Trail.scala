@@ -7,14 +7,27 @@ import claro.cms.{Bindable, Bindings}
 private object TrailSession extends SessionVar[TrailSession](new TrailSession)
 
 class TrailSession {
-	private var _trail = collection.mutable.Seq[Item]()
-	private var currentCategoryName : Option[Int] = None
+	private var _trail = Seq[Item]()
+	private var currentCategoryName : Option[String] = None
 	
 	def trail = {
 	  if (currentCategoryName != WebshopModel.currentCategoryVar.is) {
+	  	currentCategoryName = WebshopModel.currentCategoryVar.is
+	  	_trail = WebshopModel.currentCategory match {
+	  		case Some(category) => determineCurrent(category, _trail.reverse.toList).reverse.toList
+	  		case None => Seq.empty 
+	  	}
 	  }
 		_trail
 	}		
+	
+	def determineCurrent(item : Item, reverseTrail : List[Item]) : List[Item] = {
+		reverseTrail match {
+			case head :: rest if head.children.contains(item) =>  item :: reverseTrail
+			case head :: rest => determineCurrent(item, rest)
+			case Nil => List(item)
+		}
+	}
 }
 
 object Trail extends RequestVar[Trail](new Trail)

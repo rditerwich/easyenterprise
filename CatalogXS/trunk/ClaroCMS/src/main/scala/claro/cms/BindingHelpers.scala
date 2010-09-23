@@ -4,9 +4,7 @@ import xml.{ Elem, Node }
 import claro.cms.util.Formatting
 
 trait BindingHelpers extends BindingCtor {
-
-//  def grouped(f : => Collection[Collection[Any]]) = new GroupedCollection(f)
-  
+	
   def locale = Cms.locale
  
   def website = Website.instance 

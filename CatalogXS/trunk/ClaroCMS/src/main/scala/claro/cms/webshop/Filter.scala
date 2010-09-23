@@ -1,33 +1,36 @@
 package claro.cms.webshop
 
-object Filter {
+import scala.collection.SortedSet
+import net.liftweb.http.js.{JsCmd,JsCmds}
+import net.liftweb.http.{SessionVar, SHtml}
+import xml.NodeSeq
+import claro.cms.BindingHelpers
 
-  def filters : Seq[Filter] = {
-//    WebshopModel.currentCategory match {
-//      case Some(group) => (WebshopModel.shop.topLevelCategories - group).toSeq map (
-//          new CategoryFilter(_))
-//      case None => Seq()
-//    }
-	  Seq()
+object Filter extends SessionVar[SortedSet[Filter]](SortedSet()) with BindingHelpers {
+  def addFilterLink(category: Category) = (xml: NodeSeq) => {
+    def callback = {
+    	println("CALLBAK")
+    	set(get + CategoryFilter(category))
+      JsCmds.Noop
+    }
+    SHtml.a(() => callback, xml) % currentAttributes()
   }
 }
 
-abstract class Filter {
-  def title : String
-  def values : Seq[FilterValue]
+trait Filter extends Ordered[Filter] with BindingHelpers {
+  val title : String
+  def items : Seq[Item]
+  def removeLink = (xml : NodeSeq) => {
+    def callback = {
+    	Filter.set(Filter.get - this)
+      JsCmds.Noop
+    }
+    SHtml.a(() => callback, xml) % currentAttributes()
+  }
+  def compare(that: Filter) = title.compare(that.title)
 }
 
-abstract class FilterValue {
-  def value : String
-  def activate : Unit
-}
-
-class CategoryFilter(group : Category) extends Filter {
-  override def title : String = group.name
-  override def values = group.children.toSeq.map(new CategoryFilterValue(_))
-}
-
-class CategoryFilterValue(group : Category) extends FilterValue {
-  override def value : String = group.name
-  override def activate : Unit = {}
+case class CategoryFilter(group : Category) extends Filter {
+  val title : String = "Category " + group.name
+  override def items = group.children
 }

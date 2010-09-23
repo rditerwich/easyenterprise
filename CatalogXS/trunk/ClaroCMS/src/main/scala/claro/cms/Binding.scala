@@ -178,6 +178,7 @@ class ComplexBinding[A](f : => A, defaultPrefix : String) extends OptionBinding(
 }
 private class ComplexOptionBinding[A](f : => Option[A], defaultPrefix : String) extends ComplexBinding[A](f.getOrNull, defaultPrefix)
 private class ComplexCollectionBinding(f : => Collection[Any], defaultPrefix : String) extends CollectionBinding(f, _ => obj => new ComplexBinding(obj, defaultPrefix))
+private class ComplexGroupBinding(f : => Collection[Collection[Any]], defaultPrefix : String) extends GroupedCollectionBinding(f, _ => obj => new ComplexBinding(obj, defaultPrefix))
 
 private class BindingBinding(f : => Binding) extends OptionBinding[Binding](f) {
 	def bind(binding : Binding, node : Node, context : BindingContext) = {

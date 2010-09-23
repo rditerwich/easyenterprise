@@ -131,6 +131,7 @@ class Shop (val cacheData : WebshopCacheData) extends Delegate(cacheData.catalog
 
 trait Item {
 	val name : String
+	val children : Seq[Item]
 }
 
 class Category(category : jpa.catalog.Category, val productqwer : Option[Product], cacheData : WebshopCacheData, mapping : Mapping) extends Delegate(category) with Item {
@@ -214,6 +215,8 @@ class Product(product : jpa.catalog.Product, cacheData : WebshopCacheData, var m
   
   // product has its own mappings
 //  mapping = new Mapping(Some(this), cacheData)
+  
+  val children : Seq[Product] = Seq.empty
 
   val id : Long = product.getId.longValue
   

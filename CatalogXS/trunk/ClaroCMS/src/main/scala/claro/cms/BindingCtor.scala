@@ -36,6 +36,9 @@ object BindingCtor {
 	class ComplexSingle
 	class ComplexOption
 	class ComplexCollection
+	class ComplexGrouped
+	class ComplexGroup
+	case class Grouped(collection : Collection[Collection[Any]])
 
 	private class LabeledCtor(label : String) {
 		def -> (bindings : Bindings) = (label, bindings)
@@ -58,6 +61,12 @@ object BindingCtor {
 		def -> (f : NodeSeq => NodeSeq) = new DynamicXml(label, new XmlBinding(f))
 		def -> (f : => RequestVar[Binding]) = new RequestVarSingle(label, f.is)
 		def -> (f : => SessionVar[Binding]) = new SessionVarSingle(label, f.is)
+		def -> (f : => Grouped) = new ComplexGrouped {
+			def -> (defaultPrefix : String) = (label, new ComplexGroupBinding(f.collection, defaultPrefix))
+		}
+		def -> (f : => Collection[Collection[Any]]) = new ComplexGroup {
+			def -> (defaultPrefix : String) = (label, new ComplexGroupBinding(f, defaultPrefix))
+		}
 		def -> (f : => Collection[Any]) = new ComplexCollection {
 			def -> (defaultPrefix : String) = (label, new ComplexCollectionBinding(f, defaultPrefix))
 		}
@@ -78,6 +87,7 @@ object BindingCtor {
 trait BindingCtor {
 	import BindingCtor._
 	implicit def labeledCtor(label : String) = new LabeledCtor(label)
+	def grouped(collection : Collection[Collection[Any]]) = Grouped(collection)
 }
 
 case class Person(name : String)
