@@ -1,0 +1,13 @@
+<li>
+  <list:first><attr:set name="class" value="first" /></list:first>
+  <category:is-selected><attr:append name="class" value="selected" /></category:is-selected>
+  <category:link><category:value property="Name" /></category:link>
+  <category:is-on-trail>
+    <category:sub-categories>
+    
+      <ul><list:repeat>
+        <template:include template="templates/navigation-node" />
+      </list:repeat></ul>
+    </category:sub-categories>
+  </category:is-on-trail>
+</li>

@@ -5,21 +5,21 @@
 		<cms:paging>
 		<div id="box1" class="boxA">
 		<div class="title">
-		<h1><category:category-value property="Name"/> ('ink' search result)
+		<h1><category:value property="Name"/> ('ink' search result)
 			<a href="#"><img style="position:relative; top:1px; padding-left: 4px;" src="/images/filter.gif"/></a>
 		  <paging:single-page/>
 		  <span class="paging">
-            <paging:single-page><attr:set name="style" value="display:none"/></paging:single-page>
+        <paging:single-page><attr:set name="style" value="display:none"/></paging:single-page>
 			<paging:previous>&#171;</paging:previous>
 			<paging:page/>
 			<paging:next>&#187;</paging:next>
 		  </span>
 		</h1>
-			
 		</div>
+    
 		<div class="content">
 		<ul class="list2">
-			<category:products include-sub-groups="true" page-size="8">
+			<category:products include-sub-categories="true" page-size="8">
 				<li list:even="class=alt">
 				<p class="image"><a href="#"><product:value property="Image"
 					height="84px" class="border" /></a></p>
@@ -34,28 +34,44 @@
 		</div>
 		</cms:paging>
 		</div>
-		<div id="sidebar"><webshop:navigation><navigation:children>
+    <!--  #content -->
+    
+		<div id="sidebar">
 			<div id="box2" class="boxA">
 			<div class="title">
 			<h1>Navigation</h1>
 			</div>
 			<div class="content">
 			<ul class="list1">
-				<list:repeat>
-					<li>
-                      <list:first><attr:set name="class" value="first"/></list:first>
-                      <category:link><category:category-value property="Name" /></category:link>
-                      <navigation:children>
-                        <category:link><category:category-value property="Name" /></category:link>
-                      </navigation:children>
-                    </li>
-				</list:repeat>
+        <webshop:first-on-trail>
+          <category:sub-categories>
+            <template:include template="templates/navigation-node" />
+          </category:sub-categories>
+        </webshop:first-on-trail>
 			</ul>
 			</div>
 			</div>
-			<!-- end #box2.boxA -->
-      </navigation:children>
-      </webshop:navigation>
+			<!-- end navigation panel -->
+
+			<div id="box2" class="boxA">
+			<div class="title">
+			<h1>Filter</h1>
+			</div>
+			<div class="content">
+      <webshop:current-category>
+        <category:add-filter-link>Filter on category <category:name/></category:add-filter-link>
+      </webshop:current-category>
+			<ul class="list1">
+        <webshop:filters>
+          <category:sub-categories>
+            <template:include template="templates/navigation-node" />
+          </category:sub-categories>
+        </webshop:filters>
+			</ul>
+			</div>
+			</div>
+			<!-- end filter -->
+
 		<div id="box3" class="boxA">
 		<div class="title">
 		<h1>Volutpat Sed Tempus</h1>
@@ -63,8 +79,10 @@
 		<div class="content"><a href="#"><img
 			src="images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
 		</div>
-		<!-- end #box3.boxA --></div>
-		<!-- end #sidebar --> <!-- end #sidebar -->
+		<!-- end #box3.boxA -->
+    </div>
+    <!-- end #sidebar -->
+
 		<div style="clear: both;">&#160;</div>
 		</div>
 		<!-- end #page -->
