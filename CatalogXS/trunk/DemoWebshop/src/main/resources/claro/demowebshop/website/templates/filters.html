@@ -1,0 +1,29 @@
+<div id="filters" class="boxA">
+<div class="title">
+<h1>Filters</h1>
+</div>
+<div class="content"><webshop:filtering>
+  <filtering:filters>
+    <ul class="list3">
+      <list:repeat>
+        <li><list:first>
+          <attr:set name="class" value="first" />
+        </list:first> <filter:title /></li>
+      </list:repeat>
+    </ul>
+  </filtering:filters>
+  <webshop:current-category>
+    <category:is-filtered-on>
+      <object:none>
+        <category:add-filter-link>Add filter: Category <category:name />
+        </category:add-filter-link>
+      </object:none>
+    </category:is-filtered-on>
+  </webshop:current-category>
+  <filtering:filters>
+    <list:first>
+      <filtering:clear-link>Clear all filters</filtering:clear-link>
+    </list:first>
+  </filtering:filters>
+</webshop:filtering></div>
+</div>

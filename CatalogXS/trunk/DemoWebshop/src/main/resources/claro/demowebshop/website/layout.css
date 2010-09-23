@@ -90,6 +90,12 @@ html, body {
 	margin: 0px auto;
 }
 
+/** FILTERS */
+#filters a {
+	display: block;
+	padding-top: 4px;
+}
+
 /** PAGING */
 
 .paging {

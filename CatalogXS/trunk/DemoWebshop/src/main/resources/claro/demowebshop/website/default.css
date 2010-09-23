@@ -53,11 +53,6 @@ p, ul, ol, dl {
 	text-decoration: none;
 }
 
-.list1 li.selected ul a {
-	text-decoration: underline;
-	font-weight: normal;
-}
-
 /** LIST1 SUBLIST STYLE */
 
 .list1 ul {
@@ -72,6 +67,11 @@ p, ul, ol, dl {
 
 .list1 ul li.first {
 	border-top: 1px solid #D1D1D1;
+}
+
+.list1 li.selected ul a {
+	text-decoration: underline;
+	font-weight: normal;
 }
 
 /** LIST STYLE 2 */
@@ -160,6 +160,37 @@ p, ul, ol, dl {
 .details li {
 	padding: 0px;
 	background: none;
+}
+
+/** LIST STYLE 3 */
+
+.list3 {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	line-height: 220%;
+}
+
+.list3 li {
+	background: url(images/filter.gif) no-repeat right 8px;
+	border-top: 1px solid #D1D1D1;
+}
+
+.list3 li.first {
+	border: none;
+}
+
+.list3 li.selected {
+	background: none;
+}
+.list3 li.selected a {
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.list3 li.selected ul a {
+	text-decoration: underline;
+	font-weight: normal;
 }
 
 /** FORMS */

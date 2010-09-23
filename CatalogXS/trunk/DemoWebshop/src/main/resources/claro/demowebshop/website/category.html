@@ -19,7 +19,7 @@
     
 		<div class="content">
 		<ul class="list2">
-			<category:products include-sub-categories="true" page-size="8">
+			<webshop:current-products include-sub-categories="true" page-size="8">
 				<li list:even="class=alt">
 				<p class="image"><a href="#"><product:value property="Image"
 					height="84px" class="border" /></a></p>
@@ -28,7 +28,7 @@
 				<p><product:add-to-cart class="add">Add to Cart</product:add-to-cart> <b><product:value
 					property="Price" /></b></p>
 				</li>
-			</category:products>
+			</webshop:current-products>
 		</ul>
 		</div>
 		</div>
@@ -37,40 +37,10 @@
     <!--  #content -->
     
 		<div id="sidebar">
-			<div id="box2" class="boxA">
-			<div class="title">
-			<h1>Navigation</h1>
-			</div>
-			<div class="content">
-			<ul class="list1">
-        <webshop:first-on-trail>
-          <category:sub-categories>
-            <template:include template="templates/navigation-node" />
-          </category:sub-categories>
-        </webshop:first-on-trail>
-			</ul>
-			</div>
-			</div>
-			<!-- end navigation panel -->
 
-			<div id="box2" class="boxA">
-			<div class="title">
-			<h1>Filter</h1>
-			</div>
-			<div class="content">
-      <webshop:current-category>
-        <category:add-filter-link>Filter on category <category:name/></category:add-filter-link>
-      </webshop:current-category>
-			<ul class="list1">
-        <webshop:filters>
-          <category:sub-categories>
-            <template:include template="templates/navigation-node" />
-          </category:sub-categories>
-        </webshop:filters>
-			</ul>
-			</div>
-			</div>
-			<!-- end filter -->
+
+  <template:include template="templates/navigation" />
+  <template:include template="templates/filters" />
 
 		<div id="box3" class="boxA">
 		<div class="title">
