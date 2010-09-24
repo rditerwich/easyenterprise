@@ -6,24 +6,30 @@
   <filtering:filters>
     <ul class="list3">
       <list:repeat>
-        <li><list:first>
-          <attr:set name="class" value="first" />
-        </list:first> <filter:title /></li>
+        <li><filter:title /></li>
       </list:repeat>
     </ul>
   </filtering:filters>
-  <webshop:current-category>
-    <category:is-filtered-on>
-      <object:none>
-        <category:add-filter-link>Add filter: Category <category:name />
-        </category:add-filter-link>
-      </object:none>
-    </category:is-filtered-on>
-  </webshop:current-category>
-  <filtering:filters>
-    <list:first>
-      <filtering:clear-link>Clear all filters</filtering:clear-link>
-    </list:first>
-  </filtering:filters>
+  <ul class="links">
+    <webshop:current-category>
+      <category:is-filtered-on not="true">
+        <li>
+          <category:add-filter-link>Add filter: Category <category:name /></category:add-filter-link>
+        </li>
+      </category:is-filtered-on>
+    </webshop:current-category>
+    <webshop:current-search-string>
+      <li>
+        <webshop:add-search-filter-link>Add filter: Search for '<object:value/>'</webshop:add-search-filter-link>
+      </li>
+    </webshop:current-search-string>
+    <filtering:filters>
+      <list:first>
+        <li>
+          <filtering:clear-link>Clear all filters</filtering:clear-link>
+        </li>
+      </list:first>
+    </filtering:filters>
+  </ul>
 </webshop:filtering></div>
 </div>

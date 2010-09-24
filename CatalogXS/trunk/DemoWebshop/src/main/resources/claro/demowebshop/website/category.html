@@ -5,9 +5,8 @@
 		<cms:paging>
 		<div id="box1" class="boxA">
 		<div class="title">
-		<h1><category:value property="Name"/> ('ink' search result)
-			<a href="#"><img style="position:relative; top:1px; padding-left: 4px;" src="/images/filter.gif"/></a>
-		  <paging:single-page/>
+		<h1><category:value property="Name"/>
+      <webshop:current-search-string> &#160;&#12539; Search for '<object:value/>'</webshop:current-search-string>
 		  <span class="paging">
         <paging:single-page><attr:set name="style" value="display:none"/></paging:single-page>
 			<paging:previous>&#171;</paging:previous>
@@ -20,14 +19,7 @@
 		<div class="content">
 		<ul class="list2">
 			<webshop:current-products include-sub-categories="true" page-size="8">
-				<li list:even="class=alt">
-				<p class="image"><a href="#"><product:value property="Image"
-					height="84px" class="border" /></a></p>
-				<h3><a href="#"><product:value property="Name" /></a></h3>
-				<product:value property="Variant" />
-				<p><product:add-to-cart class="add">Add to Cart</product:add-to-cart> <b><product:value
-					property="Price" /></b></p>
-				</li>
+        <template:include template="templates/product-small"/>
 			</webshop:current-products>
 		</ul>
 		</div>
@@ -47,7 +39,7 @@
 		<h1>Volutpat Sed Tempus</h1>
 		</div>
 		<div class="content"><a href="#"><img
-			src="images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
+			src="/images/homepage12.jpg" alt="" width="222" height="138" /></a></div>
 		</div>
 		<!-- end #box3.boxA -->
     </div>

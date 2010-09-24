@@ -3,6 +3,8 @@ package claro.cms
 import xml.{ Elem, Node }
 import claro.cms.util.Formatting
 
+object BindingHelpers extends BindingHelpers
+
 trait BindingHelpers extends BindingCtor {
 	
   def locale = Cms.locale

@@ -1,6 +1,6 @@
 package claro.cms.webshop
 
-import scala.collection.SortedSet
+import scala.collection.{SortedSet, Set}
 import net.liftweb.http.js.{JsCmd,JsCmds}
 import net.liftweb.http.{SessionVar, SHtml}
 import xml.{Node, NodeSeq}
@@ -21,6 +21,7 @@ class Filtering extends Bindable with Redrawable {
   	"clear-link" -> clearLink)
 
   def hasCategoryFilter(category : Category) = filters.contains(CategoryFilter(category))
+  def hasSearchFilter(searchString : String) = filters.contains(SearchFilter(searchString))
 		
 	def addFilterLink(category: Category) = (xml: NodeSeq) => {
     def callback = {
@@ -30,6 +31,15 @@ class Filtering extends Bindable with Redrawable {
     }
     SHtml.a(() => callback, xml) % currentAttributes()
   }
+	
+	def addSearchFilterLink(searchString : String) = (xml: NodeSeq) => {
+		def callback = {
+				val redraws = CurrentRedraws.get
+				filters += SearchFilter(searchString)
+				redraws.toJsCmd
+		}
+		SHtml.a(() => callback, xml) % currentAttributes()
+	}
 	
 	def clearLink = (xml: NodeSeq) => {
 		def callback = {
@@ -62,4 +72,9 @@ trait Filter extends Bindable with Ordered[Filter] with BindingHelpers {
 case class CategoryFilter(category : Category) extends Filter {
   val title : String = "Category " + category.name
   override def products = category.productExtent 
+}
+
+case class SearchFilter(searchString : String) extends Filter {
+	val title : String = "Search for '" + searchString + "'"
+	override def products = WebshopModel.shop.keywordMap.find(searchString).toSet 
 }

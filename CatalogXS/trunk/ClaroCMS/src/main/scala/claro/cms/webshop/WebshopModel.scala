@@ -6,7 +6,7 @@ import java.util.{ Locale, LinkedHashSet }
 
 import scala.xml.NodeSeq
 import scala.xml.Text
-import scala.collection.{ mutable, immutable }
+import scala.collection.{ mutable, immutable, Set }
 import scala.collection.JavaConversions._
 
 import claro.jpa
@@ -35,15 +35,15 @@ object WebshopModel {
     case None => None
   }
 
-  def currentSearchProducts: Seq[Product] = currentSearchStringVar.is match {
+  def currentSearchProducts: Set[Product] = currentSearchStringVar.is match {
     case Some(searchString) =>
-      val products = shop.keywordMap.find(searchString)
+      val products : Set[Product] = shop.keywordMap.find(searchString)
       currentCategory match {
-        case Some(group) => products filter group.productExtent toSeq
-        case None => products.toSeq
+        case Some(group) => products filter group.productExtent 
+        case None => products 
       }
 
-    case _ => Seq.empty
+    case _ => Set.empty
   }
 
   def currentProducts: Seq[Product] = {

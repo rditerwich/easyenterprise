@@ -95,13 +95,8 @@ p, ul, ol, dl {
 	margin-left: 12px;
 }
 
-.list2 .image {
-	float: left;
-	width: 110px;
-}
-
 .list2 h3 {
-	margin-bottom: 15px;
+	margin-bottom: 8px;
 	font-size: 11px;
 }
 
@@ -115,7 +110,6 @@ p, ul, ol, dl {
 }
 
 .list2 li h3 {
-	height: 40px;
 }
 
 .list2 .add {
@@ -162,6 +156,7 @@ p, ul, ol, dl {
 	background: none;
 }
 
+
 /** LIST STYLE 3 */
 
 .list3 {
@@ -176,7 +171,7 @@ p, ul, ol, dl {
 	border-top: 1px solid #D1D1D1;
 }
 
-.list3 li.first {
+.list3 li:first-child {
 	border: none;
 }
 
@@ -191,6 +186,22 @@ p, ul, ol, dl {
 .list3 li.selected ul a {
 	text-decoration: underline;
 	font-weight: normal;
+}
+
+/** LIST STYLE ADDITIONAL LINKS */
+
+ul.links {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+ul.links li {
+	text-align: center;
+}
+
+ul.links li:first-child {
+	margin-top: 8px;
 }
 
 /** FORMS */
@@ -584,3 +595,69 @@ hr {
 	vertical-align: top;
 }
 
+/** PAGING */
+
+.paging {
+	float:right;
+	padding-right: 5px;
+	margin-top: -2px;
+}
+
+.paging .paging-previous {
+	padding-left: 3px;
+}
+
+.paging .paging-next {
+	padding-right: 3px;
+}
+
+.paging a {
+	text-decoration: none;
+	color: white;
+	padding-top: 20px;
+}
+
+ .paging-previous.inactive {
+	display: none;
+}
+
+.paging .inactive {
+	color: grey;
+}
+
+.paging .active {
+	color: white;
+}
+
+.paging .paging-nr {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+.paging .current {
+	font-size: 115%;
+}
+
+/** PRODUCT SMALL */
+
+.product-small {
+	position: relative;
+}
+
+.product-small p {
+	left: 127px;
+	position: absolute;
+}
+
+.product-small img {
+	height: 84px;
+	max-width: 84px;
+	padding: 2px;
+	background: #FFFFFF;
+	border: 1px solid #E2DCBF;
+}
+
+.product-small .buttons {
+	position: absolute;
+	bottom: 18px;
+}

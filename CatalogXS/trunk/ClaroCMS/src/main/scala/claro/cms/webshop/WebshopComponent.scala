@@ -26,7 +26,9 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "filtering" -> Filtering.get, 
       "promotions" -> WebshopModel.shop.get.promotions -> "promotion",
       "shopping-cart" -> ShoppingCart.is,
-      "search-all" -> searchAllLink,
+      "search-all-link" -> searchAllLink,
+      "search-is-filtered-on" -> Filtering.hasSearchFilter(WebshopModel.currentSearchStringVar.is.getOrElse("")),
+      "add-search-filter-link" -> Filtering.addSearchFilterLink(WebshopModel.currentSearchStringVar.is.getOrElse("")),
       "search-form" -> new SearchForm,
       "current-user" -> WebshopModel.currentUserVar.get -> "user",
       "login-form" -> LoginForm.is,
@@ -57,6 +59,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "categories" -> product.categories -> "category",
       "is-on-trail" -> Trail.isOnTrail(product),
       "is-selected" -> Trail.isSelected(product),
+      "add-to-cart-link" -> ShoppingCart.addProduct(product),
       "link" -> Link(product),
       "href" -> LinkAttr(product) -> "href")
     
@@ -216,7 +219,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case "category" :: urlName :: "search" :: s :: Nil => 
       WebshopModel.currentCategoryVar(Some(urlName))
       WebshopModel.currentSearchStringVar(Some(s))
-      "search" :: Nil
+      "category" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
     case "cart" :: Nil => "shopping_cart" :: Nil
     case "flushcache" :: Nil => 

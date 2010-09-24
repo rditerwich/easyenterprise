@@ -1,6 +1,6 @@
 package claro.common.util
 
-import scala.collection.{mutable, Set, Map}
+import scala.collection.{mutable,Set}
 import claro.common.util.Conversions._
 
 object KeywordMap {
@@ -27,7 +27,7 @@ class KeywordMap[A] extends mutable.HashMap[String, mutable.Set[A]] with mutable
     }
   }
   
-  def find(seach : String) : Set[A] = {
+  def find(seach : String) : mutable.Set[A] = {
     val result = new mutable.HashSet[A]
     for (s <- seach.toLowerCase.split("\\W")) {
       for ((keyword, products) <- this) {

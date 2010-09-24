@@ -36,18 +36,20 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
   
   def order = WebshopModel.currentOrder.get
 
-  def addProduct(productPrefix : String) : NodeSeq => NodeSeq = xml => {
-    val redraws = CurrentRedraws.get
-    def callback(product : Product) = {
-      order.addProduct(product, 1)
-      S.notice("Product added to shopping cart")
-      redraws.toJsCmd
-    }
+  def addProduct(product : Product) : NodeSeq => NodeSeq = xml => {
+  	val redraws = CurrentRedraws.get
+  	def callback(product : Product) = {
+  		order.addProduct(product, 1)
+  		S.notice("Product added to shopping cart")
+  		redraws.toJsCmd
+  	}
+  	SHtml.a(() => callback(product), xml) % currentAttributes("product-prefix")
+  }
+  
+  def addProduct(productPrefix : String) : NodeSeq => NodeSeq = {
     findBoundObject(productPrefix) match {
-      case Some(product:Product) =>
-        SHtml.a(() => callback(product), xml) % currentAttributes("product-prefix")
-      case None => 
-        NodeSeq.Empty
+      case Some(product : Product) => addProduct(product)
+      case _ => xml => NodeSeq.Empty
     }
   }
 
@@ -95,13 +97,14 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
         case p : VolumeDiscountPromotion =>
           S.notice("Promotion added to shopping cart")
           order.addProduct(p.product, p.volumeDiscount)
+        case _ =>
       }
       redraws.toJsCmd
     }
     findBoundObject(promotionPrefix) match {
       case Some(promotion:Promotion) =>
         SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
-      case None => 
+      case _ => 
         NodeSeq.Empty
     }
   }
