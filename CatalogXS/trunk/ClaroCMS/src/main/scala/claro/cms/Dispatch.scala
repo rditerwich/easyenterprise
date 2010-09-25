@@ -51,8 +51,6 @@ object Dispatch extends LiftRules.DispatchPF {
       }
     }
     
-    println(path)
-    
     suffix match {
   	  case "css" => Some(() => dispatchCSS(path, suffix, locale))
   	  case "js" => path match {

@@ -183,7 +183,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "value" -> value(property))
     
     case money : Money => Map(
-      "amount" -> money.amount,
+      "amount" -> money.amount.toString,
       "currency" -> money.currency,
       "format" -> format(money))
   }
@@ -221,7 +221,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       WebshopModel.currentSearchStringVar(Some(s))
       "category" :: Nil
     case "search" :: s :: Nil => WebshopModel.currentSearchStringVar(Some(s)); "search" :: Nil
-    case "cart" :: Nil => "shopping_cart" :: Nil
+    case "cart" :: Nil => "cart" :: Nil
     case "flushcache" :: Nil => 
       WebshopModel.flush 
       "index" :: Nil

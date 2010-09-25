@@ -24,6 +24,7 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
 	
   override lazy val bindings = Map(
   	"items" -> order.productOrders -> "item",
+  	"item-count" -> order.productOrders.foldLeft(0)((x,y) => x + y.volume),
     "add" -> addProduct(@@("product-prefix", "product")),
     "add-promotion" -> addPromotion(@@("promotion-prefix", "promotion")),
     "shipping-costs" -> format(order.shippingCosts),

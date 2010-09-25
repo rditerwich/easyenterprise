@@ -5,13 +5,13 @@ object Formatting {
   def formatMoney(amount : Double, currency : String) = {
     val sign = currency match {
         case "EUR" => <span class="money-sign">&euro;</span>
-        case "GBP" => <span class="money-sign">£</span>
+        case "GBP" => <span class="money-sign">&amp;</span>
         case "USD" => <span class="money-sign">$</span>
         case _ => <span class="money-sign">&euro;</span>
       }  
 
-    val whole : Int = (amount / 100.0).asInstanceOf[Int]
-    val cents : Int = (amount / 100.0 - whole).asInstanceOf[Int]
+    val whole : Int = (amount).asInstanceOf[Int]
+    val cents : Int = (Math.round((amount - whole) * 100)).asInstanceOf[Int]
     <span class="money">
       {sign } 
       <span class="money-space"></span>  
