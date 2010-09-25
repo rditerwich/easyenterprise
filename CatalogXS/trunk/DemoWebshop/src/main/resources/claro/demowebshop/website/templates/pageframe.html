@@ -23,10 +23,13 @@
 <div id="logo">
 <h1>WebsiteName.com</h1>
 </div>
-<!-- end #logo --> <lift:msgs>
-  <lift:notice_class>page_messages</lift:notice_class>
+<!-- end #logo --> 
+
+<lift:msgs>
+  <lift:notice_class>page-messages</lift:notice_class>
   <lift:notice_msg>&#160;</lift:notice_msg>
-</lift:msgs> <!-- end messages -->
+</lift:msgs> 
+<!-- end messages -->
 
 <div id="menu">
 <ul>
@@ -62,7 +65,9 @@
 	</div>
 	<!-- end #currency -->
 	<div id="cart-items">
-		<p><span>You have <b>5</b> items in your cart</span> <a href="#" class="button">View Cart</a></p>
+		<webshop:shopping-cart>
+		<p><span>You have <b><shopping-cart:item-count/></b> items in your cart</span> <a href="/cart" class="button">View Cart</a></p>
+		</webshop:shopping-cart>
 	</div>
 	<!-- end #cart-items -->
 </div>

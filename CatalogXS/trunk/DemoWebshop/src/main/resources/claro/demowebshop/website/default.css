@@ -293,7 +293,7 @@ hr {
 
 #header {
 	width: 900px;
-	height: 85px;
+	height: 75px;
 }
 
 /** MENU */
@@ -647,6 +647,8 @@ hr {
 .product-small p {
 	left: 127px;
 	position: absolute;
+	top: 18px;
+	width: 160px;
 }
 
 .product-small img {
@@ -659,5 +661,29 @@ hr {
 
 .product-small .buttons {
 	position: absolute;
+	left: 127px;
 	bottom: 18px;
+}
+
+/** MESSAGES */
+
+.page-messages {
+	width: 900px;
+	position: absolute;
+	text-align: center;
+	top: -32px;
+}
+
+.page-messages ul {
+	background: url(images/messages-panel.gif) no-repeat center top;
+	display: block;
+	color: #555555;
+	text-align: center;
+	list-style: none;
+	height: 54px;
+	font-weight: bold;
+	padding-left: 0px;
+	padding-top: 24px;
+	margin-left: 0px;
+	margin-right: 0px;
 }
