@@ -58,6 +58,16 @@ object Link extends BindingHelpers {
   def apply(path: String) = (xml: NodeSeq) => <a href={ path }>{ xml }</a>
 }
 
+object ParentLink extends BindingHelpers {
+  def apply(item : Item) = (xml: NodeSeq) => {
+  	Trail.parentOnTrail(item) match {
+	  	case Some(category : Category) => Link(category)(xml)
+	  	case Some(product : Product) => Link(product)(xml)
+	  	case _ => println("parent -- "); Link("")(xml)
+  	}
+  }
+}
+
 object LinkAttr {
   def apply(category: Category) = new LinkAttr(Text("/category/" + category.urlName))
   def apply(product: Product) = new LinkAttr(Text("/product/" + product.id))

@@ -1,7 +1,12 @@
 <li>
   <list:first><attr:set name="class" value="first" /></list:first>
-  <category:is-selected><attr:append name="class" value="selected" /></category:is-selected>
-  <category:link><category:value property="Name" /></category:link>
+  <category:is-selected>
+  	<attr:append name="class" value="selected" />
+  	<category:parent-link><category:value property="Name" /></category:parent-link>
+  <object:none>
+	  <category:link><category:value property="Name" /></category:link>
+  </object:none>
+  </category:is-selected>
   <category:is-on-trail>
     <category:sub-categories>
     

@@ -32,6 +32,7 @@ class RegistrationForm(val user : jpa.party.User) extends Form {
     // store user when there are no validation errors
     if (errors.isEmpty) {
       
+    	user.setIsCatalogUser(false)
       user.setPassword("")
 
       // send confirmation email

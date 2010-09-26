@@ -88,6 +88,7 @@ html, body {
 
 #footer {
 	margin: 0px auto;
+	clear: both;
 }
 
 /** FILTERS */

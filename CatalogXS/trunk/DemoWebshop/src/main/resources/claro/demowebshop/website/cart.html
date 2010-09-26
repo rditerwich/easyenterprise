@@ -1,16 +1,19 @@
 <template:include template="templates/pageframe">
+  <head>
+  	<link href="/cart.css" rel="stylesheet" type="text/css" />
+  </head>
   <webshop:shopping-cart>
-    <div id="page" class="boxA">
+    <div id="page" class="boxA full-width">
     <div class="title">
     	<h1>Shopping Cart</h1>
     </div>
-    <div id="cosntent">
-    <div id="cart-items">
+    <div id="content">
     <shopping-cart:items>
       <table>
         <thead>
-          <th style="width: 10%; text-align: left;">ArticleNumber</th>
-          <th style="width: 40%; text-align: center;">Product</th>
+          <th style="width: 10%; text-align: left;">Article</th>
+          <th style="width: 10%; text-align: left;"></th>
+          <th style="width: 40%; text-align: left;">Product</th>
           <th style="width: 15%; text-align: right;">Price</th>
           <th style="width: 10%; text-align: right;">Volume</th>
           <th style="width: 15%; text-align: right;">Total</th>
@@ -19,43 +22,40 @@
         <list:repeat>
           <tr>
             <item:product>
+              <td><product:value property="Image" class="image"/></td>
               <td><product:value property="ArticleNumber" /></td>
               <td><product:value property="Description" /></td>
               <td style="text-align: right;"><item:price /></td>
             </item:product>
-            <td><item:volume-edit maxlength="3"
+            <td style="text-align: right;"><item:volume-edit maxlength="4"
               style="width:30px;margin:0 5px;" /></td>
             <td style="text-align: right;"><item:total-price /></td>
-            <td style="text-align: center;"><item:remove>
+            <td style="text-align: center;"><item:remove-link> 
               <img src="/images/bin_closed.png" />
-            </item:remove></td>
+            </item:remove-link></td>
           </tr>
         </list:repeat>
         <shopping-cart:total-prices>
-          <tr>
-            <td colspan="4"><list:first>
+          <tfoot>
+            <td colspan="5"><list:first>
               <b>Total price (excl. shipping costs):</b>
             </list:first></td>
-            <td style="text-align: right;"><b><total-price:format /></b></td>
+            <td class="total" style="text-align: right;"><b><total-price:format /></b></td>
             <td>&#160;</td>
-          </tr>
+          </tfoot>
         </shopping-cart:total-prices>
       </table>
-      <list:none>There are no items in the shopping cart</list:none>
+      <list:none><ul class="messages"><li>There are no items in the shopping cart</li></ul></list:none>
     </shopping-cart:items>
     <shopping-cart:items>
       <list:last>
-        <div class="button-bar"><webshop:current-user>
-          <shopping-cart:proceed-order-link class="button">Proceed ordering</shopping-cart:proceed-order-link>
-          <object:none>
-            <br />Please, login to proceed ordering</object:none>
-        </webshop:current-user></div>
+        <div class="buttons">
+          <shopping-cart:proceed-order-link id="place-order-button" class="button">Place Order</shopping-cart:proceed-order-link>
+		</div>
       </list:last>
     </shopping-cart:items>
     </div>
     </div>
-    </div>
-    <div style="clear: both;">&#160;</div>
     <!-- end #page -->
   </webshop:shopping-cart>
 </template:include>

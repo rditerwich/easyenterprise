@@ -404,7 +404,9 @@ class ProductOrder(val productOrder: jpa.shop.ProductOrder, val order: Order, ma
   def volume_=(v: Int) = productOrder.setVolume(v)
 
   def remove = {
-    order.delegate.getProductOrders.filter(_.getProduct.getId != product.id)
+
+  	val result = order.delegate.getProductOrders.filter(_.getProduct.getId != productOrder.getProduct.getId)
+  	order.delegate.setProductOrders(new java.util.ArrayList[jpa.shop.ProductOrder](result))
   }
 }
 

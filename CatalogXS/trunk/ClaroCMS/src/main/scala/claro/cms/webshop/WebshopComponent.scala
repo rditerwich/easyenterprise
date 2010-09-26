@@ -77,6 +77,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "is-on-trail" -> Trail.isOnTrail(category),
       "is-selected" -> Trail.isSelected(category),
       "link" -> Link(category),
+      "parent-link" -> ParentLink(category),
       "is-filtered-on" -> Filtering.hasCategoryFilter(category),
       "add-filter-link" -> Filtering.addFilterLink(category))
       
@@ -104,7 +105,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "currency" -> productOrder.currency,
       "volume" -> productOrder.volume.toString,
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
-      "remove" -> ShoppingCart.removeProductOrder(productOrder))
+      "remove-link" -> ShoppingCart.removeProductOrder(productOrder))
 
     case login : LoginForm => Map(
       "email-field" -> login.emailField,

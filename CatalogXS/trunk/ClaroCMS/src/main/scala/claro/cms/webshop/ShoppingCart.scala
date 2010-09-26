@@ -129,7 +129,8 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
     SHtml.ajaxText(productOrder.volume.toString, callback _) % current.attributes
   }
   
-  def removeProductOrder(productOrder : ProductOrder) = (xml : NodeSeq) => { 
+  def removeProductOrder(productOrder : ProductOrder) = (xml : NodeSeq) => {
+  	println("item: " + productOrder.product.id)
     val redraws = CurrentRedraws.get
     def callback = {
         productOrder.remove

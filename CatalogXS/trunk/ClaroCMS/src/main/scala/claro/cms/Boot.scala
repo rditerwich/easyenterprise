@@ -1,10 +1,13 @@
 package claro.cms
-
-import java.net.URI
-import net.liftweb.http.{Bootable, LiftRules,RewriteRequest}
 import claro.common.util.Conversions._
 
-class Boot extends Bootable {
+import java.net.URI
+import net.liftweb.http.{Bootable, LiftRules,NoticeType}
+import net.liftweb.common.{Full}
+import net.liftweb.util.{Helpers}
+
+class Boot extends Bootable  {
+	
   var website : Option[URI] = None
   
   def boot = {
@@ -20,6 +23,9 @@ class Boot extends Bootable {
     LiftRules.urlDecorate.append(UrlDecorate)
     LiftRules.rewrite.append(Rewrite)
     Cms.logger.info(Website.instance.printInfo(""))
+  
+    import Helpers._
+    LiftRules.noticesAutoFadeOut.default.set((noticeType: NoticeType.Value) => Full((2 seconds, longToTimeSpan(500l))))
   }
   
 }

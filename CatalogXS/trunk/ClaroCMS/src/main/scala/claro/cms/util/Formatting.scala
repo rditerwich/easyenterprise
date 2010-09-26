@@ -12,12 +12,6 @@ object Formatting {
 
     val whole : Int = (amount).asInstanceOf[Int]
     val cents : Int = (Math.round((amount - whole) * 100)).asInstanceOf[Int]
-    <span class="money">
-      {sign } 
-      <span class="money-space"></span>  
-      <span class="money-whole">{String.format("%d", int2Integer(whole))}</span>  
-      <span class="money-sep">,</span> 
-      <span class="money-cents">{String.format("%02d", int2Integer(cents))}</span>
-    </span>
+    <span class="money">{sign}<span class="money-space"> </span><span class="money-whole">{String.format("%d", int2Integer(whole))}</span><span class="money-sep">,</span><span class="money-cents">{String.format("%02d", int2Integer(cents))}</span></span>
   } 
 }

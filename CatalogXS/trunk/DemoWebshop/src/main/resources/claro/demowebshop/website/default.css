@@ -127,18 +127,18 @@ p, ul, ol, dl {
 }
 
 .list2 b {
-	float: left;
-	padding-left: 15px;
-	font-size: 21px;
+#	float: left;
+#	padding-left: 15px;
+#	font-size: 21px;
 }
 
 .list2 b span {
-	float: left;
+#	float: left;
 }
 
 .list2 b sup {
-	float: left;
-	font-size: 13px;
+#	float: left;
+#	font-size: 13px;
 }
 
 .nofloat li {
@@ -373,7 +373,7 @@ hr {
 /** CURRENCY */
 
 #currency {
-	width: 287px;
+	width: 257px;
 }
 
 #unit {
@@ -401,10 +401,7 @@ hr {
 #cart-items {
 	padding: 5px 0px 0px 0px;
 	color: #434242;
-}
-
-#cart-items span {
-	float: left;
+	width: 244px;
 }
 
 #cart-items .button {
@@ -424,6 +421,10 @@ hr {
 
 #cart-items span {
 	float: left;
+}
+
+#cart-items span.implicit {
+	float: right;
 }
 
 /** CATEGORIES */
@@ -493,6 +494,13 @@ hr {
 	width: 612px;
 }
 
+#page.full-width #content {
+	width: auto;
+	float: left;
+	padding: 20px;
+	
+}
+
 /** BOX STYLE A */
 
 .boxA {
@@ -512,7 +520,7 @@ hr {
 }
 
 .boxA .content {
-	padding: 20px 25px;
+	padding: 10px 15px;
 } 
 
 /** SIDEBAR */
@@ -553,12 +561,12 @@ hr {
 	float: left;
 }
 
-/** BOX1 */
+/** product-small-box */
 
-#box1 {
+#product-small-box {
 }
 
-#box1 .content {
+#product-small-box .content {
 	padding: 0px;
 }
 
@@ -587,12 +595,8 @@ hr {
 }
 
 /** Money */
-.money-sep {
-	display:none
-}
-.money-cents {
-	font-size: 60%;
-	vertical-align: top;
+
+.money {
 }
 
 /** PAGING */
@@ -665,6 +669,27 @@ hr {
 	bottom: 18px;
 }
 
+.product-small .buttons b {
+	text-align: right;
+	width: 94px;
+	float: right;
+}
+
+.product-small .buttons .money {
+	font-size: 13pt;
+	word-spacing: -4px;
+}
+
+.product-small .buttons .money-sep {
+	display:none;
+}
+
+.product-small .buttons .money-cents {
+	font-size: 8pt;
+	vertical-align: top;
+	
+}
+
 /** MESSAGES */
 
 .page-messages {
@@ -686,4 +711,59 @@ hr {
 	padding-top: 24px;
 	margin-left: 0px;
 	margin-right: 0px;
+}
+
+.messages {
+	padding-top: 10px;
+}
+
+.messages .error {
+	font-size: 10pt;
+	font-weight: bold;
+	color: red;
+}
+
+/** BUTTONS */
+ .buttons {
+	margin-top: 12px;
+}
+
+ .buttons a {
+	padding-left: 10px;
+ 	float:left;
+ 	padding-top:8px;
+	vertical-align: baseline;
+}
+
+#login-button {
+	float: left;
+	width: 61px;
+	height: 23px;
+	margin: 0px 0px 0px 0px;
+	padding-top: 2px;
+	padding-left: 8px;
+	border: none;
+	background: url(images/subpage1_01.gif) no-repeat center center;
+	text-align: center;
+	text-decoration: none;
+	letter-spacing: 0px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+#register-button {
+	float: left;
+	width: 98px;
+	height: 27px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+	padding-top: 4px;
+	background: url(images/subpage1_02.gif) no-repeat center center;
+	text-align: center;
+	text-decoration: none;
+	letter-spacing: 0px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFFFFF;
 }

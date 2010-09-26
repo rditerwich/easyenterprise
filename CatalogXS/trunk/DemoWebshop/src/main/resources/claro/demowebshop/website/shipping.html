@@ -1,6 +1,13 @@
 <template:include template="templates/pageframe">
- <h1>Shipping Options</h1>
+<div id="page">
+<template:include template="templates/require-login">
+  <div class="title">
+	 <h1>Shipping Options</h1>
+  </div>
+  <div class="content">
+  <div class="boxA">
   <webshop:shipping-options-form>
+
   	<table>
 
   	<tr class="heading"><td colspan="2"><h2>Delivery Address</h2></td></tr>
@@ -39,4 +46,9 @@
     </div>
   	
   </webshop:shipping-options-form>
+  </div>
+  </div>
+</template:include>
+<template:include template="templates/order-sidebar" />
+  </div>
 </template:include>

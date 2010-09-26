@@ -1,0 +1,27 @@
+<webshop:current-user>
+	<template:content/>
+	<object:none>
+	  <div id="content" class="boxA">
+	  <div class="title">
+		 <h1>Login</h1>
+	  </div>
+	  <div class="content">
+	    <webshop:login-form>
+	      <table> 
+	        <tr><td>Email</td><td><form:email-field class="formfield emailfield"/></td><td></td></tr>
+	        <tr><td>Password</td><td><form:password-field class="formfield passwordfield"/></td><td><a href="/register">Forgot password</a>?</td></tr>
+	      </table>
+	      	<div class="messages"> 
+	        <form:failure> 
+	        <tr><td><span class="error">Invalid user name or password</span></td></tr>
+	        </form:failure>
+	        </div>
+			<div class="buttons">
+				<form:login-button id="login-button" />
+				<a href="/register">Register as a new customer</a>
+			</div>
+		</webshop:login-form>
+		</div>
+		</div>
+	</object:none>
+</webshop:current-user>

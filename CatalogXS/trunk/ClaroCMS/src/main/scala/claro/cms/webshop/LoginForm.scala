@@ -10,7 +10,7 @@ import claro.cms.{Form,Mail,Website}
 object LoginForm extends RequestVar[LoginForm](new LoginForm) 
 
 class LoginForm extends Form {
-  val dummyEmail = "Email"
+  val dummyEmail = ""
   val dummyPassword = ""
   var email : String = dummyEmail
   var password : String = dummyPassword
