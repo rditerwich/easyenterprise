@@ -112,7 +112,14 @@ p, ul, ol, dl {
 .list2 li h3 {
 }
 
-.list2 .add {
+.list2 .add-button {
+	background: url(images/homepage15.gif) no-repeat center center;
+	width: 69px;
+	display: block;
+	text-align: center;
+}
+
+.list2 .add2 {
 	float: left;
 	width: 69px;
 	height: 18px;
@@ -561,12 +568,12 @@ hr {
 	float: left;
 }
 
-/** product-small-box */
+/** product-box-box */
 
-#product-small-box {
+#product-box-box {
 }
 
-#product-small-box .content {
+#product-box-box .content {
 	padding: 0px;
 }
 
@@ -642,49 +649,47 @@ hr {
 	font-size: 115%;
 }
 
-/** PRODUCT SMALL */
+/** PRODUCT BOX */
 
-.product-small {
+.product-box {
 	position: relative;
 }
 
-.product-small p {
-	left: 127px;
-	position: absolute;
-	top: 18px;
-	width: 160px;
-}
-
-.product-small img {
-	height: 84px;
+.product-box img {
+	height: 88px;
 	max-width: 84px;
 	padding: 2px;
 	background: #FFFFFF;
 	border: 1px solid #E2DCBF;
-}
-
-.product-small .buttons {
 	position: absolute;
-	left: 127px;
-	bottom: 18px;
 }
 
-.product-small .buttons b {
-	text-align: right;
-	width: 94px;
+.product-box .info-box {
+	border: 1px solid black;
+	position: absolute;
+	left: 122px;
+	width: 160px;
+}
+
+.product-box .button-bar {
+	position: absolute;
+	left: 122px;
+	width: 160px;
+	bottom: 0px;
+	border: 1px solid #E2DCBF;
+}
+
+.product-box .button-bar .money {
 	float: right;
-}
-
-.product-small .buttons .money {
 	font-size: 13pt;
 	word-spacing: -4px;
 }
 
-.product-small .buttons .money-sep {
+.product-box .button-bar .money-sep {
 	display:none;
 }
 
-.product-small .buttons .money-cents {
+.product-box .button-bar .money-cents {
 	font-size: 8pt;
 	vertical-align: top;
 	
@@ -723,16 +728,10 @@ hr {
 	color: red;
 }
 
-/** BUTTONS */
- .buttons {
+/** button-bar */
+ .button-bar {
 	margin-top: 12px;
-}
-
- .buttons a {
-	padding-left: 10px;
- 	float:left;
- 	padding-top:8px;
-	vertical-align: baseline;
+	margin-bottom: 12px;
 }
 
 #login-button {
