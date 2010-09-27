@@ -22,6 +22,8 @@ class RichProperties(properties : Properties) {
   
   def apply(name : String, default : String) = properties.getProperty(name, default)
   
+  def isSet(name : String) = properties.getProperty(name) != "false" && properties.getProperty(name) != null
+  
   def list(name : String) : List[String] = properties.getProperty(name, "").split(",").toList.trim
   
   /** 
