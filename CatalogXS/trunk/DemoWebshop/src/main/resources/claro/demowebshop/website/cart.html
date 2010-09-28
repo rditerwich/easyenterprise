@@ -3,13 +3,13 @@
   	<link href="/cart.css" rel="stylesheet" type="text/css" />
   </head>
   <webshop:shopping-cart>
-    <div id="page" class="boxA full-width">
+    <div id="content" class="boxA wide">
     <div class="title">
     	<h1>Shopping Cart</h1>
     </div>
-    <div id="content">
+    <div class="content">
     <shopping-cart:items>
-      <table>
+      	<table>
         <thead>
           <th style="width: 10%; text-align: left;">Article</th>
           <th style="width: 10%; text-align: left;"></th>
@@ -46,16 +46,14 @@
         </shopping-cart:total-prices>
       </table>
       <list:none><ul class="messages"><li>There are no items in the shopping cart</li></ul></list:none>
-    </shopping-cart:items>
-    <shopping-cart:items>
-      <list:last>
-        <div class="button-bar">
-          <shopping-cart:proceed-order-link id="place-order-button" class="button">Place Order</shopping-cart:proceed-order-link>
+    
+         <div class="button-bar">
+          <shopping-cart:proceed-order-link id="place-order-button" class="button4">Proceed To Order >></shopping-cart:proceed-order-link>
 		</div>
-      </list:last>
+		<div style="clear: both"/>
     </shopping-cart:items>
     </div>
     </div>
-    <!-- end #page -->
+    <!--  end content -->
   </webshop:shopping-cart>
 </template:include>

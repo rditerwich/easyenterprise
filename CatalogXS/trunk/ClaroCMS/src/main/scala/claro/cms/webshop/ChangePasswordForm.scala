@@ -54,6 +54,7 @@ class ChangePasswordForm extends Form {
   }
   
   def isValid(conf : jpa.party.EmailConfirmation) : Boolean = {
+  	println(conf.getConfirmationKey)
     conf.getConfirmationKey == confirmationKey && conf.getExpirationTime.getOrElse(0) > System.currentTimeMillis
   }
   
@@ -84,27 +85,28 @@ class ChangePasswordForm extends Form {
             // confirmation key correct?
             if (isValid(conf)) {
 
-              // remove confirmation
-              em.remove(conf)
-                
               // find user
               WebshopDao.findUserByEmail(email) match {
                 case Some(user) =>
     
                   // store password
                   user.setPassword(ChangePasswordForm.encrypt(password))
-                  
+
+                  // remove confirmation
+                  em.remove(conf)
+
                   // log in
                   WebshopModel.currentUserVar.set(Some(user))
                   success = true
-                case None => error = "Invalid user"
+                case None => error = "Couldn't change password"
               }
             }
-          case None => error = "Couldn't set password"
+          case None => error = "Couldn't change password"
         }
       }
       
-      if (success) S.redirectTo(href)
+      if (success) 
+      	S.redirectTo(href)
     }
   }
 }

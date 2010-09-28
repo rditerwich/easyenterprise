@@ -1,5 +1,9 @@
 <template:include template="templates/pageframe">
-<div id="page">
+  <head>
+  	<link href="/shipping.css" rel="stylesheet" type="text/css" />
+  </head>
+<template:include template="templates/order-sidebar" />
+ <div id="content" class="boxA">
 <template:include template="templates/require-login">
   <div class="title">
 	 <h1>Shipping Options</h1>
@@ -49,6 +53,5 @@
   </div>
   </div>
 </template:include>
-<template:include template="templates/order-sidebar" />
-  </div>
+</div>
 </template:include>

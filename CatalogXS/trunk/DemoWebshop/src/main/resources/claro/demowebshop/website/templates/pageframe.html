@@ -35,7 +35,7 @@
 <ul>
   <li class="first"><a href="#" accesskey="1" title="">Customer
   Service</a></li>
-  <li><a href="#" accesskey="2" title="">Account Login</a></li>
+  <li><a href="/login" accesskey="2" title="">Account Login</a></li>
   <li><a href="#" accesskey="3" title="">Help and Information</a></li>
   <li><a href="#" accesskey="4" title="">Contact Us</a></li>
 </ul>
@@ -66,7 +66,7 @@
 	<!-- end #currency -->
 	<div id="cart-items">
 		<webshop:shopping-cart>
-		<p><span>You have <b><shopping-cart:item-count/></b> items in your cart</span> <a href="/cart" class="button">View Cart</a></p>
+		<p><span>You have <b><shopping-cart:item-count/></b> items in your cart</span> <a href="/cart" class="button2">View Cart</a></p>
 		</webshop:shopping-cart>
 	</div>
 	<!-- end #cart-items -->
@@ -91,7 +91,12 @@
 </div>
 <!-- end #categories -->
 
-<template:content/>
+
+<div id="page">
+     <template:content/>
+	<div style="clear: both;"></div>
+</div>
+
 
 <div id="footer">
 	<p class="links"><a href="#">Privacy Policy</a> &#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Legal Information</a> &#160;&#160;&#160;|&#160;&#160;&#160; <a href="#">Terms of Use</a></p>

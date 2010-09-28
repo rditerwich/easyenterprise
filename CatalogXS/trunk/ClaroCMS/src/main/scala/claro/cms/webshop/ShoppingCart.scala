@@ -130,7 +130,6 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
   }
   
   def removeProductOrder(productOrder : ProductOrder) = (xml : NodeSeq) => {
-  	println("item: " + productOrder.product.id)
     val redraws = CurrentRedraws.get
     def callback = {
         productOrder.remove

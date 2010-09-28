@@ -63,7 +63,7 @@ object ParentLink extends BindingHelpers {
   	Trail.parentOnTrail(item) match {
 	  	case Some(category : Category) => Link(category)(xml)
 	  	case Some(product : Product) => Link(product)(xml)
-	  	case _ => println("parent -- "); Link("")(xml)
+	  	case _ => Link("")(xml)
   	}
   }
 }

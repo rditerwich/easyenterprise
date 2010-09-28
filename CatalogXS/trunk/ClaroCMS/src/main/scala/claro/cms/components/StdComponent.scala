@@ -4,7 +4,7 @@ import java.util.Locale
 import xml.NodeSeq
 import net.liftweb.http.{S,SHtml}
 import net.liftweb.http.js.JsCmd
-import claro.cms.{Cms,FormField,FormFieldError,Component,Website,Paging}
+import claro.cms.{Cms,FormField,FormError,Component,Website,Paging}
 import claro.common.util.Locales
 
 class StdComponent extends Component {
@@ -24,10 +24,10 @@ class StdComponent extends Component {
     
     case field : FormField => Map(
       "field" -> field.xml,
-      "error" -> field.error -> "error"
+      "error" -> field.error
     )
     
-    case error : FormFieldError => Map(
+    case error : FormError => Map(
       "message" -> error.message
     )
   }

@@ -34,6 +34,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "login-form" -> LoginForm.is,
       "logout-link" -> logoutLink,
       "user-info-form" -> UserInfoForm,
+      "reset-password-form" -> ResetPasswordForm.is,
       "register-form" -> RegistrationForm,
       "shipping-options-form" -> ShippingOptionsForm,
       "change-password-form" -> ChangePasswordForm)
@@ -107,33 +108,22 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "volume-edit" -> ShoppingCart.updateVolume(productOrder),
       "remove-link" -> ShoppingCart.removeProductOrder(productOrder))
 
-    case login : LoginForm => Map(
-      "email-field" -> login.emailField,
-      "password-field" -> login.passwordField,
-      "login-button" -> login.loginButton,
-      "failure" -> login.failure -> "failure",
-      "forgot-password-link" -> login.forgotPasswordLink(@@("href", "/passwordreset"), @@("change-password-href", "/changepassword")))
-    
-    case failure : LoginFailure => Map(
-      "message" -> failure.message
-    )
-   
     case form : RegistrationForm => Map(
-      "errors" -> form.errors -> "error",
+      "errors" -> form.errors,
       "user" -> form.user -> "user",
-      "email-field" -> form.emailField -> "field",
-      "name-field" -> form.partyForm.nameField -> "field",
-      "phone-field" -> form.partyForm.phoneField -> "field",
+      "email-field" -> form.emailField,
+      "name-field" -> form.partyForm.nameField,
+      "phone-field" -> form.partyForm.phoneField,
       "address-form" -> form.partyForm.addressForm,
       "party" -> form.partyForm,
       "register-button" -> form.registerButton(@@("label", "Register"), @@("href", "/registered"), @@("change-password-href", "/changepassword")))
     
     case form : UserInfoForm => Map(
-      "errors" -> form.errors -> "error",
+      "errors" -> form.errors,
       "user" -> form.user -> "user",
-      "email-field" -> form.emailField -> "field",
-      "name-field" -> form.partyForm.nameField -> "field",
-      "phone-field" -> form.partyForm.phoneField -> "field",
+      "email-field" -> form.emailField,
+      "name-field" -> form.partyForm.nameField,
+      "phone-field" -> form.partyForm.phoneField,
       "address-form" -> form.partyForm.addressForm,
       "delivery-address-form" -> form.partyForm.deliveryAddressForm,
       "party" -> form.partyForm,
@@ -141,7 +131,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "store-button" -> form.storeButton(@@("label", "Store")))
       
     case form : ShippingOptionsForm => Map(
-      "errors" -> form.errors -> "error",
+      "errors" -> form.errors,
       "shipping-options" -> form.shippingOptions -> "shipping-option",
       "delivery-address-form" -> form.deliveryAddressForm,
       "proceed-order-link" -> form.proceedOrderLink)
@@ -152,16 +142,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "price" -> format(shippingOption.option.price))
         
     case form : ChangePasswordForm => Map(
-      "errors" -> form.errors -> "error",
+      "errors" -> form.errors,
       "email" -> form.email,
-      "password-field" -> form.passwordField -> "field",
-      "repeat-password-field" -> form.repeatPasswordField -> "field",
+      "password-field" -> form.passwordField,
+      "repeat-password-field" -> form.repeatPasswordField,
       "is-valid" -> form.isValid,
       "change-password-button" -> form.changePasswordButton(@@("label", "Change password"), @@("href", "/passwordchanged")))
         
     case form : PartyForm => Map(
-      "name-field" -> form.nameField -> "field",
-      "phone-field" -> form.phoneField -> "field",
+      "name-field" -> form.nameField,
+      "phone-field" -> form.phoneField,
       "address-form" -> form.addressForm)
     
     case user : jpa.party.User => Map(
@@ -171,11 +161,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "has-password" -> (user.getPassword.getOrElse("") != ""))
     
     case address : AddressForm => Map(
-      "address1-field" -> address.address1Field -> "field",
-      "address2-field" -> address.address2Field -> "field",
-      "postal-code-field" -> address.postalCodeField -> "field",
-      "town-field" -> address.townField -> "field",
-      "country-field" -> address.countryField -> "field")
+      "address1-field" -> address.address1Field,
+      "address2-field" -> address.address2Field,
+      "postal-code-field" -> address.postalCodeField,
+      "town-field" -> address.townField,
+      "country-field" -> address.countryField)
     
     case property: Property => Map(  
       "id" -> property.id.toString,

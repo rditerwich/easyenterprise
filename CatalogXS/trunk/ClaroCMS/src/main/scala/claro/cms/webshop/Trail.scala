@@ -18,7 +18,6 @@ class TrailSession {
 	  		case None => Seq.empty 
 	  	}
 	  }
-	  println(_trail)
 		_trail
 	}		
 	

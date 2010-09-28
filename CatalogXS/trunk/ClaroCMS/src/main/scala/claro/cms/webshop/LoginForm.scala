@@ -7,52 +7,41 @@ import xml.{Node, NodeSeq, MetaData}
 import claro.jpa
 import claro.cms.{Form,Mail,Website}
 
-object LoginForm extends RequestVar[LoginForm](new LoginForm) 
+object LoginForm extends RequestVar[LoginForm](new LoginForm)
 
 class LoginForm extends Form {
-  val dummyEmail = ""
-  val dummyPassword = ""
-  var email : String = dummyEmail
-  var password : String = dummyPassword
-  var failure : Option[LoginFailure] = None 
+  var email : String = ""
+  var password : String = ""
   
-  val pathPrefix = WebshopModel.currentCategory match {
-    case Some(group) => "/group/" + group.id
-    case None => ""
-  }
-  
-  def emailField = SHtml.text(email, x => email = x, 
-	  ("onclick", "javascript:if (value == '" + dummyEmail + "') value = '';"), 
-      ("onblur", "javascript:if (value == '') value = '" + dummyEmail + "';")) % currentAttributes()
-    
-  def passwordField = SHtml.password(password, x => password = x,  
-	  ("onclick", "javascript:if (value == '" + dummyPassword + "') value = ''"), 
-	  ("onblur", "javascript:if (value == '') value = '" + dummyPassword + "';")) % currentAttributes()
- 
-  def forgotPasswordLink(href : String, changePasswordHref : String) = (xml : NodeSeq) => 
-    SHtml.a(() => forgotPassword(href, changePasswordHref), xml) % currentAttributes()
-  
-  private def forgotPassword(href : String, changePasswordHref : String) = {
-    Mail.mail(Subject("Set Password " + Website.instance.name),
-      To(email),
-      PlainMailBodyType("Please use the following link to set your password and activate your account:\n\n" +
-      ChangePasswordForm.createLink(changePasswordHref, email)))
-    JsCmds.RedirectTo(href)
-  }
+  val emailField = TextField(email, _ match {
+    case Whitespace(s) => error = "No email address specified"; email = ""
+    case EmailAddress(s) => email = s
+    case s => error = "Invalid email address"; email = s
+  })
 
-  def loginButton = SHtml.submit("Login", () => login) % currentAttributes()
-  
-  private def login = {
-    
-    // copy email to current form
-    val current = LoginForm.get
-    current.email = email
-    
-    WebshopDao.findUserByEmailAndPassword(email, ChangePasswordForm.encrypt(password)) match {
-      case Some(user) => WebshopModel.currentUserVar.set(Some(user))
-      case None => current.failure = Some(LoginFailure("login failed"))
-    }
+  val passwordField = PasswordField(password, _ match {
+    case Whitespace(s) => error = "Password must not be empty"; password = ""
+    case s => password = s
+  })
+
+  val loginButton = Submit("Login") {
+  	if (errors.isEmpty) {
+	    WebshopDao.findUserByEmailAndPassword(email, ChangePasswordForm.encrypt(password)) match {
+	      case Some(user) => WebshopModel.currentUserVar.set(Some(user))
+	      case None => error = "Login failed"
+	    }
+  	} 
+  	
+  	if (!errors.isEmpty) {
+  		// keep error messages
+      LoginForm(this)
+  	}
   }
+  
+  override lazy val bindings = Map(
+    "email-field" -> emailField,
+    "password-field" -> passwordField,
+    "errors" -> errors,
+    "form-errors" -> formErrors,
+    "login-button" -> loginButton)
 }
-
-case class LoginFailure(message : String) 
