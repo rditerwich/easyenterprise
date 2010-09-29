@@ -16,7 +16,7 @@ object UserInfoForm extends RequestVar[UserInfoForm](new UserInfoForm(
         case Some(user) => user
         case None => new jpa.party.User
       }
-    case None => new jpa.party.User
+    case None => new jpa.party.User { val party = new jpa.party.Party }
   }))
 
 class UserInfoForm(val user : jpa.party.User) extends Form {
@@ -27,6 +27,9 @@ class UserInfoForm(val user : jpa.party.User) extends Form {
     case s => error = "Invalid email address"; user.setEmail(s)
   })
 
+  if (user.getParty == null) {
+  	user.setParty(new jpa.party.Party)
+  }
   val partyForm = Nested(PartyForm(user.getParty))
   
   def emailExists(email : String) = WebshopDao.findUserByEmail(email) match {

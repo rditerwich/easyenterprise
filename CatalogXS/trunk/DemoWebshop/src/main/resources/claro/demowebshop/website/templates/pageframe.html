@@ -33,9 +33,12 @@
 
 <div id="menu">
 <ul>
-  <li class="first"><a href="#" accesskey="1" title="">Customer
-  Service</a></li>
-  <li><a href="/login" accesskey="2" title="">Account Login</a></li>
+	<webshop:current-user>
+  	  <li class="first"><a href="/userinfo">Welcome, <user:name/></a></li>
+	  <li><webshop:logout-link>Logout</webshop:logout-link></li>
+	  <object:none><li class="first"><a href="/login" accesskey="2" title="">Account Login</a></li></object:none>
+  </webshop:current-user>
+  <li><a href="#" accesskey="1" title="">Customer Service</a></li>
   <li><a href="#" accesskey="3" title="">Help and Information</a></li>
   <li><a href="#" accesskey="4" title="">Contact Us</a></li>
 </ul>
@@ -47,7 +50,7 @@
     <webshop:search-form form="POST"> 
 			<fieldset>
       <search:search-string id="query"/> 
-      <search:submit id="search-submit" />
+      <search:submit class="button1" id="search-submit" value="Search" />
 			<a href="#">Advanced Search</a>
 			</fieldset>
     </webshop:search-form> 
@@ -59,7 +62,7 @@
 			<select id="unit" name="unit">
 				<option value="USD">U.S. Dollar</option>
 			</select>
-			<input type="submit" id="currency-submit" value="Change Currency" />
+			<input type="submit" class="button4" id="currency-submit" value="Change Currency" />
 			</fieldset>
 		</form>
 	</div>

@@ -22,15 +22,22 @@ trait BindingHelpers extends BindingCtor {
   
   def @@(name : String, default : => Any) : String = attr(current, name, default) 
   
+  def @@?(name : String) : Option[String] = attrOption(current, name)
+  		
   def @@?[A](name : String, yes : => A, no : => A) = ifAttr(name, yes, no)
   
   def attr(node : Node, name : String) : String = attr(node, name, throw new Exception("Missing attribute: " + name))
     
-  def attr(node : Node, name : String, default : => Any) : String = 
-    node.attributes.find(at => at.key == name && !at.isPrefixed) match {
-      case Some(attr) => attr.value.toString
-      case None => default.toString
-    }
+  def attrOption(node : Node, name : String) : Option[String] = 
+  	node.attributes.find(at => at.key == name && !at.isPrefixed) match {
+  	case Some(attr) => Some(attr.value.toString)
+  	case None => None
+  }
+  
+  def attr(node : Node, name : String, default : => Any) : String = attrOption(node, name) match {
+  	case Some(value) => value
+  	case none => default.toString
+  }
 
   def attr[A](node : Node, name : String, map : String => A, default : => A) : A = 
 	  node.attributes.find(at => at.key == name && !at.isPrefixed) match {

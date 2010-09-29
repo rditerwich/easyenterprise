@@ -9,48 +9,27 @@
 	 <h1>Shipping Options</h1>
   </div>
   <div class="content">
-  <div class="boxA">
   <webshop:shipping-options-form>
+  	<div class="infobox">
+  	Specify shipping options.
+  	</div>
 
   	<table>
-
-  	<tr class="heading"><td colspan="2"><h2>Delivery Address</h2></td></tr>
-<form:delivery-address-form>
-<form:address1-field>
-  <tr><td>Address</td><td><field:field /></td><field:error>
-  <td><span class="error"><error:message/></span></td></field:error></tr>
-</form:address1-field>
-<form:address2-field>
-  <tr><td></td><td><field:field /></td><field:error>
-  <td><span class="error"><error:message/></span></td></field:error></tr>
-</form:address2-field>
-<form:postal-code-field>
-  <tr><td>Postal Code</td><td><field:field /></td><field:error>
-  <td><span class="error"><error:message/></span></td></field:error></tr>
-</form:postal-code-field>
-<form:town-field>
-  <tr><td>Town</td><td><field:field /></td><field:error>
-  <td><span class="error"><error:message/></span></td></field:error></tr>
-</form:town-field>
-<form:country-field>
-  <tr><td>Country</td><td><field:field /></td><field:error>
-  <td><span class="error"><error:message/></span></td></field:error></tr>
-</form:country-field>
-</form:delivery-address-form>
-  	</table>
-
-  	<table>
-  	<tr class="heading"><td colspan="3"><h2>Shipping Options</h2></td></tr>
+	<tr class="heading"><td></td><td colspan="2"><h3>Shipping Options</h3></td></tr>
   	<form:shipping-options>
-  	<tr><td><shipping-option:field/></td><td style="padding-left:4px;padding-right:14px"><shipping-option:description/></td><td><shipping-option:price/></td></tr>
+  	<tr><td style="padding-left:4px;padding-right:14px"><shipping-option:description/></td><td><shipping-option:price/></td><td><shipping-option:field/></td></tr>
   	</form:shipping-options>
   	</table>
-    <div class="button-bar">
-    <form:proceed-order-link>Proceed ordering</form:proceed-order-link>
+  <div style="clear:both"/>
+    <div class="button-bar" style="float:left;">
+    <form:submit-button class="button4" href="/delivery-address" value="&#60;&#60; Delivery Address" />
     </div>
+    <div class="button-bar" style="float:right;">
+    <form:submit-button class="button4" href="/order-confirmation" value="Confirm Order >>"/>
+    </div>
+  <div style="clear:both"/>
   	
   </webshop:shipping-options-form>
-  </div>
   </div>
 </template:include>
 </div>

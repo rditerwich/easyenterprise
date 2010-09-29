@@ -14,5 +14,6 @@
 }
 
 .button-bar {
+	float: right;
 	margin-top: 12px;
 }

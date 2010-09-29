@@ -14,7 +14,7 @@ class SelectedShippingOption(var checked : Boolean, val option : ShippingOption)
 }
 
 class ShippingOptionsForm extends Form {
-
+	
   def order = WebshopModel.currentOrder.get
 
   def shippingOptions = List(
@@ -24,11 +24,15 @@ class ShippingOptionsForm extends Form {
   
   var shippingOption : Option[ShippingOption] = None
   
-  def proceedOrderLink = (xml : NodeSeq) => 
-    <a href="/order_confirmation">{xml}</a> % currentAttributes()
+  val submitButton = Submit("proceed") {
+  	println(order.delegate.getDeliveryAddress.getAddress1)
+  	println(order.delegate.getDeliveryAddress.getAddress1)
+  	
+  }
 
   if (order.delegate.getDeliveryAddress == null) {
     val address = new jpa.party.Address
+    order.delegate.setDeliveryAddress(address)
     
     // copy delivery address from user
     WebshopModel.currentUserVar.get match {
@@ -40,7 +44,6 @@ class ShippingOptionsForm extends Form {
         address.setCountry(user.getParty.getDeliveryAddress.getCountry)
       case _ =>
     }
-    order.delegate.setDeliveryAddress(address)
   }
     
   val deliveryAddressForm = Nested(new AddressForm(order.delegate.getDeliveryAddress))

@@ -11,30 +11,17 @@
 		  	<p>Forgot password?<br/><a href="/resetpassword">reset password</a></p> 
     	  </div>
 	      <table> 
-	        <form:email-field>
-		        <tr><td>Email</td><td><field:field/></td></tr>
-		        <field:error>
-		        	<tr class="error"><td></td><td><span class="error"><error:message/></span></td></tr>
-	        	</field:error>
-        	</form:email-field>
-	        <form:password-field>
-		        <tr><td>Password</td><td><field:field/></td></tr>
-		        <field:error>
-		        	<tr class="error"><td></td><td><span class="error"><error:message/></span></td></tr>
-	        	</field:error>
-        	</form:password-field>
-        	<tr><td>
-        	</td>
-        	<td>
-	      	<ul class="messages">
-	      		<form:form-errors><li><span class="error"><error:message/></span></li></form:form-errors> 
-	        </ul>
-			<div class="button-bar">
-				<form:login-button class="button1">Login</form:login-button>
-			</div>
-        	</td>
-        	</tr>
-	      </table>
+	        <form:email-field><template:include template="templates/form-field">Email</template:include></form:email-field>
+	        <form:password-field><template:include template="templates/form-field">Password</template:include></form:password-field>
+        	<tr><td></td><td>
+		      	<ul class="messages">
+		      		<form:form-errors><li><span class="error"><error:message/></span></li></form:form-errors> 
+		        </ul>
+        	</td></tr><tr><td></td><td>
+				<div class="button-bar">
+					<form:login-button class="button1">Login</form:login-button>
+				</div>
+        	</td></tr></table>
 		</webshop:login-form>
 		  <div style="clear: both"/>
 		</div>

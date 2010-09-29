@@ -60,7 +60,7 @@ table {
 }
 
 .form .messages {
-	margin-top: 12px;
+	margin-top: 0px;
 }
 
 .form table {
@@ -386,15 +386,7 @@ hr {
 }
 
 #search-submit {
-	width: 47px;
-	height: 23px;
 	margin: 0px 0px 0px 10px;
-	background: url(images/subpage1_01.gif) no-repeat left top;
-	border: none;
-	letter-spacing: -1px;
-	font-size: 9px;
-	font-weight: bold;
-	color: #FFFFFF;
 }
 
 #search a {
@@ -417,16 +409,7 @@ hr {
 }
 
 #currency-submit {
-	float: left;
-	width: 92px;
-	height: 23px;
 	margin: 0px 0px 0px 10px;
-	background: url(images/subpage1_02.gif) no-repeat left top;
-	border: none;
-	letter-spacing: -1px;
-	font-size: 9px;
-	font-weight: bold;
-	color: #FFFFFF;
 }
 
 /** CART ITEMS */
@@ -778,6 +761,7 @@ input.button1, input.button2, input.button3, input.button4, input.button5 {
 	height: 25px;
 	padding-top: 0px;
 	vertical-align: top;
+	cursor: pointer;
 	
 }
 

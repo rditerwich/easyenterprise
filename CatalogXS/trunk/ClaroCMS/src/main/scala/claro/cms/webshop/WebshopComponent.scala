@@ -18,6 +18,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "current-products" -> WebshopModel.currentProducts -> "product",
       "current-search-string" -> WebshopModel.currentSearchStringVar.is,
       "current-search-products" -> WebshopModel.currentSearchProducts -> "product",
+      "current-order" -> WebshopModel.currentOrder -> "order",
       "products" -> WebshopModel.shop.get.products -> "product",
       "catagory" -> WebshopModel.shop.get.categoriesByName.get(@@("name")) -> "category",
       "top-level-categories" -> grouped(WebshopModel.shop.topLevelCategories) -> "category",
@@ -96,6 +97,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     
     case order : Order => Map(
       "items" -> order.order.getProductOrders -> "item",
+      "delivery-address" -> order.order.getDeliveryAddress -> "address",
       "link" -> Link("/order"))
 
    case productOrder : ProductOrder => Map(   
@@ -134,7 +136,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "errors" -> form.errors,
       "shipping-options" -> form.shippingOptions -> "shipping-option",
       "delivery-address-form" -> form.deliveryAddressForm,
-      "proceed-order-link" -> form.proceedOrderLink)
+      "submit-button" -> form.submitButton)
       
     case shippingOption : SelectedShippingOption => Map(
       "description" -> shippingOption.option.description,
@@ -160,6 +162,13 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "address" -> user.getParty.getAddress -> "address",
       "has-password" -> (user.getPassword.getOrElse("") != ""))
     
+    case address : jpa.party.Address => Map(
+    		"address1" -> address.getAddress1,
+    		"address2" -> address.getAddress2,
+    		"postal-code" -> address.getPostalCode,
+    		"town" -> address.getTown,
+    		"country" -> address.getCountry)
+    		
     case address : AddressForm => Map(
       "address1-field" -> address.address1Field,
       "address2-field" -> address.address2Field,

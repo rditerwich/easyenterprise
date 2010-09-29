@@ -11,7 +11,6 @@ object ResetPasswordForm extends RequestVar[ResetPasswordForm](new ResetPassword
 class ResetPasswordForm extends Form {
   var email : String = ""
 
-  val href = @@("href") 
   val changePasswordHref = @@("change-password-href")
   
   val emailField = TextField(email, _ match {
@@ -26,7 +25,6 @@ class ResetPasswordForm extends Form {
 	      To(email),
 	      PlainMailBodyType("Please use the following link to set your password and activate your account:\n\n" +
 	      ChangePasswordForm.createLink(changePasswordHref, email)))
-	      S.redirectTo(href)
   	} else {
   		// keep error messages
       ResetPasswordForm(this)

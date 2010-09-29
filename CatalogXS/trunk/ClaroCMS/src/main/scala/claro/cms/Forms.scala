@@ -32,6 +32,7 @@ class Form extends Bindable {
   val formErrors = mutable.ArrayBuffer[FormError]()
   def errors = forms.flatMap(_.fields).flatMap(_.error) ++ formErrors
   private var currentField : Field[_] = null
+  var href : Option[String] = None
 
   override val defaultPrefix = "form"
   val formId = getClass.getName
@@ -79,7 +80,17 @@ class Form extends Bindable {
   }
   
   object Submit {
-  	def apply(label : String)(f : => Any) = (xml : NodeSeq) => SHtml.submit(label, {formErrors.clear; () => f}) % currentAttributes()
+  	def apply(label : String)(f : => Any) = (xml : NodeSeq) => {
+  		val buttonHref : Option[String] = @@?("href")
+  		SHtml.submit(label, { 
+  			href = buttonHref
+  			formErrors.clear
+  			() => f
+  			if (errors.isEmpty && href != None) {
+  				S.redirectTo(buttonHref.get)
+  			}
+			}) % currentAttributes()
+  	}
   }
 
   object Nested {
