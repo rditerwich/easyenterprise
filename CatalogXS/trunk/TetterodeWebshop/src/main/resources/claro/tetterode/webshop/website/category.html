@@ -1,0 +1,36 @@
+<template:include template="templates/page">
+  <webshop:current-category>
+		  <head><title>Category <category:value property="Name"/></title></head>
+    <h1><category:value property="Name"/>
+      <webshop:current-search-string> &#160;&#12539;Search for '<object:value/>'</webshop:current-search-string>
+    </h1>
+       <div><webshop:search-all-link class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all-link></div>     
+ 
+		  <div class="page_image"><category:value property="Image"/></div>
+		  <br/>
+		  <category:property name="factsheet"><b>Fact Sheet</b>: <property:value/></category:property>
+		  <p><category:value property="Description"/></p>
+
+<webshop:current-search-string>
+<object:none>
+		  <category:sub-categories prefix="sub" group-size="1">
+		  <table class="sub_item">
+		  <tr>
+        <td class="left"><sub:link class="subcategory"><sub:value property="Name"/></sub:link></td>
+        <td class="right"><util:break size="80"><sub:value property="Description"/><break:more>...</break:more></util:break></td>
+		  </tr>
+		  </table>
+		  </category:sub-categories>
+
+      <category:promotions prefix="promotion">
+        <template:include template="promotion"/>
+      </category:promotions>
+       <div style="clear:both" />
+       </object:none>
+</webshop:current-search-string>
+      
+	    <category:products include-sub-categories="true">
+	    <template:include template="templates/product"></template:include>
+	    </category:products>
+  </webshop:current-category>
+</template:include>

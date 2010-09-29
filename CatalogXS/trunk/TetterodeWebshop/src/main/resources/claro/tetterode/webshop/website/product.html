@@ -1,0 +1,44 @@
+<template:include template="templates/page">
+  <webshop:current-product>
+     <head><title>Product Info</title></head>
+     <head></head>
+     <div class="contentheading">Article Number: <product:value property="ArticleNumber"/></div>
+     <product:value property="Description"/><br/>
+     <product:value property="Image" height="60px"/>
+      <webshop:shopping-cart>
+        <shopping-cart:add product="product" style="float:right;padding: 8px 12px;font-size: 12px;text-decoration: none;white-space:nowrap;line-height:20px;border: 1px solid #999;color: #4D4D4D;background: #FC0 url(images/bg_d01.gif) repeat-x 0px 50%;">Add to Cart</shopping-cart:add>
+      </webshop:shopping-cart>
+<br/><br/><br/>
+<br/><br/><br/>
+	<ul class="css-tabs skin2">
+		<li><a href="#">Properties</a></li>
+		<li><a href="#">Documents</a></li>
+	</ul>
+
+<div class="css-panes skin2">
+	<div class="pane">
+		<table style="border-width: 1px; border-color: #bcb8c0;" border="1"> 
+		<tbody> 
+		<product:properties>
+		<tr> 
+		<td style="border: #bcb8c0 1px solid;" valign="top"><property:name/>:</td> 
+		<td style="border: #bcb8c0 1px solid;" valign="top"><property:value/></td> 
+		</tr> 
+		</product:properties>
+		</tbody>
+		</table>
+	</div>
+	<div class="pane">
+		<p></p>
+	</div>
+</div>
+
+<script type="text/javascript">
+ $(function() {
+		$('ul.css-tabs').tabs('div.css-panes > div'); 
+	});
+	</script>
+   </webshop:current-product>
+   <webshop:current-product when-exists="false">
+   </webshop:current-product>
+</template:include>

@@ -1,0 +1,16 @@
+<template:include template="templates/page">
+  <head><title>Product Groups</title></head>
+  <h1>Search results for '<webshop:current-search-string/>'
+  	<webshop:current-category> in category '<category:name/>'</webshop:current-category>
+  </h1>
+  <webshop:current-search-products>
+      <list:none>
+        <p>No search results found</p>
+	      <webshop:current-category> <webshop:search-all class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all></webshop:current-category>		  
+      </list:none>
+      <div><webshop:current-category> <webshop:search-all class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all></webshop:current-category></div>		  
+        <list:repeat>
+	    <template:include template="templates/product"></template:include>
+        </list:repeat>
+  </webshop:current-search-products>
+</template:include>

@@ -1,0 +1,35 @@
+<webshop:top-level-categories>
+      <list:group>
+        <li>
+          <category:is-on-trail><attr:set name="class" value="active"/></category:is-on-trail>
+          <group:first><list:skip-first><attr:append name="class" value="group-first"/></list:skip-first></group:first>
+          <category:link>
+   <h1><category:name/></h1>
+          </category:link>
+            <category:is-on-trail>
+          <category:sub-categories>
+          <template:include template="templates/category_menu_node" />
+        </category:sub-categories>
+          </category:is-on-trail>
+          
+        </li>
+      </list:group>
+<!-- 
+  <list:group>
+  <div class="side_bar_panel">
+   <h1><category:value property="Name"/></h1>
+		<table class="ThemePanelMenu" cellspacing="0">
+		  <tbody>
+    		<category:sub-categories prefix="sub">
+		      <tr class="ThemePanelMainItem">
+		        <td class="ThemePanelMainItemLeft" />
+		        <td class="ThemePanelMainItemText"><sub:link class="ThemePanelMainItemText"><sub:value property="Name"/></sub:link></td>
+		        <td class="ThemePanelMainItemRight" />
+		      </tr>
+	    	</category:sub-categories>
+		  </tbody>
+		</table>
+  </div>
+  </list:group>
+   -->
+</webshop:top-level-categories>
