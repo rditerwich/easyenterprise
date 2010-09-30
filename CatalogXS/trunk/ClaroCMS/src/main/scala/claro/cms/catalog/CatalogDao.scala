@@ -31,6 +31,13 @@ object CatalogDao extends Dao {
         " AND l.language IS NULL" +
         " AND v.stringValue = :name", "name" -> name)
   }
+
+  def relationType(name : String) : Option[RelationType] = {
+    querySingle(
+        "SELECT t " +
+        " FROM RelationType t" + 
+        " WHERE t.name = :name", "name" -> name)
+  }
   
   def getOrCreateCategory(name : String) : Category = transaction { em =>
     category(name) match {
@@ -41,6 +48,16 @@ object CatalogDao extends Dao {
         em.persist(category)
       }
     }
+  }
+  
+  def getOrCreateRelationType(name : String) : RelationType = transaction { em =>
+	  relationType(name) match {
+		  case Some(relationType) => relationType
+		  case None => new RelationType useIn { relationType =>
+		  	relationType.setName(name)
+			  em.persist(relationType)
+		  }
+	  }
   }
   
   def product(name : String) : Option[Product] = {
@@ -77,6 +94,25 @@ object CatalogDao extends Dao {
   	product
   }
 
+  def createCategory(name : String, description : String, imageClass : Class[_], imageName : String, categories : Category*) = {
+  	val product = getOrCreateCategory(name)
+  	set(product, Properties.name, name)
+  	set(product, Properties.description, description)
+  	setImage(product, Properties.image, imageClass, imageName)
+  	categories foreach (_.getChildren.add(product))
+  	product
+  }
+  
+  def setRelated(relationType : String, item : Item, relatedItems : Item*) = {
+  	for (relatedItem <- relatedItems) {
+	  	val relation = new Relation
+	  	relation.setItem(item)
+	  	relation.setRelatedTo(relatedItem)
+	  	relation.setRelationType(getOrCreateRelationType(relationType))
+	  	item.getRelations.add(relation)
+  	}
+  }
+  
   def catalog(name : String) : Option[Catalog] = querySingle("SELECT c FROM Catalog c WHERE c.name = :name", "name" -> name)
 
   def shop(name : String) : Option[Shop] = querySingle("SELECT s FROM Shop s WHERE s.name = :name", "name" -> name)
@@ -138,21 +174,23 @@ object CatalogDao extends Dao {
   }
   
   def setImage(item : Item, property : Property, cl : java.lang.Class[_], name : String, language : String = null) = {
-    val propertyValue = item.getPropertyValues.find(v => v.getProperty == property && v.getLanguage == language) getOrElse new PropertyValue useIn(item.getPropertyValues.add(_))
-    propertyValue.setItem(item)
-    propertyValue.setProperty(property)
-    propertyValue.setLanguage(language)
-    val bytes = cl.getResourceAsStream(name).readBytes
-    propertyValue.setMediaValue(bytes)
-    if (name.endsWith(".jpg")) {
-      propertyValue.setMimeType("image/jpeg")
-    }
-    if (name.endsWith(".gif")) {
-      propertyValue.setMimeType("image/gif")
-    }
-    if (name.endsWith(".png")) {
-      propertyValue.setMimeType("image/png")
-    }
+  	if (name != null && name.trim != "") {
+	    val propertyValue = item.getPropertyValues.find(v => v.getProperty == property && v.getLanguage == language) getOrElse new PropertyValue useIn(item.getPropertyValues.add(_))
+	    propertyValue.setItem(item)
+	    propertyValue.setProperty(property)
+	    propertyValue.setLanguage(language)
+	    val bytes = cl.getResourceAsStream(name).readBytes
+	    propertyValue.setMediaValue(bytes)
+	    if (name.endsWith(".jpg")) {
+	      propertyValue.setMimeType("image/jpeg")
+	    }
+	    if (name.endsWith(".gif")) {
+	      propertyValue.setMimeType("image/gif")
+	    }
+	    if (name.endsWith(".png")) {
+	      propertyValue.setMimeType("image/png")
+	    }
+  	}
   }
   
   

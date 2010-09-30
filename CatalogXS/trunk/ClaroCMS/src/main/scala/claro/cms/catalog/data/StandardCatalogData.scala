@@ -12,13 +12,13 @@ object StandardCatalogData extends Dao {
   val dataSource = CatalogDao.dataSource
   val Properties = CatalogDao.Properties
   
-  def supplies = CatalogDao.getOrCreateCategory("Supplies")
-  def spareParts = CatalogDao.getOrCreateCategory("Spare Parts")
-  def services = CatalogDao.getOrCreateCategory("Services")
+  val supplies = CatalogDao.createCategory("Supplies", "Tetterode levert een uitgebreid assortiment aan verbruiksmaterialen.", getClass, "saphira_banner.jpg", CatalogDao.catalog.getRoot)
+  val spareParts = CatalogDao.createCategory("Spare Parts", "Tetterode levert een uitgebreid assortiment aan onderdelen.", getClass, "", CatalogDao.catalog.getRoot)
+  val services = CatalogDao.createCategory("Services", "Tetterode levert een uitgebreid assortiment aan services.", getClass, "", CatalogDao.catalog.getRoot)
   
-  def prePress = CatalogDao.getOrCreateCategory("Pre Press")
-  def press = CatalogDao.getOrCreateCategory("Press")
-  def postPress = CatalogDao.getOrCreateCategory("Post Press")
+  val prePress = CatalogDao.createCategory("Pre Press", "", getClass, "prepress.jpg", CatalogDao.catalog.getRoot)
+  val press = CatalogDao.createCategory("Press", "", getClass, "", CatalogDao.catalog.getRoot)
+  val postPress = CatalogDao.createCategory("Post Press", "", getClass, "", CatalogDao.catalog.getRoot)
   
   def machines = CatalogDao.getOrCreateCategory("Machines")
   
@@ -33,7 +33,17 @@ object StandardCatalogData extends Dao {
   def presstek = CatalogDao.getOrCreateCategory("Presstek")
   def flintgroup = CatalogDao.getOrCreateCategory("The Flint Group")
   def saphira = CatalogDao.getOrCreateCategory("Saphira")
-  
+
+  val SM74 = CatalogDao.createCategory("Speedmaster SM 74", "De Speedmaster SM 74 heeft zich sinds de introductie in 1993 ontwikkeld als de belangrijkste persautomaat in het middenformaat. Als geen ander beschikt de SM 74 over de Speedmaster automatiseringskenmerken, gecombineerd met flexibiliteit en een breed aanbod in verschillende modellen en uitvoeringen. Van 1 tot 10 kleuren, met of zonder lakwerk, voor alle bedrijfsgrootten en voor de meest uiteenlopende drukorders is de SM 74 beschikbaar. In de Speedmaster SM 74 serie heeft Heidelberg het succesvolle \"One Pass Productivity\"-concept van schoon- en weerdruk in een doorgang met de beproefde keertrommel met tangengrijper en verwisselbare tegendrukcilinders op de drukwerken na het keren van het vel, toegepast.", getClass, "speedmastersm74.jpg", machines)
+  val polar66 = CatalogDao.getOrCreateProduct("Polar 66 Quickcutter") useIn { product => 
+    CatalogDao.set(product, Properties.articleNumber, "MA18364876")
+    CatalogDao.set(product, Properties.description, "Polar snijmachine, model 66", "nl")
+    CatalogDao.set(product, Properties.synopsis, "De Polar 66 is een echte 'dienstverlener' in de copy-shop branche, huisdrukkerij en ieder die in de steeds groeiende franchisemarkt een betrouwbare snijmachine zoekt. <p>Meer informatie over de Polar 66? Bel met Tetterode, Sales Support Finishing, tel. 020 44 66 999 of vul het contactformulier in, dan nemen wij contact met u op.", "nl")
+    CatalogDao.set(product, Properties.price, 180000.00)
+    CatalogDao.setImage(product, Properties.image, getClass, "polar66.png")
+    cutters.getChildren.add(product)
+  }
+
   def createNavigation(shop : Shop, parent : Navigation, category : Category, index : Int) = 
     new Navigation useIn { nav =>
       nav.setCategory(category)
@@ -53,9 +63,8 @@ object StandardCatalogData extends Dao {
     val root = CatalogDao.catalog.getRoot
     
     root.getChildren.clear
-    root.getChildren.add(supplies)
-    root.getChildren.add(spareParts)
-    root.getChildren.add(services)
+    root.getChildren.add(machines)
+    root.getChildren.add(brands)
     
     machines.getChildren.add(cutters)
 
@@ -65,16 +74,8 @@ object StandardCatalogData extends Dao {
     brands.getChildren.add(presstek)
     brands.getChildren.add(saphira)
     
-    val polar66 = CatalogDao.getOrCreateProduct("Polar 66 Quickcutter") useIn { product => 
-      CatalogDao.set(product, Properties.articleNumber, "MA18364876")
-      CatalogDao.set(product, Properties.description, "Polar snijmachine, model 66", "nl")
-      CatalogDao.set(product, Properties.synopsis, "De Polar 66 is een echte 'dienstverlener' in de copy-shop branche, huisdrukkerij en ieder die in de steeds groeiende franchisemarkt een betrouwbare snijmachine zoekt. <p>Meer informatie over de Polar 66? Bel met Tetterode, Sales Support Finishing, tel. 020 44 66 999 of vul het contactformulier in, dan nemen wij contact met u op.", "nl")
-      CatalogDao.set(product, Properties.price, 180000.00)
-      CatalogDao.setImage(product, Properties.image, getClass, "polar66.png")
-      cutters.getChildren.add(product)
-    }
-    
     adhesiveBinding
+    abdickSupplies
     plaat
     inks
     
@@ -108,6 +109,16 @@ object StandardCatalogData extends Dao {
   def adhesiveBinding = {
     val adhesiveBinding = CatalogDao.getOrCreateCategory("Adhesive Binding")
     postPress.getChildren.add(adhesiveBinding)
+  }
+  
+  def abdickSupplies = {
+//  	val abdickSupplies = CatalogDao.getOrCreateCategory("Abdick Supplies")
+//  	supplies.getChildren.add(abdickSupplies)
+//  	press.getChildren.add(abdickSupplies)
+  	val p1 = CatalogDao.createProduct("AB Dick Spacer", "", "P-36302", "", 9, getClass, "abdick-spacer.jpg", press, spareParts, abdick)
+  	val p2 = CatalogDao.createProduct("AB Dick Pressure", "", "P-36793", "", 114.55, getClass, "abdick-pressure.jpg", press, spareParts, abdick)
+  	val p3 = CatalogDao.createProduct("AB Dick Shield", "", "P-36210", "", 77.62, getClass, "abdick-shield.jpg", press, spareParts, abdick)
+  	CatalogDao.setRelated("supplies", SM74, p1, p2)
   }
   
   def plaat = {
@@ -147,9 +158,9 @@ object StandardCatalogData extends Dao {
 	  ink.getChildren.add(colorInk)
 	  ink.getChildren.add(processInkSet)
 	  ink.getChildren.add(magneticInks)
-	  CatalogDao.createProduct("Abdick Multigraphics RB900 black", "Abdick RB900 black rubber base CAN", "83-9-104411", "", 9.97, getClass, "abdick.jpg", abdick, blackInk)
-	  CatalogDao.createProduct("Abdick Multigraphics RB900 black", "Abdick RB900 black rubber base 5LB CAN", "83-9-104411", "", 48.11, getClass, "abdick.jpg", abdick, blackInk)
-	  CatalogDao.createProduct("Abdick Multigraphics RB900 black", "Abdick RB900 black rubber base Cartiridge", "83-9-104411", "", 9.39, getClass, "abdick.jpg", abdick, blackInk)
+	  CatalogDao.createProduct("Abdick RB900 black CAN", "Abdick RB900 black rubber base CAN", "83-9-104411", "", 9.97, getClass, "abdick-can.jpg", abdick, blackInk)
+	  CatalogDao.createProduct("Abdick RB900 black 5LB", "Abdick RB900 black rubber base 5LB CAN", "83-9-104411", "", 48.11, getClass, "abdick-5lb.jpg", abdick, blackInk)
+	  CatalogDao.createProduct("Abdick RB900 black CRT", "Abdick RB900 black rubber base Cartiridge", "83-9-104411", "", 9.39, getClass, "abdick-crt.jpg", abdick, blackInk)
 	 
 	  val saphiraInks = CatalogDao.getOrCreateCategory("Saphira Inks")
 	  saphira.getChildren.add(saphiraInks)

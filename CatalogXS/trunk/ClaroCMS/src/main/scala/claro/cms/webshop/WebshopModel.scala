@@ -169,6 +169,20 @@ trait Item {
   val propertiesByLocaleName: Map[(Locale, String), Property] =
     properties mapBy (p => (p.locale, p.name))
 	
+	val relatedCategories : Set[Item] = 
+		item.getRelations.map(_.getRelatedTo).classFilter(classOf[jpa.catalog.Category]).map(mapping.categories).toSet
+	
+	val relatedProducts : Set[Item] = 
+		item.getRelations.map(_.getRelatedTo).classFilter(classOf[jpa.catalog.Product]).map(mapping.products).toSet
+	
+	def relatedProducts(categoryName : Option[String]) : Set[Item] = categoryName match {
+		case Some(category) => WebshopModel.shop.categoriesByName.get(category) match {
+			case Some(category) => relatedProducts.filter(category.childCategoryExtent.toSet)
+			case None => Set.empty
+		}
+		case None => relatedProducts
+	}
+	
   val name: String =
     propertiesByLocaleName.get(Locales.empty, "Name") match {
       case Some(property) => property.value.getStringValue

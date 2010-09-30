@@ -81,6 +81,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "is-selected" -> Trail.isSelected(category),
       "link" -> Link(category),
       "parent-link" -> ParentLink(category),
+      "related-products" -> category.relatedProducts(@@?("category")) -> "product",
       "is-filtered-on" -> Filtering.hasCategoryFilter(category),
       "add-filter-link" -> Filtering.addFilterLink(category))
       
