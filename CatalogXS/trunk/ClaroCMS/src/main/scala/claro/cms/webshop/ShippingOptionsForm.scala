@@ -18,8 +18,8 @@ class ShippingOptionsForm extends Form {
   def order = WebshopModel.currentOrder.get
 
   def shippingOptions = List(
-    new SelectedShippingOption(false, ShippingOption("Normal delivery", Money(1500, "EUR"))),
-    new SelectedShippingOption(false, ShippingOption("Express delivery", Money(4500, "EUR")))
+    new SelectedShippingOption(false, ShippingOption("Normal delivery", Money(15, "EUR"))),
+    new SelectedShippingOption(false, ShippingOption("Express delivery", Money(45, "EUR")))
   )
   
   var shippingOption : Option[ShippingOption] = None

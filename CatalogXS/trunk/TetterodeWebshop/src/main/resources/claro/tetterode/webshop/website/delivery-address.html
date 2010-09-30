@@ -1,0 +1,41 @@
+<template:include template="templates/page">
+  <head>
+  	<link href="/shipping.css" rel="stylesheet" type="text/css" />
+  </head>
+<template:include template="templates/order-sidebar" />
+ <div id="content" class="boxA">
+<template:include template="templates/require-login">
+  <div class="title">
+	 <h1>Delivery Address</h1>
+  </div>
+  <div class="content">
+  <webshop:shipping-options-form>
+
+  	<div class="infobox">
+  	Specify delivery address.
+  	</div>
+
+  	<table>
+<tr class="heading"><td></td><td><h3>Delivery Address</h3></td></tr>
+<form:delivery-address-form>
+<form:address1-field><template:include template="templates/form-field">Address</template:include></form:address1-field>
+<form:address2-field><template:include template="templates/form-field"></template:include></form:address2-field>
+<form:postal-code-field><template:include template="templates/form-field">Postal Code</template:include></form:postal-code-field>
+<form:town-field><template:include template="templates/form-field">Town</template:include></form:town-field>
+<form:country-field><template:include template="templates/form-field">Country</template:include></form:country-field>
+</form:delivery-address-form>
+  	</table>
+  <div style="clear:both"/>
+    <div class="button-bar" style="float:left;">
+    <form:submit-button class="button" href="/cart" value="&#60;&#60; Cart" />
+    </div>
+    <div class="button-bar" style="float:right;">
+    <form:submit-button class="button" href="/shipping" value="Shipping Options >>"/>
+    </div>
+  <div style="clear:both"/>
+  	
+  </webshop:shipping-options-form>
+  </div>
+</template:include>
+</div>
+</template:include>

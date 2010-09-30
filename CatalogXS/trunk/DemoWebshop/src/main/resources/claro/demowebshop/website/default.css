@@ -326,7 +326,7 @@ hr {
 
 #header {
 	width: 900px;
-	height: 75px;
+	height: 55px;
 }
 
 /** MENU */
@@ -336,7 +336,7 @@ hr {
 
 #menu ul {
 	margin: 0px;
-	padding: 53px 0px 0px 0px;
+	padding: 29px 0px 0px 0px;
 	list-style: none;
 }
 
@@ -403,7 +403,7 @@ hr {
 
 #unit {
 	float: left;
-	width: 126px;
+	width: 110px;
 	margin: 2px 0px 0px 0px;
 	padding: 3px;
 }

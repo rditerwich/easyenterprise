@@ -39,12 +39,11 @@ object ChangePasswordForm extends RequestVar[ChangePasswordForm](new ChangePassw
     val chars = bytes.map(b => codes(b & 0x0f)) ++ bytes.map(b => codes(b >> 4))
     new String(chars.toArray)
   }
-
 }
 
 class ChangePasswordForm extends Form {
-  val email = S.request.open_!.param("email").getOrElse("")
-  val confirmationKey = S.request.open_!.param("key").getOrElse("")
+	val email = S.request.open_!.param("email").getOrElse("")
+	val confirmationKey = S.request.open_!.param("key").getOrElse("")
   var password = ""
   var repeatPassword = ""
 
@@ -68,15 +67,12 @@ class ChangePasswordForm extends Form {
     case s => repeatPassword = s
   })
 
-  def changePasswordButton(label : String, href : String) = SHtml.submit(label, () => changePassword(href)) % currentAttributes()
-
-  def changePassword(href : String) = {
+  val submitButton = Submit("Change Password") {
     
     ChangePasswordForm.set(this)
     
     // store user when there are no validation errors
     if (errors.isEmpty) {
-      var success = false
 
       WebshopDao.transaction { em =>
         WebshopDao.findEmailConfirmationByEmail(email) match {
@@ -97,16 +93,16 @@ class ChangePasswordForm extends Form {
 
                   // log in
                   WebshopModel.currentUserVar.set(Some(user))
-                  success = true
                 case None => error = "Couldn't change password"
               }
             }
           case None => error = "Couldn't change password"
         }
       }
-      
-      if (success) 
-      	S.redirectTo(href)
+    }
+    
+    if (!errors.isEmpty) {
+//    	ChangePasswordForm(this)
     }
   }
 }

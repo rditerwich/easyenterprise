@@ -16,8 +16,12 @@ html, body {
 #logo {
 	float: left;
 	width: 350px;
-	height: 75px;
-	background: url(images/homepage02.gif) no-repeat left top;
+	height: 95px;
+	margin-top: 8px;
+	margin-left: 16px;
+	background: url(images/logo_03.png) no-repeat left top;
+	z-index: 100;
+	position: absolute;
 }
 
 #logo h1 {

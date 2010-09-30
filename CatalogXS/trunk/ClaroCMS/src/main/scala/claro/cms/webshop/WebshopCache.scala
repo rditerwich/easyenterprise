@@ -71,6 +71,14 @@ class WebshopCacheData (val catalog : jpa.catalog.Catalog, val shop : jpa.shop.S
     Map(items.toSeq.map(item => (item, item.getProperties.toSeq.filterNot(excludedProperties))):_*).
       withDefault(_ => Seq.empty)
     
+  val itemChildren : Map[jpa.catalog.Item, Seq[jpa.catalog.Item]] =
+  	Map(items.toSeq.map(item => (item, item.getChildren.toSeq.filterNot(excludedItems))):_*).
+  		withDefault(_ => Seq.empty)
+      	
+	val itemParents : Map[jpa.catalog.Item, Seq[jpa.catalog.Item]] =
+		Map(items.toSeq.map(item => (item, item.getParents.toSeq.filterNot(excludedItems))):_*).
+			withDefault(_ => Seq.empty)
+  			
   val itemPropertyExtent : Map[jpa.catalog.Item, Seq[jpa.catalog.Property]] = Map(
     items.toSeq.map(item =>
       (item, (itemParentExtent(item).toSeq ++ Seq(item)).

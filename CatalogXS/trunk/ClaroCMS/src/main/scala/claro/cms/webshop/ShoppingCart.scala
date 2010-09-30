@@ -54,6 +54,26 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
     }
   }
 
+  def addPromotion(promotion : Promotion) : NodeSeq => NodeSeq = xml => {
+    val redraws = CurrentRedraws.get
+    def callback(promotion : Promotion) = {
+      promotion match {
+        case p : VolumeDiscountPromotion =>
+          S.notice("Promotion added to shopping cart")
+          order.addProduct(p.product, p.volumeDiscount)
+        case _ =>
+      }
+      redraws.toJsCmd
+    }
+    SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
+  }
+ 
+  def addPromotion(promotionPrefix : String) : NodeSeq => NodeSeq = {
+    findBoundObject(promotionPrefix) match {
+      case Some(promotion:Promotion) => addPromotion(promotion)
+      case _ => xml => NodeSeq.Empty
+    }
+  }  
   def shippingCosts = Money(15, "EUR")
   
   def proceedOrderLink = (xml : NodeSeq) => 
@@ -91,25 +111,6 @@ class ShoppingCart private extends Bindable with WebshopBindingHelpers with Redr
     SHtml.a(() => callback, xml) % currentAttributes()
   }
 
-  def addPromotion(promotionPrefix : String) : NodeSeq => NodeSeq = xml => {
-    val redraws = CurrentRedraws.get
-    def callback(promotion : Promotion) = {
-      promotion match {
-        case p : VolumeDiscountPromotion =>
-          S.notice("Promotion added to shopping cart")
-          order.addProduct(p.product, p.volumeDiscount)
-        case _ =>
-      }
-      redraws.toJsCmd
-    }
-    findBoundObject(promotionPrefix) match {
-      case Some(promotion:Promotion) =>
-        SHtml.a(() => callback(promotion), xml) % currentAttributes("promotion-prefix")
-      case _ => 
-        NodeSeq.Empty
-    }
-  }
-  
   def clear : NodeSeq => NodeSeq = xml => {
     val redraws = CurrentRedraws.get
     def callback = {

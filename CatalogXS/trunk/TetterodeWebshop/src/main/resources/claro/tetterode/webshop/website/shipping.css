@@ -1,0 +1,19 @@
+
+#content {
+	/* swap sides */
+	float:left;
+}
+
+#sidebar {
+	/* swap sides */
+	float: right;
+}
+
+.messages {
+	margin-top: 12px;
+}
+
+.button-bar {
+	float: right;
+	margin-top: 12px;
+}

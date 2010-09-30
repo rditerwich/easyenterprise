@@ -261,6 +261,7 @@ body {
   border-bottom:3px solid #fff;
   padding-bottom:10px;
   margin-bottom:10px;
+  line-height: 14px;
 }
 
 .side_bar_panel {
@@ -410,11 +411,39 @@ line-height: 1.6em;
 margin-bottom: 2px;
 }
 
+.side_bar ul {
+	padding-left: 14px;
+}
+
+.side_bar li {
+	list-style: none;
+}
+
+.side_bar h2 {
+	border-bottom: none;
+	padding: 0;
+	margin: 0;
+	color: #032D67;
+}
+
+ .side_bar li.active h2 {
+	color: red;
+}
+.side_bar li.active li h2 {
+	color: #032D67;
+}
+
+
 .side_bar h1 {
   color:#032D67;
-  font-size:14px;
   font-weight:bold;
   margin-top: 0px;
+font-family: Arial, Helvetica;
+font-size: 13px;
+font-style: normal;
+font-variant: normal;
+font-weight: bold;
+	white-space: nowrap;	
 }
 
 .page_content {
@@ -677,17 +706,21 @@ margin-bottom: 2px;
 	padding-right: 0px;
 }
 
+#right-bar {
+	left: -10px;
+}
+
 .promotion {
   position:relative;
   background-image:url("images/promotion_panel.png");
   background-repeat:no-repeat;
   margin-top:15px;
   margin-bottom:4px;
-  padding:10px;
+  padding:0px;
+  padding-right:-14px;
 	position: relative;
-	width: 164px;
-	height: 191px;
-	float:left;
+	width: 558px;
+	height: 130px;
 }
 .product {
   position:relative;
@@ -700,4 +733,88 @@ margin-bottom: 2px;
 	width: 144px;
 	height: 161px;
 	float:left;
+	line-height: 1.2em;
+}
+
+/** Added for Zomeractie and Besparen met Anicolor */
+.page_menu_artgrp {
+padding-bottom: 5px;
+padding: 10px 10px 5px;
+}
+.page_menu_artgrp .description {
+color: #032D67;
+font-size: 14px;
+font-weight: bold;
+}
+.page_menu_artgrp .items .title {
+color: #717171;
+font-size: 12px;
+font-weight: bold;
+margin-top: 8px;
+}
+.page_menu_artgrp .items .text {
+margin-bottom: 10px;
+}
+.page_menu_artgrp .items {
+border-bottom: 1px solid #D9DBDA;
+border-top: 1px solid #D9DBDA;
+color: #929397;
+margin-top: 8px;
+padding-bottom: 0px;
+}
+
+/** FORMS from demo */
+.form table {
+	border: 1px solid #D1D1D1;
+	border-collapse: collapse;
+	margin-left: -2px
+}
+
+.form table tr:first-child td {
+	padding-top: 6px;
+}
+
+.form tr.error td span {
+	position: relative;
+	top: -6px;
+	padding-left: 4px;
+}
+
+.form table tr td:first-child {
+	background-color: #f8f8f8;
+}
+.form table tr td {
+	background-color: #E6E7E9;
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-bottom: 6px;
+}
+
+.form .messages {
+	margin-top: 0px;
+}
+
+.form table {
+	float: left;
+}
+
+.form .infobox {
+	padding-right: 24px;
+	float: left;
+	
+}
+
+.button , a.button {
+	border: 1px solid #444444;
+	lin-height: 20px;
+	padding: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	background-color: #BB3333;
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}	
+a.button:hover {
+	text-decoration: none;
 }

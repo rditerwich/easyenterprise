@@ -2,7 +2,7 @@
   <webshop:current-category>
 		  <head><title>Category <category:value property="Name"/></title></head>
     <h1><category:value property="Name"/>
-      <webshop:current-search-string> &#160;&#12539;Search for '<object:value/>'</webshop:current-search-string>
+      <webshop:current-search-string> &#160;&#12539; Search for '<object:value/>'</webshop:current-search-string>
     </h1>
        <div><webshop:search-all-link class="link">search for '<webshop:current-search-string/>' in entire catalog</webshop:search-all-link></div>     
  
@@ -13,6 +13,7 @@
 
 <webshop:current-search-string>
 <object:none>
+<!-- 
 		  <category:sub-categories prefix="sub" group-size="1">
 		  <table class="sub_item">
 		  <tr>
@@ -21,7 +22,7 @@
 		  </tr>
 		  </table>
 		  </category:sub-categories>
-
+ -->
       <category:promotions prefix="promotion">
         <template:include template="promotion"/>
       </category:promotions>
@@ -29,8 +30,8 @@
        </object:none>
 </webshop:current-search-string>
       
-	    <category:products include-sub-categories="true">
+	    <webshop:current-products>
 	    <template:include template="templates/product"></template:include>
-	    </category:products>
+	    </webshop:current-products>
   </webshop:current-category>
 </template:include>

@@ -1,19 +1,34 @@
 <webshop:top-level-categories>
+	<ul>
+		<list:group>
+          	<template:include template="templates/category_menu_node" />
+		</list:group>
+    </ul>
+</webshop:top-level-categories>
+<!--  
+<ul>
+<webshop:top-level-categories>
       <list:group>
+		
         <li>
-          <category:is-on-trail><attr:set name="class" value="active"/></category:is-on-trail>
+          <category:is-selected><attr:set name="class" value="active"/></category:is-selected>
           <group:first><list:skip-first><attr:append name="class" value="group-first"/></list:skip-first></group:first>
           <category:link>
    <h1><category:name/></h1>
           </category:link>
             <category:is-on-trail>
           <category:sub-categories>
+          <ul>
+          <list:repeat>
           <template:include template="templates/category_menu_node" />
+          </list:repeat>
+          </ul>
         </category:sub-categories>
           </category:is-on-trail>
           
         </li>
       </list:group>
+      -->
 <!-- 
   <list:group>
   <div class="side_bar_panel">
@@ -31,5 +46,6 @@
 		</table>
   </div>
   </list:group>
-   -->
 </webshop:top-level-categories>
+</ul>
+   -->

@@ -15,7 +15,10 @@ class TrailSession {
 	  	currentCategoryName = WebshopModel.currentCategoryVar.is
 	  	_trail = WebshopModel.currentCategory match {
 	  		case Some(category) => determineCurrent(category, _trail.reverse.toList).reverse.toList
-	  		case None => Seq.empty 
+	  		case None => WebshopModel.currentProduct match {
+		  		case Some(product) => determineCurrent(product, _trail.reverse.toList).reverse.toList
+		  		case None => Seq.empty 
+		  	} 
 	  	}
 	  }
 		_trail
@@ -23,10 +26,16 @@ class TrailSession {
 	
 	def determineCurrent(item : Item, reverseTrail : List[Item]) : List[Item] = {
 		reverseTrail match {
-			case head :: rest if head.children.contains(item) =>  item :: reverseTrail
+			case (head : Product) :: rest if head.children.contains(item) => item :: reverseTrail
+			case (head : Category) :: rest if isChildOf(item, head) =>  item :: reverseTrail
 			case head :: rest => determineCurrent(item, rest)
 			case Nil => List(item)
 		}
+	}
+	
+	def isChildOf(item : Item, category : Category) = item match {
+		case product : Product => category.productExtent.contains(product)
+		case item : Item => category.children.contains(item)
 	}
 }
 

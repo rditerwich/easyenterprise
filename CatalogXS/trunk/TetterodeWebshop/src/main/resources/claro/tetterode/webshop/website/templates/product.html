@@ -1,15 +1,14 @@
-<div class="product">
+<div class="product" style="position: relative">
   <!-- img src="images/specialoffer.png" style="position:relative;top:0;right:0" /-->
      <div style="float:right"><product:value property="Image" height="60px"/></div>
-    <p><product:value property="Name"/>
-    <br/><product:value property="Variant"/>
-    <br/><product:link>More info &gt;&gt;</product:link></p>
+     <div style="height: 70px; overflow: hidden">
+    <p><product:value property="Name"/></p>
+    <p><product:value property="Variant"/></p>
+     </div>
+    <p><product:link>More info &gt;&gt;</product:link></p>
   <div>
-    <webshop:shopping-cart>
-    <shopping-cart:add>
-      <span class="add_to_cart">Add to Cart</span>
-    </shopping-cart:add>
-    </webshop:shopping-cart>
     <p><b><product:value property="Price"/></b></p>
+   	<product:add-to-cart-link style="position:absolute; bottom: 20px;" class="button">Add to Cart</product:add-to-cart-link>
+    
   </div>
 </div>

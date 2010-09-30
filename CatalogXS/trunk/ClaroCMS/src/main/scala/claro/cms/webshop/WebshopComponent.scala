@@ -51,6 +51,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       "end-date" -> WebshopUtil.slashDate.format(promotion.endDate),
       "price" -> formatMoney(promotion.price, promotion.priceCurrency),
       "volume-discount" -> promotion.volumeDiscount.asInstanceOf[Long],
+      "add-to-cart-link" -> ShoppingCart.addPromotion(promotion),
       "product" -> promotion.product -> "product")
     
     case product : Product => Map(   
@@ -68,11 +69,11 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     case category : Category => Map(   
       "id" -> category.id,
       "name" -> category.name,
-      "sub-categories" -> category.children -> "category",
-      "parent-categories" -> category.parents -> "category",
-      "properties" -> category.groupProperties(locale) -> "property",
-      "property" -> category.groupProperty(locale, @@("name")) -> "property",
-      "value" -> value(category.groupProperty(locale, @@("property"))),
+      "sub-categories" -> category.childCategories -> "category",
+      "parent-categories" -> category.parentCategories -> "category",
+      "properties" -> category.properties(locale) -> "property",
+      "property" -> category.property(locale, @@("name")) -> "property",
+      "value" -> value(category.property(locale, @@("property"))),
       "defined-properties" -> category.properties -> "property",
       "products" -> @@?("include-sub-categories", category.productExtent, category.products) -> "product",
       "promotions" -> category.productExtentPromotions -> "promotion",
@@ -112,6 +113,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
 
     case form : RegistrationForm => Map(
       "errors" -> form.errors,
+      "form-errors" -> form.formErrors,
       "user" -> form.user -> "user",
       "email-field" -> form.emailField,
       "name-field" -> form.partyForm.nameField,
@@ -122,6 +124,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
     
     case form : UserInfoForm => Map(
       "errors" -> form.errors,
+      "form-errors" -> form.formErrors,
       "user" -> form.user -> "user",
       "email-field" -> form.emailField,
       "name-field" -> form.partyForm.nameField,
@@ -134,6 +137,7 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
       
     case form : ShippingOptionsForm => Map(
       "errors" -> form.errors,
+      "form-errors" -> form.formErrors,
       "shipping-options" -> form.shippingOptions -> "shipping-option",
       "delivery-address-form" -> form.deliveryAddressForm,
       "submit-button" -> form.submitButton)
@@ -145,13 +149,16 @@ class WebshopComponent extends Component with WebshopBindingHelpers {
         
     case form : ChangePasswordForm => Map(
       "errors" -> form.errors,
+      "form-errors" -> form.formErrors,
       "email" -> form.email,
       "password-field" -> form.passwordField,
       "repeat-password-field" -> form.repeatPasswordField,
       "is-valid" -> form.isValid,
-      "change-password-button" -> form.changePasswordButton(@@("label", "Change password"), @@("href", "/passwordchanged")))
+      "change-password-button" -> form.submitButton)
         
     case form : PartyForm => Map(
+      "errors" -> form.errors,
+      "form-errors" -> form.formErrors,
       "name-field" -> form.nameField,
       "phone-field" -> form.phoneField,
       "address-form" -> form.addressForm)

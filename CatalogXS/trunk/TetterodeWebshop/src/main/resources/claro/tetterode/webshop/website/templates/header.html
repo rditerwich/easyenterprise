@@ -1,4 +1,4 @@
-    <div id="page_header"> 
+    <div id="page_header">
       <a href="/"><div class="page_logo"></div></a>
       <div style="align:center">
       <lift:msgs>
@@ -6,12 +6,15 @@
         <lift:notice_msg>&#160;</lift:notice_msg>
       </lift:msgs>
       </div>
-		  <webshop:current-user>
       <div class="page_login">
+		  <webshop:current-user>
         Welcome, <user:name/>
         &#160;<a href="/userinfo">settings</a>
         &#160;<webshop:logout-link>logout</webshop:logout-link>
-       </div>
+        <object:none>
+		<a href="/login">Login</a> intranet
+        </object:none>
        </webshop:current-user>
+       </div>
       <template:include template="nested"/> 
     </div>

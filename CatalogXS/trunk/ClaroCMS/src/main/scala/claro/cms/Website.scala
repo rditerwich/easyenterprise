@@ -115,6 +115,11 @@ class Website(websiteFile : URI) {
       case single :: Nil => "\n" + prefix + "  Location: " + single
       case many => "\n" + prefix + "  Locations:\n    " + prefix + many.mkString("\n" + prefix + "    ")
     }) + 
+    (components.map(_.toString) match {
+	    case Nil => ""
+	    case single :: Nil => "\n" + prefix + "  Component: " + single
+	    case many => "\n" + prefix + "  Components:\n    " + prefix + many.mkString("\n" + prefix + "    ")
+    }) + 
     (emProperties.map(e => e._1 + "=" + e._2) match {
     case Nil => ""
     case many => "\n" + prefix + "  Entity Manager:\n    " + prefix + many.mkString("\n" + prefix + "    ")

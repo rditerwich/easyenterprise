@@ -137,7 +137,6 @@ $.fn.codaSlider = function(settings) {
 					ul.css({ width: ($("li", ul).width() + 2) * panelCount });
 					break;
 				case "right":
-					ul.css({ float: 'right' });
 					break;
 			};
 		};
