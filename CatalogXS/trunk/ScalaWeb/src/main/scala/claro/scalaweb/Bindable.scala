@@ -8,7 +8,6 @@ trait Bindable[A] {
 	def bind(label : String, doc : String) = new BindingCtor[A](label)
 	implicit def ctor(label : String) = new BindingCtor[A](label)
 	implicit def toSet(binding : Binding) = Set(binding)
-	implicit def toSet(binding : TextBinding[A]) = Set(binding)
 	def @@?(label : String, default : Boolean, documentation : String = "") = this
 }
 
