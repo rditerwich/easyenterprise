@@ -5,17 +5,6 @@
 
 <web-app>
   
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>citykids.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/citykids2/greet</url-pattern>
-  </servlet-mapping>
-  
       <servlet>
         <servlet-name>EasyEnterpriseServer</servlet-name>
         <servlet-class>
@@ -24,12 +13,12 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>EasyEnterpriseServer</servlet-name>
-        <url-pattern>/citykids2/command</url-pattern>
+        <url-pattern>/citykids/command</url-pattern>
     </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>Citykids2.html</welcome-file>
+    <welcome-file>citykids.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
