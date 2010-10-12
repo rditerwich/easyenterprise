@@ -11,7 +11,7 @@
 
     <g:center>
       <g:ScrollPanel>
-        <g:Label>Content Area</g:Label>
+        <g:SimplePanel ui:field="contentPanel">Content Area</g:SimplePanel>
       </g:ScrollPanel>
     </g:center>
     <g:south size="8">

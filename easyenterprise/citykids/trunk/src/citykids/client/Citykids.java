@@ -45,9 +45,12 @@ public class Citykids implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	
+	public static PageFrame pageFrame = new PageFrame();
+	public static LoginPage loginPage = new LoginPage(pageFrame);
+	
 	
 	public void onModuleLoad() {
-		RootLayoutPanel.get().add(new PageFrame());
+		RootLayoutPanel.get().add(pageFrame);
 	}
 	public void onModuleLoad2() {
 		final Button sendButton = new Button("Send");
