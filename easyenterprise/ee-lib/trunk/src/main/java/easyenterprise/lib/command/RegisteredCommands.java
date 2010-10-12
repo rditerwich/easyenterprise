@@ -1,6 +1,5 @@
 package easyenterprise.lib.command;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +24,9 @@ public abstract class RegisteredCommands {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected <T extends Serializable, C extends Command<T>> void register(CommandImpl<T, C> impl) throws CommandException {
+	protected <T extends CommandResult, C extends Command<T>> void register(CommandImpl<T, C> impl) throws CommandException {
 		for (Method method : impl.getClass().getMethods()) {
-			if (method.getName().equals("execute") && method.getParameterTypes().length == 0) {
+			if (method.getName().equals("execute") && method.getParameterTypes().length == 1) {
 				Class<?> commandClass = method.getParameterTypes()[0];
 				if (Command.class.isAssignableFrom(commandClass)) {
 					map.put(commandClass, impl);
@@ -39,12 +38,12 @@ public abstract class RegisteredCommands {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Serializable, C extends Command<T>> CommandImpl<T, C> getCommandImpl(C command) throws CommandException {
+	public <T extends CommandResult, C extends Command<T>> CommandImpl<T, C> getCommandImpl(C command) throws CommandException {
 		doRegister();
 		return (CommandImpl<T, C>) map.get(command.getClass());
 	}
 	
-	public <T extends Serializable, C extends Command<T>> T execute(C command) throws CommandException {
+	public <T extends CommandResult, C extends Command<T>> T execute(C command) throws CommandException {
 		CommandImpl<T, C> impl = getCommandImpl(command);
 		if (impl == null) {
 			throw new CommandNotImplementedException(command);

@@ -4,6 +4,9 @@ public class CommandNotImplementedException extends CommandException {
 
 	private static final long serialVersionUID = 1L;
 
+	public CommandNotImplementedException() {
+	}
+	
 	public CommandNotImplementedException(Command<?> command) {
 		super("Command not implemented: " + command);
 	}

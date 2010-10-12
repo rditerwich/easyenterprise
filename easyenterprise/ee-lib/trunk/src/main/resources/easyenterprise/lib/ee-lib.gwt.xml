@@ -2,10 +2,10 @@
 <module>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
+  <inherits name='javax.persistence'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='command'>
-  	<exclude name='/command/**' />
+  	<exclude name='RegisteredCommands**' />
   </source>
-
 </module>
