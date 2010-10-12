@@ -1,34 +1,54 @@
-/** Add css rules here for your application. */
-
-
-/** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+/** Table forms */
+table {
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
 }
 
-.sendButton {
-  display: block;
-  font-size: 16pt;
+table.form {
+	float: left;
+	border: 1px solid #D1D1D1;
+	border-collapse: collapse;
 }
 
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-  width: 400px;
+table.form tr td:first-child {
+	background-color: #FEFDFB;
 }
 
-.dialogVPanel {
-  margin: 5px;
+table.form tr:first-child td {
+	padding-top: 6px;
 }
 
-.serverResponseLabelError {
-  color: red;
+table.form tr td {
+	background-color: #F6F2DA;
+	padding-bottom: 6px;
+	padding-left: 12px;
+	padding-right: 12px;
 }
 
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
+/** Buttons */
+input.button1,input.button2,input.button3,input.button4,input.button5 {
+	border: none;
+	cursor: pointer;
+	height: 25px;
+	padding-top: 0px;
+	vertical-align: top;
+}
+
+.button1 {
+	background: url(http://demo.catalogxs.com/images/button-47.gif)
+		no-repeat 50% 50%;
+	width: 47px;
+}
+
+.button1,.button2,.button3,.button4,.button5 {
+	color: white;
+	float: left;
+	font-size: 9px;
+	font-weight: bold;
+	height: 18px;
+	letter-spacing: -1px;
+	padding-top: 7px;
+	text-align: center;
+	text-decoration: none;
 }

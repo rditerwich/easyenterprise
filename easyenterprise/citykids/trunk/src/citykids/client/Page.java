@@ -9,7 +9,7 @@ public abstract class Page extends Composite {
 	public Page(PageFrame pageFrame) {
 		this.pageFrame = pageFrame;
 	}
-
+	
 	public final void show() {
 		pageFrame.setCurrentPage(this);
 	}

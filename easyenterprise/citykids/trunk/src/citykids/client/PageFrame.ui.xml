@@ -2,7 +2,7 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   <g:DockLayoutPanel unit='EM'>
     <g:north size='4'>
-      <g:Label>Header</g:Label>
+      <g:Anchor ui:field="login">login</g:Anchor>
     </g:north>
 
     <g:west size='16'>
@@ -11,7 +11,7 @@
 
     <g:center>
       <g:ScrollPanel>
-        <g:SimplePanel ui:field="contentPanel">Content Area</g:SimplePanel>
+        <g:SimplePanel ui:field="contentPanel"></g:SimplePanel>
       </g:ScrollPanel>
     </g:center>
     <g:south size="8">
