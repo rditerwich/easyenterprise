@@ -1,9 +1,9 @@
-package easyenterprise.server.impl.account;
+package easyenterprise.server.account.impl;
 
 import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandImpl;
-import easyenterprise.server.account.LoginCommand;
-import easyenterprise.server.account.LoginCommandResult;
+import easyenterprise.server.account.commands.LoginCommand;
+import easyenterprise.server.account.commands.LoginCommandResult;
 
 public class LoginCommandImpl implements CommandImpl<LoginCommandResult, LoginCommand> {
 

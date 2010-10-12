@@ -1,4 +1,4 @@
-package easyenterprise.server.impl.account;
+package easyenterprise.server.account.impl;
 
 import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.RegisteredCommands;

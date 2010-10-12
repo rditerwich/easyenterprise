@@ -1,15 +1,13 @@
 package easyenterprise.server.gwt;
 
-import java.io.Serializable;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
+import easyenterprise.lib.command.CommandResult;
 import easyenterprise.lib.command.RegisteredCommands;
-import easyenterprise.lib.command.gwt.GwtCommandResult;
 import easyenterprise.lib.command.gwt.GwtCommandService;
-import easyenterprise.server.impl.account.RegisteredAccountCommands;
+import easyenterprise.server.account.impl.RegisteredAccountCommands;
 
 public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCommandService {
 
@@ -18,9 +16,7 @@ public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCo
 	private final RegisteredCommands registeredCommands = RegisteredCommands.create(new RegisteredAccountCommands());
 
 	@Override
-	public <T extends Serializable> GwtCommandResult<T> execute(Command<T> command) throws CommandException {
-		GwtCommandResult<T> result = new GwtCommandResult<T>();
-		result.value = registeredCommands.execute(command);
-		return result;
+	public <T extends CommandResult> T execute(Command<T> command) throws CommandException {
+		return registeredCommands.execute(command);
 	}
 }
