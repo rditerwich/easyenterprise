@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class RegisteredCommands {
+public abstract class RegisteredCommands implements CommandExecutor {
 
 	@SuppressWarnings("rawtypes")
 	Map map = new HashMap();

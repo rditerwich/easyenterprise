@@ -13,8 +13,7 @@ public class LoginPage extends Page {
 
 	@UiField Button loginButton;
 	
-	public LoginPage(PageFrame pageFrame) {
-		super(pageFrame);
+	public LoginPage() {
 		initWidget(binder.createAndBindUi(this));
 	}
 

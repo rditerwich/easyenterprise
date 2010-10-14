@@ -5,6 +5,7 @@
   <inherits name='javax.persistence'/>
 
   <!-- Specify the paths for translatable code                    -->
+  <source path='gwt'/>
   <source path='command'>
   	<exclude name='RegisteredCommands**' />
   </source>

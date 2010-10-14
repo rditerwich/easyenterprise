@@ -46,7 +46,8 @@ public class Citykids implements EntryPoint {
 	 */
 	
 	public static PageFrame pageFrame = new PageFrame();
-	public static LoginPage loginPage = new LoginPage(pageFrame);
+	public static LoginPage loginPage = new LoginPage();
+	public static RelationManagementPage relationManagementPage = new RelationManagementPage();
 	
 	
 	public void onModuleLoad() {

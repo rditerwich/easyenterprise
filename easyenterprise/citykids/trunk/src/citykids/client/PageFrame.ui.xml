@@ -2,7 +2,10 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   <g:DockLayoutPanel unit='EM'>
     <g:north size='4'>
-      <g:Anchor ui:field="login">login</g:Anchor>
+      <g:FlowPanel>
+        <g:Anchor ui:field="login">login</g:Anchor>
+        <g:Anchor ui:field="relations">relaties</g:Anchor>
+      </g:FlowPanel>
     </g:north>
 
     <g:west size='16'>

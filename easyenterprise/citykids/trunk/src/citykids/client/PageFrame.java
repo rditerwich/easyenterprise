@@ -15,6 +15,7 @@ public class PageFrame extends Composite {
 	private static final Binder binder = GWT.create(Binder.class);
 	
 	@UiField Anchor login;
+	@UiField Anchor relations;
 	@UiField SimplePanel contentPanel;
 	
 	private Page currentPage;
@@ -25,6 +26,15 @@ public class PageFrame extends Composite {
 			public void onClick(ClickEvent event) {
 				if (currentPage == null) {
 					Citykids.loginPage.show();
+				} else {
+					setCurrentPage(null);
+				}
+			}
+		});
+		relations.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (currentPage == null) {
+					Citykids.relationManagementPage.show();
 				} else {
 					setCurrentPage(null);
 				}
