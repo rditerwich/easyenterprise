@@ -6,7 +6,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
-import easyenterprise.server.EasyEnterpriseEntity;
+import easyenterprise.server.common.EasyEnterpriseEntity;
 
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import static javax.persistence.CascadeType.ALL;

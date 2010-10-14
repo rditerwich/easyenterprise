@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
   <inherits name='easyenterprise.lib.ee-lib'/>
+  <source path='common'/>
   <source path='account'>
+      <exclude name='**/impl/**' />
+  </source>
+  <source path='party'>
       <exclude name='**/impl/**' />
   </source>
   <source path="javax/persistence"/>

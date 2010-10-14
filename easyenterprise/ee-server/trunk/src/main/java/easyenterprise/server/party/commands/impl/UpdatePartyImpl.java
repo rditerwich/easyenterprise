@@ -1,25 +1,15 @@
 package easyenterprise.server.party.commands.impl;
 
-import javax.persistence.EntityManager;
-
-import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.jpa.TransactionalCommandImpl;
 import easyenterprise.server.party.Party;
 import easyenterprise.server.party.commands.UpdateParty;
 import easyenterprise.server.party.commands.UpdatePartyResult;
 
-public class UpdatePartyImpl extends TransactionalCommandImpl<UpdatePartyResult, UpdateParty> {
+public abstract class UpdatePartyImpl<T extends Party, U extends UpdateParty<T>> extends TransactionalCommandImpl<UpdatePartyResult<T>, U> {
 
-	public UpdatePartyResult execute(UpdateParty command) throws CommandException {
-		
-		// create a new party?
-		Party existingParty;
-		if (command.party.getId() != null) {
-			existingParty = getEntityManager().find(command.party.getClass(), command.party.getId());
-		} else {
-			existingParty = new Party()
-			em.persist(command.party);
-		}
+	protected UpdatePartyResult<T> updateParty(T party) {
+		UpdatePartyResult<T> result = new UpdatePartyResult<T>();
+		result.party = party;
+		return result;
 	}
-
 }

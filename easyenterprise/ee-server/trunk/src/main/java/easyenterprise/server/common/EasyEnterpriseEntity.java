@@ -1,4 +1,4 @@
-package easyenterprise.server;
+package easyenterprise.server.common;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

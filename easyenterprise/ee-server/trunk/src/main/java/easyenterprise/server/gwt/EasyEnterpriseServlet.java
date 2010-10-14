@@ -26,4 +26,5 @@ public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCo
 	public <T extends CommandResult> T execute(Command<T> command) throws CommandException {
 		return jpaCommandWrapper.execute(command);
 	}
+	
 }

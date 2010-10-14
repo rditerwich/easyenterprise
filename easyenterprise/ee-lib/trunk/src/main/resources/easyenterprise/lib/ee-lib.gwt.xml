@@ -8,5 +8,6 @@
   <source path='gwt'/>
   <source path='command'>
   	<exclude name='RegisteredCommands**' />
+  	<exclude name='jpa/**' />
   </source>
 </module>

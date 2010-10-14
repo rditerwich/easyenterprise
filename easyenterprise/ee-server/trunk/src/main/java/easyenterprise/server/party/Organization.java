@@ -6,4 +6,13 @@ import javax.persistence.Entity;
 public class Organization extends Party {
 	
 	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }

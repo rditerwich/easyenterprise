@@ -6,7 +6,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import easyenterprise.server.EasyEnterpriseEntity;
+import easyenterprise.server.common.EasyEnterpriseEntity;
 
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
