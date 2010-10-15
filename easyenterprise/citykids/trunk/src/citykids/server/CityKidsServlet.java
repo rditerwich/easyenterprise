@@ -20,6 +20,11 @@ public class CityKidsServlet extends RemoteServiceServlet implements GwtCommandS
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		try {
+			config.getClass().getClassLoader().loadClass("org.eclipse.persistence.Version");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		server = new EEServer(config);
 	}
 	

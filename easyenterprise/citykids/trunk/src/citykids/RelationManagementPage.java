@@ -8,9 +8,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 import easyenterprise.lib.command.gwt.GwtCommandFacade;
 import easyenterprise.lib.gwt.ui.Header;
-import easyenterprise.server.party.Person;
 import easyenterprise.server.party.command.UpdatePartyResult;
 import easyenterprise.server.party.command.UpdatePerson;
+import easyenterprise.server.party.entity.Person;
 
 public class RelationManagementPage extends Page {
 
