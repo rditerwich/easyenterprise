@@ -6,8 +6,8 @@
 <web-app>
   
       <servlet>
-        <servlet-name>EasyEnterpriseServer</servlet-name>
-        <servlet-class>citykids.server.EasyEnterpriseServlet</servlet-class>
+        <servlet-name>CityKidsServer</servlet-name>
+        <servlet-class>citykids.server.CityKidsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EasyEnterpriseServer</servlet-name>

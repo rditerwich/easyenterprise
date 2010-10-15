@@ -8,7 +8,7 @@ import easyenterprise.lib.command.CommandResult;
 import easyenterprise.lib.command.gwt.GwtCommandService;
 import easyenterprise.server.EEServer;
 
-public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCommandService {
+public class CityKidsServlet extends RemoteServiceServlet implements GwtCommandService {
 
 	private static final long serialVersionUID = 1L;
 
