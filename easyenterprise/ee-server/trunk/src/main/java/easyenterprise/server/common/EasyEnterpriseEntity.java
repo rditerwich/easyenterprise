@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class EasyEnterpriseEntity implements Serializable {
+public class EasyEnterpriseEntity<This extends EasyEnterpriseEntity<This>> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -20,5 +20,18 @@ public class EasyEnterpriseEntity implements Serializable {
 	
 	public Long getId() {
 		return id;
+	}
+	
+	public long getVersion() {
+		return version;
+	}
+	
+	public long getTenant() {
+		return tenant;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected This getThis() {
+		return (This) this;
 	}
 }

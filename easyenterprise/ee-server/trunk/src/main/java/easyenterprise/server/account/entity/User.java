@@ -1,4 +1,4 @@
-package easyenterprise.server.account;
+package easyenterprise.server.account.entity;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;

@@ -1,6 +1,5 @@
 package easyenterprise.server;
 
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +8,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletConfig;
 
-import org.eclipse.persistence.Version;
-
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandResult;
@@ -18,10 +15,13 @@ import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.RegisteredCommands;
 import easyenterprise.lib.command.jpa.JpaCommandWrapper;
 import easyenterprise.server.account.command.impl.RegisteredAccountCommands;
+import easyenterprise.server.party.command.impl.RegisteredPartyCommands;
 
 public class EEServer implements CommandService {
 
-	private final RegisteredCommands registeredCommands = RegisteredCommands.create(new RegisteredAccountCommands());
+	private final RegisteredCommands registeredCommands = RegisteredCommands.create(
+			new RegisteredAccountCommands(), 
+			new RegisteredPartyCommands());
 
 	private final EntityManagerFactory entityManagerFactory;
 	private final JpaCommandWrapper jpaCommandWrapper;
