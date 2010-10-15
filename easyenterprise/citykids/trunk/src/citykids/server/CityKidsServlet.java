@@ -30,7 +30,13 @@ public class CityKidsServlet extends RemoteServiceServlet implements GwtCommandS
 	
 	@Override
 	public <T extends CommandResult> T execute(Command<T> command) throws CommandException {
-		return server.execute(command);
+		try {
+			return server.execute(command);
+		} catch (CommandException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 }
