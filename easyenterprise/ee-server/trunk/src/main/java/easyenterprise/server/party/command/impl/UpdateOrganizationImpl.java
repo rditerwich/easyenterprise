@@ -1,9 +1,9 @@
 package easyenterprise.server.party.command.impl;
 
 import easyenterprise.lib.command.CommandException;
-import easyenterprise.server.party.Organization;
 import easyenterprise.server.party.command.UpdateOrganization;
 import easyenterprise.server.party.command.UpdatePartyResult;
+import easyenterprise.server.party.entity.Organization;
 
 public class UpdateOrganizationImpl extends UpdatePartyImpl<Organization, UpdateOrganization> {
 

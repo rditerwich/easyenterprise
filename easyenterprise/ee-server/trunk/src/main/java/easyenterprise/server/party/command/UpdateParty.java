@@ -1,7 +1,7 @@
 package easyenterprise.server.party.command;
 
 import easyenterprise.lib.command.Command;
-import easyenterprise.server.party.Party;
+import easyenterprise.server.party.entity.Party;
 
 public class UpdateParty<T extends Party<T>, This extends UpdateParty<T, This>> implements Command<UpdatePartyResult<T>> {
 

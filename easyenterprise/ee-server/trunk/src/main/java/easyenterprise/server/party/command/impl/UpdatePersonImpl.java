@@ -1,9 +1,9 @@
 package easyenterprise.server.party.command.impl;
 
 import easyenterprise.lib.command.CommandException;
-import easyenterprise.server.party.Person;
 import easyenterprise.server.party.command.UpdatePartyResult;
 import easyenterprise.server.party.command.UpdatePerson;
+import easyenterprise.server.party.entity.Person;
 
 public class UpdatePersonImpl extends UpdatePartyImpl<Person, UpdatePerson> {
 
@@ -15,6 +15,7 @@ public class UpdatePersonImpl extends UpdatePartyImpl<Person, UpdatePerson> {
 			person = getEntityManager().find(Person.class, command.getParty().getId());
 		} else {
 			person = new Person();
+			getEntityManager().persist(person);
 		}
 		
 		// copy person fields
