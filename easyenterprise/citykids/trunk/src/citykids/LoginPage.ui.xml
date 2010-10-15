@@ -1,0 +1,10 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <g:HTMLPanel>
+    	<table class="form">
+    		<tr><td>login naam</td><td><g:TextBox ui:field="login"></g:TextBox></td></tr>
+    		<tr><td>wachtwoord</td><td><g:TextBox ui:field="password"></g:TextBox></td></tr>
+    		<tr><td></td><td><g:Button styleName="button2" ui:field="loginButton">login</g:Button></td></tr>
+    	</table>
+   	</g:HTMLPanel>
+</ui:UiBinder>

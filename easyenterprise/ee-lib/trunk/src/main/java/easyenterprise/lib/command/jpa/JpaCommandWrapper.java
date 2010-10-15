@@ -5,17 +5,17 @@ import javax.persistence.EntityManagerFactory;
 
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
-import easyenterprise.lib.command.CommandExecutor;
+import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.CommandResult;
 
-public class JpaCommandWrapper implements CommandExecutor {
+public class JpaCommandWrapper implements CommandService {
 
 	private static final ThreadLocal<JpaCommandState> stateLocal = new ThreadLocal<JpaCommandState>();
 
-	private final CommandExecutor delegate;
+	private final CommandService delegate;
 	private final EntityManagerFactory entityManagerFactory;
 	
-	public JpaCommandWrapper(CommandExecutor delegate, EntityManagerFactory entityManagerFactory) {
+	public JpaCommandWrapper(CommandService delegate, EntityManagerFactory entityManagerFactory) {
 		this.delegate = delegate;
 		this.entityManagerFactory = entityManagerFactory;
 	}

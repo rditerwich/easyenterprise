@@ -15,10 +15,11 @@
   <inherits name='easyenterprise.server.ee-server'/>
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='citykids.client.Citykids'/>
+  <entry-point class='citykids.Citykids'/>
 
   <!-- Specify the paths for translatable code                    -->
-  <source path='client'/>
-  <source path='shared'/>
+  <source path=''>
+    <exclude name="server/**"/>
+  </source>
 
 </module>

@@ -7,9 +7,7 @@
   
       <servlet>
         <servlet-name>EasyEnterpriseServer</servlet-name>
-        <servlet-class>
-            easyenterprise.server.gwt.EasyEnterpriseServlet
-        </servlet-class>
+        <servlet-class>citykids.server.EasyEnterpriseServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EasyEnterpriseServer</servlet-name>

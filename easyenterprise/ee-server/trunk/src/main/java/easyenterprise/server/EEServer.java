@@ -1,21 +1,17 @@
-package easyenterprise.server.gwt;
+package easyenterprise.server;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandResult;
+import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.RegisteredCommands;
-import easyenterprise.lib.command.gwt.GwtCommandService;
 import easyenterprise.lib.command.jpa.JpaCommandWrapper;
 import easyenterprise.server.account.impl.RegisteredAccountCommands;
 
-public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCommandService {
-
-	private static final long serialVersionUID = 1L;
+public class EEServer implements CommandService {
 
 	private final RegisteredCommands registeredCommands = RegisteredCommands.create(new RegisteredAccountCommands());
 
@@ -23,8 +19,7 @@ public class EasyEnterpriseServlet extends RemoteServiceServlet implements GwtCo
 	private final JpaCommandWrapper jpaCommandWrapper = new JpaCommandWrapper(registeredCommands, entityManagerFactory );
 	
 	@Override
-	public <T extends CommandResult> T execute(Command<T> command) throws CommandException {
+	public <T extends CommandResult, C extends Command<T>> T execute(C command) throws CommandException {
 		return jpaCommandWrapper.execute(command);
 	}
-	
 }
