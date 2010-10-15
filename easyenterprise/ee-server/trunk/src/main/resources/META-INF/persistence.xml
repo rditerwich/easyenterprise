@@ -5,21 +5,11 @@
   version="2.0">
 	<persistence-unit name="ee-database" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>com.dathano.config.Configuration</class>
-		<class>com.dathano.config.DataDefinition</class>
-		<class>com.dathano.config.ObfuscationKind</class>
-		<class>com.dathano.kinds.RandomBSN</class>
-		<class>com.dathano.kinds.DictionaryBasedFirstName</class>
-		<class>com.dathano.config.db.DBConfiguration</class>
-		<class>com.dathano.config.db.DBConnection</class>
+    <class>easyenterprise.server.party.entity.Party</class>
+    <class>easyenterprise.server.party.entity.Person</class>
+    <class>easyenterprise.server.party.entity.Organization</class>
+    <class>easyenterprise.server.party.entity.Relation</class>
 		<properties>
-			<!-- tijdelijk... jndi later -->
-			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:unit-testing-jpa" />
-			<property name="javax.persistence.jdbc.user" value="sa" />
-			<property name="javax.persistence.jdbc.password" value="" />
-			<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.HSQLPlatform" />
-		
 			<property name="eclipselink.ddl-generation" value="create-tables" />
 		</properties>
 	</persistence-unit>
