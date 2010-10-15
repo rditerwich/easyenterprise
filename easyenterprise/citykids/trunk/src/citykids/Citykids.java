@@ -17,8 +17,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import easyenterprise.lib.command.gwt.GwtCommandFacade;
-import easyenterprise.server.account.commands.LoginCommand;
-import easyenterprise.server.account.commands.LoginCommandResult;
+import easyenterprise.server.account.command.LoginCommand;
+import easyenterprise.server.account.command.LoginCommandResult;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -46,6 +46,7 @@ public class Citykids implements EntryPoint {
 	
 	
 	public void onModuleLoad() {
+		pageFrame.setCurrentPage(relationManagementPage);
 		RootLayoutPanel.get().add(pageFrame);
 	}
 	public void onModuleLoad2() {

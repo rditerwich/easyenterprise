@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import easyenterprise.server.common.EasyEnterpriseEntity;
 
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
+
 import static javax.persistence.CascadeType.ALL;
 
 @MappedSuperclass

@@ -5,13 +5,29 @@
 
 <web-app>
   
-      <servlet>
-        <servlet-name>CityKidsServer</servlet-name>
-        <servlet-class>citykids.server.CityKidsServlet</servlet-class>
+    <servlet>
+      <servlet-name>CityKidsServlet</servlet-name>
+      <servlet-class>citykids.server.CityKidsServlet</servlet-class>
+      <init-param>
+        <param-name>javax.persistence.jdbc.driver</param-name>
+        <param-value>org.hsqldb.jdbcDriver</param-value>
+      </init-param>
+      <init-param>
+        <param-name>javax.persistence.jdbc.url</param-name>
+        <param-value>jdbc:hsqldb:mem:unit-testing-jpa</param-value>
+      </init-param>
+      <init-param>
+        <param-name>javax.persistence.jdbc.user</param-name>
+        <param-value>sa</param-value>
+      </init-param>
+      <init-param>
+        <param-name>javax.persistence.jdbc.password</param-name>
+        <param-value></param-value>
+      </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>EasyEnterpriseServer</servlet-name>
-        <url-pattern>/citykids/command</url-pattern>
+      <servlet-name>CityKidsServlet</servlet-name>
+      <url-pattern>/citykids/command</url-pattern>
     </servlet-mapping>
   
   <!-- Default page to serve -->

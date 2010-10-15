@@ -1,5 +1,8 @@
 package citykids.server;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import easyenterprise.lib.command.Command;
@@ -12,7 +15,13 @@ public class CityKidsServlet extends RemoteServiceServlet implements GwtCommandS
 
 	private static final long serialVersionUID = 1L;
 
-	private EEServer server = new EEServer();
+	private EEServer server;
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		server = new EEServer(config);
+	}
 	
 	@Override
 	public <T extends CommandResult> T execute(Command<T> command) throws CommandException {
