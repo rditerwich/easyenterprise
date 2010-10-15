@@ -11,16 +11,16 @@ public class UpdatePersonImpl extends UpdatePartyImpl<Person, UpdatePerson> {
 		
 		// create a new party?
 		Person person;
-		if (command.party.getId() != null) {
-			person = getEntityManager().find(Person.class, command.party.getId());
+		if (command.getParty().getId() != null) {
+			person = getEntityManager().find(Person.class, command.getParty().getId());
 		} else {
 			person = new Person();
 		}
 		
 		// copy person fields
-		person.setFirstName(command.party.getFirstName());
-		person.setMiddleName(command.party.getMiddleName());
-		person.setLastName(command.party.getLastName());
+		person.setFirstName(command.getParty().getFirstName());
+		person.setMiddleName(command.getParty().getMiddleName());
+		person.setLastName(command.getParty().getLastName());
 		
 		// copy party fields
 		return updateParty(person);

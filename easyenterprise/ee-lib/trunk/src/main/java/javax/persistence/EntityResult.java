@@ -35,8 +35,9 @@
  */
 package javax.persistence;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -69,7 +70,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface EntityResult { 
 
     /** The class of the result */
-    Class entityClass(); 
+    @SuppressWarnings("rawtypes")
+		Class entityClass(); 
 
     /** 
      * Maps the columns specified in the SELECT list of the 

@@ -35,9 +35,9 @@
  */
 package javax.persistence;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
-import javax.persistence.CascadeType;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -72,7 +72,8 @@ public @interface ManyToOne {
      * <p> Defaults to the type of the field or property 
      * that stores the association. 
      */
-    Class targetEntity() default void.class;
+    @SuppressWarnings("rawtypes")
+		Class targetEntity() default void.class;
 
     /**
      * (Optional) The operations that must be cascaded to 

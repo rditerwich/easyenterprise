@@ -43,6 +43,7 @@ package javax.persistence;
  *
  * @since Java Persistence 1.0
  */
+@SuppressWarnings("serial")
 public class OptimisticLockException extends PersistenceException {
     
     /** The object that caused the exception */

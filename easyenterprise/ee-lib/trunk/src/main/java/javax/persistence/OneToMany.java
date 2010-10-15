@@ -35,11 +35,11 @@
  */
 package javax.persistence;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
-import javax.persistence.CascadeType;
-import static java.lang.annotation.ElementType.METHOD;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.FetchType.LAZY;
 
@@ -96,7 +96,8 @@ public @interface OneToMany {
      * <p> Defaults to the parameterized type of
      * the collection when defined using generics.
      */
-    Class targetEntity() default void.class;
+    @SuppressWarnings("rawtypes")
+		Class targetEntity() default void.class;
 
     /** 
      * (Optional) The operations that must be cascaded to 

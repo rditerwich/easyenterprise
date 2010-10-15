@@ -11,14 +11,14 @@ public class UpdateOrganizationImpl extends UpdatePartyImpl<Organization, Update
 		
 		// create a new party?
 		Organization organization;
-		if (command.party.getId() != null) {
-			organization = getEntityManager().find(Organization.class, command.party.getId());
+		if (command.getParty().getId() != null) {
+			organization = getEntityManager().find(Organization.class, command.getParty().getId());
 		} else {
 			organization = new Organization();
 		}
 		
 		// copy person fields
-		organization.setName(command.party.getName());
+		organization.setName(command.getParty().getName());
 		
 		// copy party fields
 		return updateParty(organization);

@@ -48,6 +48,7 @@ package javax.persistence;
  *
  * @since Java Persistence 1.0
  */
+@SuppressWarnings("serial")
 public class EntityNotFoundException extends PersistenceException {
 	
         /**

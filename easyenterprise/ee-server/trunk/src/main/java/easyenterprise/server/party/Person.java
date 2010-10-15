@@ -3,7 +3,9 @@ package easyenterprise.server.party;
 import javax.persistence.Entity;
 
 @Entity
-public class Person extends Party {
+public class Person extends Party<Person> {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String firstName;
 	private String middleName;
@@ -12,19 +14,22 @@ public class Person extends Party {
 	public String getFirstName() {
 		return firstName;
 	}
-	public void setFirstName(String firstName) {
+	public Person setFirstName(String firstName) {
 		this.firstName = firstName;
+		return this;
 	}
 	public String getMiddleName() {
 		return middleName;
 	}
-	public void setMiddleName(String middleName) {
+	public Person setMiddleName(String middleName) {
 		this.middleName = middleName;
+		return this;
 	}
 	public String getLastName() {
 		return lastName;
 	}
-	public void setLastName(String lastName) {
+	public Person setLastName(String lastName) {
 		this.lastName = lastName;
+		return this;
 	}
 }
