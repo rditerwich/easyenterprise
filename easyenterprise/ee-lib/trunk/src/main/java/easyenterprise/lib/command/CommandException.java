@@ -11,4 +11,8 @@ public class CommandException extends Exception {
 		super(description);
 	}
 
+	public CommandException(String description, Throwable cause) {
+		super(description, cause);
+	}
+	
 }

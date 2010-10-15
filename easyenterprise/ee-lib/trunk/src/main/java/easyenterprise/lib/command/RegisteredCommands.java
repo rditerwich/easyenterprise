@@ -18,7 +18,6 @@ public abstract class RegisteredCommands implements CommandService {
 					registeredCommand.doRegister();
 					map.putAll(registeredCommand.map);
 				}
-				
 			}
 		};
 	}
@@ -48,7 +47,7 @@ public abstract class RegisteredCommands implements CommandService {
 		if (impl == null) {
 			throw new CommandNotImplementedException(command);
 		}
-		return impl.execute((C) command);
+		return AbstractCommandImpl.fullExecute(command, impl);
 	}
 
 	private final void doRegister() throws CommandException {

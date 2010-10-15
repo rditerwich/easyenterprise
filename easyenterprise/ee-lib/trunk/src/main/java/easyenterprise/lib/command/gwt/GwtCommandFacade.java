@@ -20,9 +20,15 @@ public class GwtCommandFacade {
         return asyncCommandService;
     }
 
-	public static <T extends CommandResult, C extends Command<T>> void execute(C command, final AsyncCallback<T> callback) {
+	public static <T extends CommandResult, C extends Command<T>> 
+	void execute(C command, final AsyncCallback<T> callback) {
 		getAsyncCommandService().execute(command, callback);
 	}
 
+	public static <T extends CommandResult, C extends Command<T>> 
+	void executeCached(C command, final AsyncCallback<T> callback) {
+		getAsyncCommandService().execute(command, callback);
+	}
+	
 
 }

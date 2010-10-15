@@ -29,26 +29,31 @@ public class JpaCommandWrapper implements CommandService {
 		state.entityManagerFactory = entityManagerFactory;
 		stateLocal.set(state);
 		try {
-			
-			// auto-start transaction
-			if (command instanceof TransactionalCommandImpl) {
-				getEntityManager().getTransaction().begin();
-			}
-			
 			return delegate.execute(command);
 		} catch (CommandException e) {
-			// rollback on exception
-			if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
-				state.entityManager.getTransaction().rollback();
-			}
+			rollback(state);
 			throw e;
+		} catch (Throwable e) {
+			rollback(state);
+			throw new CommandException(e.getMessage(), e);
 		} finally {
 			// auto-commit
-			if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
-				state.entityManager.getTransaction().commit();
-			}
+			commit(state);
 			// restore old state
 			stateLocal.set(oldState);
+		}
+	}
+
+	private void commit(JpaCommandState state) {
+		if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
+			state.entityManager.getTransaction().commit();
+		}
+	}
+
+	private void rollback(JpaCommandState state) {
+		// rollback on exception
+		if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
+			state.entityManager.getTransaction().rollback();
 		}
 	}
 	
