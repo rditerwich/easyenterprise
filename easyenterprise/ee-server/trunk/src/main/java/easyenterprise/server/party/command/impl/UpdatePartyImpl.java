@@ -11,7 +11,7 @@ public abstract class UpdatePartyImpl<T extends Party<T>, U extends UpdateParty<
 
 	@Override
 	public View getCloneView() {
-		return new BasicView("relations");
+		return new BasicView("party/relations");
 	}
 	
 	protected UpdatePartyResult<T> updateParty(T party) {

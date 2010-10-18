@@ -8,12 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class EasyEnterpriseEntity<This extends EasyEnterpriseEntity<This>> implements Serializable {
+public class EasyEnterpriseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private long version;
 	private long tenant;
@@ -29,9 +29,5 @@ public class EasyEnterpriseEntity<This extends EasyEnterpriseEntity<This>> imple
 	public long getTenant() {
 		return tenant;
 	}
-	
-	@SuppressWarnings("unchecked")
-	protected This getThis() {
-		return (This) this;
-	}
+
 }

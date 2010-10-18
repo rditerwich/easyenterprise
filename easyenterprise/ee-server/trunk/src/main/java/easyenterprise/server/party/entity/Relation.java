@@ -12,16 +12,16 @@ import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 @Entity
 @Inheritance(strategy = SINGLE_TABLE) 
-public class Relation extends EasyEnterpriseEntity<Relation> {
+public class Relation extends EasyEnterpriseEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne
 	@JoinColumn(nullable=false)
-	private Party<?> party;
+	private Party party;
 	
 	@OneToOne
-	private Party<?> relatedParty;
+	private Party relatedParty;
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Party<T>> T getParty() {

@@ -10,8 +10,8 @@ import javax.persistence.OneToMany;
 import easyenterprise.server.common.EasyEnterpriseEntity;
 
 @Entity
-public class Account extends EasyEnterpriseEntity<Account> {
+public class Account extends EasyEnterpriseEntity {
 
 	@OneToMany(cascade=ALL, mappedBy="account")
-	private Set<User> users;
+	private Set users;
 }

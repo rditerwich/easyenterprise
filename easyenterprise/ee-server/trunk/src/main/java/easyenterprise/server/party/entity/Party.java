@@ -1,5 +1,8 @@
 package easyenterprise.server.party.entity;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,13 +12,9 @@ import javax.persistence.OneToMany;
 
 import easyenterprise.server.common.EasyEnterpriseEntity;
 
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
-
-import static javax.persistence.CascadeType.ALL;
-
 @Entity
 @Inheritance(strategy=SINGLE_TABLE)
-public abstract class Party<This extends Party<This>> extends EasyEnterpriseEntity<This> {
+public abstract class Party<This extends Party<This>> extends EasyEnterpriseEntity {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -37,5 +36,10 @@ public abstract class Party<This extends Party<This>> extends EasyEnterpriseEnti
 	public This addRelations(Set<Relation> relations) {
 		this.relations = relations;
 		return getThis();
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected This getThis() {
+		return (This) this;
 	}
 }
