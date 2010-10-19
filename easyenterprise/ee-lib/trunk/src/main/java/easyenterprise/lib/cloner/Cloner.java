@@ -25,7 +25,7 @@ public class Cloner {
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	private static Object cloneValue(Object value, View view) throws Exception {
 		if (value == null) {
 			return value;
@@ -78,11 +78,21 @@ public class Cloner {
 		}
 		for (PropertyInfo p : properties) {
 			View subView = view.getSubView(p.name);
-			Object value = cloneValue(p.getter.invoke(object), subView);
-			if (p.setter == null) {
-				throw new CloneException("No setter found for property '" + p.name + "' in class " + info.actualClass);
+			Object value;
+			if (p.getter != null) {
+				value = cloneValue(p.getter.invoke(object), subView);
+			} else if (p.field != null) {
+				value = cloneValue(p.field.get(object), subView);
+			} else {
+				throw new CloneException("No getter or field found for property '" + p.name + "' in class " + info.actualClass);
 			}
-			p.setter.invoke(detached, value);
+			if (p.setter != null) {
+				p.setter.invoke(detached, value);
+			} else if (p.field != null) {
+				p.field.set(detached, value);
+			} else {
+				throw new CloneException("No setter or field found for property '" + p.name + "' in class " + info.actualClass);
+			}
 		}
 		return detached;
 	}

@@ -1,6 +1,8 @@
 package easyenterprise.lib.cloner;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -62,17 +64,26 @@ final class ClassInfo {
 			findProperties(superclass, result);
 		}
 		
+		for (Field field : c.getDeclaredFields()) {
+			int modifiers = field.getModifiers();
+			if (!Modifier.isTransient(modifiers) && !Modifier.isStatic(modifiers)) {
+				field.setAccessible(true);
+				result.put(field.getName(), new PropertyInfo(field.getName(), field.getType(), field, null, null));
+			}
+		}
+		
 		for (Method method : c.getDeclaredMethods()) {
 			String name = getPropertyName(method, "get");
 			if (name != null && method.getParameterTypes().length == 0 && !method.getReturnType().equals(Void.class)) {
-				result.put(name, new PropertyInfo(name, method.getReturnType(), method, null));
+				PropertyInfo info = result.get(name);
+				result.put(name, new PropertyInfo(name, method.getReturnType(), info != null ? info.field :  null, method, null));
 			}
 		}
 		for (Method method : c.getDeclaredMethods()) {
 			String name = getPropertyName(method, "set");
 			PropertyInfo info = result.get(name);
 			if (info != null && method.getParameterTypes().length == 1 && method.getReturnType().equals(Void.TYPE)) {
-				result.put(name, new PropertyInfo(name, info.type, info.getter, method));
+				result.put(name, new PropertyInfo(name, info.type, info.field, info.getter, method));
 			}
 		}
 	}
