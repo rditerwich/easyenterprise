@@ -1,5 +1,7 @@
 package easyenterprise.lib.command.jpa;
 
+import javax.persistence.EntityManager;
+
 import easyenterprise.lib.command.AbstractCommandImpl;
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
@@ -16,6 +18,10 @@ public abstract class TransactionalCommandImpl<T extends CommandResult, C extend
 	@Override
 	public void preExecute(C command) throws CommandException {
 		// auto-start transaction
-		JpaCommandService.getEntityManager().getTransaction().begin();
+		getEntityManager().getTransaction().begin();
+	}
+
+	protected EntityManager getEntityManager() {
+		return JpaCommandService.getEntityManager();
 	};
 }

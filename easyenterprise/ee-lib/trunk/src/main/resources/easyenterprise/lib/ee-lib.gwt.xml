@@ -7,6 +7,8 @@
   <!-- Specify the paths for translatable code                    -->
   <source path='gwt'/>
   <source path='command'>
+  	<exclude name='CommandImpl**' />
+  	<exclude name='AbstractCommandImpl**' />
   	<exclude name='RegisteredCommands**' />
   	<exclude name='jpa/**' />
   </source>

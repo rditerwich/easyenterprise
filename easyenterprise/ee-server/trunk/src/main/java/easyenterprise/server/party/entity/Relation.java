@@ -18,9 +18,11 @@ public class Relation extends EasyEnterpriseEntity {
 
 	@ManyToOne
 	@JoinColumn(nullable=false)
+	@SuppressWarnings("unchecked")
 	private Party party;
 	
 	@OneToOne
+	@SuppressWarnings("unchecked")
 	private Party relatedParty;
 	
 	@SuppressWarnings("unchecked")
