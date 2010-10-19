@@ -14,8 +14,8 @@ import easyenterprise.lib.command.CommandResult;
 import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.RegisteredCommands;
 import easyenterprise.lib.command.jpa.JpaCommandService;
-import easyenterprise.server.account.command.impl.RegisteredAccountCommands;
-import easyenterprise.server.party.command.impl.RegisteredPartyCommands;
+import easyenterprise.server.account.impl.RegisteredAccountCommands;
+import easyenterprise.server.party.impl.RegisteredPartyCommands;
 
 public class EEServer implements CommandService {
 
