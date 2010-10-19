@@ -7,8 +7,8 @@ public class RegisteredPartyCommands extends RegisteredCommands {
 
 	@Override
 	protected void register() throws CommandException {
-		register(new UpdatePersonImpl());
-		register(new UpdateOrganizationImpl());
+		register(UpdatePersonImpl.class);
+		register(UpdateOrganizationImpl.class);
 	}
 
 }

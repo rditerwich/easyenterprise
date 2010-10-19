@@ -7,7 +7,7 @@ public class RegisteredAccountCommands extends RegisteredCommands {
 
 	@Override
 	protected void register() throws CommandException {
-		register(new LoginCommandImpl());
+		register(LoginCommandImpl.class);
 	}
 
 }
