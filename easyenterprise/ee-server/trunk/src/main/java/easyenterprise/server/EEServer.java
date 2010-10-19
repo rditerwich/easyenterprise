@@ -13,7 +13,7 @@ import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandResult;
 import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.RegisteredCommands;
-import easyenterprise.lib.command.jpa.JpaCommandWrapper;
+import easyenterprise.lib.command.jpa.JpaCommandService;
 import easyenterprise.server.account.command.impl.RegisteredAccountCommands;
 import easyenterprise.server.party.command.impl.RegisteredPartyCommands;
 
@@ -24,7 +24,7 @@ public class EEServer implements CommandService {
 			new RegisteredPartyCommands());
 
 	private final EntityManagerFactory entityManagerFactory;
-	private final JpaCommandWrapper jpaCommandWrapper;
+	private final JpaCommandService jpaCommandWrapper;
 	
 	public EEServer(ServletConfig config) {
 		this(collectProperties(config));
@@ -32,7 +32,7 @@ public class EEServer implements CommandService {
 
 	public EEServer(Map<String, String> properties) {
 		entityManagerFactory = Persistence.createEntityManagerFactory("ee-database", properties);
-		jpaCommandWrapper = new JpaCommandWrapper(registeredCommands, entityManagerFactory );
+		jpaCommandWrapper = new JpaCommandService(registeredCommands, entityManagerFactory );
 	}
 	
 	@Override

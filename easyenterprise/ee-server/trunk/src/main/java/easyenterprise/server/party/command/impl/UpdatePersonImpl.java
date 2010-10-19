@@ -1,6 +1,7 @@
 package easyenterprise.server.party.command.impl;
 
 import easyenterprise.lib.command.CommandException;
+import easyenterprise.lib.command.jpa.JpaCommandService;
 import easyenterprise.server.party.command.UpdatePartyResult;
 import easyenterprise.server.party.command.UpdatePerson;
 import easyenterprise.server.party.entity.Person;
@@ -12,10 +13,10 @@ public class UpdatePersonImpl extends UpdatePartyImpl<Person, UpdatePerson> {
 		// create a new party?
 		Person person;
 		if (command.getParty().getId() != null) {
-			person = getEntityManager().find(Person.class, command.getParty().getId());
+			person = JpaCommandService.getEntityManager().find(Person.class, command.getParty().getId());
 		} else {
 			person = new Person();
-			getEntityManager().persist(person);
+			JpaCommandService.getEntityManager().persist(person);
 		}
 		
 		// copy person fields

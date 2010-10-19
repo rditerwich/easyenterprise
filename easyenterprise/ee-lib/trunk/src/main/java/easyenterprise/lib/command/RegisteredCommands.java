@@ -6,7 +6,7 @@ import java.util.Map;
 
 public abstract class RegisteredCommands implements CommandService {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	Map map = new HashMap();
 	boolean registered;
 

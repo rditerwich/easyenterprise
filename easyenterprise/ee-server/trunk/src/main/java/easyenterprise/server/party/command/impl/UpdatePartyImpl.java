@@ -10,7 +10,7 @@ import easyenterprise.server.party.entity.Party;
 public abstract class UpdatePartyImpl<T extends Party<T>, U extends UpdateParty<T, U>> extends TransactionalCommandImpl<UpdatePartyResult<T>, U> {
 
 	@Override
-	public View getCloneView() {
+	public View getView() {
 		return new BasicView("party/relations");
 	}
 	

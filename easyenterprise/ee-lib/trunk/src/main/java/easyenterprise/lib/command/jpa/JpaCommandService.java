@@ -8,14 +8,14 @@ import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandService;
 import easyenterprise.lib.command.CommandResult;
 
-public class JpaCommandWrapper implements CommandService {
+public class JpaCommandService implements CommandService {
 
 	private static final ThreadLocal<JpaCommandState> stateLocal = new ThreadLocal<JpaCommandState>();
 
 	private final CommandService delegate;
 	private final EntityManagerFactory entityManagerFactory;
 	
-	public JpaCommandWrapper(CommandService delegate, EntityManagerFactory entityManagerFactory) {
+	public JpaCommandService(CommandService delegate, EntityManagerFactory entityManagerFactory) {
 		this.delegate = delegate;
 		this.entityManagerFactory = entityManagerFactory;
 	}
@@ -57,7 +57,7 @@ public class JpaCommandWrapper implements CommandService {
 		}
 	}
 	
-	static EntityManager getEntityManager() {
+	public static EntityManager getEntityManager() {
 		JpaCommandState state = stateLocal.get();
 		if (state.entityManager == null) {
 			state.entityManager = state.entityManagerFactory.createEntityManager();
