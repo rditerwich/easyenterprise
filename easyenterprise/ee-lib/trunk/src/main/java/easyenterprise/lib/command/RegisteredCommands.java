@@ -7,10 +7,9 @@ import java.util.Map;
 public abstract class RegisteredCommands implements CommandService {
 
 	@SuppressWarnings("unchecked")
-	Map map = new HashMap();
+	Map<Class,Class> map = new HashMap<Class,Class>();
 	boolean registered;
 
-	@SuppressWarnings("unchecked")
 	public static RegisteredCommands create(final RegisteredCommands... registeredCommands) {
 		return new RegisteredCommands() {
 			protected void register() throws CommandException {
@@ -22,24 +21,28 @@ public abstract class RegisteredCommands implements CommandService {
 		};
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected <T extends CommandResult, C extends Command<T>> void register(CommandImpl<T, C> impl) throws CommandException {
-		for (Method method : impl.getClass().getMethods()) {
+	protected <T extends CommandResult, C extends Command<T>> void register(Class<? extends CommandImpl<T, C>> implClass) throws CommandException {
+		for (Method method : implClass.getMethods()) {
 			if (method.getName().equals("execute") && method.getParameterTypes().length == 1) {
 				Class<?> commandClass = method.getParameterTypes()[0];
 				if (Command.class.isAssignableFrom(commandClass)) {
-					map.put(commandClass, impl);
+					map.put(commandClass, implClass);
 				}
 				return;
 			}
 		}
-		throw new CommandException("No suitable command class found for registered command: " + impl);
+		throw new CommandException("No suitable command class found for registered command: " + implClass.getName());
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends CommandResult, C extends Command<T>> CommandImpl<T, C> getCommandImpl(C command) throws CommandException {
 		doRegister();
-		return (CommandImpl<T, C>) map.get(command.getClass());
+		Class implClass = map.get(command.getClass());
+		try {
+			return (CommandImpl<T, C>) implClass.newInstance();
+		} catch (Exception e) {
+			throw new CommandException("Coulnd't instantiate command implementation " + implClass.getName() + ": " + e.getMessage(), e);
+		}
 	}
 	
 	public <T extends CommandResult, C extends Command<T>> T execute(C command) throws CommandException {
