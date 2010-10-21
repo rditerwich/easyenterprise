@@ -6,6 +6,7 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='gwt'/>
+  <source path='util'/>
   <source path='command'>
   	<exclude name='CommandImpl**' />
   	<exclude name='AbstractCommandImpl**' />
