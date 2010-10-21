@@ -16,6 +16,7 @@ public class UpdateOrganizationImpl extends UpdatePartyImpl<Organization, Update
 			organization = JpaCommandService.getEntityManager().find(Organization.class, command.getParty().getId());
 		} else {
 			organization = new Organization();
+			getEntityManager().persist(organization);
 		}
 		
 		// copy person fields

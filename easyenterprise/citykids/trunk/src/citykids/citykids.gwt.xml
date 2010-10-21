@@ -13,6 +13,7 @@
   <!-- Other module inherits                                      -->
   <inherits name='easyenterprise.lib.ee-lib'/>
   <inherits name='easyenterprise.server.ee-server'/>
+  <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='citykids.Citykids'/>

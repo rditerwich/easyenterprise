@@ -5,6 +5,7 @@
       <g:FlowPanel>
         <g:Anchor ui:field="login">login</g:Anchor>
         <g:Anchor ui:field="relations">relaties</g:Anchor>
+        <g:Anchor ui:field="planning">planning</g:Anchor>
       </g:FlowPanel>
     </g:north>
 

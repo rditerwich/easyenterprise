@@ -2,6 +2,10 @@ package easyenterprise.server.party.entity;
 
 import javax.persistence.Entity;
 
+import com.google.common.base.Strings;
+
+import easyenterprise.lib.util.StringUtil;
+
 @Entity
 public class Person extends Party<Person> {
 	
@@ -31,5 +35,9 @@ public class Person extends Party<Person> {
 	public Person setLastName(String lastName) {
 		this.lastName = lastName;
 		return this;
+	}
+	@Override
+	public String toString() {
+		return StringUtil.mkString(" ", firstName, middleName, lastName);
 	}
 }

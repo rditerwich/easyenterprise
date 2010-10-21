@@ -43,10 +43,11 @@ public class Citykids implements EntryPoint {
 	public static PageFrame pageFrame = new PageFrame();
 	public static LoginPage loginPage = new LoginPage();
 	public static RelationManagementPage relationManagementPage = new RelationManagementPage();
+	public static PlanningPage planningPage = new PlanningPage();
 	
 	
 	public void onModuleLoad() {
-		pageFrame.setCurrentPage(relationManagementPage);
+		pageFrame.setCurrentPage(planningPage);
 		RootLayoutPanel.get().add(pageFrame);
 	}
 	public void onModuleLoad2() {

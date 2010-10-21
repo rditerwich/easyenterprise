@@ -52,3 +52,18 @@ input.button1,input.button2,input.button3,input.button4,input.button5 {
 	text-align: center;
 	text-decoration: none;
 }
+
+/** Planning table */
+table.planning {
+	border: 1px solid blue;
+}
+
+table.planning .left-bar {
+	background-color: #e5e0e0;
+	border-right: 2px solid blue;
+}
+
+table.planning td {
+	border: 1px solid gray;
+	width: 20px;
+}

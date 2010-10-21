@@ -16,6 +16,7 @@ public class PageFrame extends Composite {
 	
 	@UiField Anchor login;
 	@UiField Anchor relations;
+	@UiField Anchor planning;
 	@UiField SimplePanel contentPanel;
 	
 	private Page currentPage;
@@ -24,20 +25,17 @@ public class PageFrame extends Composite {
 		initWidget(binder.createAndBindUi(this));
 		login.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (currentPage == null) {
-					Citykids.loginPage.show();
-				} else {
-					setCurrentPage(null);
-				}
+				Citykids.loginPage.show();
 			}
 		});
 		relations.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (currentPage == null) {
-					Citykids.relationManagementPage.show();
-				} else {
-					setCurrentPage(null);
-				}
+				Citykids.relationManagementPage.show();
+			}
+		});
+		planning.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				Citykids.planningPage.show();
 			}
 		});
 	}
