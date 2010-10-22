@@ -11,7 +11,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class PlanningChart extends Composite {
 	
 	private String header;
-	private FlexTable table;
+	private FlexTable tableLeft;
+	private FlexTable tableRight;
 	private Date fromDate;
 	private Date toDate;
 	
@@ -29,41 +30,38 @@ public class PlanningChart extends Composite {
 		this.header = header;
 		groups = new ArrayList<PlanningGroup>();
 		initWidget(new FlowPanel() {{
+			setStyleName("planning-chart");
 			add(new FlowPanel() {{
+				setStyleName("left");
 				add(new FlexTable() {{
-					table = this;
-					setStyleName("planning-chart");
-					getColumnFormatter().setStyleName(0, "left-bar");
-					getCellFormatter().setStyleName(0, 0, "header");
+					tableLeft = this;
 				}});
 			}});
 			add(new FlowPanel() {{
+				setStyleName("right");
 				add(new FlexTable() {{
-					table = this;
-					setStyleName("planning-chart");
-					getColumnFormatter().setStyleName(0, "left-bar");
-					getCellFormatter().setStyleName(0, 0, "header");
+					tableRight = this;
 				}});
 			}});
 		}});
 	}
 	
 	public void fill() {
-		table.setText(0, 0, header);
+		tableLeft.setText(0, 0, header);
 		int index = 2;
+		for (int i = 0; i < 24; i++) {
+			tableRight.setText(index, i, "" + i);
+		}
 		for (PlanningGroup group : groups) {
-			table.getRowFormatter().setStyleName(index, "group-header");
-			table.setText(index, 0, group.header);
-			for (int i = 0; i < 24; i++) {
-				table.setText(index, i + 1, "" + i);
-			}
+			tableLeft.getRowFormatter().setStyleName(index, "group-header");
+			tableLeft.setText(index, 0, group.header);
 			index++;
 			for (PlanningLine line : group.lines) {
-				table.setText(index, 0, line.header);
+				tableLeft.setText(index, 0, line.header);
 				for (int i = 0; i < 24; i++) {
-					table.setText(index, i + 1, "");
+					tableRight.setText(index, i, "");
 					if (index == 3 && i == 5) {
-						table.setWidget(index, i + 1, new FlowPanel() {{
+						tableRight.setWidget(index, i + 1, new FlowPanel() {{
 							setStyleName("bar");
 						}});
 					}

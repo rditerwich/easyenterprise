@@ -42,6 +42,7 @@ public class RelationManagementPage extends Page {
 			}
 			public void onFailure(Throwable caught) {
 				System.out.println("Niet gelukt: " + caught);
+				caught.printStackTrace();
 			}			
 		});
 	}
