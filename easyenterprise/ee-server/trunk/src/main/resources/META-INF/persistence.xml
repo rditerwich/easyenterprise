@@ -6,9 +6,13 @@
 	<persistence-unit name="ee-database" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>easyenterprise.server.party.entity.Party</class>
+    <class>easyenterprise.server.party.entity.PartyInfo</class>
+    <class>easyenterprise.server.party.entity.AddressInfo</class>
+    <class>easyenterprise.server.party.entity.EmailInfo</class>
     <class>easyenterprise.server.party.entity.Person</class>
     <class>easyenterprise.server.party.entity.Organization</class>
     <class>easyenterprise.server.party.entity.Relation</class>
+    <class>easyenterprise.server.planning.entity.Planning</class>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="create-tables" />
 		</properties>
