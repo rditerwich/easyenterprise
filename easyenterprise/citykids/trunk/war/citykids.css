@@ -55,9 +55,13 @@ input.button1,input.button2,input.button3,input.button4,input.button5 {
 
 /** Planning table */
 .planning-chart {
-	border: 1px solid blue;
+	overflow: hidden;
+	white-space: nowrap;
+	border-right: 1px solid blue;
+}
+
+.planning-chart table {
 	border-collapse: collapse;
-	position: relative;
 }
 
 .planning-chart .left {
@@ -66,6 +70,12 @@ input.button1,input.button2,input.button3,input.button4,input.button5 {
 	float: left;
 }
 
+.planning-chart .right {
+	width: 90%; 
+	overflow: auto;
+	border: 1px solid green;
+}
+	
 .planning-chart .header {
 	font-weight: bold;
 }
@@ -77,6 +87,7 @@ input.button1,input.button2,input.button3,input.button4,input.button5 {
 .planning-chart td {
 	border: 1px solid gray;
 	width: 20px;
+	height: 24px;
 }
 
 .planning-chart .group-header td {
