@@ -16,10 +16,12 @@ public class PlanningPage extends Page {
 
 	protected Header header;
 	private GWTCanvas canvas;
+	private PlanningChart chart;
 
 	public PlanningPage() {
 		initWidget(new FlowPanel() {{
 			final FlowPanel panel = this;
+			add(chart = new PlanningChart("Planningoverzicht"));
 			add(drawPlanning());
 			add(new GWTCanvas() {{
 				canvas = this;
@@ -40,6 +42,7 @@ public class PlanningPage extends Page {
 				stroke();
 			}});
 		}});
+		chart.fill();
 	}
 	
 	private List<Person> generateMedewerkers() {
@@ -51,6 +54,11 @@ public class PlanningPage extends Page {
 	
 	private FlexTable drawPlanning() {
 		final List<Person> medewerkers = generateMedewerkers();
+		chart.add(new PlanningGroup("Medewerkers") {{
+			for (Person medewerker : medewerkers) {
+				add(new PlanningLine(medewerker.toString()));
+			}
+		}});
 		return new FlexTable() {{
 			setStyleName("planning");
 			getColumnFormatter().setStyleName(0, "left-bar");
@@ -58,9 +66,9 @@ public class PlanningPage extends Page {
 				setText(i, 0, medewerkers.get(i).toString());
 				for (int j = 0; j < 20; j++) {
 					setText(i, j + 1, "");
+					System.err.println(getCellFormatter().getElement(i, j+1).getAbsoluteLeft());
 				}
 			}
 		}};
 	}
-	
 }

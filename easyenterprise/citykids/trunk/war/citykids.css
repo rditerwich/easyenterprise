@@ -54,16 +54,41 @@ input.button1,input.button2,input.button3,input.button4,input.button5 {
 }
 
 /** Planning table */
-table.planning {
+table.planning-chart {
 	border: 1px solid blue;
+	border-collapse: collapse;
+	position: relative;
 }
 
-table.planning .left-bar {
+table.planning-chart .left-bar {
 	background-color: #e5e0e0;
 	border-right: 2px solid blue;
 }
 
-table.planning td {
+table.planning-chart .header {
+	font-weight: bold;
+}
+
+table.planning-chart .group-header {
+	background-color: white;
+}
+
+table.planning-chart td {
 	border: 1px solid gray;
 	width: 20px;
+}
+
+table.planning-chart .group-header td {
+	border-top: none;
+	border-right: 1px solid gray;
+	position: relative;
+}
+
+table.planning-chart .bar {
+	border: 1px solid gray;
+	background-color: red;
+	height: 12px;
+	width: 80px;
+	position: absolute;
+	bottom: 3px;
 }
