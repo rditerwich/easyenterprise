@@ -5,7 +5,7 @@ import java.util.Map;
 
 import easyenterprise.server.EEServer;
 
-public class TestBase {
+public abstract class TestBase {
 
 	private EEServer server;
 	
