@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import easyenterprise.server.common.EasyEnterpriseEntity;
 
@@ -15,9 +17,11 @@ public class Planning extends EasyEnterpriseEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Column(nullable=false) 
+	@Temporal(TemporalType.DATE)
 	private Date startDate;
 
 	@Column(nullable=false) 
+	@Temporal(TemporalType.DATE)
 	private Date endDate;
 
 	@Column(nullable=false) 

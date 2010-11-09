@@ -9,7 +9,7 @@ public class TestBase {
 
 	private EEServer server;
 	
-	protected EEServer getServer() {
+	protected EEServer getEEServer() {
 		if (server == null) {
 			Map<String, String> properties = new HashMap<String, String>();
 			properties.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");

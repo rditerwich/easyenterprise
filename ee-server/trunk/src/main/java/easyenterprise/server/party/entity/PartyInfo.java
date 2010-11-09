@@ -1,12 +1,13 @@
 package easyenterprise.server.party.entity;
 
+import static javax.persistence.InheritanceType.SINGLE_TABLE;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
 
 import easyenterprise.server.common.EasyEnterpriseEntity;
-
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 @Entity
 @Inheritance(strategy=SINGLE_TABLE)
@@ -15,7 +16,7 @@ public abstract class PartyInfo extends EasyEnterpriseEntity {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("rawtypes")
-	@Column(nullable=false) 
+	@JoinColumn(nullable=false) 
 	private Party party;
 	
 	@Column(nullable=false) 

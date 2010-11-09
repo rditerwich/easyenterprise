@@ -60,7 +60,7 @@ final class ClassInfo {
 	private void findProperties(Class<?> c, Map<String, PropertyInfo> result) {
 		// Recurse ourselves to get a 'nicer' property order in the map.
 		Class<?> superclass = c.getSuperclass();
-		if (superclass != null) {
+		if (superclass != null && !superclass.equals(Object.class)) {
 			findProperties(superclass, result);
 		}
 		

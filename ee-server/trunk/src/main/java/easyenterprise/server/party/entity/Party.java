@@ -1,13 +1,14 @@
 package easyenterprise.server.party.entity;
 
 import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import static javax.persistence.InheritanceType.JOINED;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
@@ -15,7 +16,7 @@ import easyenterprise.server.common.Address;
 import easyenterprise.server.common.EasyEnterpriseEntity;
 
 @Entity
-@Inheritance(strategy=SINGLE_TABLE)
+@Inheritance(strategy=JOINED)
 public abstract class Party<This extends Party<This>> extends EasyEnterpriseEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +28,10 @@ public abstract class Party<This extends Party<This>> extends EasyEnterpriseEnti
 	@OrderBy("label")
 	private Set<PartyInfo> infos;
 
+	@JoinColumn(nullable=true)
 	private AddressInfo invoiceAddress;
+	
+	@JoinColumn(nullable=true)
 	private AddressInfo deliveryAddress;
 
 	public Set<Relation> getRelations() {

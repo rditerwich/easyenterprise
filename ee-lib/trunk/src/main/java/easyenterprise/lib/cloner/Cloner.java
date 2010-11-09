@@ -29,7 +29,7 @@ public class Cloner {
 		try {
 			ClassInfo info = ClassInfo.getInfo(from.getClass());
 			U to = toClass.newInstance();
-			for (PropertyInfo p : (List<PropertyInfo>) info.properties.values()) {
+			for (PropertyInfo p : info.properties.values()) {
 				Object value;
 				if (p.getter != null) {
 					value = p.getter.invoke(from);

@@ -23,7 +23,7 @@ public class PartyTest extends TestBase {
 				.setFirstName("John")
 				.setLastName("Smith"));
 		
-		UpdatePartyResult<Person> result = getServer().execute(command);
+		UpdatePartyResult<Person> result = getEEServer().execute(command);
 		
 		System.out.println("Created person " + result.getParty().getId() + ": " + result.getParty().getFirstName());
 		Assert.assertNotSame(command.getParty(), result.getParty());
@@ -32,16 +32,16 @@ public class PartyTest extends TestBase {
 	
 	@Test
 	public void testFindParties() throws CommandException {
-		getServer().execute(new UpdatePerson()
+		getEEServer().execute(new UpdatePerson()
 			.setParty(new Person()
 				.setFirstName("Mary")
 				.setLastName("Poppins")));
-		getServer().execute(new UpdateOrganization()
+		getEEServer().execute(new UpdateOrganization()
 			.setParty(new Organization()
 				.setName("The Money Pit Ltd.")));
 		
 		FindParties command = new FindParties();
-		FindPartiesResult result = getServer().execute(command);
+		FindPartiesResult result = getEEServer().execute(command);
 		System.out.println(result.getParties());
 		Assert.assertEquals(3, result.getParties().size());
 	}
