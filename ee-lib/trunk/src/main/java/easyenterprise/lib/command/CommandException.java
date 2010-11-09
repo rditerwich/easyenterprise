@@ -1,5 +1,7 @@
 package easyenterprise.lib.command;
 
+import easyenterprise.lib.cloner.CloneException;
+
 public class CommandException extends Exception {
 
 	private static final long serialVersionUID = 1L;
@@ -14,5 +16,9 @@ public class CommandException extends Exception {
 	public CommandException(String description, Throwable cause) {
 		super(description, cause);
 	}
+
+	public CommandException(CloneException cause) {
+		super(cause);
+  }
 	
 }

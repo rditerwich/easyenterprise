@@ -8,7 +8,7 @@ import java.util.Map;
 import easyenterprise.lib.cloner.CloneException;
 import easyenterprise.lib.cloner.Cloner;
 
-public class CommandServer extends CommandWrapper implements CommandService {
+public class CommandServer extends CommandWrapper implements CommandExecutor {
 
 	protected Map<Class<? extends Command<?>>, Class<? extends CommandImpl<?>>> map = new HashMap<Class<? extends Command<?>>, Class<? extends CommandImpl<?>>>();
 	protected List<CommandWrapper> wrappers = new ArrayList<CommandWrapper>();

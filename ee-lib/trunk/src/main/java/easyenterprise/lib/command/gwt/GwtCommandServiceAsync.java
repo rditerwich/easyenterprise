@@ -9,7 +9,7 @@ public interface GwtCommandServiceAsync {
 
     /**
      * GWT-RPC service  asynchronous (client-side) interface
-     * @see GwtCommandService.client.util.CommandService
+     * @see GwtCommandService.client.util.CommandExecutor
      */
 	<T extends CommandResult> void execute(Command<T> command, AsyncCallback<T> callback);
 }

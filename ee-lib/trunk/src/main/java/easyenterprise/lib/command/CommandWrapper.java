@@ -1,6 +1,6 @@
 package easyenterprise.lib.command;
 
-public abstract class CommandWrapper implements CommandService {
+public abstract class CommandWrapper implements CommandExecutor {
 
 	private final CommandWrapper delegate;
 
