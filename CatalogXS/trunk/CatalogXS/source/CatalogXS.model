@@ -1,7 +1,0 @@
-root /packages:AgileXS/packages
-
-import Metaphor.Core.ModelPackage
-
-ModelPackage {
-    name = CatalogXS
-}
