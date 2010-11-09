@@ -2,13 +2,13 @@ package easyenterprise.lib.command;
 
 import easyenterprise.lib.cloner.View;
 
-public interface CommandImpl<T extends CommandResult, C extends Command<T>> {
+public interface CommandImpl<T extends CommandResult> extends Command<T> {
 
 	View getView();
 	
-	void preExecute(C command) throws CommandException;
+	void preExecute() throws CommandException;
 	
-	T execute(C command) throws CommandException;
+	T execute() throws CommandException;
 	
-	T postExecute(C command, T result, CommandException e) throws CommandException;
+	T postExecute(T result, CommandException e) throws CommandException;
 }

@@ -25,7 +25,34 @@ public class Cloner {
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked" })
+	public static <T, U extends T> U copyShallow(T from, Class<U> toClass) throws CloneException {
+		try {
+			ClassInfo info = ClassInfo.getInfo(from.getClass());
+			U to = toClass.newInstance();
+			for (PropertyInfo p : (List<PropertyInfo>) info.properties.values()) {
+				Object value;
+				if (p.getter != null) {
+					value = p.getter.invoke(from);
+				} else if (p.field != null) {
+					value = p.field.get(from);
+				} else {
+					throw new CloneException("No getter or field found for property '" + p.name + "' in class " + from.getClass());
+				}
+				if (p.setter != null) {
+					p.setter.invoke(to, value);
+				} else if (p.field != null) {
+					p.field.set(to, value);
+				} else {
+					throw new CloneException("No setter or field found for property '" + p.name + "' in class " + toClass);
+				}
+			}
+			return to;
+		} catch (Exception e) {
+			throw new CloneException("Class " + from.getClass() + " cannot be copied to " + toClass + ": " + e.getMessage(), e);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object cloneValue(Object value, View view) throws Exception {
 		if (value == null) {
 			return value;
@@ -40,7 +67,7 @@ public class Cloner {
 			return value;
 		}
 		if (Map.class.isAssignableFrom(value.getClass())) {
-			Map targetMap = new LinkedHashMap();
+      Map targetMap = new LinkedHashMap();
 			for (Map.Entry mapEntry : ((Map<?,?>) value).entrySet()) {
 				MapEntry entryClone = (MapEntry) cloneValue(new MapEntry(mapEntry), view);
 				targetMap.put(entryClone.getKey(), entryClone.getValue());

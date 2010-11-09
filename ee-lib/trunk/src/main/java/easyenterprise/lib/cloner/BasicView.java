@@ -33,6 +33,7 @@ public class BasicView extends View {
 		super(properties);
 	}
 	
+	@Override
 	public List<PropertyInfo> getProperties(ClassInfo c) throws Exception {
 		List<PropertyInfo> result = new ArrayList<PropertyInfo>();
 		for (PropertyInfo p : c.properties.values()) {
