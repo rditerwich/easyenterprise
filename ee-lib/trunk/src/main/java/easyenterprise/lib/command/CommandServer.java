@@ -23,7 +23,7 @@ public class CommandServer extends CommandWrapper implements CommandService {
 	}
 	
 	@SuppressWarnings("unchecked")
-  public <T extends CommandResult, I extends Command<T> & CommandImpl<T>> void register(Class<I> implClass) {
+  private void register(Class<? extends CommandImpl<?>> implClass) {
 		// find all super command classes that are not impls 
 		for (Class<? extends Command<?>> commandClass = implClass; commandClass != null; commandClass = (Class<? extends Command<?>>) commandClass.getSuperclass()) {
 			if (Command.class.isAssignableFrom(commandClass) && !CommandImpl.class.isAssignableFrom(commandClass)) {
