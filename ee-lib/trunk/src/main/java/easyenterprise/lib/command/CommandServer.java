@@ -51,7 +51,7 @@ public class CommandServer extends CommandWrapper implements CommandService {
   }
 	
 	@Override
-	protected <T extends CommandResult, C extends easyenterprise.lib.command.Command<T>, I extends easyenterprise.lib.command.CommandImpl<T>> I createImpl(C command) throws CommandException {
+	protected <T extends CommandResult, C extends Command<T>, I extends Command<T> & CommandImpl<T>> I createImpl(C command) throws CommandException {
 		return createCommandImpl(command);
 	}
 	
