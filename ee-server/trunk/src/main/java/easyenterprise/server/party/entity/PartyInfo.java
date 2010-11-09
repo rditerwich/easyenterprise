@@ -14,7 +14,7 @@ public abstract class PartyInfo extends EasyEnterpriseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Column(nullable=false) 
 	private Party party;
 	

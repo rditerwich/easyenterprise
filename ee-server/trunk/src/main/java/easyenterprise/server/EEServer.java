@@ -11,20 +11,21 @@ import javax.servlet.ServletConfig;
 import easyenterprise.lib.command.Command;
 import easyenterprise.lib.command.CommandException;
 import easyenterprise.lib.command.CommandResult;
-import easyenterprise.lib.command.CommandService;
+import easyenterprise.lib.command.CommandServer;
+import easyenterprise.lib.command.CommandExecutor;
 import easyenterprise.lib.command.RegisteredCommands;
-import easyenterprise.lib.command.jpa.JpaCommandService;
+import easyenterprise.lib.command.jpa.JpaService;
 import easyenterprise.server.account.impl.RegisteredAccountCommands;
 import easyenterprise.server.party.impl.RegisteredPartyCommands;
 
-public class EEServer implements CommandService {
+public class EEServer implements CommandExecutor {
 
 	private final RegisteredCommands registeredCommands = RegisteredCommands.create(
 			new RegisteredAccountCommands(), 
 			new RegisteredPartyCommands());
 
 	private final EntityManagerFactory entityManagerFactory;
-	private final JpaCommandService jpaCommandWrapper;
+	private final CommandExecutor executor;
 	
 	public EEServer(ServletConfig config) {
 		this(collectProperties(config));
@@ -32,12 +33,13 @@ public class EEServer implements CommandService {
 
 	public EEServer(Map<String, String> properties) {
 		entityManagerFactory = Persistence.createEntityManagerFactory("ee-database", properties);
-		jpaCommandWrapper = new JpaCommandService(registeredCommands, entityManagerFactory );
+		CommandServer server = new CommandServer(registeredCommands);
+		executor = new JpaService(server, entityManagerFactory);
 	}
 	
 	@Override
 	public <T extends CommandResult, C extends Command<T>> T execute(C command) throws CommandException {
-		return jpaCommandWrapper.execute(command);
+		return executor.execute(command);
 	}
 	
 	private static Map<String, String> collectProperties(ServletConfig config) {

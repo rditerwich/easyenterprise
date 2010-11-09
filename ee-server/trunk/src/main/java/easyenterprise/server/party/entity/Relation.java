@@ -16,17 +16,17 @@ public class Relation extends EasyEnterpriseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne
+  @ManyToOne
 	@JoinColumn(nullable=false)
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Party party;
 	
 	@OneToOne
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Party relatedParty;
 	
 	@SuppressWarnings("unchecked")
-	public <T extends Party<T>> T getParty() {
+  public <T extends Party<T>> T getParty() {
 		return (T) party;
 	}
 	

@@ -9,15 +9,15 @@ public class FindPartiesResult implements CommandResult {
 
 	private static final long serialVersionUID = 1L;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private List<? extends Party> parties;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public List<? extends Party> getParties() {
 		return parties;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public FindPartiesResult setParties(List<? extends Party> parties) {
 		this.parties = parties;
 		return this;
