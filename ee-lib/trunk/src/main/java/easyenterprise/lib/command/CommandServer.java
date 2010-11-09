@@ -33,13 +33,13 @@ public class CommandServer extends CommandWrapper implements CommandService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends CommandResult, C extends Command<T>, I extends Command<T> & CommandImpl<T>> I createCommandImpl(C command) throws CommandException {
+	public <T extends CommandResult, C extends Command<T>> CommandImpl<T> createCommandImpl(C command) throws CommandException {
 		Class<? extends CommandImpl<?>> implClass = map.get(command.getClass());
 		if (implClass == null) {
 			throw new CommandNotImplementedException(command);
 		}
 		try {
-			return (I) Cloner.copyShallow(command, (Class<C>) implClass);
+			return (CommandImpl<T>) Cloner.copyShallow(command, (Class<C>) implClass);
     } catch (CloneException e) {
 			throw new CommandException("Couldn't create command implementation " + implClass.getName() + ": " + e.getMessage(), e);
     }
@@ -51,7 +51,7 @@ public class CommandServer extends CommandWrapper implements CommandService {
   }
 	
 	@Override
-	protected <T extends CommandResult, C extends Command<T>, I extends Command<T> & CommandImpl<T>> I createImpl(C command) throws CommandException {
+	protected <T extends CommandResult, C extends Command<T>> CommandImpl<T> createImpl(C command) throws CommandException {
 		return createCommandImpl(command);
 	}
 	

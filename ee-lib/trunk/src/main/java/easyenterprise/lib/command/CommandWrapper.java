@@ -8,7 +8,7 @@ public abstract class CommandWrapper implements CommandService {
 		this.delegate = delegate;
 	}
 	
-	protected <T extends CommandResult, C extends Command<T>, I extends Command<T> & CommandImpl<T>> I createImpl(C command) throws CommandNotImplementedException, CommandException {
+	protected <T extends CommandResult, C extends Command<T>> CommandImpl<T> createImpl(C command) throws CommandException {
 		return delegate.createImpl(command);
 	}
 	
