@@ -1,0 +1,5 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name="easyenterprise.gwtlib.GwtLib"/>
+	<entry-point class="easyenterprise.gwtplayground.client.MenuDemo"/>
+</module>
