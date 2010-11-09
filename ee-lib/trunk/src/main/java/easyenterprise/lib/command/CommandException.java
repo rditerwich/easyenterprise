@@ -1,6 +1,5 @@
 package easyenterprise.lib.command;
 
-import easyenterprise.lib.cloner.CloneException;
 
 public class CommandException extends Exception {
 
@@ -17,7 +16,7 @@ public class CommandException extends Exception {
 		super(description, cause);
 	}
 
-	public CommandException(CloneException cause) {
+	public CommandException(Throwable cause) {
 		super(cause);
   }
 	

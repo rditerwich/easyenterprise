@@ -9,7 +9,9 @@
   <source path='util'/>
   <source path='command'>
   	<exclude name='CommandImpl**' />
-  	<exclude name='AbstractCommandImpl**' />
+  	<exclude name='CommandServer**' />
+  	<exclude name='CommandService**' />
+  	<exclude name='CommandWrapper**' />
   	<exclude name='RegisteredCommands**' />
   	<exclude name='jpa/**' />
   </source>
