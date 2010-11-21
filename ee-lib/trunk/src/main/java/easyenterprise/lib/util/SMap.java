@@ -81,19 +81,32 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * Returns the value corresponding to the null key.
 	 * @return Value or null.
 	 */
-	public V getValue() {
-		return getValue(null);
+	public final V getValue() {
+		return getValue(null, null);
 	}
 	
 	/**
 	 * Returns the first value for given key. Note the null is
 	 * returned either when the first value for given key is null
 	 * or when there are no values for given key. 
-	 * Use {@link #getValues(Object)} to make the distinction.
+	 * Use {@link #getValues(Object)} or {@link #getValue(Object, Object)}
+	 * to make the distinction.
 	 * @param key
+	 * @param defaultValue TODO
 	 * @return Value or null.
 	 */
-	public abstract V getValue(K key);
+	public final V getValue(K key) {
+		return getValue(key, null);
+	}
+	
+	/**
+	 * Returns the first value for given key. If the value does
+	 * not exist, the default value is returned.
+	 * @param key
+	 * @param defaultValue 
+	 * @return Value or null.
+	 */
+	public abstract V getValue(K key, V defaultValue);
 	
 	/**
 	 * Returns the values corresponding to the null key.
@@ -194,9 +207,9 @@ class Empty<K, V> extends SMap<K, V> {
 	public V getFirstValue() {
 		return null;
 	}
-	public V getValue(K key) {
-		return null;
-	};
+	public V getValue(K key, V defaultValue) {
+		return defaultValue;
+	}
 	@Override
 	public List<V> getFirstValues() {
 		return emptyList();
@@ -234,8 +247,8 @@ class NoKeySingleValue<K, V> extends SMap<K, V> {
 	public V getFirstValue() {
 		return value;
 	}
-	public V getValue(K key) {
-		return key == null ? value : null;
+	public V getValue(K key, V defaultValue) {
+		return key == null ? value : defaultValue;
 	}
 	public List<V> getFirstValues() {
 	  return singletonList(value);
@@ -274,9 +287,9 @@ class SingleKeySingleValue<K, V> extends SMap<K, V> {
 	public V getFirstValue() {
 	  return value;
 	}
-	public V getValue(K key) {
+	public V getValue(K key, V defaultValue) {
 		if (equal(this.key, key)) return value;
-		else return null;
+		else return defaultValue;
 	}
 	public List<V> getFirstValues() {
 		return singletonList(value);
@@ -319,13 +332,13 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 	  return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key) {
+  public V getValue(K key, V defaultValue) {
 		for (int i = 0; i < keys.length; i++) {
 			if (Objects.equal(keys[i], key)) {
 				return (V) values[i];
 			}
 		}
-		return null;
+		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
 	public List<V> getFirstValues() {
@@ -399,8 +412,8 @@ class NoKeyMultiValue<K, V> extends SMap<K, V> {
 	  return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key) {
-		return (V) (key == null ? values[0] : null);
+  public V getValue(K key, V defaultValue) {
+		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
 	public List<V> getFirstValues() {
@@ -459,8 +472,8 @@ class SingleKeyMultiValue<K, V> extends SMap<K, V> {
 		return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-	public V getValue(K key) {
-		return (V) (key == null ? values[0] : null);
+	public V getValue(K key, V defaultValue) {
+		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
 	public List<V> getFirstValues() {
@@ -521,12 +534,12 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 	  return (V) values[0][0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key) {
+  public V getValue(K key, V defaultValue) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key))
-				return (V) values[i];
+				return (V) values[i][0];
 		}
-		return null;
+		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
 	public List<V> getFirstValues() {
