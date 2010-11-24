@@ -109,6 +109,11 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 */
 	public abstract V getValue(K key, V defaultValue);
 	
+	/**
+	 * 
+	 * @param keys
+	 * @return Value or null
+	 */
 	public V tryGetValue(K... keys) {
 		V undefined = undefined();
 		for (K key : keys) {
@@ -135,6 +140,20 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 */
 	public abstract List<V> getValues(K key);
 	
+	/**
+	 * 
+	 * @param keys
+	 * @return Values or empty list
+	 */
+	public List<V> tryGetValueS(K... keys) {
+		for (K key : keys) {
+			List<V> values = getValues(key);
+			if (!values.isEmpty()) {
+				return values;
+			}
+		}
+		return Collections.emptyList();
+	}
 	/**
 	 * Synonym to add(null, value)
 	 */
