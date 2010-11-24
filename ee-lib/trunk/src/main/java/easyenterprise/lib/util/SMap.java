@@ -115,7 +115,8 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * @return Value or null
 	 */
 	public V tryGetValue(K... keys) {
-		V undefined = undefined();
+		@SuppressWarnings("unchecked")
+		V undefined = (V) SMap.undefined;
 		for (K key : keys) {
 			V value = getValue(key, undefined);
 			if (value != undefined) {
