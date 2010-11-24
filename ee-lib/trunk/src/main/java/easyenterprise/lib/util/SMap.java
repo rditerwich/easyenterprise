@@ -31,6 +31,7 @@ import com.google.common.base.Objects;
 public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final Object  undefined = new Object();
 	private static SMap<?, ?> emptyMap = new Empty<Object, Object>(); 
 	
 	@SuppressWarnings("unchecked")
@@ -108,6 +109,17 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 */
 	public abstract V getValue(K key, V defaultValue);
 	
+	public V tryGetValue(K... keys) {
+		V undefined = undefined();
+		for (K key : keys) {
+			V value = getValue(key, undefined);
+			if (value != undefined) {
+				return value;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Returns the values corresponding to the null key.
 	 * @return Values or the empty list
@@ -167,6 +179,11 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		return map;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <V> V undefined() {
+		return (V) undefined;
+	}
+	
 	/**
 	 * It's guaranteed that values.size() > 1 
 	 */
