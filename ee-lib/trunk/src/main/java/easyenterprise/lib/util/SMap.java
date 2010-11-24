@@ -65,39 +65,39 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	/**
 	 * Returns the first value of the first key. Note the null is
 	 * returned either when the first value of the first key is null
-	 * or when the map is empty. Use {@link #getFirstValues()} to make
+	 * or when the map is empty. Use {@link #getAllFirst()} to make
 	 * the distiction.
 	 * @return Value or null.
 	 */
-	public abstract V getFirstValue();
+	public abstract V getFirst();
 	
 	/**
 	 * Returns the values corresponding to the first key. The empty
 	 * list will be returned only when the map is empty.
 	 * @return Values or the empty list.
 	 */
-	public abstract List<V> getFirstValues();
+	public abstract List<V> getAllFirst();
 	
 	/**
 	 * Returns the value corresponding to the null key.
 	 * @return Value or null.
 	 */
-	public final V getValue() {
-		return getValue(null, null);
+	public final V get() {
+		return get(null, null);
 	}
 	
 	/**
 	 * Returns the first value for given key. Note the null is
 	 * returned either when the first value for given key is null
 	 * or when there are no values for given key. 
-	 * Use {@link #getValues(Object)} or {@link #getValue(Object, Object)}
+	 * Use {@link #getAll(Object)} or {@link #get(Object, Object)}
 	 * to make the distinction.
 	 * @param key
 	 * @param defaultValue TODO
 	 * @return Value or null.
 	 */
-	public final V getValue(K key) {
-		return getValue(key, null);
+	public final V get(K key) {
+		return get(key, null);
 	}
 	
 	/**
@@ -107,18 +107,28 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * @param defaultValue 
 	 * @return Value or null.
 	 */
-	public abstract V getValue(K key, V defaultValue);
+	public abstract V get(K key, V defaultValue);
+
+	/**
+	 * Warning: only call when V is a nested SMap.
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public V getOrEmpty(K key) {
+		return get(key, (V) emptyMap);
+	}
 	
 	/**
 	 * 
 	 * @param keys
 	 * @return Value or null
 	 */
-	public V tryGetValue(K... keys) {
+	public V tryGet(K... keys) {
 		@SuppressWarnings("unchecked")
 		V undefined = (V) SMap.undefined;
 		for (K key : keys) {
-			V value = getValue(key, undefined);
+			V value = get(key, undefined);
 			if (value != undefined) {
 				return value;
 			}
@@ -130,8 +140,8 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * Returns the values corresponding to the null key.
 	 * @return Values or the empty list
 	 */
-	public List<V> getValues() {
-		return getValues(null);
+	public List<V> getAll() {
+		return getAll(null);
 	}
 	
 	/**
@@ -139,16 +149,16 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * @param key
 	 * @return Values or the empty list.
 	 */
-	public abstract List<V> getValues(K key);
+	public abstract List<V> getAll(K key);
 	
 	/**
 	 * 
 	 * @param keys
 	 * @return Values or empty list
 	 */
-	public List<V> tryGetValueS(K... keys) {
+	public List<V> tryGetAll(K... keys) {
 		for (K key : keys) {
-			List<V> values = getValues(key);
+			List<V> values = getAll(key);
 			if (!values.isEmpty()) {
 				return values;
 			}
@@ -243,17 +253,17 @@ class Empty<K, V> extends SMap<K, V> {
 	public List<K> getKeys() {
 		return emptyList();
 	}
-	public V getFirstValue() {
+	public V getFirst() {
 		return null;
 	}
-	public V getValue(K key, V defaultValue) {
+	public V get(K key, V defaultValue) {
 		return defaultValue;
 	}
 	@Override
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return emptyList();
 	}
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
@@ -286,16 +296,16 @@ class NoKeySingleValue<K, V> extends SMap<K, V> {
   public List<K> getKeys() {
 		return (List<K>) nullList;
 	}
-	public V getFirstValue() {
+	public V getFirst() {
 		return value;
 	}
-	public V getValue(K key, V defaultValue) {
+	public V get(K key, V defaultValue) {
 		return key == null ? value : defaultValue;
 	}
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 	  return singletonList(value);
 	}
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		if (key != null) return emptyList();
 		return singletonList(value);
 	}
@@ -332,17 +342,17 @@ class SingleKeySingleValue<K, V> extends SMap<K, V> {
 	public List<K> getKeys() {
 		return singletonList(key);
 	}
-	public V getFirstValue() {
+	public V getFirst() {
 	  return value;
 	}
-	public V getValue(K key, V defaultValue) {
+	public V get(K key, V defaultValue) {
 		if (equal(this.key, key)) return value;
 		else return defaultValue;
 	}
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return singletonList(value);
 	}
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		if (equal(this.key, key)) return singletonList(value);
 		else return emptyList();
 	}
@@ -382,11 +392,11 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 		return (List<K>) asList(keys);
 	}
 	@SuppressWarnings("unchecked")
-  public V getFirstValue() {
+  public V getFirst() {
 	  return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key, V defaultValue) {
+  public V get(K key, V defaultValue) {
 		for (int i = 0; i < keys.length; i++) {
 			if (Objects.equal(keys[i], key)) {
 				return (V) values[i];
@@ -395,11 +405,11 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return (List<V>) asList(values[0]);
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key)) {
 				return (List<V>) asList(values[i]);
@@ -473,19 +483,19 @@ class NoKeyMultiValue<K, V> extends SMap<K, V> {
 		return (List<K>) nullList;
 	}
 	@SuppressWarnings("unchecked")
-  public V getFirstValue() {
+  public V getFirst() {
 	  return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key, V defaultValue) {
+  public V get(K key, V defaultValue) {
 		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return (List<V>) asList(values);
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		if (key != null) return emptyList();
 		return (List<V>) asList(values);
 	}
@@ -537,19 +547,19 @@ class SingleKeyMultiValue<K, V> extends SMap<K, V> {
 		return singletonList(key);
 	}
 	@SuppressWarnings("unchecked")
-	public V getFirstValue() {
+	public V getFirst() {
 		return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
-	public V getValue(K key, V defaultValue) {
+	public V get(K key, V defaultValue) {
 		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return (List<V>) asList(values);
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		if (!equal(this.key, key)) return emptyList();
 		return (List<V>) asList(values);
 	}
@@ -601,11 +611,11 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 		return (List<K>) asList(keys);
 	}
 	@SuppressWarnings("unchecked")
-  public V getFirstValue() {
+  public V getFirst() {
 	  return (V) values[0][0];
 	}
 	@SuppressWarnings("unchecked")
-  public V getValue(K key, V defaultValue) {
+  public V get(K key, V defaultValue) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key))
 				return (V) values[i][0];
@@ -613,11 +623,11 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getFirstValues() {
+	public List<V> getAllFirst() {
 		return (List<V>) asList(values[0]);
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getValues(K key) {
+	public List<V> getAll(K key) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key))
 				return (List<V>) asList(values[i]);

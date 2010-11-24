@@ -10,9 +10,9 @@ public class TestSMap {
 		SMap<String, String> map = SMap.empty();
 		Assert.assertEquals(true, map.isEmpty());
 		Assert.assertEquals(true, map.getKeys().isEmpty());
-		Assert.assertEquals(true, map.getFirstValues().isEmpty());
+		Assert.assertEquals(true, map.getAllFirst().isEmpty());
 		Assert.assertNull(map.getFirstKey());
-		Assert.assertNull(map.getFirstValue());
+		Assert.assertNull(map.getFirst());
 		Assert.assertEquals(Empty.class, map.getClass());
 	}
 		
@@ -22,9 +22,9 @@ public class TestSMap {
 		map = map.add("some value");
 		Assert.assertEquals(false, map.isEmpty());
 		Assert.assertEquals(false, map.getKeys().isEmpty());
-		Assert.assertEquals(false, map.getFirstValues().isEmpty());
+		Assert.assertEquals(false, map.getAllFirst().isEmpty());
 		Assert.assertNull(map.getFirstKey());
-		Assert.assertEquals("some value", map.getFirstValue());
+		Assert.assertEquals("some value", map.getFirst());
 		Assert.assertEquals(NoKeySingleValue.class, map.getClass());
 	}
 	
@@ -35,11 +35,11 @@ public class TestSMap {
 		map = map.add("another value");
 		Assert.assertEquals(false, map.isEmpty());
 		Assert.assertEquals(false, map.getKeys().isEmpty());
-		Assert.assertEquals(false, map.getFirstValues().isEmpty());
+		Assert.assertEquals(false, map.getAllFirst().isEmpty());
 		Assert.assertNull(map.getFirstKey());
-		Assert.assertEquals("some value", map.getFirstValue());
-		Assert.assertEquals("some value", map.getFirstValues().get(0));
-		Assert.assertEquals("another value", map.getFirstValues().get(1));
+		Assert.assertEquals("some value", map.getFirst());
+		Assert.assertEquals("some value", map.getAllFirst().get(0));
+		Assert.assertEquals("another value", map.getAllFirst().get(1));
 		Assert.assertEquals(NoKeyMultiValue.class, map.getClass());
 	}
 }
