@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
   <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.common.collect.Collect'/>
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='javax.persistence'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='gwt'/>
-  <source path='util'/>
+  <source path='util'>
+  	<exclude name='TestSMap**'/>
+  </source>
   <source path='command'>
   	<exclude name='CommandImpl**' />
   	<exclude name='CommandServer**' />

@@ -8,7 +8,6 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,6 +36,17 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	@SuppressWarnings("unchecked")
 	public static <K, V> SMap<K, V> empty() {
 		return (SMap<K, V>) emptyMap;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public static <K, V> SMap<K, V> create(K key, V value) {
+		return (SMap<K, V>) empty().add(key, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <K, V> SMap<K, V> createAll(K key, Collection<? extends V> values) {
+		return (SMap<K, V>) empty().addAll(key, values);
 	}
 	
 	/**
@@ -219,8 +229,14 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 */
 	protected abstract SMap<K, V> doAddAll(K key, Collection<? extends V> values);
 
-	<T> T[] concat(T[] values, T value) {
-		T[] copy = Arrays.copyOf(values, values.length + 1);
+	Object[] concat(Object[] values, Object value) {
+		Object[] copy = SMap.copyOf(values, values.length + 1);
+		copy[values.length] = value;
+		return copy;
+	}
+	
+	Object[][] concat(Object[][] values, Object[] value) {
+		Object[][] copy = SMap.copyOf(values, values.length + 1);
 		copy[values.length] = value;
 		return copy;
 	}
@@ -235,14 +251,30 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		return result;
 	}
 	
-	<T> T[] concat(T[] values, Collection<? extends T> values2) {
-		T[] copy = Arrays.copyOf(values, values.length + values2.size());
+	Object[] concat(Object[] values, Collection<? extends Object> values2) {
+		Object[] copy = SMap.copyOf(values, values.length + values2.size());
 		int i = values.length;
-		for (T value2 : values) {
+		for (Object value2 : values) {
 			copy[i++] = value2;
 		}
 		return copy;
 	}
+	
+	// These methods are copied from 1.6 Arrays.java
+	
+    static  Object[] copyOf(Object[] original, int newLength) {
+    	Object[] copy = new Object[newLength];
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+        return copy;
+    }
+
+    static  Object[][] copyOf(Object[][] original, int newLength) {
+    	Object[][] copy = new Object[newLength][];
+    	System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+    	return copy;
+    }
+    
+
 }
 
 class Empty<K, V> extends SMap<K, V> {
@@ -443,7 +475,7 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key)) {
 				if (equal(values[i], value)) return this;
-				Object[] newValues = Arrays.copyOf(values, values.length);
+				Object[] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = value; 
 				return new MultiKeySingleValue<K, V>(keys, newValues);
 			}
@@ -654,7 +686,7 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 	public SMap<K, V> add(K key, V value) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key)) {
-				Object[][] newValues = Arrays.copyOf(values, values.length);
+				Object[][] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = concat(values[i], value); 
 				return new MultiKeyMultiValue<K, V>(keys, newValues);
 			}
@@ -667,7 +699,7 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 				if (values[i].length == 1 && equal(values[i][0], value)) {
 					return this;
 				}
-				Object[][] newValues = Arrays.copyOf(values, values.length);
+				Object[][] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = new Object[] { value }; 
 				return new MultiKeyMultiValue<K, V>(keys, newValues);
 				// TODO compact to multikeysinglevalue
@@ -678,7 +710,7 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 	public SMap<K, V> doAddAll(K key, Collection<? extends V> values) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key)) {
-				Object[][] newValues = Arrays.copyOf(this.values, this.values.length);
+				Object[][] newValues = SMap.copyOf(this.values, this.values.length);
 				newValues[i] = concat(this.values[i], values); 
 				return new MultiKeyMultiValue<K, V>(keys, newValues);
 			}
