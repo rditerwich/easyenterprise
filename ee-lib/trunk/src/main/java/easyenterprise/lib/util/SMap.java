@@ -260,8 +260,6 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		return copy;
 	}
 	
-	// These methods are copied from 1.6 Arrays.java
-	
     static  Object[] copyOf(Object[] original, int newLength) {
     	Object[] copy = new Object[newLength];
         System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
