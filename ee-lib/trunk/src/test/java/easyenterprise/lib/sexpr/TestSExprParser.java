@@ -7,13 +7,14 @@ public class TestSExprParser {
 
 	@Test
 	public void test() throws SExprParseException {
-//		assertExpr("#name", "#name");
-//		assertExpr("name", "name");
-//		assertExpr("name", "'name'");
-//		assertExpr("name", "\"name\"");
-//		assertExpr("fun(12)", "fun(12)");
-//		assertExpr("fun(12)", "fun ( 12)");
-//		assertExpr("fun(12, )", "fun ( 12  , )");
+		assertExpr("#name", "#name");
+		assertExpr("name #name", "name   #name");
+		assertExpr("name", "name");
+		assertExpr("name", "'name'");
+		assertExpr("name", "\"name\"");
+		assertExpr("fun(12)", "fun(12)");
+		assertExpr("fun(12)", "fun ( 12)");
+		assertExpr("fun(12, )", "fun ( 12  , )");
 		assertExpr("fun(12, #1)", "fun ( 12  ,  #1)");
 	}
 	

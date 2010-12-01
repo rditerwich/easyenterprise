@@ -19,8 +19,8 @@ public class ConcatExpr extends SExpr {
 	protected void toHtml(OutputBuilder out) {
 		String sep = "";
 		for (SExpr child : children) {
-			child.toHtml(out);
 			out.text(sep);
+			child.toHtml(out);
 			sep = " ";
 		}
 	}
