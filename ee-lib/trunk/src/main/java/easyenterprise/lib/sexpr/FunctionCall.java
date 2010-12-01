@@ -22,15 +22,17 @@ public class FunctionCall extends SExpr {
 	}
 	
 	@Override
-	protected void toString(StringBuilder out) {
-		out.append(name).append("(");
+	protected void toHtml(OutputBuilder out) {
+		out.spanStart("func");
+		out.text(name);
+		out.spanEnd();
+		out.punctuation("(");
 		String sep = "";
 		for (SExpr parameter : parameters) {
-			parameter.toString(out);
-			out.append(sep);
+			out.punctuation(sep);
+			parameter.toHtml(out);
 			sep = ", ";
 		}
-		out.append(")");
+		out.punctuation(")");
 	}
-
 }

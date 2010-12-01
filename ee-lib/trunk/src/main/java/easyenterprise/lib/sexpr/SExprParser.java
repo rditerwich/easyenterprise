@@ -23,7 +23,7 @@ public class SExprParser {
 		skipWhiteSpace();
 		int startPos = curPos;
 		SExpr result = parseSingle();
-		if (result != null) {
+		if (result == null) {
 			return new Constant(expression, curPos, curPos, "");
 		}
 		SExpr next = parseSingle();
@@ -65,21 +65,20 @@ public class SExprParser {
 	}
 
 	private SExpr parseFunctionOrConstant() throws SExprParseException {
-		skipWhiteSpace();
 		int startPos = curPos;
 		if (!parseWord()) {
 			return null;
 		}
 		if (curChar == '(') {
+			next();
 			return new FunctionCall(expression, startPos, curPos, value, parseParameters());
 		}
 		return new Constant(expression, startPos, curPos, value);
 	}
 	
 	private List<SExpr> parseParameters() throws SExprParseException {
-		assert curChar == '(';
 		List<SExpr> result = Collections.emptyList();
-		for (next(); until(')'); skipWhiteSpace()) {
+		while (true) {
 			if (result.isEmpty()) {
 				result = new ArrayList<SExpr>();
 			}
@@ -95,8 +94,6 @@ public class SExprParser {
 			}
 			throw new CharExpectedException(')', curPos);
 		}
-		next();
-		skipWhiteSpace();
 		return result;
 	}
 
@@ -121,7 +118,7 @@ public class SExprParser {
 		}
 		this.value = value.toString();
 		skipWhiteSpace();
-		return true;
+		return !this.value.isEmpty();
 	}
 
 	private void skipWhiteSpace() {

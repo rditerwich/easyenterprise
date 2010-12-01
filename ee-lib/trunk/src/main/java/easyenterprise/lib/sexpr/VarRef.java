@@ -10,7 +10,9 @@ public class VarRef extends SExpr {
 	}
 
 	@Override
-	protected void toString(StringBuilder out) {
-		out.append("#").append(var);
+	protected void toHtml(OutputBuilder out) {
+		out.spanStart("var");
+		out.text("#").text(var);
+		out.spanEnd();
 	}
 }

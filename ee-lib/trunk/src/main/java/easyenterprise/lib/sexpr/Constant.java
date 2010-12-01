@@ -10,7 +10,9 @@ public class Constant extends SExpr {
 	}
 	
 	@Override
-	protected void toString(StringBuilder out) {
-		out.append(value);
+	protected void toHtml(OutputBuilder out) {
+		out.spanStart("const");
+		out.text(value);
+		out.spanEnd();
 	}
 }

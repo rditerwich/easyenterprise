@@ -16,11 +16,11 @@ public class ConcatExpr extends SExpr {
 	}
 	
 	@Override
-	protected void toString(StringBuilder out) {
+	protected void toHtml(OutputBuilder out) {
 		String sep = "";
 		for (SExpr child : children) {
-			child.toString(out);
-			out.append(sep);
+			child.toHtml(out);
+			out.text(sep);
 			sep = " ";
 		}
 	}

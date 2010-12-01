@@ -16,18 +16,57 @@ public class SExpr {
 		return expression.substring(startPos, endPos);
 	}
 
-	public int getImageLength() {
-		return endPos - startPos;
-	}
-
 	@Override
-	public String toString() {
-		StringBuilder out = new StringBuilder();
-		toString(out);
+	public final String toString() {
+		OutputBuilder out = new OutputBuilder(false);
+		toHtml(out);
 		return out.toString();
 	}
 	
-	protected void toString(StringBuilder out) {
+	public final String toHtml() {
+		OutputBuilder out = new OutputBuilder(true);
+		toHtml(out);
+		return out.toString();
+	}
+
+	protected void toHtml(OutputBuilder out) {
 	}
 	
+	protected void spanEnd(StringBuilder out) {
+		out.append("</span>");
+	}
+	
+	protected class OutputBuilder {
+		private final StringBuilder out = new StringBuilder();
+		private final boolean html;
+		OutputBuilder(boolean html) {
+			this.html = html;
+		}
+		public String toString() {
+			return out.toString();
+		}
+		public OutputBuilder text(String text) {
+			if (html) {
+				text = text.replace("<", "&lt;");
+			}
+			out.append(text);
+			return this;
+		}
+		
+		protected void punctuation(String punctuation) {
+			if (!punctuation.isEmpty()) {
+				spanStart("punct");
+				text(punctuation);
+				spanEnd();
+			}
+		}
+		
+		protected void spanStart(String className) {
+			if (html) out.append("<span class=\"").append("sexpr-").append(className).append("\">");
+		}
+		
+		protected void spanEnd() {
+			if (html) out.append("</span>");
+		}
+	}
 }
