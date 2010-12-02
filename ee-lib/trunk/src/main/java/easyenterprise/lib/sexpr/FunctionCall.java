@@ -1,9 +1,12 @@
 package easyenterprise.lib.sexpr;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionCall extends SExpr {
 
+	private static final long serialVersionUID = 1L;
+	
 	public final String name;
 	public final List<SExpr> parameters;
 
@@ -22,10 +25,24 @@ public class FunctionCall extends SExpr {
 	}
 	
 	@Override
+	public String evaluate(SExprContext context) throws SExprEvaluationException {
+		SExprFunction function = context.getFunction(name);
+		if (function == null) {
+			throw new SExprEvaluationException("Function '" + name + "' not found");
+		}
+		if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
+			throw new SExprEvaluationException("Function '" + name + "' has wrong number of parameters. Found " + parameters.size() + ",  expected " + function.getMinParameters() + (function.getMinParameters() < function.getMaxParameters() ?  " to " + function.getMaxParameters(): ""));
+		}
+		List<String> evaluatedParameters = new ArrayList<String>(parameters.size());
+		for (SExpr parameter : parameters) {
+			evaluatedParameters.add(parameter.evaluate(context));
+		}
+		return function.evaluate(evaluatedParameters);
+	}
+	
+	@Override
 	protected void toHtml(OutputBuilder out) {
-		out.spanStart("func");
-		out.text(name);
-		out.spanEnd();
+		out.text("func", name);
 		out.punctuation("(");
 		String sep = "";
 		for (SExpr parameter : parameters) {

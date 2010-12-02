@@ -4,6 +4,8 @@ import java.util.List;
 
 public class ConcatExpr extends SExpr {
 
+	private static final long serialVersionUID = 1L;
+	
 	private final List<SExpr> children;
 
 	public ConcatExpr(String expression, int startPos, int endPos, List<SExpr> exprs) {
@@ -13,6 +15,15 @@ public class ConcatExpr extends SExpr {
 
 	public List<SExpr> getChildren() {
 		return children;
+	}
+	
+	@Override
+	public String evaluate(SExprContext context) throws SExprEvaluationException {
+		StringBuilder builder = new StringBuilder();
+		for (SExpr child : children) {
+			builder.append(child.evaluate(context));
+		}
+		return builder.toString();
 	}
 	
 	@Override

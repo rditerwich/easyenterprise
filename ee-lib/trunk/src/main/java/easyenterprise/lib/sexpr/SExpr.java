@@ -1,7 +1,14 @@
 package easyenterprise.lib.sexpr;
 
-public class SExpr {
+import java.io.Serializable;
 
+/**
+ * Simple or String expressions.
+ */
+public abstract class SExpr implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private final String expression;
 	private final int startPos;
 	private final int endPos;
@@ -15,6 +22,8 @@ public class SExpr {
 	public String getImage() {
 		return expression.substring(startPos, endPos);
 	}
+	
+	public abstract String evaluate(SExprContext context) throws SExprEvaluationException;
 
 	@Override
 	public final String toString() {
@@ -30,43 +39,5 @@ public class SExpr {
 	}
 
 	protected void toHtml(OutputBuilder out) {
-	}
-	
-	protected void spanEnd(StringBuilder out) {
-		out.append("</span>");
-	}
-	
-	protected class OutputBuilder {
-		private final StringBuilder out = new StringBuilder();
-		private final boolean html;
-		OutputBuilder(boolean html) {
-			this.html = html;
-		}
-		public String toString() {
-			return out.toString();
-		}
-		public OutputBuilder text(String text) {
-			if (html) {
-				text = text.replace("<", "&lt;");
-			}
-			out.append(text);
-			return this;
-		}
-		
-		protected void punctuation(String punctuation) {
-			if (!punctuation.isEmpty()) {
-				spanStart("punct");
-				text(punctuation);
-				spanEnd();
-			}
-		}
-		
-		protected void spanStart(String className) {
-			if (html) out.append("<span class=\"").append("sexpr-").append(className).append("\">");
-		}
-		
-		protected void spanEnd() {
-			if (html) out.append("</span>");
-		}
 	}
 }

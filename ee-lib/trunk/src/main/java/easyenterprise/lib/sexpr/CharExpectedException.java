@@ -6,8 +6,8 @@ public class CharExpectedException extends SExprParseException {
 	
 	private final char c;
 
-	public CharExpectedException(char c, int pos) {
-		super("Missing character '" + c + "'", pos);
+	public CharExpectedException(String expression, int pos, char c) {
+		super(expression, pos, pos, "Missing character '" + c + "'");
 		this.c = c;
 	}
 

@@ -6,10 +6,15 @@ import java.util.List;
 
 public class SExprParser {
 
+	private final SExprContext context;
 	private String expression;
 	private int curPos;
 	private char curChar;
 	private String value;
+	
+	public SExprParser(SExprContext context) {
+		this.context = context;
+	}
 	
 	public SExpr parse(String expression) throws SExprParseException {
 		this.expression = expression;
@@ -59,7 +64,7 @@ public class SExprParser {
 		int startPos = curPos;
 		next();
 		if (!parseWord()) {
-			throw new IdentifierOrNumberExpectedException(curPos);
+			throw new IdentifierOrNumberExpectedException(expression, curPos - 1);
 		}
 		return new VarRef(expression, startPos, curPos, value);
 	}
@@ -70,8 +75,17 @@ public class SExprParser {
 			return null;
 		}
 		if (curChar == '(') {
+			SExprFunction function = context.getFunction(value);
+			String name = value;
+			if (function == null) {
+				throw new FunctionNotFoundException(expression, startPos, curPos, name);
+			}
 			next();
-			return new FunctionCall(expression, startPos, curPos, value, parseParameters());
+			List<SExpr> parameters = parseParameters();
+			if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
+				throw new IncorrectNumberOfParameters(expression, startPos, curPos, function.getMinParameters(), function.getMaxParameters());
+			}
+			return new FunctionCall(expression, startPos, curPos, name, parameters);
 		}
 		return new Constant(expression, startPos, curPos, value);
 	}
@@ -92,7 +106,7 @@ public class SExprParser {
 				next();
 				continue;
 			}
-			throw new CharExpectedException(')', curPos);
+			throw new CharExpectedException(expression, curPos, ')');
 		}
 		return result;
 	}
@@ -127,7 +141,7 @@ public class SExprParser {
 	
 	private boolean until(char endChar) throws CharExpectedException {
 		if (curChar == 0) {
-			throw new CharExpectedException(endChar, curPos);
+			throw new CharExpectedException(expression, curPos, endChar);
 		}
 		return curChar != endChar;
 	}
