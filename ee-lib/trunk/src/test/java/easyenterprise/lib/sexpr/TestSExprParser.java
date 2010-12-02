@@ -1,33 +1,59 @@
 package easyenterprise.lib.sexpr;
 
+import java.util.List;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestSExprParser {
 
+	private DefaultContext context = new DefaultContext();
+	
+	@Before
+	public void init() {
+		context.addFunctions(BuiltinFunctions.functions);
+	}
+	
 	@Test
-	public void test() throws SExprParseException {
+	public void test() throws SExprParseException, SExprEvaluationException {
 		assertExpr("#name", "#name");
 		assertExpr("name #name", "name   #name");
 		assertExpr("name", "name");
 		assertExpr("name", "'name'");
 		assertExpr("name", "\"name\"");
-		assertExpr("fun(12)", "#name replace(12,    12,12) #name");
+		assertExpr("replace(12, 12, 12)", "replace(12,    12,12)");
 		assertExpr("fun(12)", "fun ( 12)");
 		assertExpr("fun(12, )", "fun ( 12  , )");
 		assertExpr("fun(12, #1)", "fun ( 12  ,  #1)");
+		assertExpr("name < name", "name < name");
+		
+		context.setVariable("name", "John");
+		assertEval("John", "#name");
+		assertEval("true", "12 > 11");
+		assertEval("true", "12 != 11");
+		assertEval("true", "John == #name");
+		assertEval("true", "'John' == #name");
+		assertEval("right", "replace(left, 'l.*f', righ)");
+		assertEval("right", "replace('living is easy', 'i(.)', 'i($1)')");
 	}
 	
 	private void assertExpr(String expected, String expr) throws SExprParseException {
-			try {
-				DefaultContext context = new DefaultContext();
-				context.addFunctions(BuiltinFunctions.functions);
-				String actual = new SExprParser(context).parse(expr).toString();
-				System.out.println(expr + " -> " + actual);
-				Assert.assertEquals(expected, actual);
-			} catch (SExprParseException e) {
-				System.err.println(e.toHtml());
-				throw e;
-			}
+			DefaultContext context = new DefaultContext();
+			context.addFunctions(BuiltinFunctions.functions);
+			context.addFunctions(new AbstractFunction("fun", 1, 2) {
+				public String evaluate(List<String> parameters) {
+					return "have fun";
+				}
+			});
+			String actual = new SExprParser(context).parse(expr).toString();
+			System.out.println(expr + " -> " + actual);
+			Assert.assertEquals(expected, actual);
+	}
+	
+	private void assertEval(String expected, String expr) throws SExprParseException, SExprEvaluationException {
+		String actual = new SExprParser(context).parse(expr).evaluate(context);
+		System.out.println(expr + " -> " + actual);
+		Assert.assertEquals(expected, actual);
 	}
 }

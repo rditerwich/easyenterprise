@@ -27,23 +27,42 @@ public class SExprParser {
 	private SExpr parse() throws SExprParseException {
 		skipWhiteSpace();
 		int startPos = curPos;
-		SExpr result = parseSingle();
+		SExpr result = parseSingle(false);
 		if (result == null) {
 			return new Constant(expression, curPos, curPos, "");
 		}
-		SExpr next = parseSingle();
-		if (next != null) {
-			List<SExpr> exprs = new ArrayList<SExpr>();
-			exprs.add(result);
-			for (; next != null; next = parseSingle()) {
-				exprs.add(next);
+
+		while (true) {
+
+			// look for binary expression
+			skipWhiteSpace();
+			if (eat("<")) {
+				SExpr right = parseSingle(true);
+				result = new SmallerThan(expression, startPos, curPos, result, right);
 			}
-			result = new ConcatExpr(expression, startPos, curPos, exprs);
+			else if (eat(">")) {
+				SExpr right = parseSingle(true);
+				result = new GreaterThan(expression, startPos, curPos, result, right);
+			}
+			else if (eat("==")) {
+				SExpr right = parseSingle(true);
+				result = new Equals(expression, startPos, curPos, result, right);
+			}
+			else if (eat("!=")) {
+				SExpr right = parseSingle(true);
+				result = new NotEquals(expression, startPos, curPos, result, right);
+			}
+			
+			SExpr next = parseSingle(false);
+			if (next != null) {
+				result = new Concat(expression, startPos, curPos, result, next);
+			} else {
+				return result;
+			}
 		}
-		return result;
 	}
 	
-	private SExpr parseSingle() throws SExprParseException {
+	private SExpr parseSingle(boolean mandatory) throws SExprParseException {
 		skipWhiteSpace();
 		SExpr expr = null;
 		int startPos = curPos;
@@ -53,6 +72,9 @@ public class SExprParser {
 		expr = parseVarRef();
 		if (expr == null) {
 			expr = parseFunctionOrConstant();
+		}
+		if (expr == null && mandatory) {
+			throw new ExpressionExpectedException(expression, curPos);
 		}
 		return expr;
 	}
@@ -144,6 +166,20 @@ public class SExprParser {
 			throw new CharExpectedException(expression, curPos, endChar);
 		}
 		return curChar != endChar;
+	}
+	
+	private boolean eat(String text) {
+		for (int i = 0; i < text.length(); i++) {
+			if (curPos + i >= expression.length()) {
+				return false;
+			}
+			if (expression.charAt(curPos + i) != text.charAt(i)) {
+				return false;
+			}
+		}
+		curPos += text.length();
+		curChar = expression.charAt(curPos);
+		return true;
 	}
 	
 	private boolean next() {

@@ -8,6 +8,9 @@ import java.io.Serializable;
 public abstract class SExpr implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String falseValue = "false";
+	public static final String trueValue = "true";
 	
 	private final String expression;
 	private final int startPos;
@@ -27,7 +30,7 @@ public abstract class SExpr implements Serializable {
 
 	public boolean evaluateBoolean(SExprContext context) throws SExprEvaluationException {
 		String result = evaluate(context).trim();
-		return !result.isEmpty() && !result.equals("false");
+		return !result.isEmpty() && !result.equals(falseValue);
 	}
 	
 	public double evaluateNumber(SExprContext context) throws SExprEvaluationException {

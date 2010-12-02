@@ -27,4 +27,7 @@ public class DefaultContext implements SExprContext, Serializable {
 		}
 	}
 
+	public void setVariable(String name, String value) {
+		variables.put(name, value);
+	}
 }
