@@ -21,7 +21,11 @@ public class SExprParser {
 		this.curPos = -1;
 		this.value = "";
 		next();
-		return parse();
+		SExpr expr = parse();
+		if (curPos < expression.length()) {
+			throw new InvalidExpression(expression, curPos, expression.length());
+		}
+		return expr;
 	}
 	
 	private SExpr parse() throws SExprParseException {
@@ -71,7 +75,13 @@ public class SExprParser {
 		}
 		expr = parseVarRef();
 		if (expr == null) {
+			expr = parseIf();
+		}
+		if (expr == null) {
 			expr = parseFunctionOrConstant();
+		}
+		if (expr == null) {
+			expr = parseBracedExpression();
 		}
 		if (expr == null && mandatory) {
 			throw new ExpressionExpectedException(expression, curPos);
@@ -79,6 +89,25 @@ public class SExprParser {
 		return expr;
 	}
 	
+	private SExpr parseIf() throws SExprParseException {
+		int startPos = curPos;
+		if (eatId("if")) {
+			SExpr condition = parse();
+			skipWhiteSpace();
+			if (!eatId("then")) throw new IdentifierExpectedException(expression, curPos, "then");
+			skipWhiteSpace();
+			SExpr expr = parse();
+			skipWhiteSpace();
+			SExpr elseExpr = null;
+			if (eatId("else")) {
+				skipWhiteSpace();
+				elseExpr = parse();
+			}
+			return new If(expression, startPos, curPos, condition, expr, elseExpr);
+		}
+		return null;
+	}
+
 	private VarRef parseVarRef() throws SExprParseException {
 		if (curChar != '#') {
 			return null;
@@ -132,6 +161,18 @@ public class SExprParser {
 		}
 		return result;
 	}
+	
+	private SExpr parseBracedExpression() throws SExprParseException {
+		if (!eat("(")) {
+			return null;
+		}
+		SExpr result = parse();
+		skipWhiteSpace();
+		if (!eat(")")) {
+			throw new CharExpectedException(expression, curPos, ')');
+		}
+		return result;
+	}
 
 	private boolean parseQuotedString() throws SExprParseException {
 		char sep = curChar;
@@ -153,7 +194,6 @@ public class SExprParser {
 			value.append(curChar);
 		}
 		this.value = value.toString();
-		skipWhiteSpace();
 		return !this.value.isEmpty();
 	}
 
@@ -169,16 +209,28 @@ public class SExprParser {
 	}
 	
 	private boolean eat(String text) {
-		for (int i = 0; i < text.length(); i++) {
-			if (curPos + i >= expression.length()) {
+		return eat(text, false);
+	}
+	
+	private boolean eatId(String text) {
+		return eat(text, true);
+	}
+	
+	private boolean eat(String text, boolean followedBySep) {
+		int newPos = curPos;
+		for (int i = 0; i < text.length(); i++, newPos++) {
+			if (newPos >= expression.length()) {
 				return false;
 			}
-			if (expression.charAt(curPos + i) != text.charAt(i)) {
+			if (expression.charAt(newPos) != text.charAt(i)) {
 				return false;
 			}
 		}
-		curPos += text.length();
-		curChar = expression.charAt(curPos);
+		if (followedBySep && (newPos < expression.length() && Character.isJavaIdentifierPart(expression.charAt(newPos)))) {
+			return false;
+		}
+		curPos = newPos;
+		curChar = curPos < expression.length() ? expression.charAt(curPos) : 0;
 		return true;
 	}
 	
