@@ -25,6 +25,20 @@ public abstract class SExpr implements Serializable {
 	
 	public abstract String evaluate(SExprContext context) throws SExprEvaluationException;
 
+	public boolean evaluateBoolean(SExprContext context) throws SExprEvaluationException {
+		String result = evaluate(context).trim();
+		return !result.isEmpty() && !result.equals("false");
+	}
+	
+	public double evaluateNumber(SExprContext context) throws SExprEvaluationException {
+		try {
+			String result = evaluate(context).trim();
+			return Double.parseDouble(result);
+		} catch (NumberFormatException e) {
+			return 0.0;
+		}
+	}
+	
 	@Override
 	public final String toString() {
 		OutputBuilder out = new OutputBuilder(false);
