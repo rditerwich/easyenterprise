@@ -29,15 +29,15 @@ public class TestSExprParser {
 //		assertExpr("name < name", "name < name");
 		
 		context.setVariable("name", "John");
-//		assertEval("John", "#name");
-//		assertEval("true", "12 > 11");
-//		assertEval("true", "12 != 11");
-//		assertEval("true", "John == #name");
-//		assertEval("true", "'John' == #name");
-//		assertEval("reallytrue", "really ('John' == #name)");
-//		assertEval("right", "replace(left, 'l.*f', righ)");
-//		assertEval("li(v)i(n)g i(s) easy", "replace('living is easy', 'i(.)', 'i($1)')");
-		assertEval("13", "if '' then 12 elseif #name 13");
+		assertEval("John", "#name");
+		assertEval("true", "12 > 11");
+		assertEval("true", "12 != 11");
+		assertEval("true", "John == #name");
+		assertEval("true", "'John' == #name");
+		assertEval("reallytrue", "really ++ ('John' == #name)");
+		assertEval("right", "replace(left, 'l.*f', righ)");
+		assertEval("li(v)i(n)g i(s) easy", "replace('living is easy', 'i(.)', 'i($1)')");
+		assertEval("13", "if '' then 12 else if #name then 13");
 	}
 	
 	private void assertExpr(String expected, String expr) throws SExprParseException {

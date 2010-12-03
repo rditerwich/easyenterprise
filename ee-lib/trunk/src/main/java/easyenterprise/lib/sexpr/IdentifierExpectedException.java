@@ -7,7 +7,7 @@ public class IdentifierExpectedException extends SExprParseException {
 	private final String identifier;
 
 	public IdentifierExpectedException(String expression, int pos, String identifier) {
-		super(expression, pos, pos, "Missing character '" + identifier + "'");
+		super(expression, pos, pos, "Missing '" + identifier + "'");
 		this.identifier = identifier;
 	}
 	

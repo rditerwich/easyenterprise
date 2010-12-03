@@ -11,6 +11,7 @@ public class SExprParser {
 	private int curPos;
 	private char curChar;
 	private String value;
+	private int length = 0;
 	
 	public SExprParser(SExprContext context) {
 		this.context = context;
@@ -18,12 +19,13 @@ public class SExprParser {
 	
 	public SExpr parse(String expression) throws SExprParseException {
 		this.expression = expression;
+		this.length = expression.length();
 		this.curPos = -1;
-		this.value = "";
 		next();
+		this.value = "";
 		SExpr expr = parse();
-		if (curPos < expression.length()) {
-			throw new InvalidExpression(expression, curPos, expression.length());
+		if (curPos < length) {
+			throw new InvalidExpression(expression, curPos, length);
 		}
 		return expr;
 	}
@@ -40,26 +42,25 @@ public class SExprParser {
 
 			// look for binary expression
 			skipWhiteSpace();
-			if (eat("<")) {
+			if (eat('<')) {
 				SExpr right = parseSingle(true);
 				result = new SmallerThan(expression, startPos, curPos, result, right);
 			}
-			else if (eat(">")) {
+			else if (eat('>')) {
 				SExpr right = parseSingle(true);
 				result = new GreaterThan(expression, startPos, curPos, result, right);
 			}
-			else if (eat("==")) {
+			else if (eat('=','=')) {
 				SExpr right = parseSingle(true);
 				result = new Equals(expression, startPos, curPos, result, right);
 			}
-			else if (eat("!=")) {
+			else if (eat('!','=')) {
 				SExpr right = parseSingle(true);
 				result = new NotEquals(expression, startPos, curPos, result, right);
 			}
-			
-			SExpr next = parseSingle(false);
-			if (next != null) {
-				result = new Concat(expression, startPos, curPos, result, next);
+			else if (eat('+','+')) {
+				SExpr right = parseSingle(true);
+				result = new Concat(expression, startPos, curPos, result, right);
 			} else {
 				return result;
 			}
@@ -68,12 +69,11 @@ public class SExprParser {
 	
 	private SExpr parseSingle(boolean mandatory) throws SExprParseException {
 		skipWhiteSpace();
-		SExpr expr = null;
 		int startPos = curPos;
 		if (parseQuotedString()) {
 			return new Constant(expression, startPos, curPos, value);
 		}
-		expr = parseVarRef();
+		SExpr expr = parseVarRef();
 		if (expr == null) {
 			expr = parseIf();
 		}
@@ -91,54 +91,56 @@ public class SExprParser {
 	
 	private SExpr parseIf() throws SExprParseException {
 		int startPos = curPos;
-		if (eatId("if")) {
+		if (eat("if")) {
 			SExpr condition = parse();
 			skipWhiteSpace();
-			if (!eatId("then")) throw new IdentifierExpectedException(expression, curPos, "then");
+			if (!eat("then")) {
+				throw new IdentifierExpectedException(expression, curPos, "then");
+			}
 			skipWhiteSpace();
 			SExpr expr = parse();
 			skipWhiteSpace();
 			SExpr elseExpr = null;
-			if (eatId("else")) {
+			if (eat("else")) {
 				skipWhiteSpace();
 				elseExpr = parse();
 			}
 			return new If(expression, startPos, curPos, condition, expr, elseExpr);
 		}
+		
 		return null;
 	}
 
 	private VarRef parseVarRef() throws SExprParseException {
-		if (curChar != '#') {
-			return null;
-		}
 		int startPos = curPos;
-		next();
-		if (!parseWord()) {
-			throw new IdentifierOrNumberExpectedException(expression, curPos - 1);
+		if (eat('#')) {
+			if (!parseWord()) {
+				throw new IdentifierOrNumberExpectedException(expression, curPos - 1);
+			}
+			return new VarRef(expression, startPos, curPos, value);
 		}
-		return new VarRef(expression, startPos, curPos, value);
+		return null;
 	}
 
 	private SExpr parseFunctionOrConstant() throws SExprParseException {
 		int startPos = curPos;
-		if (!parseWord()) {
-			return null;
-		}
-		if (curChar == '(') {
-			SExprFunction function = context.getFunction(value);
-			String name = value;
-			if (function == null) {
-				throw new FunctionNotFoundException(expression, startPos, curPos, name);
+		if (parseWord()) {
+			if (eat('(')) {
+				SExprFunction function = context.getFunction(value);
+				String name = value;
+				if (function == null) {
+					throw new FunctionNotFoundException(expression, startPos, curPos - 1, name);
+				}
+				List<SExpr> parameters = parseParameters();
+				if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
+					throw new IncorrectNumberOfParameters(expression, startPos, curPos, function.getMinParameters(), function.getMaxParameters());
+				}
+				return new FunctionCall(expression, startPos, curPos, name, parameters);
+			} else {
+				return new Constant(expression, startPos, curPos, value);
 			}
-			next();
-			List<SExpr> parameters = parseParameters();
-			if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
-				throw new IncorrectNumberOfParameters(expression, startPos, curPos, function.getMinParameters(), function.getMaxParameters());
-			}
-			return new FunctionCall(expression, startPos, curPos, name, parameters);
 		}
-		return new Constant(expression, startPos, curPos, value);
+		return null;
 	}
 	
 	private List<SExpr> parseParameters() throws SExprParseException {
@@ -149,29 +151,23 @@ public class SExprParser {
 			}
 			result.add(parse());
 			skipWhiteSpace();
-			if (curChar == ')') {
-				next();
-				break;
-			}
-			if (curChar == ',') {
-				next();
-				continue;
-			}
+			if (eat(')')) break;
+			if (eat(',')) continue;
 			throw new CharExpectedException(expression, curPos, ')');
 		}
 		return result;
 	}
 	
 	private SExpr parseBracedExpression() throws SExprParseException {
-		if (!eat("(")) {
-			return null;
+		if (eat('(')) {
+			SExpr result = parse();
+			skipWhiteSpace();
+			if (!eat(')')) {
+				throw new CharExpectedException(expression, curPos, ')');
+			}
+			return result;
 		}
-		SExpr result = parse();
-		skipWhiteSpace();
-		if (!eat(")")) {
-			throw new CharExpectedException(expression, curPos, ')');
-		}
-		return result;
+		return null;
 	}
 
 	private boolean parseQuotedString() throws SExprParseException {
@@ -209,34 +205,43 @@ public class SExprParser {
 	}
 	
 	private boolean eat(String text) {
-		return eat(text, false);
-	}
-	
-	private boolean eatId(String text) {
-		return eat(text, true);
-	}
-	
-	private boolean eat(String text, boolean followedBySep) {
 		int newPos = curPos;
 		for (int i = 0; i < text.length(); i++, newPos++) {
-			if (newPos >= expression.length()) {
+			if (newPos >= length) {
 				return false;
 			}
 			if (expression.charAt(newPos) != text.charAt(i)) {
 				return false;
 			}
 		}
-		if (followedBySep && (newPos < expression.length() && Character.isJavaIdentifierPart(expression.charAt(newPos)))) {
+		if (newPos < length && Character.isJavaIdentifierPart(expression.charAt(newPos))) {
 			return false;
 		}
 		curPos = newPos;
-		curChar = curPos < expression.length() ? expression.charAt(curPos) : 0;
+		curChar = curPos < length ? expression.charAt(curPos) : 0;
 		return true;
+	}
+	
+	private boolean eat(char c) {
+		if (curChar == c) {
+			next();
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean eat(char c1, char c2) {
+		if (curChar == c1 && curPos + 1 < length && expression.charAt(curPos + 1) == c2) {
+			next();
+			next();
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean next() {
 		curPos++;
-		if (curPos < expression.length()) {
+		if (curPos < length) {
 			curChar = expression.charAt(curPos);
 			return true;
 		}
@@ -248,6 +253,9 @@ public class SExprParser {
 		|| curChar == '#'
 		|| curChar == ':'
 		|| curChar == ','
+		|| curChar == '+'
+		|| curChar == '!'
+		|| curChar == '='
 		|| curChar == '('
 		|| curChar == ')';
 	}
