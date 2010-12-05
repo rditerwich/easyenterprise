@@ -7,6 +7,9 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='lib/gwt'/>
+  <source path='lib/sexpr'>
+  	<exclude name='**Test**'/>
+  </source>
   <source path='lib/util'>
   	<exclude name='TestSMap**'/>
   </source>

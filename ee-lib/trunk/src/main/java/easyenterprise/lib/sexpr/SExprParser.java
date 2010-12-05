@@ -6,12 +6,23 @@ import java.util.List;
 
 public class SExprParser {
 
+	private static final DefaultContext emptyContext = new DefaultContext() {
+		private static final long serialVersionUID = 1L;
+		public String getVariable(String name) {
+			return "";
+		};
+	};
+	
 	private final SExprContext context;
 	private String expression;
 	private int curPos;
 	private char curChar;
 	private String value;
 	private int length = 0;
+	
+	public SExprParser() {
+		this(emptyContext);
+	}
 	
 	public SExprParser(SExprContext context) {
 		this.context = context;
@@ -186,7 +197,7 @@ public class SExprParser {
 	
 	private boolean parseWord() {
 		StringBuilder value = new StringBuilder();
-		for (; curChar != 0 && !isSep(); next()) {
+		for (; curChar != 0 && !isSep(curChar); next()) {
 			value.append(curChar);
 		}
 		this.value = value.toString();
@@ -194,7 +205,7 @@ public class SExprParser {
 	}
 
 	private void skipWhiteSpace() {
-		for (; Character.isWhitespace(curChar); next());
+		for (; isSpace(curChar); next());
 	}
 	
 	private boolean until(char endChar) throws CharExpectedException {
@@ -214,7 +225,7 @@ public class SExprParser {
 				return false;
 			}
 		}
-		if (newPos < length && Character.isJavaIdentifierPart(expression.charAt(newPos))) {
+		if (newPos < length && !isSep(expression.charAt(newPos))) {
 			return false;
 		}
 		curPos = newPos;
@@ -248,15 +259,35 @@ public class SExprParser {
 		curChar = 0;
 		return false;
 	}
-	private boolean isSep() {
-		return Character.isWhitespace(curChar)
-		|| curChar == '#'
-		|| curChar == ':'
-		|| curChar == ','
-		|| curChar == '+'
-		|| curChar == '!'
-		|| curChar == '='
-		|| curChar == '('
-		|| curChar == ')';
+	
+	private static boolean isSep(char curChar) {
+		return isSpace(curChar) || isSymbol(curChar);
+	}
+
+	private static boolean isSymbol(char curChar) {
+		switch (curChar) {
+		case '#':
+		case ':':
+		case ',':
+		case '+':
+		case '!':
+		case '=':
+		case '(':
+		case ')':
+			return true;
+		}
+		return false;
+		
+	}
+	
+	private static boolean isSpace(char curChar) {
+		switch (curChar) {
+		case ' ':
+		case '\t':
+		case '\n':
+		case '\r':
+			return true;
+		}
+		return false;
 	}
 }
