@@ -66,6 +66,9 @@
       <resource>
         <directory>src/javax.persistence/java</directory>
       </resource>
+      <resource>
+        <directory>src/selection-20100915/java</directory>
+      </resource>
     </resources>
   </build>
 	<repositories>
