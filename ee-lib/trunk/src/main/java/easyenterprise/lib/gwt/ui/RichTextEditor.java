@@ -1,7 +1,6 @@
-package com.bfr.seltest.client;
+package easyenterprise.lib.gwt.ui;
 
 import com.bfr.client.selection.*;
-import com.bfr.seltest.client.images.EditSymbolImageBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -20,7 +19,6 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
     //private static final String BUTTON_WIDTH = "25px";
     
     private DockLayoutPanel m_mainPanel;
-    private HorizontalPanel m_toolbarPanel;
     
     private RichTextArea m_textW;
     private Range m_lastRange;
@@ -29,22 +27,6 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
     private Formatter m_formatter;
     
     // All the buttons for formatting
-    private ToggleButton m_boldW;
-    private ToggleButton m_italicW;
-    private ToggleButton m_underlineW;
-    private ToggleButton m_subscriptW;
-    private ToggleButton m_superscriptW;
-    private ToggleButton m_strikethroughW;
-    private PushButton m_indentW;
-    private PushButton m_outdentW;
-    private PushButton m_justifyLeftW;
-    private PushButton m_justifyCenterW;
-    private PushButton m_justifyRightW;
-    private PushButton m_hrW;
-    private PushButton m_olW;
-    private PushButton m_ulW;
-    private PushButton m_newLinkW;
-    private PushButton m_removeFormatW;
     
     private String m_lastText = "";
     
@@ -77,9 +59,7 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
     public RichTextEditor()
     {
 	m_mainPanel = new DockLayoutPanel(Unit.EM);
-	m_toolbarPanel = new HorizontalPanel();
 	//m_toolbarPanel.setWidth("100%");
-	m_toolbarPanel.addStyleName("timeline-RichTextToolbar");
 	
 	m_textW = new RichTextArea();
 	m_textW.addClickHandler(m_listener);
@@ -94,51 +74,8 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
 	// Add buttons
 	m_formatter = getFormatter();
 	
-	EditSymbolImageBundle icons = EditSymbolImageBundle.INST;
+
 	
-	m_boldW = addToggleButton(m_toolbarPanel, 
-	                          icons.bold_icon(), 
-	                          "Bold");
-	m_italicW = addToggleButton(m_toolbarPanel, 
-	                            icons.italics_icon(), 
-	                            "Italic");
-	m_underlineW = addToggleButton(m_toolbarPanel, 
-	                               icons.underline_icon(), 
-	                               "Underline");
-	m_subscriptW = addToggleButton(m_toolbarPanel, 
-	                               icons.subscript_icon(), 
-	                               "Subscript");
-	m_superscriptW = addToggleButton(m_toolbarPanel, 
-	                                 icons.superscript_icon(), 
-	                                 "Superscript");
-	m_strikethroughW = addToggleButton(m_toolbarPanel, 
-	                                   icons.strikethrough_icon(), 
-	                                   "Strikethrough");
-	
-	m_indentW = addPushButton(m_toolbarPanel, 
-	                          icons.indentmore_icon(), "Indent Right");
-	m_outdentW = addPushButton(m_toolbarPanel, 
-	                           icons.indentless_icon(), "Indent Left");
-	m_justifyLeftW = addPushButton(m_toolbarPanel, 
-	                               icons.justifyleft_icon(), 
-	                               "Justify Left");
-	m_justifyCenterW = addPushButton(m_toolbarPanel, 
-	                                 icons.justifycenter_icon(), 
-	                                 "Justify Center");
-	m_justifyRightW = addPushButton(m_toolbarPanel, 
-	                                icons.justifyright_icon(), 
-	                                "Justify Right");
-	m_hrW = addPushButton(m_toolbarPanel, 
-	                      icons.horizontalrule_icon(), "Horizontal Rule");
-	m_olW = addPushButton(m_toolbarPanel, 
-	                      icons.numberedlist_icon(), "Numbered List");
-	m_ulW = addPushButton(m_toolbarPanel, icons.list_icon(), "List");
-	m_newLinkW = addPushButton(m_toolbarPanel, 
-	                           icons.link_icon(), "Link Document");
-	m_removeFormatW = addPushButton(m_toolbarPanel, 
-	                                icons.noformat_icon(), "No Format");
-	
-	m_mainPanel.addNorth(m_toolbarPanel, 2.0);
 	m_mainPanel.add(m_textW);
 	    
 	initWidget(m_mainPanel);
@@ -213,55 +150,7 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
 	public void onClick(ClickEvent event)
 	{
 	    Widget sender = (Widget)event.getSource();
-	    if (sender == m_boldW) 
-	    {
-		m_formatter.toggleBold();
-	    } else if (sender == m_italicW) 
-	    {
-		m_formatter.toggleItalic();
-	    } else if (sender == m_underlineW) 
-	    {
-		m_formatter.toggleUnderline();
-	    } else if (sender == m_subscriptW) 
-	    {
-		m_formatter.toggleSubscript();
-	    } else if (sender == m_superscriptW) 
-	    {
-		m_formatter.toggleSuperscript();
-	    } else if (sender == m_strikethroughW) 
-	    {
-		m_formatter.toggleStrikethrough();
-	    } else if (sender == m_indentW) 
-	    {
-		m_formatter.rightIndent();
-	    } else if (sender == m_outdentW) 
-	    {
-		m_formatter.leftIndent();
-	    } else if (sender == m_justifyLeftW) 
-	    {
-		m_formatter.setJustification(RichTextArea.Justification.LEFT);
-	    } else if (sender == m_justifyCenterW) 
-	    {
-		m_formatter.setJustification(RichTextArea.Justification.CENTER);
-	    } else if (sender == m_justifyRightW) 
-	    {
-		m_formatter.setJustification(RichTextArea.Justification.RIGHT);
-	    } else if (sender == m_hrW) 
-	    {
-		m_formatter.insertHorizontalRule();
-	    } else if (sender == m_olW) 
-	    {
-		m_formatter.insertOrderedList();
-	    } else if (sender == m_ulW) 
-	    {
-		m_formatter.insertUnorderedList();
-	    } else if (sender == m_removeFormatW) 
-	    {
-		m_formatter.removeFormat();
-	    } else if (sender == m_newLinkW)
-	    {
-		EventLinkPopup.open(RichTextEditor.this);
-	    } else if (sender == m_textW) 
+
 	    {
 		updateStatus();
 	    }
@@ -430,12 +319,7 @@ public class RichTextEditor extends Composite implements HasChangeHandlers
     {
 	if (m_formatter != null) 
 	{
-	    m_boldW.setDown(m_formatter.isBold());
-	    m_italicW.setDown(m_formatter.isItalic());
-	    m_underlineW.setDown(m_formatter.isUnderlined());
-	    m_subscriptW.setDown(m_formatter.isSubscript());
-	    m_superscriptW.setDown(m_formatter.isSuperscript());
-	    m_strikethroughW.setDown(m_formatter.isStrikethrough());
+	  
 	}
     }
 
