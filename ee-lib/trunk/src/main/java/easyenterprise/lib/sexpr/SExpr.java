@@ -53,13 +53,13 @@ public abstract class SExpr implements Serializable {
 	
 	@Override
 	public final String toString() {
-		OutputBuilder out = new OutputBuilder(false);
+		SExprOutputBuilder out = new SExprOutputBuilder(false);
 		toHtml(out);
 		return out.toString();
 	}
 	
 	public final String toHtml() {
-		OutputBuilder out = new OutputBuilder(true);
+		SExprOutputBuilder out = new SExprOutputBuilder(true);
 		toHtml(out);
 		return out.toString();
 	}
@@ -70,7 +70,7 @@ public abstract class SExpr implements Serializable {
 		return out.toString();
 	}
 
-	protected void toHtml(OutputBuilder out) {
+	protected void toHtml(SExprOutputBuilder out) {
 	}
 	
 	protected int toHtml(Map<Class<? extends SExpr>, String> styles, int pos, StringBuilder out) {

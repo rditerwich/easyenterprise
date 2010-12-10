@@ -28,7 +28,7 @@ public class SExprParseException extends Exception {
 	}
 	
 	public String toHtml() {
-		OutputBuilder out = new OutputBuilder(true);
+		SExprOutputBuilder out = new SExprOutputBuilder(true);
 		String before = expression.substring(0, startPos);
 		out.regularText(before);
 		String error = expression.substring(startPos, endPos);

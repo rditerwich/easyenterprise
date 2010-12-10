@@ -1,21 +1,21 @@
 package easyenterprise.lib.sexpr;
 
-class OutputBuilder {
+class SExprOutputBuilder {
 	private final StringBuilder out = new StringBuilder();
 	private final boolean html;
 	
-	OutputBuilder(boolean html) {
+	SExprOutputBuilder(boolean html) {
 		this.html = html;
 	}
 	public String toString() {
 		return out.toString();
 	}
 	
-	public OutputBuilder text(String text) {
+	public SExprOutputBuilder text(String text) {
 		return text(null, text);
 	}
 	
-	public OutputBuilder text(String className, String text) {
+	public SExprOutputBuilder text(String className, String text) {
 		if (!text.isEmpty()) {
 			if (html) {
 				if (className != null) {

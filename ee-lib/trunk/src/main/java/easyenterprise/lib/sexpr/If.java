@@ -43,7 +43,7 @@ public class If extends SExpr {
 	}
 	
 	@Override
-	protected void toHtml(OutputBuilder out) {
+	protected void toHtml(SExprOutputBuilder out) {
 		out.punctuation("if ");
 		condition.toHtml(out);
 		out.punctuation(" then ");

@@ -41,7 +41,7 @@ public class FunctionCall extends SExpr {
 	}
 	
 	@Override
-	protected void toHtml(OutputBuilder out) {
+	protected void toHtml(SExprOutputBuilder out) {
 		out.text("func", name);
 		out.punctuation("(");
 		String sep = "";

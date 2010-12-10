@@ -17,7 +17,7 @@ public class Constant extends SExpr {
 	}
 	
 	@Override
-	protected void toHtml(OutputBuilder out) {
+	protected void toHtml(SExprOutputBuilder out) {
 		out.text("const", value);
 	}
 }

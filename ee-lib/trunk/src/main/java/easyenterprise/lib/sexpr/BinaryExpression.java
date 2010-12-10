@@ -31,7 +31,7 @@ public abstract class BinaryExpression extends SExpr {
 	}
 	
 	@Override
-	protected void toHtml(OutputBuilder out) {
+	protected void toHtml(SExprOutputBuilder out) {
 		left.toHtml(out);
 		out.punctuation(operator);
 		right.toHtml(out);
