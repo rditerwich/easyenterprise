@@ -17,7 +17,7 @@ public class SelectionTest implements EntryPoint, ClickHandler
     private RichTextEditor m_rte;
     
     private Button m_getCurr;
-    private Button m_setHtml;
+    private Button m_;
     private Button m_toSCursor;
     private Button m_toECursor;
     private Button m_surround;
@@ -52,8 +52,8 @@ public class SelectionTest implements EntryPoint, ClickHandler
 	
 	FlowPanel buts = new FlowPanel();
 	//m_getCurr = new Button("Refresh v", this);
-	m_setHtml = new Button("Set html ^", this);
-	m_setHtml.setTitle("Set html from the lower left text area");
+	m_ = new Button("Set html ^", this);
+	m_.setTitle("Set html from the lower left text area");
 	m_toSCursor = new Button("< To Cursor", this);
 	m_toECursor = new Button("To Cursor >", this);
 	m_surround = new Button("Surround", this);
@@ -76,7 +76,7 @@ public class SelectionTest implements EntryPoint, ClickHandler
 	m_reset = new Button("Reset", this);
 	
 	//buts.add(m_getCurr);
-	buts.add(m_setHtml);
+	buts.add(m_);
 	buts.add(m_toSCursor);
 	buts.add(m_toECursor);
 	buts.add(m_surround);
@@ -131,7 +131,7 @@ public class SelectionTest implements EntryPoint, ClickHandler
     
     private void reset()
     {
-	m_rte.setHtml(
+	m_rte.(
 	    "The <span style=\"font-weight: bold;\">quick</span> " +
 	    "<span style=\"font-style: italic;\">brown </span>" +
 	    "fox jumped<br>ov" +

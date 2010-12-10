@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -38,17 +39,7 @@ public class SExprEditor extends Composite {
 				String text = richText.getText();
 				if (!text.equals(lastText)) {
 					lastText = text;
-					RangeEndPoint cursor = getSelection().getRange().getCursor();
-					Text textNode = cursor.getTextNode();
-					System.out.println("on change " + cursor.getOffset());
-					Range range = new Range(getSelection().getDocument());
-					RangeEndPoint startPoint = new RangeEndPoint();
-//					startPoint.setOffset(2);
-//					range.getStartPoint().setOffset(2);
-					cursor.setOffset(2);
-					cursor.setTextNode(textNode);
-					range.setCursor(cursor);
-					getSelection().setRange(range);
+					changed();
 				}
 			}
 			if (true) return;
@@ -80,11 +71,33 @@ public class SExprEditor extends Composite {
 			getSelection().getRange().setStartPoint(pos);
 			parse();
 		}
+		
+		private void changed() {
+			findCursorPos(getSelection().getRange().getCursor());
+			
+			RangeEndPoint cursor = getSelection().getRange().getCursor();
+			Text textNode = cursor.getTextNode();
+			System.out.println("on change " + cursor.getOffset());
+			Range range = new Range(getSelection().getDocument());
+			RangeEndPoint startPoint = new RangeEndPoint();
+//					startPoint.setOffset(2);
+//					range.getStartPoint().setOffset(2);
+			cursor.setOffset(2);
+			cursor.setTextNode(textNode);
+			range.setCursor(cursor);
+			getSelection().setRange(range);
+		}
 		protected void onLoad() {
 			this.singleLineHeight = getOffsetHeight();
 			System.out.println(singleLineHeight);
 		};
 	};
+	
+	private int findCursorPos(RangeEndPoint rangeEndPoint) {
+		System.out.println(rangeEndPoint.getTextNode().getParentElement().getParentElement().getParentElement());
+		System.out.println(getSelection().getDocument().getBody());
+		return 0;
+	}
 	
 	private final RichTextArea richText2 = new RichTextArea();
 	private final FlowPanel formattedPanel = new FlowPanel();

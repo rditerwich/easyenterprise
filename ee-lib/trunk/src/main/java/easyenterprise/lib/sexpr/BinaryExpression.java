@@ -1,5 +1,8 @@
 package easyenterprise.lib.sexpr;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class BinaryExpression extends SExpr {
 	
 	private static final long serialVersionUID = 1L;
@@ -23,10 +26,14 @@ public abstract class BinaryExpression extends SExpr {
 	}
 	
 	@Override
+	public List<SExpr> getChildren() {
+		return Arrays.asList(left, right);
+	}
+	
+	@Override
 	protected void toHtml(OutputBuilder out) {
 		left.toHtml(out);
 		out.punctuation(operator);
 		right.toHtml(out);
 	}
-
 }

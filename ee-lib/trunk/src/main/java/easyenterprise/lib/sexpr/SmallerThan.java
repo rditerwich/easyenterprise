@@ -5,7 +5,7 @@ public class SmallerThan extends BinaryExpression {
 	private static final long serialVersionUID = 1L;
 
 	public SmallerThan(String expression, int startPos, int endPos, SExpr left, SExpr right) {
-		super(expression, startPos, endPos, " < ", left, right);
+		super(expression, startPos, endPos, "<", left, right);
 	}
 	
 	@Override

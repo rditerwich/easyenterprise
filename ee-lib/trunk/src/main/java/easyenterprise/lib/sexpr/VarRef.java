@@ -18,8 +18,6 @@ public class VarRef extends SExpr {
 	
 	@Override
 	protected void toHtml(OutputBuilder out) {
-		out.spanStart("var");
-		out.text("#").text(var);
-		out.spanEnd();
+		out.text("var", "#"+ var);
 	}
 }

@@ -3,12 +3,14 @@ package easyenterprise.lib.sexpr;
 class OutputBuilder {
 	private final StringBuilder out = new StringBuilder();
 	private final boolean html;
+	
 	OutputBuilder(boolean html) {
 		this.html = html;
 	}
 	public String toString() {
 		return out.toString();
 	}
+	
 	public OutputBuilder text(String text) {
 		return text(null, text);
 	}
@@ -19,7 +21,7 @@ class OutputBuilder {
 				if (className != null) {
 					spanStart(className);
 				}
-				out.append(text.replace("<", "&lt;"));
+				out.append(text.replaceAll("<", "&lt;").replaceAll("\n", "<br/>"));
 				if (className != null) {
 					spanEnd();
 				}
@@ -30,23 +32,23 @@ class OutputBuilder {
 		return this;
 	}
 	
-	protected void punctuation(String punctuation) {
+	public void punctuation(String punctuation) {
 		text("punct", punctuation);
 	}
 	
-	protected void regularText(String text) {
+	public void regularText(String text) {
 		text("regular", text);
 	}
 	
-	protected void error(String text) {
+	public void error(String text) {
 		text("error", text);
 	}
 	
-	protected void spanStart(String className) {
+	private void spanStart(String className) {
 		if (html) out.append("<span class=\"").append("sexpr-").append(className).append("\">");
 	}
 	
-	protected void spanEnd() {
+	private void spanEnd() {
 		if (html) out.append("</span>");
 	}
 }

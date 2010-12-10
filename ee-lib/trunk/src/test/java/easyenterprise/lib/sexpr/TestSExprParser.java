@@ -1,6 +1,8 @@
 package easyenterprise.lib.sexpr;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,6 +40,17 @@ public class TestSExprParser {
 		assertEval("right", "replace(left, 'l.*f', righ)");
 		assertEval("li(v)i(n)g i(s) easy", "replace('living is easy', 'i(.)', 'i($1)')");
 		assertEval("13", "if '' then 12 else if #name then 13");
+	}
+	
+	@Test
+	public void testWhitespace() throws SExprParseException {
+		String input = "  #name  \n ++ 12";
+		SExpr expr = new SExprParser().parse(input);
+		Map<Class<? extends SExpr>, String> styles = new HashMap<Class<? extends SExpr>, String>();
+		styles.put(Concat.class, "color:purple;font-weight:bold");
+		styles.put(VarRef.class, "color:black;font-weight:bold;font-style:italic");
+		String html = expr.toHtml(styles);
+		System.out.println(html);
 	}
 	
 	private void assertExpr(String expected, String expr) throws SExprParseException {

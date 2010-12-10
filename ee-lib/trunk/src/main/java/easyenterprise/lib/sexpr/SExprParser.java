@@ -283,6 +283,7 @@ public class SExprParser {
 	private static boolean isSpace(char curChar) {
 		switch (curChar) {
 		case ' ':
+		case '\u00A0':
 		case '\t':
 		case '\n':
 		case '\r':
