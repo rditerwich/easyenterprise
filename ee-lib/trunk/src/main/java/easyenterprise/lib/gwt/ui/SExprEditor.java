@@ -1,171 +1,199 @@
 package easyenterprise.lib.gwt.ui;
 
-
 import com.bfr.client.selection.Range;
 import com.bfr.client.selection.RangeEndPoint;
 import com.bfr.client.selection.Selection;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Text;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
+import easyenterprise.lib.sexpr.BinaryExpression;
+import easyenterprise.lib.sexpr.Constant;
+import easyenterprise.lib.sexpr.FunctionCall;
+import easyenterprise.lib.sexpr.If;
 import easyenterprise.lib.sexpr.SExpr;
 import easyenterprise.lib.sexpr.SExprParseException;
 import easyenterprise.lib.sexpr.SExprParser;
+import easyenterprise.lib.sexpr.VarRef;
 
 public class SExprEditor extends Composite {
-
 	
-	private final RichTextArea richText = new RichTextArea() {
-		public int singleLineHeight = 10;
-		private String lastText = "";
-		public void onBrowserEvent(com.google.gwt.user.client.Event event) {
-			super.onBrowserEvent(event);
-			if (event.getTypeInt() == Event.ONKEYUP) {
-				String text = richText.getText();
-				if (!text.equals(lastText)) {
-					lastText = text;
-					changed();
-				}
-			}
-			if (true) return;
-			String text = richText.getText();
-			if (text.equals(lastText)) return;
-			lastText = text;
-			int height = 1;
-			for (int i = text.length() - 2; i >= 0; i--) {
-//				System.out.print((int)text.charAt(i) + " ");
-				if (text.charAt(i) == '\n') height++;
-			}
-			System.out.println("Found newlines: " + height);
-			//richText.setHeight((singleLineHeight*height) + "px");
-			//System.out.println();
-			RangeEndPoint pos = getSelection().getRange().getStartPoint();
-			try {
-				SExpr expr = new SExprParser().parse(richText.getText());
-				System.out.println(expr.toHtml());
-//				richText.setText(text)HTML(expr.toHtml());
-				
-			} catch (SExprParseException e) {
-				System.out.println(e.toHtml());
-//				richText.setHTML(e.toHtml());
-			}
-			System.out.println("Setting cursor to " + pos.getOffset());
-			RangeEndPoint endPoint = new RangeEndPoint();
-			endPoint.setOffset(2);
-			pos.setOffset(2);
-			getSelection().getRange().setStartPoint(pos);
-			parse();
-		}
-		
-		private void changed() {
-			findCursorPos(getSelection().getRange().getCursor());
-			
-			RangeEndPoint cursor = getSelection().getRange().getCursor();
-			Text textNode = cursor.getTextNode();
-			System.out.println("on change " + cursor.getOffset());
-			Range range = new Range(getSelection().getDocument());
-			RangeEndPoint startPoint = new RangeEndPoint();
-//					startPoint.setOffset(2);
-//					range.getStartPoint().setOffset(2);
-			cursor.setOffset(2);
-			cursor.setTextNode(textNode);
-			range.setCursor(cursor);
-			getSelection().setRange(range);
-		}
-		protected void onLoad() {
-			this.singleLineHeight = getOffsetHeight();
-			System.out.println(singleLineHeight);
-		};
-	};
+	private VerticalPanel panel;
+	private RichTextArea richText;
+	private InlineHTML statusText;
+	private HTML hiddenDiv;
+	private String lastText;
 	
-	private int findCursorPos(RangeEndPoint rangeEndPoint) {
-		System.out.println(rangeEndPoint.getTextNode().getParentElement().getParentElement().getParentElement());
-		System.out.println(getSelection().getDocument().getBody());
-		return 0;
-	}
+	@SuppressWarnings("serial")
+	public static final SExpr.Styles defaultStyles = new SExpr.Styles() {{
+		put(SExpr.class, "style=\"font-weight:bold;color:red\"");
+		put(BinaryExpression.class, "style=\"font-weight:bold;color:#990099\"");
+		put(FunctionCall.class, "style=\"font-weight:bold;color:#990099\"");
+		put(If.class, "style=\"font-weight:bold;color:#990099\"");
+		put(VarRef.class, "style=\"font-weight:bold;color:blue\"");
+		put(Constant.class, "style=\"font-weight:bold;color:black\"");
+	}};
 	
-	private final RichTextArea richText2 = new RichTextArea();
-	private final FlowPanel formattedPanel = new FlowPanel();
-	private final Label errorLabel = new Label();
-	
-	public SExprEditor() {
-		richText.setHeight("2em");
-		richText.setHTML("<b>12++12</b><i>HI</i>");
-		richText.addFocusHandler(new FocusHandler() {
-			public void onFocus(FocusEvent event) {
-//				richText.getFormatter().selectAll();
-//				richText.getFormatter().removeFormat();
-			}
-		});
-		richText.addBlurHandler(new BlurHandler() {
-			public void onBlur(BlurEvent event) {
-				
-			}
-		});
-
-//		richText.addKeyPressHandler(new KeyPressHandler() {
-//			public void onKeyPress(KeyPressEvent event) {
-//				System.out.println("on change");
-//				Range range = getSelection().getRange();
-//				RangeEndPoint pos = range.getStartPoint();
-//				RangeEndPoint endPoint = new RangeEndPoint();
-//				endPoint.setOffset(3);
-//				pos.setOffset(3);
-//				System.out.println("Setting cursor to " + pos.getOffset());
-//				getSelection().setRange(new Range(getSelection().getDocument()));
-//
-//			}
-//		});
-		initWidget(new FlowPanel() {{
-			add(new FlowPanel() {{
-				add(richText);
+	public <richText> SExprEditor() {
+		initWidget(panel = new VerticalPanel() {{
+			add(richText = new RichTextArea() {{
+				addKeyUpHandler(new KeyUpHandler() {
+					public void onKeyUp(KeyUpEvent event) {
+						String text = richText.getText();
+						if (!text.equals(lastText)) {
+							lastText = text;
+							onChanged();
+						}
+					}
+				});
+				addBlurHandler(new BlurHandler() {
+					public void onBlur(BlurEvent event) {
+						setExpression(richText.getText());
+					}
+				});
+				add(hiddenDiv = new HTML() {{
+					getElement().setAttribute("style", "visibility:hidden;position:absolute");
+				}});
 			}});
-			add(richText2);
-			add(formattedPanel);
-			add(errorLabel);
 		}});
-//		richText.setHTML("<html><b><span style=\"color:red\" class=\"sexpr-error\">This is a problem</span></b></html>");
+	}
+
+	public void setExpression(String expression) {
+		try {
+			SExpr expr = new SExprParser().parse(expression);
+			String html = expr.toHtml(true, defaultStyles);
+			setEditorHeight();
+			richText.setHTML(html);
+			setStatus("");
+		} catch (SExprParseException e) {
+			richText.setHTML(expression);
+			setStatus(e.toHtml(defaultStyles));
+		}
 	}
 	
-	private void parse() {
-		formattedPanel.clear();
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		setEditorHeight();
+	}
+
+	private void setEditorHeight() {
+		String html = richText.getHTML();
+		hiddenDiv.setHTML(html.isEmpty() ? "HELLO" : html);
+		richText.setHeight((18 + hiddenDiv.getOffsetHeight()) + "px");
+	}
+	
+	private void onChanged() {
+		BodyElement body = getSelection().getDocument().getBody();
+		RangeEndPoint startPoint = getSelection().getRange().getStartPoint();
+		int[] pos = new int[1];
+		String text = parseHtml(body, startPoint, new StringBuilder(), pos).toString();
+		char lastChar = text.isEmpty() ? 0 : text.charAt(text.length() - 1);
 		try {
-			richText.getFormatter().removeFormat();
-			errorLabel.setText("OK");
-			SExpr expr = new SExprParser().parse(richText.getText());
-			richText2.setHTML(expr.toHtml());
-			formattedPanel.add(new HTMLPanel(expr.toHtml()));
-			
+			SExpr expr = new SExprParser().parse(text.toString());
+			String newHtml = expr.toHtml(true, defaultStyles);
+			if (SExprParser.isSpace(lastChar)) newHtml += "&nbsp;";
+			if (pos[0] == text.length()) {
+				richText.getFormatter().selectAll();
+				richText.getFormatter().insertHTML(newHtml);
+				setEditorHeight();
+			}
+			setStatus("");
+//			setPosition(getSelection().getDocument().getBody(), pos[0]);
 		} catch (SExprParseException e) {
-			formattedPanel.add(new HTMLPanel(e.toHtml()));
-			errorLabel.setText(e.getMessage());
+			setStatus(e.toHtml(defaultStyles));
+			setEditorHeight();
 		}
+	}
+	
+	private void setStatus(String html) {
+		if (statusText != null) {
+			statusText.removeFromParent();
+		}
+		if (!html.trim().isEmpty()) {
+			statusText = new InlineHTML(html);
+			panel.add(statusText);
+		}
+	}
+
+	private StringBuilder parseHtml(Element parent, RangeEndPoint startPoint, StringBuilder text, int[] pos) {
+		for (Node node = parent.getFirstChild(); node != null; node = node.getNextSibling()) {
+			if (node.getNodeType() == Node.TEXT_NODE) {
+				if (node == startPoint.getTextNode()) {
+					pos[0] = text.length() + startPoint.getOffset();
+				}
+				text.append(((Text) node).getData()); 
+			}
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) node;
+				if (element.getTagName().toLowerCase().equals("div")) {
+					text.append('\n');
+				}
+				if (element.getTagName().toLowerCase().equals("br")) {
+					text.append('\n');
+				}
+				parseHtml(element, startPoint, text, pos);
+			}
+		}
+		return text;
+	}
+	
+	private int setPosition(Element parent, int pos) {
+//		System.out.println("parent: " + (parent.getParentNode().getParentNode() == getSelection().getDocument()));
+		for (Node node = parent.getFirstChild(); node != null && pos >= 0; node = node.getNextSibling()) {
+			if (node.getNodeType() == Node.TEXT_NODE) {
+				Text textNode = (Text) node;
+				int length = textNode.getData().length();
+				if (pos < length) {
+try {
+		
+						Range range = new Range(parent);
+						range.setCursor(new RangeEndPoint(textNode, 3));
+						System.out.println("RANGE: " + getSelection().getRange().getCursor().getTextNode());
+						getSelection().setRange(range);
+	//					System.out.println("SMAE: " + (textNode.getOwnerDocument() == getSelection().getRange().getDocument()));
+	//					range.setCursor(new RangeEndPoint(textNode, 1));
+	//					getSelection().getRange().surroundContents(textNode.getParentElement());					
+						return -1;
+} catch (Throwable e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+				}
+				pos -= length;
+			}
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) node;
+				if (element.getTagName().toLowerCase().equals("div")) {
+					pos--;
+				}
+				pos = setPosition(element, pos);
+			}
+		}
+		return pos;
 	}
 	
 	private Selection getSelection() {
-		Selection res = null;
 		try {
 			JavaScriptObject window = getWindow();
-			res = Selection.getSelection(window);
+			return Selection.getSelection(window);
 		} catch (Exception ex) {
 			GWT.log("Error getting the selection", ex);
+			return null;
 		}
-		return res;
 	}
 
 	private JavaScriptObject getWindow() {

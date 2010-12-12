@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import easyenterprise.lib.sexpr.SExpr.Styles;
+
 public class TestSExprParser {
 
 	private DefaultContext context = new DefaultContext();
@@ -46,10 +48,10 @@ public class TestSExprParser {
 	public void testWhitespace() throws SExprParseException {
 		String input = "  #name  \n ++ 12";
 		SExpr expr = new SExprParser().parse(input);
-		Map<Class<? extends SExpr>, String> styles = new HashMap<Class<? extends SExpr>, String>();
+		Styles styles = new Styles();
 		styles.put(Concat.class, "color:purple;font-weight:bold");
 		styles.put(VarRef.class, "color:black;font-weight:bold;font-style:italic");
-		String html = expr.toHtml(styles);
+		String html = expr.toHtml(true, styles);
 		System.out.println(html);
 	}
 	
@@ -61,13 +63,13 @@ public class TestSExprParser {
 					return "have fun";
 				}
 			});
-			String actual = new SExprParser(context).parse(expr).toString();
+			String actual = new SExprParser().parse(expr).toString();
 			System.out.println(expr + " -> " + actual);
 			Assert.assertEquals(expected, actual);
 	}
 	
 	private void assertEval(String expected, String expr) throws SExprParseException, SExprEvaluationException {
-		String actual = new SExprParser(context).parse(expr).evaluate(context);
+		String actual = new SExprParser().parse(expr).evaluate(context);
 		System.out.println(expr + " -> " + actual);
 		Assert.assertEquals(expected, actual);
 	}

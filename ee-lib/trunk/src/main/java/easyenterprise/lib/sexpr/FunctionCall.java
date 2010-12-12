@@ -24,6 +24,17 @@ public class FunctionCall extends SExpr {
 		return parameters;
 	}
 	
+	public void validate(SExprContext context, List<SExprParseException> validationMessages) {
+		SExprFunction function = context.getFunction(name);
+		if (function == null) {
+			validationMessages.add(new FunctionNotFoundException(expression, startPos, endPos, name));
+		}
+		if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
+			validationMessages.add(new IncorrectNumberOfParameters(expression, startPos, endPos, function.getMinParameters(), function.getMaxParameters()));
+		}
+
+	}
+	
 	@Override
 	public String evaluate(SExprContext context) throws SExprEvaluationException {
 		SExprFunction function = context.getFunction(name);
@@ -42,14 +53,13 @@ public class FunctionCall extends SExpr {
 	
 	@Override
 	protected void toHtml(SExprOutputBuilder out) {
-		out.text("func", name);
-		out.punctuation("(");
+		out.append(name + "(");
 		String sep = "";
 		for (SExpr parameter : parameters) {
-			out.punctuation(sep);
-			parameter.toHtml(out);
+			out.append(sep);
+			out.toHtml(parameter);
 			sep = ", ";
 		}
-		out.punctuation(")");
+		out.append(")");
 	}
 }

@@ -6,27 +6,11 @@ import java.util.List;
 
 public class SExprParser {
 
-	private static final DefaultContext emptyContext = new DefaultContext() {
-		private static final long serialVersionUID = 1L;
-		public String getVariable(String name) {
-			return "";
-		};
-	};
-	
-	private final SExprContext context;
 	private String expression;
 	private int curPos;
 	private char curChar;
 	private String value;
 	private int length = 0;
-	
-	public SExprParser() {
-		this(emptyContext);
-	}
-	
-	public SExprParser(SExprContext context) {
-		this.context = context;
-	}
 	
 	public SExpr parse(String expression) throws SExprParseException {
 		this.expression = expression;
@@ -104,15 +88,21 @@ public class SExprParser {
 		int startPos = curPos;
 		if (eat("if")) {
 			SExpr condition = parse();
+			if (condition.isEmpty()) {
+				throw new ExpressionExpectedException(expression, curPos);
+			}
 			skipWhiteSpace();
 			if (!eat("then")) {
 				throw new IdentifierExpectedException(expression, curPos, "then");
 			}
 			skipWhiteSpace();
 			SExpr expr = parse();
+			if (expr.isEmpty()) {
+				throw new ExpressionExpectedException(expression, curPos);
+			}
 			skipWhiteSpace();
-			SExpr elseExpr = null;
-			if (eat("else")) {
+			SExpr elseExpr = parseIf();
+			if (elseExpr == null && eat("else")) {
 				skipWhiteSpace();
 				elseExpr = parse();
 			}
@@ -137,16 +127,7 @@ public class SExprParser {
 		int startPos = curPos;
 		if (parseWord()) {
 			if (eat('(')) {
-				SExprFunction function = context.getFunction(value);
-				String name = value;
-				if (function == null) {
-					throw new FunctionNotFoundException(expression, startPos, curPos - 1, name);
-				}
-				List<SExpr> parameters = parseParameters();
-				if (parameters.size() < function.getMinParameters() || parameters.size() > function.getMaxParameters()) {
-					throw new IncorrectNumberOfParameters(expression, startPos, curPos, function.getMinParameters(), function.getMaxParameters());
-				}
-				return new FunctionCall(expression, startPos, curPos, name, parameters);
+				return new FunctionCall(expression, startPos, curPos, value, parseParameters());
 			} else {
 				return new Constant(expression, startPos, curPos, value);
 			}
@@ -270,8 +251,13 @@ public class SExprParser {
 		case ':':
 		case ',':
 		case '+':
+		case '-':
+		case '*':
+		case '/':
 		case '!':
 		case '=':
+		case '<':
+		case '>':
 		case '(':
 		case ')':
 			return true;
@@ -280,7 +266,7 @@ public class SExprParser {
 		
 	}
 	
-	private static boolean isSpace(char curChar) {
+	public static boolean isSpace(char curChar) {
 		switch (curChar) {
 		case ' ':
 		case '\u00A0':

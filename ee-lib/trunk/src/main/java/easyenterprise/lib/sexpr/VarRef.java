@@ -1,5 +1,6 @@
 package easyenterprise.lib.sexpr;
 
+
 public class VarRef extends SExpr {
 	
 	private static final long serialVersionUID = 1L;
@@ -18,6 +19,6 @@ public class VarRef extends SExpr {
 	
 	@Override
 	protected void toHtml(SExprOutputBuilder out) {
-		out.text("var", "#"+ var);
+		out.append("#"+ var);
 	}
 }

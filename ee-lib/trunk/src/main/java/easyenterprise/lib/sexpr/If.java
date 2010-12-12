@@ -1,6 +1,7 @@
 package easyenterprise.lib.sexpr;
 
 
+
 public class If extends SExpr {
 
 	private static final long serialVersionUID = 1L;
@@ -44,13 +45,24 @@ public class If extends SExpr {
 	
 	@Override
 	protected void toHtml(SExprOutputBuilder out) {
-		out.punctuation("if ");
-		condition.toHtml(out);
-		out.punctuation(" then ");
-		expr.toHtml(out);
+		toHtml(out.isEmpty(), out);
+	}
+		
+	protected void toHtml(boolean topLevel, SExprOutputBuilder out) {
+		out.append("if ");
+		out.toHtml(condition);
+		out.append(" then ");
+		out.toHtml(expr);
 		if (elseExpr != null) {
-			out.punctuation(" else ");
-			elseExpr.toHtml(out);
+			if (topLevel) {
+				out.append("\n");
+			}
+			if (elseExpr instanceof If) {
+				((If) elseExpr).toHtml(topLevel, out.get(elseExpr));
+			} else {
+				out.append(topLevel ? "else " : " else ");
+				out.toHtml(elseExpr);
+			}
 		}
 	}
 }

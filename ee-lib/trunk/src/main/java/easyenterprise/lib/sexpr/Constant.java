@@ -18,6 +18,6 @@ public class Constant extends SExpr {
 	
 	@Override
 	protected void toHtml(SExprOutputBuilder out) {
-		out.text("const", value);
+		out.append(value);
 	}
 }
