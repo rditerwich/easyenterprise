@@ -50,6 +50,10 @@ public class SExprEditor extends Composite {
 	public <richText> SExprEditor() {
 		initWidget(panel = new VerticalPanel() {{
 			add(richText = new RichTextArea() {{
+				IFrameElement e = IFrameElement.as(getElement());
+				e.setMarginHeight(0);
+				e.setMarginWidth(0);
+
 				addKeyUpHandler(new KeyUpHandler() {
 					public void onKeyUp(KeyUpEvent event) {
 						String text = richText.getText();
@@ -92,8 +96,8 @@ public class SExprEditor extends Composite {
 
 	private void setEditorHeight() {
 		String html = richText.getHTML();
-		hiddenDiv.setHTML(html.isEmpty() ? "HELLO" : html);
-		richText.setHeight((18 + hiddenDiv.getOffsetHeight()) + "px");
+		hiddenDiv.setHTML(html.isEmpty() ? "A" : html);
+		richText.setHeight((4 + hiddenDiv.getOffsetHeight()) + "px");
 	}
 	
 	private void onChanged() {
@@ -109,6 +113,7 @@ public class SExprEditor extends Composite {
 			if (pos[0] == text.length()) {
 				richText.getFormatter().selectAll();
 				richText.getFormatter().insertHTML(newHtml);
+				System.out.println(richText.getElement().getChildCount());
 				setEditorHeight();
 			}
 			setStatus("");
