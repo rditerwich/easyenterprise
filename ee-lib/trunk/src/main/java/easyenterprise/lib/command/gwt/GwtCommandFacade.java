@@ -30,5 +30,22 @@ public class GwtCommandFacade {
 		getAsyncCommandService().execute(command, callback);
 	}
 	
+	// TODO maybe we should have some sort of timeout, or more subtle retry mechanism....
+	public static <T extends CommandResult, C extends Command<T>> 
+	void executeWithRetry(final C command, final int nrAttempts, final RetryingCallback<T> callback) {
+		getAsyncCommandService().execute(command, new AsyncCallback<T>() {
+			int attemptNr = 0;
+			public void onSuccess(T result) {
+				callback.onSuccess(result);
+			}
+			public void onFailure(Throwable caught) {
+				if (++attemptNr > nrAttempts) {
+					callback.failedAttempt(attemptNr, caught);
+					getAsyncCommandService().execute(command, this);
+				}
+			}
+		});
+	}
+	
 
 }
