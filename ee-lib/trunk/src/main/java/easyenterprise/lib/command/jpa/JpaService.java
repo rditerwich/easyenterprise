@@ -10,7 +10,11 @@ import easyenterprise.lib.command.CommandWrapper;
 
 public class JpaService extends CommandWrapper {
 
-	private static final ThreadLocal<JpaCommandState> stateLocal = new ThreadLocal<JpaCommandState>();
+	private static final ThreadLocal<JpaCommandState> stateLocal = new ThreadLocal<JpaCommandState>() {
+		protected JpaCommandState initialValue() {
+			return new JpaCommandState();
+		};
+	};
 
 	private final EntityManagerFactory entityManagerFactory;
 	
@@ -20,15 +24,15 @@ public class JpaService extends CommandWrapper {
 	}
 	
 	public static void commit() {
-		commit(getOrCreateState());
+		commit(stateLocal.get());
 	}
 	
 	public static void rollback() {
-		rollback(getOrCreateState());
+		rollback(stateLocal.get());
 	}
 	
 	public static EntityManager getEntityManager() {
-		JpaCommandState state = getOrCreateState();
+		JpaCommandState state = stateLocal.get();
 		if (state.entityManager == null) {
 			state.entityManager = state.entityManagerFactory.createEntityManager();
 		}
@@ -39,7 +43,7 @@ public class JpaService extends CommandWrapper {
 	}
 
 	public <T extends CommandResult, I extends CommandImpl<T>> T executeImpl(I command) throws CommandException {
-		JpaCommandState oldState = getOrCreateState();
+		JpaCommandState oldState = stateLocal.get();
 		
 		// create new state
 		JpaCommandState state = new JpaCommandState();
@@ -73,15 +77,6 @@ public class JpaService extends CommandWrapper {
 			state.entityManager.getTransaction().rollback();
 		}
 	}
-
-	private static JpaCommandState getOrCreateState() {
-	  JpaCommandState state = stateLocal.get();
-	  if (state == null) {
-	  	state = new JpaCommandState();
-	  	stateLocal.set(state);
-	  }
-	  return state;
-  }
 }
 
 final class JpaCommandState {
