@@ -13,6 +13,7 @@
   </source>
   <source path='lib/util'>
   	<exclude name='TestSMap**'/>
+  	<exclude name='DBScript**'/>
   </source>
   <source path='lib/command'>
   	<exclude name='CommandImpl**' />
