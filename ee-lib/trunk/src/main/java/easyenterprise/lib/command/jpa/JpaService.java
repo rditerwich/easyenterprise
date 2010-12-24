@@ -31,6 +31,10 @@ public class JpaService extends CommandWrapper {
 		rollback(stateLocal.get());
 	}
 	
+	/**
+	 * Get an entity manager for the current thread.  Must only be called from either a runnable within {@link #runInTransaction(Runnable)} or from a command in {@link #executeImpl(CommandImpl)}.
+	 * @return
+	 */
 	public static EntityManager getEntityManager() {
 		JpaCommandState state = stateLocal.get();
 		if (state.entityManager == null) {
@@ -40,6 +44,26 @@ public class JpaService extends CommandWrapper {
 			state.entityManager.getTransaction().begin();
 		}			
 		return state.entityManager;
+	}
+	
+	public void runInTransaction(Runnable r) {
+		JpaCommandState oldState = stateLocal.get();
+		
+		// create new state
+		JpaCommandState state = new JpaCommandState();
+		state.entityManagerFactory = entityManagerFactory;
+		stateLocal.set(state);
+		try {
+			r.run();
+		} catch (Throwable e) {
+			rollback(state);
+			throw new RuntimeException("Exception during transaction.  Rolling back.", e);
+		} finally {
+			// auto-commit
+			commit(state);
+			// restore old state
+			stateLocal.set(oldState);
+		}
 	}
 
 	public <T extends CommandResult, I extends CommandImpl<T>> T executeImpl(I command) throws CommandException {
