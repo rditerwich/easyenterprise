@@ -26,6 +26,7 @@ import com.google.common.base.Objects;
  * is particularly useful for caching and transport purposes.   
  * 
  * All keys and values remain ordered according to order of insertion.
+ * If a key is re-inserted, its position will remain the same.
  */
 public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable {
 
@@ -184,7 +185,7 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	}
 
 	/**
-	 * Adds a single key/value to the map
+	 * Adds a single key/value to the map.  If the key already exists, its position in the keylist will remain the same.
 	 * @param key
 	 * @param value
 	 * @return
