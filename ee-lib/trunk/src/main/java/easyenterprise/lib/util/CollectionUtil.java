@@ -3,6 +3,7 @@ package easyenterprise.lib.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 public class CollectionUtil {
 
@@ -26,5 +27,11 @@ public class CollectionUtil {
 	
 	public static <T> T first(Iterable<T> iterable) {
 		return iterable.iterator().next();
+	}
+	
+	public static <T> T firstOrNull(Iterable<T> iterable) {
+		Iterator<T> it = iterable.iterator();
+		if (it.hasNext()) return it.next();
+		else return null;
 	}
 }

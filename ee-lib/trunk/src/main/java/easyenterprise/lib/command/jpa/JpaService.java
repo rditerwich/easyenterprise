@@ -16,6 +16,7 @@ public class JpaService extends CommandWrapper {
 		};
 	};
 
+	private static EntityManagerFactory globalEntityManagerFactory;
 	private final EntityManagerFactory entityManagerFactory;
 	
 	public JpaService(CommandWrapper delegate, EntityManagerFactory entityManagerFactory) {
@@ -38,7 +39,13 @@ public class JpaService extends CommandWrapper {
 	public static EntityManager getEntityManager() {
 		JpaCommandState state = stateLocal.get();
 		if (state.entityManager == null) {
-			state.entityManager = state.entityManagerFactory.createEntityManager();
+			if (state.entityManagerFactory != null) {
+				state.entityManager = state.entityManagerFactory.createEntityManager();
+			} else if (globalEntityManagerFactory != null) {
+				state.entityManager = globalEntityManagerFactory.createEntityManager();
+			} else {
+				throw new RuntimeException("No entity manager specified");
+			}
 		}
 		if (state.entityManager != null && !state.entityManager.getTransaction().isActive()) {
 			state.entityManager.getTransaction().begin();
@@ -46,12 +53,15 @@ public class JpaService extends CommandWrapper {
 		return state.entityManager;
 	}
 	
-	public void runInTransaction(Runnable r) {
+	public static void setGlobalEntityManagerFactory(EntityManagerFactory factory) {
+		globalEntityManagerFactory = factory;
+	}
+	
+	public static void runInTransaction(Runnable r) {
 		JpaCommandState oldState = stateLocal.get();
 		
 		// create new state
 		JpaCommandState state = new JpaCommandState();
-		state.entityManagerFactory = entityManagerFactory;
 		stateLocal.set(state);
 		try {
 			r.run();
@@ -90,15 +100,23 @@ public class JpaService extends CommandWrapper {
 	}
 
 	private static void commit(JpaCommandState state) {
-		if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
-			state.entityManager.getTransaction().commit();
+		if (state.entityManager != null) {
+			if (state.entityManager.getTransaction().isActive()) {
+				state.entityManager.getTransaction().commit();
+			}
+			state.entityManager.close();
+			state.entityManager = null;
 		}
 	}
 
 	private static void rollback(JpaCommandState state) {
 		// rollback on exception
-		if (state.entityManager != null && state.entityManager.getTransaction().isActive()) {
-			state.entityManager.getTransaction().rollback();
+		if (state.entityManager != null) {
+			if (state.entityManager.getTransaction().isActive()) {
+				state.entityManager.getTransaction().rollback();
+			}
+			state.entityManager.close();
+			state.entityManager = null;
 		}
 	}
 }

@@ -162,7 +162,8 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	public abstract List<V> getAll(K key);
 	
 	/**
-	 * 
+	 * Tries every key, returns the first
+	 * values found.
 	 * @param keys
 	 * @return Values or empty list
 	 */
