@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 public class CollectionUtil {
 
@@ -23,6 +24,10 @@ public class CollectionUtil {
 		list.addAll(c1);
 		list.addAll(c2);
 		return list;
+	}
+	
+	public static <T> LinkedHashSet<T> unique(Collection<T> collection) {
+		return new LinkedHashSet<T>(collection);
 	}
 	
 	public static <T> T first(Iterable<T> iterable) {

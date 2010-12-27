@@ -241,7 +241,7 @@ public class SExprParser {
 		return false;
 	}
 	
-	private static boolean isSep(char curChar) {
+	static boolean isSep(char curChar) {
 		return isSpace(curChar) || isSymbol(curChar);
 	}
 
@@ -260,6 +260,8 @@ public class SExprParser {
 		case '>':
 		case '(':
 		case ')':
+		case '"':
+		case '\'':
 			return true;
 		}
 		return false;
