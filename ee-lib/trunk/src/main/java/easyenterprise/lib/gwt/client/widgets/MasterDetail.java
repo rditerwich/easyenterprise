@@ -71,7 +71,7 @@ public abstract class MasterDetail extends Composite {
 		return footerPanel; 
 	}
 	
-	protected Table getMaster() {
+	protected Table getMasterTable() {
 		initializeMainPanel();
 		
 		return masterTable;
@@ -215,6 +215,7 @@ public abstract class MasterDetail extends Composite {
 		// Make sure the selection panel does not overlap the master
 		mainPanel.setWidgetLeftWidth(selectionLine, 100, Unit.PCT, 0, Unit.PX);
 
+		masterPanelCreated(masterPanel);
 	}
 	
 	private void initializeDetailPanel() {
@@ -232,5 +233,14 @@ public abstract class MasterDetail extends Composite {
 
 		// make sure erase panel does not overlap the detail panel
 		mainPanel.setWidgetLeftWidth(eraseLine, 100, Unit.PCT, 0, Unit.PX);
+		
+		// fill in detail panel
+		detailPanelCreated(detailPanel);
+	}
+
+	protected void masterPanelCreated(DockLayoutPanel masterPanel2) {
+	}
+
+	protected void detailPanelCreated(LayoutPanel detailPanel) {
 	}
 }

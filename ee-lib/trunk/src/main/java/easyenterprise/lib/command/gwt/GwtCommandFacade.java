@@ -2,6 +2,7 @@ package easyenterprise.lib.command.gwt;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 import easyenterprise.lib.command.Command;
@@ -39,9 +40,13 @@ public class GwtCommandFacade {
 				callback.onSuccess(result);
 			}
 			public void onFailure(Throwable caught) {
-				if (++attemptNr > nrAttempts) {
-					callback.failedAttempt(attemptNr, caught);
-					getAsyncCommandService().execute(command, this);
+				if (caught instanceof InvocationException) {
+					callback.failedAttempt(++attemptNr, caught);
+					if (attemptNr < nrAttempts) {
+						getAsyncCommandService().execute(command, this);
+					}
+				} else {
+					callback.onFailure(caught);
 				}
 			}
 		});

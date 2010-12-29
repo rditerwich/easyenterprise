@@ -8,8 +8,8 @@ public class Paging implements Serializable {
 
 	public static final Paging NO_PAGING = new Paging(0, -1);
 	
-	private final int pageStart;
-	private final int pageSize;
+	private int pageStart;
+	private int pageSize;
 
 	public static Paging get(int pageStart, int pageSize) {
 		if (pageSize < 0) {
@@ -19,6 +19,11 @@ public class Paging implements Serializable {
 		}
 	}
 
+	private Paging() {
+		this.pageStart = 0;
+		this.pageSize = -1;
+	}
+	
 	private Paging(int pageStart, int pageSize) {
 		this.pageStart = pageStart;
 		this.pageSize = pageSize;
