@@ -10,13 +10,17 @@ public class DefaultContext implements SExprContext, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	public final DefaultContext parent;
-	public final Map<String, String> variables = new TreeMap<String, String>();
-	public final Map<String, SExprFunction> functions = new TreeMap<String, SExprFunction>();
-	public final Set<String> constants = new TreeSet<String>();
+	private final DefaultContext parent;
+	private final Map<String, String> variables = new TreeMap<String, String>();
+	private final Map<String, SExprFunction> functions = new TreeMap<String, SExprFunction>();
+	private final Set<String> constants = new TreeSet<String>();
 	
 	public DefaultContext() {
 		this.parent = null;
+	}
+	
+	public DefaultContext getParent() {
+		return parent;
 	}
 	
 	public DefaultContext(DefaultContext parent) {
@@ -37,6 +41,7 @@ public class DefaultContext implements SExprContext, Serializable {
 	
 	@Override
 	public String getVariable(String name) {
+		name = normalizeVariableName(name);
 		if (parent != null) {
 			String variable = parent.getVariable(name);
 			if (variable != null) {
@@ -64,6 +69,18 @@ public class DefaultContext implements SExprContext, Serializable {
 	}
 
 	public void setVariable(String name, String value) {
+		name = normalizeVariableName(name);
 		variables.put(name, value);
+	}
+	
+	protected String normalizeVariableName(String var) {
+		StringBuilder out = new StringBuilder();
+		for (int i = 0; i < var.length(); i++) {
+			char c = var.charAt(i);
+			if (Character.isJavaIdentifierPart(c)) {
+				out.append(c);
+			}
+		}
+		return out.toString();
 	}
 }

@@ -1,5 +1,7 @@
 package easyenterprise.lib.sexpr;
 
+import static easyenterprise.lib.util.ObjectUtil.orElse;
+
 
 public class VarRef extends SExpr {
 	
@@ -14,7 +16,7 @@ public class VarRef extends SExpr {
 
 	@Override
 	public String evaluate(SExprContext context) throws SExprEvaluationException {
-		return context.getVariable(var);
+		return orElse(context.getVariable(var), "");
 	}
 	
 	@Override
