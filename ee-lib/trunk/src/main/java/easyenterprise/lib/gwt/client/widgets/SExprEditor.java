@@ -1,4 +1,4 @@
-package easyenterprise.lib.gwt.ui;
+package easyenterprise.lib.gwt.client.widgets;
 
 import com.bfr.client.selection.Range;
 import com.bfr.client.selection.RangeEndPoint;

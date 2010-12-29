@@ -1,4 +1,4 @@
-package easyenterprise.lib.gwt.ui;
+package easyenterprise.lib.gwt.client.widgets;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
