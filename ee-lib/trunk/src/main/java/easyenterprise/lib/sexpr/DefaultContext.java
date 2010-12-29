@@ -77,10 +77,14 @@ public class DefaultContext implements SExprContext, Serializable {
 		StringBuilder out = new StringBuilder();
 		for (int i = 0; i < var.length(); i++) {
 			char c = var.charAt(i);
-			if (Character.isJavaIdentifierPart(c)) {
+			if (isValidVariableNameChar(c)) {
 				out.append(c);
 			}
 		}
 		return out.toString();
+	}
+
+	private boolean isValidVariableNameChar(char c) {
+		return Character.isLetterOrDigit(c);
 	}
 }
