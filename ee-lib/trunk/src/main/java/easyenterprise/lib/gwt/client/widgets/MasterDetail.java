@@ -6,7 +6,6 @@ import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.UIObject;
 
 import easyenterprise.lib.gwt.client.Style;
 import easyenterprise.lib.gwt.client.StyleUtil;
@@ -19,10 +18,6 @@ public abstract class MasterDetail extends Composite {
 		public String toString() {
 			return "ee-" + super.toString();
 		};
-		
-		public void addTo(UIObject uiObject) {
-			uiObject.addStyleName(toString());
-		}
 	}
 	
 	
