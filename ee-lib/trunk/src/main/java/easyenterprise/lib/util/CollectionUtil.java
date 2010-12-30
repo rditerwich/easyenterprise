@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class CollectionUtil {
 
@@ -38,5 +39,14 @@ public class CollectionUtil {
 		Iterator<T> it = iterable.iterator();
 		if (it.hasNext()) return it.next();
 		else return null;
+	}
+	
+	public static void setSize(List<?> list, int size) {
+		while (list.size() > size) {
+			list.remove(list.size() - 1);
+		}
+		while (list.size() < size) {
+			list.add(null);
+		}
 	}
 }
