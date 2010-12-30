@@ -145,7 +145,7 @@ public abstract class MasterDetail extends Composite {
 		currentRow = row;
 	}
 	
-	protected void closeDetail() {
+	protected void closeDetail(boolean animated) {
 		if (!detailOpen) {
 			return;
 		}
@@ -178,7 +178,7 @@ public abstract class MasterDetail extends Composite {
 			
 
 		final int row = currentRow;
-		mainPanel.animate(300, new AnimationCallback() {
+		mainPanel.animate(animated ? 300 : 0, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {
 			}
 			public void onAnimationComplete() {
