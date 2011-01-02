@@ -2,6 +2,8 @@ package easyenterprise.lib.util;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 public class Paging implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,5 +41,17 @@ public class Paging implements Serializable {
 
 	public int getPageSize() {
 		return pageSize;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(pageStart, pageSize);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Paging
+			&& ((Paging) obj).pageStart == pageStart
+			&& ((Paging) obj).pageSize == pageSize;
 	}
 }

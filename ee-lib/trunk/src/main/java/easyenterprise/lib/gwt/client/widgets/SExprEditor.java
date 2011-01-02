@@ -14,6 +14,10 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
@@ -29,7 +33,7 @@ import easyenterprise.lib.sexpr.SExprParseException;
 import easyenterprise.lib.sexpr.SExprParser;
 import easyenterprise.lib.sexpr.VarRef;
 
-public class SExprEditor extends Composite {
+public class SExprEditor extends Composite implements HasValueChangeHandlers<String> {
 	
 	private VerticalPanel panel;
 	private RichTextArea richText;
@@ -47,7 +51,7 @@ public class SExprEditor extends Composite {
 		put(Constant.class, "style=\"font-weight:bold;color:black\"");
 	}};
 	
-	public <richText> SExprEditor() {
+	public SExprEditor() {
 		initWidget(panel = new VerticalPanel() {{
 			add(richText = new RichTextArea() {{
 				IFrameElement e = IFrameElement.as(getElement());
@@ -75,6 +79,10 @@ public class SExprEditor extends Composite {
 		}});
 	}
 
+	public String getExpression() {
+		return richText.getText();
+	}
+	
 	public void setExpression(String expression) {
 		try {
 			SExpr expr = new SExprParser().parse(expression);
@@ -87,6 +95,10 @@ public class SExprEditor extends Composite {
 			setStatus(e.toHtml(defaultStyles));
 		}
 	}
+	
+  public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+    return addHandler(handler, ValueChangeEvent.getType());
+  }
 	
 	@Override
 	protected void onLoad() {
@@ -113,8 +125,8 @@ public class SExprEditor extends Composite {
 			if (pos[0] == text.length()) {
 				richText.getFormatter().selectAll();
 				richText.getFormatter().insertHTML(newHtml);
-				System.out.println(richText.getElement().getChildCount());
 				setEditorHeight();
+				ValueChangeEvent.fire(this, richText.getText());
 			}
 			setStatus("");
 //			setPosition(getSelection().getDocument().getBody(), pos[0]);

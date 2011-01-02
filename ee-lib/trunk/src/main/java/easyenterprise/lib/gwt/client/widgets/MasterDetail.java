@@ -6,11 +6,13 @@ import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 
 import easyenterprise.lib.gwt.client.Style;
 import easyenterprise.lib.gwt.client.StyleUtil;
 
-public abstract class MasterDetail extends Composite {
+public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
 
 	public enum Styles implements Style {
 		MasterDetail, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
@@ -44,15 +46,12 @@ public abstract class MasterDetail extends Composite {
 	private final int footerSize;
 	private DockLayoutPanel masterPanel;
 
-	
-	
 	public MasterDetail(int headerSize, int footerSize) {
 		this.headerSize = headerSize;
 		this.footerSize = footerSize;
 		initWidget(mainPanel = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetail);
 		}});
-
 	}
 	
 	public int getHeight() {
@@ -87,6 +86,11 @@ public abstract class MasterDetail extends Composite {
 		return detailOpen;
 	}
 	
+	@Override
+	public void onResize() {
+		mainPanel.onResize();
+	}
+	
 	protected void openDetail(final int row) {
 		
 		initializeDetailPanel();
@@ -119,7 +123,7 @@ public abstract class MasterDetail extends Composite {
 
 		// Update selection
 		mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
-		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, offsetWidth + 2, Unit.PX);
+		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, 25, Unit.PCT);
 
 		// erase a bit of the detail panel:
 		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
@@ -130,7 +134,7 @@ public abstract class MasterDetail extends Composite {
 		
 
 		final int oldRow = currentRow;
-		mainPanel.animate(100, new AnimationCallback() {
+		mainPanel.animate(150, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {
 			}
 			public void onAnimationComplete() {
@@ -178,7 +182,7 @@ public abstract class MasterDetail extends Composite {
 			
 
 		final int row = currentRow;
-		mainPanel.animate(animated ? 300 : 0, new AnimationCallback() {
+		mainPanel.animate(animated ? 150 : 0, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {
 			}
 			public void onAnimationComplete() {
