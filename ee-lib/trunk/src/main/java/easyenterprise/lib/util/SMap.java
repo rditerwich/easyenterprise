@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 /**
  * Simple, Small, Static key-value map-like class. It's optimized for 
@@ -32,7 +33,7 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 
 	private static final long serialVersionUID = 1L;
 	private static final Object  undefined = new Object();
-	private static SMap<?, ?> emptyMap = new Empty<Object, Object>(); 
+	private static SMap<?, ?> emptyMap = new SMapEmpty<Object, Object>(); 
 	
 	@SuppressWarnings("unchecked")
 	public static <K, V> SMap<K, V> empty() {
@@ -220,6 +221,20 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		}
 		return map;
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object other) {
+		if (other instanceof SMap && other.getClass() == getClass()) {
+			return Lists.newArrayList(this).equals(Lists.newArrayList((SMap<K, V>) other));
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Lists.newArrayList(this).hashCode();
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <V> V undefined() {
@@ -273,11 +288,9 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
     	System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
     	return copy;
     }
-    
-
 }
 
-class Empty<K, V> extends SMap<K, V> {
+class SMapEmpty<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
 	public K getFirstKey() {
 	  return null;
@@ -302,23 +315,25 @@ class Empty<K, V> extends SMap<K, V> {
 	  return Collections.<Entry<K, V>>emptyList().iterator();
 	}
 	public SMap<K, V> add(K key, V value) {
-		if (key == null) return new NoKeySingleValue<K, V>(value);
-		else return new SingleKeySingleValue<K, V>(key, value); 
+		if (key == null) return new SMapNoKeySingleValue<K, V>(value);
+		else return new SMapSingleKeySingleValue<K, V>(key, value); 
 	}
 	public SMap<K, V> set(K key, V value) {
 		return add(key, value);
 	}
 	public SMap<K,V> doAddAll(K key, Collection<? extends V> values) {
-		if (key == null) return new NoKeyMultiValue<K, V>(values.toArray());
-		else return new SingleKeyMultiValue<K, V>(key, values.toArray());
+		if (key == null) return new SMapNoKeyMultiValue<K, V>(values.toArray());
+		else return new SMapSingleKeyMultiValue<K, V>(key, values.toArray());
 	};
 }
 
-class NoKeySingleValue<K, V> extends SMap<K, V> {
+class SMapNoKeySingleValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
 	private static final List<?> nullList = singletonList(null);
-	private final V value;
-	public NoKeySingleValue(V value) {
+	private V value;
+	public SMapNoKeySingleValue() {
+	}
+	public SMapNoKeySingleValue(V value) {
 		this.value = value;
 	}
 	public K getFirstKey() {
@@ -345,26 +360,28 @@ class NoKeySingleValue<K, V> extends SMap<K, V> {
 	  return singleton(immutableEntry((K) null, value)).iterator();
 	}
 	public SMap<K, V> add(K key, V value) {
-		if (key == null) return new NoKeyMultiValue<K, V>(this.value, value); 
-		else return new MultiKeySingleValue<K, V>(concat(null, key), new Object[] { this.value, value }); 
+		if (key == null) return new SMapNoKeyMultiValue<K, V>(this.value, value); 
+		else return new SMapMultiKeySingleValue<K, V>(new Object[] { null, key}, new Object[] { this.value, value }); 
 	}
 	public SMap<K, V> set(K key, V value) {
 		if (key == null)
 			if (equal(this.value, value)) return this;
-			else return new NoKeySingleValue<K, V>(value);
+			else return new SMapNoKeySingleValue<K, V>(value);
 		return add(key, value);
 	}
 	public SMap<K,V> doAddAll(K key, Collection<? extends V> values) {
-		if (key == null) return new NoKeyMultiValue<K, V>(null, this.value, value); 
-		else return new MultiKeySingleValue<K, V>(concat(null, key), new Object[] { this.value, value }); 
+		if (key == null) return new SMapNoKeyMultiValue<K, V>(null, this.value, value); 
+		else return new SMapMultiKeySingleValue<K, V>(new Object[] { null, key}, new Object[] { this.value, value }); 
 	};
 }
 
-class SingleKeySingleValue<K, V> extends SMap<K, V> {
+class SMapSingleKeySingleValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
-	private final K key;
-	private final V value;
-	public SingleKeySingleValue(K key, V value) {
+	private K key;
+	private V value;
+	SMapSingleKeySingleValue() {
+	}
+	SMapSingleKeySingleValue(K key, V value) {
 		this.key = key;
 		this.value = value;
 	}
@@ -392,26 +409,28 @@ class SingleKeySingleValue<K, V> extends SMap<K, V> {
 	  return singleton(immutableEntry(key, value)).iterator();
 	}
 	public SMap<K, V> add(K key, V value) {
-		if (equal(this.key, key)) return new SingleKeyMultiValue<K, V>(key, this.value, value); 
-		else return new MultiKeySingleValue<K, V>(new Object[] { this.key, key }, new Object[] { this.value, value });
+		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, this.value, value); 
+		else return new SMapMultiKeySingleValue<K, V>(new Object[] { this.key, key }, new Object[] { this.value, value });
 	}
 	public SMap<K,V> set(K key, V value) {
 		if (equal(this.key, key))
 			if (equal(this.value, value)) return this;
-			else return new SingleKeySingleValue<K, V>(key, value);
+			else return new SMapSingleKeySingleValue<K, V>(key, value);
 		else return add(key, value);
 	};
 	public SMap<K, V> doAddAll(K key, Collection<? extends V> values) {
-		if (equal(this.key, key)) return new SingleKeyMultiValue<K, V>(key, concat(this.value, values)); 
-		else return new MultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { new Object[] { this.value }, values.toArray() });
+		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, concat(this.value, values)); 
+		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { new Object[] { this.value }, values.toArray() });
 	}
 }
 
-class MultiKeySingleValue<K, V> extends SMap<K, V> {
+class SMapMultiKeySingleValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
-	private final Object[] keys;
-	private final Object[] values;
-	MultiKeySingleValue(Object[] keys, Object[] values) {
+	transient Object[] keys;
+	transient Object[] values;
+	SMapMultiKeySingleValue() {
+	}
+	SMapMultiKeySingleValue(Object[] keys, Object[] values) {
 		this.keys = keys;
 		this.values = values;
 	}
@@ -467,9 +486,9 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 	public SMap<K, V> add(K key, V value) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key))
-				return new MultiKeyMultiValue<K, V>(keys, wrapArray(i, new Object[] { values[i], value } ));
+				return new SMapMultiKeyMultiValue<K, V>(keys, wrapArray(i, new Object[] { values[i], value } ));
 		}
-		return new MultiKeySingleValue<K, V>(concat(keys, key), concat(values, value));
+		return new SMapMultiKeySingleValue<K, V>(concat(keys, key), concat(values, value));
 	}
 	public SMap<K, V> set(K key, V value) {
 		for (int i = 0; i < keys.length; i++) {
@@ -477,7 +496,7 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 				if (equal(values[i], value)) return this;
 				Object[] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = value; 
-				return new MultiKeySingleValue<K, V>(keys, newValues);
+				return new SMapMultiKeySingleValue<K, V>(keys, newValues);
 			}
 		}
 		return add(key, value);
@@ -486,9 +505,9 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 	public SMap<K, V> doAddAll(K key, Collection<? extends V> values) {
 		for (int i = 0; i < keys.length; i++) {
 			if (equal(keys[i], key))
-				return new MultiKeyMultiValue<K, V>(keys, wrapArray(i, concat(this.values[i], values)));
+				return new SMapMultiKeyMultiValue<K, V>(keys, wrapArray(i, concat(this.values[i], values)));
 		}
-		return new MultiKeySingleValue<K, V>(concat(keys, key), concat(this.values, values));
+		return new SMapMultiKeySingleValue<K, V>(concat(keys, key), concat(this.values, values));
 	}
 	
 	private Object[][] wrapArray(int index, Object[] arrayAtIndex) {
@@ -500,11 +519,13 @@ class MultiKeySingleValue<K, V> extends SMap<K, V> {
 	}
 }
 
-class NoKeyMultiValue<K, V> extends SMap<K, V> {
+class SMapNoKeyMultiValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
 	private static List<?> nullList = singletonList(null);
-	private final Object[] values;
-	public NoKeyMultiValue(Object... values) {
+	transient Object[] values;
+	SMapNoKeyMultiValue() {
+	}
+	SMapNoKeyMultiValue(Object... values) {
 		this.values = values;
 	}
 	public K getFirstKey() {
@@ -547,28 +568,30 @@ class NoKeyMultiValue<K, V> extends SMap<K, V> {
 		};
 	}
 	public SMap<K, V> add(K key, V value) {
-		if (key == null) return new NoKeyMultiValue<K, V>(concat(values, value));
-		else return new MultiKeyMultiValue<K, V>(new Object[] { null, key }, new Object[][] { values, new Object[] { value } }); 
+		if (key == null) return new SMapNoKeyMultiValue<K, V>(concat(values, value));
+		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { null, key }, new Object[][] { values, new Object[] { value } }); 
 	}
 	public SMap<K, V> set(K key, V value) {
 		if (key == null) 
 			if (values.length == 1 && equal(this.values[0], value)) return this;
-			else return new NoKeySingleValue<K, V>(value);
+			else return new SMapNoKeySingleValue<K, V>(value);
 		else return add(key, value); 
 	}
 	protected SMap<K,V> doAddAll(K key, Collection<? extends V> values) {
 		if (key == null)
-			return new NoKeyMultiValue<K, V>(key, concat(this.values, values));
+			return new SMapNoKeyMultiValue<K, V>(key, concat(this.values, values));
 		else
-			return new MultiKeyMultiValue<K, V>(new Object[] { null, key }, new Object[][] { this.values, values.toArray() }); 
+			return new SMapMultiKeyMultiValue<K, V>(new Object[] { null, key }, new Object[][] { this.values, values.toArray() }); 
 	}
 }
 
-class SingleKeyMultiValue<K, V> extends SMap<K, V> {
+class SMapSingleKeyMultiValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
-	private final K key;
-	private final Object[] values;
-	public SingleKeyMultiValue(K key, Object... values) {
+	transient K key;
+	transient Object[] values;
+	SMapSingleKeyMultiValue() {
+	}
+	SMapSingleKeyMultiValue(K key, Object... values) {
 		this.key = key;
 		this.values = values;
 	}
@@ -611,26 +634,28 @@ class SingleKeyMultiValue<K, V> extends SMap<K, V> {
 		};
 	}
 	public SMap<K, V> add(K key, V value) {
-		if (equal(this.key, key)) return new SingleKeyMultiValue<K, V>(key, concat(values, value));
-		else return new MultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { values, new Object[] { value } }); 
+		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, concat(values, value));
+		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { values, new Object[] { value } }); 
 	}
 	public SMap<K, V> set(K key, V value) {
 		if (equal(this.key, key))
 			if (values.length == 1 && equal(this.values[0], value)) return this;
-			else return new SingleKeySingleValue<K, V>(key, value);
+			else return new SMapSingleKeySingleValue<K, V>(key, value);
 		else return add(key, value); 
 	}
 	protected SMap<K,V> doAddAll(K key, Collection<? extends V> values) {
-		if (equal(this.key, key)) return new SingleKeyMultiValue<K, V>(key, concat(this.values, values));
-		else return new MultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { this.values, values.toArray() }); 
+		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, concat(this.values, values));
+		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { this.values, values.toArray() }); 
 	}
 }
 
-class MultiKeyMultiValue<K, V> extends SMap<K, V> {
+class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
-	private final Object[] keys;
-	private final Object[][] values;
-	public MultiKeyMultiValue(Object[] keys, Object[][] values) {
+	transient Object[] keys;
+	transient Object[][] values;
+	SMapMultiKeyMultiValue() {
+	}
+	SMapMultiKeyMultiValue(Object[] keys, Object[][] values) {
 		this.keys = keys;
 		this.values = values;
 	}
@@ -688,10 +713,10 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 			if (equal(keys[i], key)) {
 				Object[][] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = concat(values[i], value); 
-				return new MultiKeyMultiValue<K, V>(keys, newValues);
+				return new SMapMultiKeyMultiValue<K, V>(keys, newValues);
 			}
 		}
-		return new MultiKeyMultiValue<K, V>(concat(keys, key), concat(values, new Object[] { value }));
+		return new SMapMultiKeyMultiValue<K, V>(concat(keys, key), concat(values, new Object[] { value }));
 	}
 	public SMap<K, V> set(K key, V value) {
 		for (int i = 0; i < keys.length; i++) {
@@ -701,7 +726,7 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 				}
 				Object[][] newValues = SMap.copyOf(values, values.length);
 				newValues[i] = new Object[] { value }; 
-				return new MultiKeyMultiValue<K, V>(keys, newValues);
+				return new SMapMultiKeyMultiValue<K, V>(keys, newValues);
 				// TODO compact to multikeysinglevalue
 			}
 		}
@@ -712,9 +737,9 @@ class MultiKeyMultiValue<K, V> extends SMap<K, V> {
 			if (equal(keys[i], key)) {
 				Object[][] newValues = SMap.copyOf(this.values, this.values.length);
 				newValues[i] = concat(this.values[i], values); 
-				return new MultiKeyMultiValue<K, V>(keys, newValues);
+				return new SMapMultiKeyMultiValue<K, V>(keys, newValues);
 			}
 		}
-		return new MultiKeyMultiValue<K, V>(concat(keys, key), concat(this.values, values.toArray()));
+		return new SMapMultiKeyMultiValue<K, V>(concat(keys, key), concat(this.values, values.toArray()));
 	}
 }
