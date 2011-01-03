@@ -69,7 +69,9 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 				});
 				addBlurHandler(new BlurHandler() {
 					public void onBlur(BlurEvent event) {
-						setExpression(richText.getText());
+						String text = richText.getText();
+						setExpression(text);
+						ValueChangeEvent.fire(SExprEditor.this, text);
 					}
 				});
 				add(hiddenDiv = new HTML() {{
@@ -84,6 +86,7 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 	}
 	
 	public void setExpression(String expression) {
+		if (expression.equals(richText.getText())) return;
 		try {
 			SExpr expr = new SExprParser().parse(expression);
 			String html = expr.toHtml(true, defaultStyles);
@@ -96,10 +99,10 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 		}
 	}
 	
-  public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+  public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
     return addHandler(handler, ValueChangeEvent.getType());
   }
-	
+  
 	@Override
 	protected void onLoad() {
 		super.onLoad();
@@ -126,7 +129,6 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 				richText.getFormatter().selectAll();
 				richText.getFormatter().insertHTML(newHtml);
 				setEditorHeight();
-				ValueChangeEvent.fire(this, richText.getText());
 			}
 			setStatus("");
 //			setPosition(getSelection().getDocument().getBody(), pos[0]);
