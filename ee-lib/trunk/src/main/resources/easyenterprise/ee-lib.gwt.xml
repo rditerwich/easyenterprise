@@ -6,6 +6,11 @@
   <inherits name='javax.persistence'/>
   <inherits name='com.bfr.client.Selection'/>
 
+ <!-- Include GWTUpload library -->
+  <inherits name="gwtupload.GWTUpload"/>
+  <!-- Load dinamically predefined styles in the library when the application starts -->
+  <stylesheet src="Upload.css"/>
+  
   <!-- Specify the paths for translatable code                    -->
   <source path='lib/gwt'/>
   <source path='lib/sexpr'>

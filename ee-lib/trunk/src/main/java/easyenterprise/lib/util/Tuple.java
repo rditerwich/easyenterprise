@@ -1,6 +1,6 @@
 package easyenterprise.lib.util;
 
-public class Tuple<A, B> {
+public class Tuple<A, B> implements Comparable<Tuple<A, B>> {
     private final A first;
     private final B second;
 
@@ -37,4 +37,13 @@ public class Tuple<A, B> {
 		else if (second == null) return first.hashCode() + 2;
 		else return first.hashCode() * 17 + second.hashCode();
     }
+
+    @Override
+		@SuppressWarnings("unchecked")
+		public int compareTo(Tuple<A, B> other) {
+			int result = ((Comparable<A>) first).compareTo((A) other.first);
+			if (result == 0) 
+				result = ((Comparable<B>) second).compareTo((B) other.second);
+			return result;
+		}
 }

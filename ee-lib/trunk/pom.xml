@@ -46,6 +46,11 @@
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
+	 <dependency>
+	  <groupId>com.googlecode.gwtupload</groupId>
+	  <artifactId>gwtupload</artifactId>
+	  <version>0.6.3-compat</version>
+	 </dependency>
   </dependencies>
   <build>
     <resources>
