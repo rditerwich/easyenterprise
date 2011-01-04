@@ -67,13 +67,13 @@ public class Table extends Grid {
 
 	public Table() {
 		super();
-		setStyleName("claro-table");
+		setStyleName("ee-table-table");
 		setHeader();
 	}
 
 	public Table(int rows, int columns) {
 		super(rows, columns);
-		setStyleName("claro-table");
+		setStyleName("ee-table-table");
 		setHeader();
 	}
 
@@ -126,10 +126,10 @@ public class Table extends Grid {
 
 		super.resizeRows(rows);
 		if (rows > 0 && oldRows < 1) {
-			getRowFormatter().addStyleName(0, "cxs-first");
+			getRowFormatter().addStyleName(0, "ee-table-first");
 		}
 		for (int i = startIndex; i < numRows; i++) {
-			getRowFormatter().addStyleName(i, even ? "cxs-even" : "cxs-odd");
+			getRowFormatter().addStyleName(i, even ? "ee-table-even" : "ee-table-odd");
 			even = !even;
 		}
 	}
