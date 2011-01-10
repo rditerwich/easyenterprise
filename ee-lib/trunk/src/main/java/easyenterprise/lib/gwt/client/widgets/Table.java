@@ -113,7 +113,6 @@ public class Table extends Grid {
 			for (int i = 0; i < numHeaderRows; i++) {
 				for (int j = oldColumns; j < columns; j++) {
 					insertHeaderCell(i, j);
-					getHeaderCellFormatter().addStyleName(i, j, "ee-TableLast");
 				}
 			}
 		}
