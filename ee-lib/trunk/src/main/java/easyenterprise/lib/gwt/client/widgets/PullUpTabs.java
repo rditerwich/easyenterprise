@@ -6,16 +6,26 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TearUpTabs extends Composite implements RequiresResize, ProvidesResize {
+import easyenterprise.lib.gwt.client.Style;
 
+public class PullUpTabs extends Composite implements RequiresResize, ProvidesResize {
+	
+	public enum Styles implements Style {
+		MainPanel, Tabs, Tab, Panel;
+	}
+	
+	public static final String stylePrefix = "ee-PullUpTabs-";
+	
 	private final LayoutPanel layoutPanel;
 	private final List<TabPanel> tabPanels = new ArrayList<TabPanel>();
 	private final double tabHeight;
@@ -24,11 +34,11 @@ public class TearUpTabs extends Composite implements RequiresResize, ProvidesRes
 	private int width;
 	private Widget mainPanel;
 
-	public TearUpTabs(double tabHeight, double tabSpace) {
+	public PullUpTabs(double tabHeight, double tabSpace) {
 		this.tabHeight = tabHeight;
 		this.tabSpace = tabSpace;
 		initWidget(layoutPanel = new LayoutPanel());
-		layoutPanel.setStylePrimaryName("ee-TearUpTabs");
+		layoutPanel.setStylePrimaryName(stylePrefix + Styles.Tabs.name());
 	}
 	
 	@Override
@@ -43,13 +53,17 @@ public class TearUpTabs extends Composite implements RequiresResize, ProvidesRes
 	public void setMainWidget(final Widget widget) {
 		mainPanel = new SimplePanel() {{
 			add(widget);
-			setStylePrimaryName("ee-TearUpTabs-MainPanel");
+			setStylePrimaryName(stylePrefix + Styles.MainPanel.name());
 		}};
 		clearWidgets();
 	}
 	
 	public void addTab(Widget tab, double tabWidth, Widget widget) {
-		tabPanels.add(new TabPanel(tab, tabWidth, widget));
+		addTab(tab, tabWidth, 95, Unit.PCT, widget);
+	}
+	
+	public void addTab(Widget tab, double tabWidth, double panelHeight, Unit panelHeightUnit, Widget widget) {
+		tabPanels.add(new TabPanel(tab, tabWidth, panelHeight, panelHeightUnit, widget));
 		clearWidgets();
 	}
 
@@ -71,22 +85,28 @@ public class TearUpTabs extends Composite implements RequiresResize, ProvidesRes
 	
 	private class TabPanel {
 		private final FocusPanel tab;
-		private final Widget panel;
+		private final ScrollPanel panel;
 		private final double tabWidth;
+		private final double panelHeight;
+		private final Unit panelHeightUnit;
 
-		public TabPanel(final Widget tab, double tabWidth, final Widget widget) {
+		public TabPanel(final Widget tab, double tabWidth, double panelHeight, Unit panelHeightUnit, final Widget widget) {
 			this.tabWidth = tabWidth;
+			this.panelHeight = panelHeight;
+			this.panelHeightUnit = panelHeightUnit;
 			final int tabNr = tabPanels.size();
-			this.panel = new SimplePanel() {{
-				setStylePrimaryName("ee-TearUpTabs-Panel");
+			this.panel = new ScrollPanel() {{
+				setStylePrimaryName(stylePrefix + Styles.Panel.name());
 				add(widget);
 			}};
 			this.tab = new FocusPanel() {{
-				setStylePrimaryName("ee-TearUpTabs-Tab");
+				setStylePrimaryName(stylePrefix + Styles.Tab.name());
 				add(tab);
 				
 				addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent event) {
+//						DOM.setStyleAttribute(getElement(), "overflowY", "scroll");
+						DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
 						if (currentTab == tabNr) {
 							hideTab();
 						} else {
@@ -111,7 +131,6 @@ public class TearUpTabs extends Composite implements RequiresResize, ProvidesRes
 				layoutPanel.add(panel.tab);
 			}
 		}
-		int height = layoutPanel.getOffsetHeight();
 		double totalWidth = 0; 
 		for (int tabNr = 0; tabNr < tabPanels.size(); tabNr++) {
 			TabPanel panel = tabPanels.get(tabNr);
@@ -122,11 +141,11 @@ public class TearUpTabs extends Composite implements RequiresResize, ProvidesRes
 		for (int tabNr = 0; tabNr < tabPanels.size(); tabNr++) {
 			TabPanel panel = tabPanels.get(tabNr);
 			if (tabNr == currentTab) {
-				layoutPanel.setWidgetTopHeight(panel.tab, tabHeight, Unit.PX, tabHeight, Unit.PX);
-				layoutPanel.setWidgetTopBottom(panel.panel, 2 * tabHeight, Unit.PX, 0, Unit.PX);
+				layoutPanel.setWidgetBottomHeight(panel.tab, panel.panelHeight, panel.panelHeightUnit, tabHeight, Unit.PX);
+				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, panel.panelHeight, panel.panelHeightUnit);
 			} else {
-				layoutPanel.setWidgetTopHeight(panel.tab, height - tabHeight, Unit.PX, tabHeight, Unit.PX);
-				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, 0, Unit.PX);
+				layoutPanel.setWidgetBottomHeight(panel.tab, 0, Unit.PX, tabHeight, Unit.PX);
+				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, 0, panel.panelHeightUnit);
 			}
 			layoutPanel.setWidgetLeftWidth(panel.tab, left, Unit.PX, panel.tabWidth, Unit.PX);
 			left += panel.tabWidth + tabSpace;

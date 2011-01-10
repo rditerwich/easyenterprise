@@ -12,7 +12,9 @@
   <stylesheet src="Upload.css"/>
   
   <!-- Specify the paths for translatable code                    -->
-  <source path='lib/gwt'/>
+  <source path='lib/gwt'>
+  	<exclude name='server/**'/>
+  </source>
   <source path='lib/sexpr'>
   	<exclude name='**Test**'/>
   </source>

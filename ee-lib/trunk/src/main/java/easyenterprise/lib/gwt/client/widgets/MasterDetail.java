@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 import easyenterprise.lib.gwt.client.Style;
 import easyenterprise.lib.gwt.client.StyleUtil;
@@ -15,7 +16,7 @@ import easyenterprise.lib.gwt.client.StyleUtil;
 public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
 
 	public enum Styles implements Style {
-		MasterDetail, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
+		MasterDetail, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
 		
 		public String toString() {
 			return "ee-" + super.toString();
@@ -45,6 +46,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 	private final int footerSize;
 	private DockLayoutPanel masterPanel;
+	private Widget tableContainer;
 
 	public MasterDetail(int headerSize, int footerSize) {
 		this.headerSize = headerSize;
@@ -96,16 +98,15 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		initializeDetailPanel();
 		
 		// Determine size/offset of selected table row.
-		int offsetTop = masterTable.getRowFormatter().getElement(row).getOffsetTop() + headerSize;
+		int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+		int offsetLeft = tableContainer.getAbsoluteLeft();
 		int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
-		int offsetLeft = masterTable.getRowFormatter().getElement(row).getOffsetLeft();
 		int offsetWidth = masterTable.getRowFormatter().getElement(row).getOffsetWidth();
 		
 		// Set selection 
 		
 		// If the details is not open, position to get a nice starting position
 		if (!detailOpen) {
-			mainPanel.setWidgetLeftWidth(masterPanel, 0, Unit.PX, 100, Unit.PC);
 
 			mainPanel.setWidgetTopHeight(detailPanel, offsetTop -1, Unit.PX, offsetHeight + 2, Unit.PX);
 			mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 0, Unit.PX);
@@ -127,7 +128,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 		// erase a bit of the detail panel:
 		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
-		mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 2, Unit.PX);
+		mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 4, Unit.PX);
 		
 		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, 100, Unit.PCT);
 		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 80, Unit.PCT);
@@ -143,6 +144,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 					masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
 				}
 				masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
+				mainPanel.animate(10);
 			}
 		});
 		
@@ -161,7 +163,6 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		final int offsetTop = masterTable.getRowFormatter().getElement(currentRow).getOffsetTop() + headerSize;
 		final int offsetHeight = masterTable.getRowFormatter().getElement(currentRow).getOffsetHeight();
 		int offsetLeft = masterTable.getRowFormatter().getElement(currentRow).getOffsetLeft();
-		
 		int mainPanelHeight = mainPanel.getOffsetHeight();
 		
 		// This forcelayout should not have to be necessary.
@@ -209,8 +210,13 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.add(masterPanel = new DockLayoutPanel(Unit.PX) {{
 			addNorth(headerPanel = new LayoutPanel(), headerSize);
 			addSouth(footerPanel = new LayoutPanel(), footerSize);
-			add(masterTable = new Table());
+			tableContainer = tableCreated(masterTable = new Table());
+			tableContainer.setStylePrimaryName(Styles.MasterDetailMaster.toString());
+			masterTable.addStyleName(Styles.MasterDetailTable.toString());
+			add(tableContainer);
 		}});
+		mainPanel.setWidgetLeftRight(masterPanel, 24, Unit.PX, 24, Unit.PX);
+
 		
 		mainPanel.add(selectionLine = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetailSelectionPanel);
@@ -220,6 +226,10 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.setWidgetLeftWidth(selectionLine, 100, Unit.PCT, 0, Unit.PX);
 
 		masterPanelCreated(masterPanel);
+	}
+	
+	protected Widget tableCreated(Table table) {
+		return table;
 	}
 	
 	private void initializeDetailPanel() {

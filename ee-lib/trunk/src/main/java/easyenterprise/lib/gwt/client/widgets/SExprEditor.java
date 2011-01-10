@@ -15,6 +15,8 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -57,10 +59,17 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 	public SExprEditor() {
 		initWidget(panel = new VerticalPanel() {{
 			add(richText = new RichTextArea() {{
-				IFrameElement e = IFrameElement.as(getElement());
+				final IFrameElement e = IFrameElement.as(getElement());
 				e.setMarginHeight(0);
 				e.setMarginWidth(0);
-
+				addKeyPressHandler(new KeyPressHandler() {
+					public void onKeyPress(KeyPressEvent event) {
+						if (event.getUnicodeCharCode() == 13 || event.getUnicodeCharCode() == 9) {
+							blur();
+						}
+					}
+				});
+				
 				addKeyUpHandler(new KeyUpHandler() {
 					public void onKeyUp(KeyUpEvent event) {
 						String text = richText.getText();
@@ -72,9 +81,7 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 				});
 				addBlurHandler(new BlurHandler() {
 					public void onBlur(BlurEvent event) {
-						String text = richText.getText();
-						setExpression(text);
-						ValueChangeEvent.fire(SExprEditor.this, text);
+						blur();
 					}
 				});
 				add(hiddenDiv = new HTML() {{
@@ -90,11 +97,15 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 	
 	public void setExpression(String expression) {
 		if (expression.equals(richText.getText())) return;
+		setChangedExpression(expression);
+	}
+
+	private void setChangedExpression(String expression) {
 		try {
 			SExpr expr = new SExprParser().parse(expression);
 			String html = expr.toHtml(true, defaultStyles);
-			setEditorHeight();
 			richText.setHTML(html);
+			setEditorHeight();
 			setStatus("");
 		} catch (SExprParseException e) {
 			richText.setHTML(expression);
@@ -123,24 +134,30 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 		RangeEndPoint startPoint = getSelection().getRange().getStartPoint();
 		int[] pos = new int[1];
 		String text = parseHtml(body, startPoint, new StringBuilder(), pos).toString();
-		char lastChar = text.isEmpty() ? 0 : text.charAt(text.length() - 1);
+		boolean lastWasChar = SExprParser.isSpace((text.isEmpty() ? 0 : text.charAt(text.length() - 1)));
+		String newHtml;
 		try {
 			SExpr expr = new SExprParser().parse(text.toString());
-			String newHtml = expr.toHtml(true, defaultStyles);
-			if (SExprParser.isSpace(lastChar)) newHtml += "&nbsp;";
-			if (pos[0] == text.length()) {
-				richText.getFormatter().selectAll();
-				richText.getFormatter().insertHTML(newHtml);
-				setEditorHeight();
-			}
+			newHtml = expr.toHtml(true, defaultStyles);
+//			if ((pos[0] == text.length())) {
+//				richText.getFormatter().selectAll();
+//				richText.getFormatter().insertHTML(newHtml);
+//				setEditorHeight();
+//			}
 			setStatus("");
 //			setPosition(getSelection().getDocument().getBody(), pos[0]);
 		} catch (SExprParseException e) {
+			newHtml = richText.getText().replace('\u00a0', ' ').trim();
 			setStatus(e.toHtml(defaultStyles));
+		}
+		if ((pos[0] == text.length())) {
+			richText.getFormatter().selectAll();
+			if (lastWasChar) newHtml += "&nbsp;";
+			richText.getFormatter().insertHTML(newHtml);
 			setEditorHeight();
 		}
 	}
-	
+
 	private void setStatus(String html) {
 		if (statusText != null) {
 			statusText.removeFromParent();
@@ -174,7 +191,6 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 	}
 	
 	private int setPosition(Element parent, int pos) {
-//		System.out.println("parent: " + (parent.getParentNode().getParentNode() == getSelection().getDocument()));
 		for (Node node = parent.getFirstChild(); node != null && pos >= 0; node = node.getNextSibling()) {
 			if (node.getNodeType() == Node.TEXT_NODE) {
 				Text textNode = (Text) node;
@@ -184,15 +200,12 @@ try {
 		
 						Range range = new Range(parent);
 						range.setCursor(new RangeEndPoint(textNode, 3));
-						System.out.println("RANGE: " + getSelection().getRange().getCursor().getTextNode());
 						getSelection().setRange(range);
-	//					System.out.println("SMAE: " + (textNode.getOwnerDocument() == getSelection().getRange().getDocument()));
 	//					range.setCursor(new RangeEndPoint(textNode, 1));
 	//					getSelection().getRange().surroundContents(textNode.getParentElement());					
 						return -1;
 } catch (Throwable e) {
 	// TODO Auto-generated catch block
-	e.printStackTrace();
 }
 				}
 				pos -= length;
@@ -221,6 +234,12 @@ try {
 	private JavaScriptObject getWindow() {
 		IFrameElement frame = richText.getElement().cast();
 		return getWindow(frame);
+	}
+
+	private void blur() {
+		String text = richText.getText();
+		setChangedExpression(text);
+		ValueChangeEvent.fire(SExprEditor.this, text);
 	}
 
 	public static native JavaScriptObject getWindow(IFrameElement iFrame)

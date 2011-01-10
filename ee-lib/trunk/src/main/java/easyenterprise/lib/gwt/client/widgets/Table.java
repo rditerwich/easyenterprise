@@ -67,13 +67,13 @@ public class Table extends Grid {
 
 	public Table() {
 		super();
-		setStyleName("ee-table-table");
+		setStyleName("ee-Table");
 		setHeader();
 	}
 
 	public Table(int rows, int columns) {
 		super(rows, columns);
-		setStyleName("ee-table-table");
+		setStyleName("ee-Table");
 		setHeader();
 	}
 
@@ -98,21 +98,22 @@ public class Table extends Grid {
 
 	@Override
 	public void resizeColumns(int columns) {
-		final int oldColums = numColumns;
+		final int oldColumns = numColumns;
 
 		super.resizeColumns(columns);
-		if (oldColums > columns) {
+		if (oldColumns > columns) {
 			// Fewer columns. Remove extraneous cells.
 			for (int i = 0; i < numHeaderRows; i++) {
-				for (int j = oldColums - 1; j >= columns; j--) {
+				for (int j = oldColumns - 1; j >= columns; j--) {
 					removeHeaderCell(i, j);
 				}
 			}
 		} else {
 			// More columns. add cells where necessary.
 			for (int i = 0; i < numHeaderRows; i++) {
-				for (int j = oldColums; j < columns; j++) {
+				for (int j = oldColumns; j < columns; j++) {
 					insertHeaderCell(i, j);
+					getHeaderCellFormatter().addStyleName(i, j, "ee-TableLast");
 				}
 			}
 		}
@@ -126,10 +127,13 @@ public class Table extends Grid {
 
 		super.resizeRows(rows);
 		if (rows > 0 && oldRows < 1) {
-			getRowFormatter().addStyleName(0, "ee-table-first");
+			getRowFormatter().addStyleName(0, "ee-TableFirst");
+		}
+		if (rows > 0 && oldRows == 0) {
+			getRowFormatter().addStyleName(rows - 1, "ee-TableLast");
 		}
 		for (int i = startIndex; i < numRows; i++) {
-			getRowFormatter().addStyleName(i, even ? "ee-table-even" : "ee-table-odd");
+			getRowFormatter().addStyleName(i, even ? "ee-TableEven" : "ee-TableOdd");
 			even = !even;
 		}
 	}
