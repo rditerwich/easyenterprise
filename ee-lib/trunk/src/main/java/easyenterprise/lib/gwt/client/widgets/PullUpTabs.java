@@ -54,6 +54,11 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 		mainPanel = new SimplePanel() {{
 			add(widget);
 			setStylePrimaryName(stylePrefix + Styles.MainPanel.name());
+			addDomHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					hideTab();
+				}
+			}, ClickEvent.getType());
 		}};
 		clearWidgets();
 	}
@@ -78,6 +83,15 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 		renderTabs();
 	}
 	
+	public void showTab(Widget widget) {
+		for (int tabnr = 0; tabnr < tabPanels.size(); tabnr++) {
+			if (tabPanels.get(tabnr).widget == widget) {
+				showTab(tabnr);
+				break;
+			}
+		}
+	}
+	
 	public void hideTab() {
 		currentTab = -1;
 		renderTabs();
@@ -89,11 +103,13 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 		private final double tabWidth;
 		private final double panelHeight;
 		private final Unit panelHeightUnit;
+		private final Widget widget;
 
 		public TabPanel(final Widget tab, double tabWidth, double panelHeight, Unit panelHeightUnit, final Widget widget) {
 			this.tabWidth = tabWidth;
 			this.panelHeight = panelHeight;
 			this.panelHeightUnit = panelHeightUnit;
+			this.widget = widget;
 			final int tabNr = tabPanels.size();
 			this.panel = new ScrollPanel() {{
 				setStylePrimaryName(stylePrefix + Styles.Panel.name());

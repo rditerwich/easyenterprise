@@ -53,12 +53,26 @@ public class JpaService extends CommandWrapper {
 		return state.entityManager;
 	}
 	
+	public static void clearEntityManager() {
+		stateLocal.remove();
+	}
+	
+	public static EntityManagerFactory getGlobalEntityManagerFactory() {
+		return globalEntityManagerFactory;
+	}
+	
 	public static void setGlobalEntityManagerFactory(EntityManagerFactory factory) {
+		if (globalEntityManagerFactory != null) {
+			globalEntityManagerFactory.close();
+		}
 		globalEntityManagerFactory = factory;
 	}
 	
 	public static void runInTransaction(Runnable r) {
 		JpaCommandState oldState = stateLocal.get();
+		
+		// commit current transaction
+		commit(oldState);
 		
 		// create new state
 		JpaCommandState state = new JpaCommandState();
