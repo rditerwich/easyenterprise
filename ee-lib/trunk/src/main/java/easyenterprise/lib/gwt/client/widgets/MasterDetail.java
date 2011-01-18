@@ -88,6 +88,10 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		return detailOpen;
 	}
 	
+	public int getCurrentRow() {
+		return currentRow;
+	}
+	
 	@Override
 	public void onResize() {
 		mainPanel.onResize();

@@ -12,6 +12,14 @@ public class CollectionUtil {
 		return collection == null || collection.isEmpty();
 	}
 	
+	public static boolean isEmpty(SMap<?, ?> m) {
+		return m == null || m.isEmpty();
+	}
+	
+	public static <K,V> SMap<K,V> notNull(SMap<K, V> map) {
+		return map == null? SMap.<K,V>empty() : map;
+	}
+	
 	public static <T> Collection<T> notNull(Collection<T> collection) {
 		return collection == null ? Collections.<T>emptyList() : collection;
 	}
