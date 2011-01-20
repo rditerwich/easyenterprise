@@ -1,5 +1,6 @@
 package easyenterprise.lib.util;
 
+
 public class ObjectUtil {
 
 	public static <T> T orElse(T value, T alternative) {

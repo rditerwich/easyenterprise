@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class CollectionUtil {
 
@@ -32,6 +33,19 @@ public class CollectionUtil {
 		list.addAll(c1);
 		list.addAll(c2);
 		return list;
+	}
+	
+	
+	public static <T> List<T> asList(T... values) {
+		List<T> result = new ArrayList<T>(values != null? values.length : 0);
+
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
+				result.add(values[i]);
+			}
+		}
+		
+		return result;
 	}
 	
 	public static <T> LinkedHashSet<T> unique(Collection<T> collection) {
