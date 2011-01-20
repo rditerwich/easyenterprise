@@ -325,6 +325,10 @@ class SMapEmpty<K, V> extends SMap<K, V> {
 		if (key == null) return new SMapNoKeyMultiValue<K, V>(values.toArray());
 		else return new SMapSingleKeyMultiValue<K, V>(key, values.toArray());
 	};
+	@Override
+	public String toString() {
+		return "[]";
+	}
 }
 
 class SMapNoKeySingleValue<K, V> extends SMap<K, V> {
@@ -373,6 +377,10 @@ class SMapNoKeySingleValue<K, V> extends SMap<K, V> {
 		if (key == null) return new SMapNoKeyMultiValue<K, V>(null, this.value, value); 
 		else return new SMapMultiKeySingleValue<K, V>(new Object[] { null, key}, new Object[] { this.value, value }); 
 	};
+	@Override
+	public String toString() {
+		return "[(null, " + value + ")]";
+	}
 }
 
 class SMapSingleKeySingleValue<K, V> extends SMap<K, V> {
@@ -421,6 +429,10 @@ class SMapSingleKeySingleValue<K, V> extends SMap<K, V> {
 	public SMap<K, V> doAddAll(K key, Collection<? extends V> values) {
 		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, concat(this.value, values)); 
 		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { new Object[] { this.value }, values.toArray() });
+	}
+	@Override
+	public String toString() {
+		return "[(" + key + ", " + value + ")]";
 	}
 }
 
@@ -510,6 +522,19 @@ class SMapMultiKeySingleValue<K, V> extends SMap<K, V> {
 		return new SMapMultiKeySingleValue<K, V>(concat(keys, key), concat(this.values, values));
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		String sep = "";
+		for (int i = 0; i < keys.length; i++) {
+			result.append(sep); sep = ", ";
+			result.append("(").append(keys[i]).append(", ").append(values[i]).append(")");
+		}
+		result.append("]");
+		return result.toString();
+	}
+	
 	private Object[][] wrapArray(int index, Object[] arrayAtIndex) {
 		Object[][] valueArrays = new Object[keys.length][];
 		for (int i = 0; i < keys.length; i++) {
@@ -583,6 +608,19 @@ class SMapNoKeyMultiValue<K, V> extends SMap<K, V> {
 		else
 			return new SMapMultiKeyMultiValue<K, V>(new Object[] { null, key }, new Object[][] { this.values, values.toArray() }); 
 	}
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[(null, [");
+		String sep = "";
+		for (int i = 0; i < values.length; i++) {
+			result.append(sep); sep = ", ";
+			result.append(values[i]);
+		}
+		
+		result.append("])]");
+		return result.toString();
+	}
 }
 
 class SMapSingleKeyMultiValue<K, V> extends SMap<K, V> {
@@ -647,6 +685,20 @@ class SMapSingleKeyMultiValue<K, V> extends SMap<K, V> {
 		if (equal(this.key, key)) return new SMapSingleKeyMultiValue<K, V>(key, concat(this.values, values));
 		else return new SMapMultiKeyMultiValue<K, V>(new Object[] { this.key, key }, new Object[][] { this.values, values.toArray() }); 
 	}
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[(").append(key).append(", [");
+		String sep = "";
+		for (int i = 0; i < values.length; i++) {
+			result.append(sep); sep = ", ";
+			result.append(values[i]);
+		}
+		
+		result.append("])]");
+		return result.toString();
+	}
+	
 }
 
 class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
@@ -742,4 +794,24 @@ class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 		}
 		return new SMapMultiKeyMultiValue<K, V>(concat(keys, key), concat(this.values, values.toArray()));
 	}
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		String sep = "";
+		for (int i = 0; i < keys.length; i++) {
+			result.append(sep); sep = ", ";
+			result.append("(").append(keys[i]).append(", [");
+			String sep2 = "";
+			for (int j = 0; j < values[i].length; j++) {
+				result.append(sep2); sep2 = ", ";
+				result.append(values[i][j]);
+			}
+			result.append("])");
+		}
+		
+		result.append("]");
+		return result.toString();
+	}
+
 }
