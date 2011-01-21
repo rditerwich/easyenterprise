@@ -12,13 +12,14 @@ public class Money implements Serializable {
 	private static Map<String, Integer> decimalsMap = createDecimalsMap();
 	private static Map<String, String> localeCurrencyMap = createLocaleCurrencyMap();
 	
-	public final Double value;
+	public Double value;
 	
 	/**
    * ISO 4217 currency code.
    * See http://en.wikipedia.org/wiki/ISO_4217.
 	 */
-	public final String currency;
+	public String currency;
+	
 
 	public static Money parse(String value, String defaultCurrency) {
 		// parse currency symbol
@@ -38,6 +39,9 @@ public class Money implements Serializable {
 		currency = getCurrencyFromSymbol(currency);
 		return new Money(Double.parseDouble(value), currency);
 		
+	}
+	
+	public Money() {
 	}
 	
 	public Money(Double value, String currency) {
