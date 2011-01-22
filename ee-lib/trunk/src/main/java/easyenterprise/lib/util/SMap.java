@@ -749,7 +749,7 @@ class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 			private int k = 0;
 			private int v = 0;
       public boolean hasNext() {
-      	if (v >= values.length) { k++; v = 0; }
+      	if (v >= values[k].length) { k++; v = 0; }
 	      return k < keys.length;
       }
       @SuppressWarnings("unchecked")

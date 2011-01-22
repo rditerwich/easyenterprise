@@ -107,7 +107,6 @@ public class Money implements Serializable {
 	private static Map<String, Integer> createDecimalsMap() {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("BHD", 3);
-		map.put("BIF", 0);
 		map.put("BYR", 0);
 		map.put("CLF", 0);
 		map.put("CLP", 0);

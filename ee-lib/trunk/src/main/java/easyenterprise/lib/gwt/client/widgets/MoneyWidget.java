@@ -1,6 +1,8 @@
 package easyenterprise.lib.gwt.client.widgets;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -10,6 +12,7 @@ import com.google.gwt.i18n.client.CurrencyList;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -27,7 +30,7 @@ public abstract class MoneyWidget extends Composite {
 	
 	public MoneyWidget() {
 		initWidget(new FlowPanel(){{
-			add(currencySymbol = new Label()); // Currency symbol
+			add(currencySymbol = new InlineLabel()); // Currency symbol
 			add(moneyText = new TextBox() {{
 				addChangeHandler(new ChangeHandler() {
 					@Override
@@ -45,6 +48,13 @@ public abstract class MoneyWidget extends Composite {
 			add(moneyListbox = new ListBox(){{
 				for (CurrencyData currency : CurrencyList.get()) {
 					currencies.add(currency);
+				}
+				Collections.sort(currencies, new Comparator<CurrencyData>() {
+					public int compare(CurrencyData o1, CurrencyData o2) {
+						return o1.getCurrencyCode().compareTo(o2.getCurrencyCode());
+					}
+				});
+				for (CurrencyData currency : currencies) {
 					addItem(currency.getCurrencyCode());
 				}
 				addChangeHandler(new ChangeHandler() {
@@ -57,6 +67,8 @@ public abstract class MoneyWidget extends Composite {
 								MoneyWidget.this.setValue(newValue);
 								valueChanged(value);
 							}
+						} else {
+							setSelectedCurrency(currency);
 						}
 					}
 				});
@@ -71,7 +83,7 @@ public abstract class MoneyWidget extends Composite {
 		if (value != null) {
 			CurrencyData currency = CurrencyList.get().lookup(value.currency);
 			setSelectedCurrency(currency);
-			moneyText.setText(NumberFormat.getFormat("%d" + Money.getDecimals(currency.getCurrencyCode()), currency).format(value.value));
+			moneyText.setText(NumberFormat.getFormat("." + "000000".substring(0, value.getDecimals(currency.getCurrencyCode())), currency).format(value.value));
 		} else {
 			setEmptyValue();
 		}
