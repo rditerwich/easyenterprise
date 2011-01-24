@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.i18n.client.CurrencyData;
 import com.google.gwt.i18n.client.CurrencyList;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -83,7 +82,7 @@ public abstract class MoneyWidget extends Composite {
 		if (value != null) {
 			CurrencyData currency = CurrencyList.get().lookup(value.currency);
 			setSelectedCurrency(currency);
-			moneyText.setText(NumberFormat.getFormat("." + "000000".substring(0, value.getDecimals(currency.getCurrencyCode())), currency).format(value.value));
+			moneyText.setText(MoneyFormatUtil.value(value, currency));
 		} else {
 			setEmptyValue();
 		}
