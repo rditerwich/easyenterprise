@@ -20,7 +20,7 @@ import easyenterprise.lib.gwt.client.Style;
 
 public class PullUpTabs extends Composite implements RequiresResize, ProvidesResize {
 	
-	public enum Styles implements Style {
+	private enum Styles implements Style {
 		MainPanel, Tabs, Tab, Panel;
 	}
 	
