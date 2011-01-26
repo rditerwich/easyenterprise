@@ -49,7 +49,6 @@ public class TestSMap {
 		Assert.assertEquals(SMapNoKeyMultiValue.class, map.getClass());
 	}
 	
-	@Test
 	public void testSerialization() throws IOException, ClassNotFoundException {
 		SMap<String, String> map = SMap.empty();
 		Assert.assertEquals(map, serialize(map));

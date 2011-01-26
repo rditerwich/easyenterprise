@@ -1,6 +1,8 @@
 package easyenterprise.lib.gwt.client.widgets;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.user.client.ui.Composite;
@@ -53,6 +55,13 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		this.footerSize = footerSize;
 		initWidget(mainPanel = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetail);
+			
+			// auto-close detail when clicked on background
+			addDomHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					closeDetail(true);
+				}
+			}, ClickEvent.getType());
 		}});
 	}
 	
@@ -244,6 +253,14 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 		mainPanel.add(detailPanel = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetailDetailPanel);
+			
+			// make sure clicks on detail panel aren't causeing the detail panel to close
+			addDomHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					event.stopPropagation();
+				}
+			}, ClickEvent.getType());
+
 		}});
 		mainPanel.add(eraseLine = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetailErasePanel);

@@ -21,6 +21,8 @@
   <source path='lib/util'>
   	<exclude name='TestSMap**'/>
   	<exclude name='DBScript**'/>
+  	<exclude name='FileUtil.*'/>
+  	<exclude name='ZipUtil.*'/>
   </source>
   <source path='lib/command'>
   	<exclude name='CommandImpl**' />

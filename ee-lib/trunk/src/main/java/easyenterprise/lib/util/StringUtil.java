@@ -2,6 +2,18 @@ package easyenterprise.lib.util;
 
 public class StringUtil {
 
+	public static String beforeLast(String s, char c, String defaultString) {
+		int index = s.lastIndexOf(c);
+		if (index < 0) return defaultString;
+		else return s.substring(0, index);
+	}
+	
+	public static String afterLast(String s, char c, String defaultString) {
+		int index = s.lastIndexOf(c);
+		if (index < 0) return defaultString;
+		else return s.substring(index + 1);
+	}
+	
 	public static String mkString(String sep, Object... parts) {
 		StringBuilder builder = new StringBuilder();
 		String cursep = "";

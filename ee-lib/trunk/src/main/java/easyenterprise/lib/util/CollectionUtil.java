@@ -3,6 +3,7 @@ package easyenterprise.lib.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,7 +36,6 @@ public class CollectionUtil {
 		return list;
 	}
 	
-	
 	public static <T> List<T> asList(T... values) {
 		List<T> result = new ArrayList<T>(values != null? values.length : 0);
 
@@ -60,5 +60,11 @@ public class CollectionUtil {
 		Iterator<T> it = iterable.iterator();
 		if (it.hasNext()) return it.next();
 		else return null;
+	}
+	
+	public static <T> List<T> sort(Collection<T> collection, Comparator<T> comparator) {
+		List<T> list = new ArrayList<T>(collection);
+		Collections.sort(list, comparator);
+		return list;
 	}
 }

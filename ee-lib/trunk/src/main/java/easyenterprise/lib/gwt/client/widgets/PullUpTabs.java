@@ -81,6 +81,7 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 	public void showTab(int tabNr) {
 		this.currentTab = tabNr;
 		renderTabs();
+		layoutPanel.animate(200);
 	}
 	
 	public void showTab(Widget widget) {
@@ -122,13 +123,13 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 				addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent event) {
 //						DOM.setStyleAttribute(getElement(), "overflowY", "scroll");
-						DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
+//						DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
 						if (currentTab == tabNr) {
 							hideTab();
 						} else {
 							showTab(tabNr);
 						}
-						layoutPanel.animate(150);
+//						layoutPanel.animate(150);
 					}
 				});
 			}};
@@ -159,9 +160,11 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 			if (tabNr == currentTab) {
 				layoutPanel.setWidgetBottomHeight(panel.tab, panel.panelHeight, panel.panelHeightUnit, tabHeight, Unit.PX);
 				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, panel.panelHeight, panel.panelHeightUnit);
+//				panel.widget.setVisible(true);
 			} else {
 				layoutPanel.setWidgetBottomHeight(panel.tab, 0, Unit.PX, tabHeight, Unit.PX);
 				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, 0, panel.panelHeightUnit);
+//				panel.widget.setVisible(false);
 			}
 			layoutPanel.setWidgetLeftWidth(panel.tab, left, Unit.PX, panel.tabWidth, Unit.PX);
 			left += panel.tabWidth + tabSpace;
