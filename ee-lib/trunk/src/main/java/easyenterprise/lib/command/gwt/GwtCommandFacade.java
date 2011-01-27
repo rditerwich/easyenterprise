@@ -56,6 +56,12 @@ public class GwtCommandFacade {
 		getAsyncCommandService().execute(command, callback);
 	}
 	
+	public static <T extends CommandResult, C extends Command<T>> 
+	void invalidateCache(final C command) {
+		cache.remove(command);
+	}
+	
+	
 	// TODO maybe we should have some sort of timeout, or more subtle retry mechanism....
 	public static <T extends CommandResult, C extends Command<T>> 
 	void executeWithRetry(final C command, final int nrAttempts, final RetryingCallback<T> callback) {
