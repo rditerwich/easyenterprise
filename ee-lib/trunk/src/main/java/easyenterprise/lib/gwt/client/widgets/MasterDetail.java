@@ -18,7 +18,7 @@ import easyenterprise.lib.gwt.client.StyleUtil;
 public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
 
 	public enum Styles implements Style {
-		MasterDetail, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
+		MasterDetail, MasterDetailHeader, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
 		
 		public String toString() {
 			return "ee-" + super.toString();
@@ -114,7 +114,6 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
 		int offsetLeft = tableContainer.getAbsoluteLeft();
 		int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
-		int offsetWidth = masterTable.getRowFormatter().getElement(row).getOffsetWidth();
 		
 		// Set selection 
 		
@@ -128,7 +127,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
 			mainPanel.setWidgetLeftWidth(selectionLine, detailPanelOffset, Unit.PX, 0, Unit.PX);
 			
-			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
+			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
 			mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 2, Unit.PX);
 			
 			mainPanel.forceLayout();
@@ -140,7 +139,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, 25, Unit.PCT);
 
 		// erase a bit of the detail panel:
-		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
+		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
 		mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 4, Unit.PX);
 		
 		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, 100, Unit.PCT);
@@ -171,11 +170,15 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		
 		detailOpen = false;
 		
+		final int row = currentRow;
 		// animate
 		// Determine size/offset of selected table row.
-		final int offsetTop = masterTable.getRowFormatter().getElement(currentRow).getOffsetTop() + headerSize;
+		final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+		int offsetLeft = tableContainer.getAbsoluteLeft();
+
+//		final int offsetTop = masterTable.getRowFormatter().getElement(currentRow).getOffsetTop() + headerSize;
 		final int offsetHeight = masterTable.getRowFormatter().getElement(currentRow).getOffsetHeight();
-		int offsetLeft = masterTable.getRowFormatter().getElement(currentRow).getOffsetLeft();
+//		int offsetLeft = masterTable.getRowFormatter().getElement(currentRow).getOffsetLeft();
 		int mainPanelHeight = mainPanel.getOffsetHeight();
 		
 		// This forcelayout should not have to be necessary.
@@ -195,7 +198,6 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.setWidgetLeftWidth(selectionLine, 20, Unit.PCT, 0, Unit.PCT);
 			
 
-		final int row = currentRow;
 		mainPanel.animate(animated ? 150 : 0, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {
 			}
@@ -223,6 +225,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.add(masterPanel = new DockLayoutPanel(Unit.PX) {{
 			addNorth(headerPanel = new LayoutPanel(), headerSize);
 			addSouth(footerPanel = new LayoutPanel(), footerSize);
+			headerPanel.setStylePrimaryName(Styles.MasterDetailHeader.toString());
 			tableContainer = tableCreated(masterTable = new Table());
 			tableContainer.setStylePrimaryName(Styles.MasterDetailMaster.toString());
 			masterTable.addStyleName(Styles.MasterDetailTable.toString());
