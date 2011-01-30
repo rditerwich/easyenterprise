@@ -1,0 +1,29 @@
+.ee-Button {
+	margin:0;
+	padding:0 0px 0 0;
+	float:left;
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+}
+.ee-Button div {
+	display:block;
+	margin:0;
+	padding:0 0 0 3px;
+	color:#fff;
+	text-decoration:none;
+	background: transparent url(images/button-l.png) no-repeat left top;
+}
+.ee-Button div span {
+	display:block;
+	margin:0;
+	padding:0 3px 0 0;
+	background:transparent url(images/button-r.png) no-repeat right top;
+}
+.ee-Button div span span {
+	display:block;
+	margin:0;
+	color: #444;
+	padding:6px 8px 15px;
+	background:transparent url(images/button-m.png) repeat-x top;
+}

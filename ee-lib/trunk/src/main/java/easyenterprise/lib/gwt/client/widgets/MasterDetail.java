@@ -7,6 +7,7 @@ import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -18,7 +19,7 @@ import easyenterprise.lib.gwt.client.StyleUtil;
 public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
 
 	public enum Styles implements Style {
-		MasterDetail, MasterDetailHeader, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailDetailPanel, MasterDetailErasePanel;
+		MasterDetail, MasterDetailHeader, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailSelectionPanelContent, MasterDetailDetailPanel, MasterDetailFillPanel, MasterDetailErasePanel;
 		
 		public String toString() {
 			return "ee-" + super.toString();
@@ -38,8 +39,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 	private boolean detailOpen;
 
-	private LayoutPanel eraseLine;
-
+	private LayoutPanel erasePanel;
 	private LayoutPanel selectionLine;
 
 	private int currentRow;
@@ -111,9 +111,9 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		initializeDetailPanel();
 		
 		// Determine size/offset of selected table row.
-		int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
-		int offsetLeft = tableContainer.getAbsoluteLeft();
-		int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
+		final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+		final int offsetLeft = tableContainer.getAbsoluteLeft();
+		final int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
 		
 		// Set selection 
 		
@@ -127,20 +127,24 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
 			mainPanel.setWidgetLeftWidth(selectionLine, detailPanelOffset, Unit.PX, 0, Unit.PX);
 			
-			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-			mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 2, Unit.PX);
+//			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+//			mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 3, Unit.PX);
 			
 			mainPanel.forceLayout();
 		}
 		detailOpen = true;
 
 		// Update selection
+		int w = getDetail().getAbsoluteLeft() - (offsetLeft - 1) + 9;
 		mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
-		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, 25, Unit.PCT);
+		mainPanel.setWidgetLeftRight(selectionLine, offsetLeft - 1, Unit.PX, getDetail().getAbsoluteLeft() + 24, Unit.PX);
 
 		// erase a bit of the detail panel:
-		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-		mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 4, Unit.PX);
+//		int left = getMasterTable().getAbsoluteLeft() + getMasterTable().getOffsetWidth() - 1;
+		int left = tableContainer.getAbsoluteLeft() + 1;
+		int width = getMasterTable().getAbsoluteLeft() - left ;
+		mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+		mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
 		
 		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, 100, Unit.PCT);
 		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 80, Unit.PCT);
@@ -156,6 +160,9 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 					masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
 				}
 				masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
+
+				mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+
 				mainPanel.animate(10);
 			}
 		});
@@ -185,8 +192,8 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 		mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
 		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, 25, Unit.PCT);
-		mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
-		mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 2, Unit.PX);
+		mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
+		mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
 		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, mainPanelHeight, Unit.PX);
 		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 80, Unit.PCT);
 		mainPanel.forceLayout();
@@ -202,10 +209,10 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			public void onLayout(Layer layer, double progress) {
 			}
 			public void onAnimationComplete() {
+				mainPanel.forceLayout();
 				// Delay this until the animation is done, otherwise you see the erased line reappear.
-				mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
-				mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 0, Unit.PX);
-				
+				mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 0, Unit.PX);
+
 				// Remove style on current master.
 				if (masterTable.getRowCount() > row && row >= 0) {
 					masterTable.getRowFormatter().removeStyleName(row, Styles.MasterDetailSelection.toString());
@@ -236,6 +243,9 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		
 		mainPanel.add(selectionLine = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetailSelectionPanel);
+			add(new FlowPanel() {{
+				StyleUtil.add(this, Styles.MasterDetailSelectionPanelContent);
+			}});
 		}});
 
 		// Make sure the selection panel does not overlap the master
@@ -265,12 +275,12 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			}, ClickEvent.getType());
 
 		}});
-		mainPanel.add(eraseLine = new LayoutPanel() {{
+		mainPanel.add(erasePanel = new LayoutPanel() {{
 			StyleUtil.add(this, Styles.MasterDetailErasePanel);
 		}});
 
 		// make sure erase panel does not overlap the detail panel
-		mainPanel.setWidgetLeftWidth(eraseLine, 100, Unit.PCT, 0, Unit.PX);
+		mainPanel.setWidgetLeftWidth(erasePanel, 100, Unit.PCT, 0, Unit.PX);
 		
 		// fill in detail panel
 		detailPanelCreated(detailPanel);

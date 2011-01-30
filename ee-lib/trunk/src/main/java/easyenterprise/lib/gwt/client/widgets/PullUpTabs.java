@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -64,7 +63,7 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 	}
 	
 	public void addTab(Widget tab, double tabWidth, Widget widget) {
-		addTab(tab, tabWidth, 95, Unit.PCT, widget);
+		addTab(tab, tabWidth, 90, Unit.PCT, widget);
 	}
 	
 	public void addTab(Widget tab, double tabWidth, double panelHeight, Unit panelHeightUnit, Widget widget) {
@@ -142,7 +141,7 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 			layoutPanel.add(mainPanel);
 			for (TabPanel panel : tabPanels) {
 				layoutPanel.add(panel.panel);
-				layoutPanel.setWidgetLeftRight(panel.panel, 5, Unit.PCT, 5, Unit.PCT);
+				layoutPanel.setWidgetLeftRight(panel.panel, 4, Unit.PCT, 4, Unit.PCT);
 			}
 			for (TabPanel panel : tabPanels) {
 				layoutPanel.add(panel.tab);
@@ -160,11 +159,11 @@ public class PullUpTabs extends Composite implements RequiresResize, ProvidesRes
 			if (tabNr == currentTab) {
 				layoutPanel.setWidgetBottomHeight(panel.tab, panel.panelHeight, panel.panelHeightUnit, tabHeight, Unit.PX);
 				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, panel.panelHeight, panel.panelHeightUnit);
-//				panel.widget.setVisible(true);
+				panel.widget.setVisible(true);
 			} else {
 				layoutPanel.setWidgetBottomHeight(panel.tab, 0, Unit.PX, tabHeight, Unit.PX);
 				layoutPanel.setWidgetBottomHeight(panel.panel, 0, Unit.PX, 0, panel.panelHeightUnit);
-//				panel.widget.setVisible(false);
+				panel.widget.setVisible(false);
 			}
 			layoutPanel.setWidgetLeftWidth(panel.tab, left, Unit.PX, panel.tabWidth, Unit.PX);
 			left += panel.tabWidth + tabSpace;
