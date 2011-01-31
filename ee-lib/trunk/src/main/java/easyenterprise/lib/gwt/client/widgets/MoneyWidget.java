@@ -36,7 +36,7 @@ public abstract class MoneyWidget extends Composite {
 					public void onChange(ChangeEvent event) {
 						Money newValue = new Money();
 						newValue.value = Double.parseDouble(moneyText.getText());
-						newValue.currency = currencies.get(moneyListbox.getSelectedIndex()).getCurrencyCode();
+						newValue.currency = getSelectedCurrency().getCurrencyCode();
 						if (!newValue.equals(value)) {
 							MoneyWidget.this.setValue(newValue);
 							valueChanged(value);
@@ -58,7 +58,7 @@ public abstract class MoneyWidget extends Composite {
 				}
 				addChangeHandler(new ChangeHandler() {
 					public void onChange(ChangeEvent event) {
-						CurrencyData currency = currencies.get(moneyListbox.getSelectedIndex());
+						CurrencyData currency = getSelectedCurrency();
 						
 						if (value != null) {
 							Money newValue = new Money(value.value, currency.getCurrencyCode());
@@ -79,7 +79,7 @@ public abstract class MoneyWidget extends Composite {
 	
 	public void setValue(Money value) {
 		this.value = value;
-		if (value != null) {
+		if (value != null && value.currency != null && value.value != null) {
 			CurrencyData currency = CurrencyList.get().lookup(value.currency);
 			setSelectedCurrency(currency);
 			moneyText.setText(MoneyFormatUtil.value(value, currency));
@@ -102,6 +102,14 @@ public abstract class MoneyWidget extends Composite {
 	private void setSelectedCurrency(CurrencyData currency) {
 		currencySymbol.setText(currency.getCurrencySymbol());
 		moneyListbox.setSelectedIndex(currencies.indexOf(currency));
+	}
+
+	private CurrencyData getSelectedCurrency() {
+		if (moneyListbox.getSelectedIndex() < 0 || moneyListbox.getSelectedIndex() >= currencies.size()) {
+			return currencies.get(moneyListbox.getSelectedIndex());
+		} else {
+			return CurrencyList.get().lookup("EUR");
+		}
 	}
 }
 
