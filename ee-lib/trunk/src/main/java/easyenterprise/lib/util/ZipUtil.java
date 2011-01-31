@@ -15,8 +15,11 @@ public class ZipUtil {
 		ZipInputStream zis = new ZipInputStream(new BufferedInputStream(is));
 		byte data[] = new byte[2048];
 		try {
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
+			while (zis.available() > 0) {
+				ZipEntry entry = zis.getNextEntry();
+				if (entry == null) {
+					throw new IOException("Invalid zipfile");
+				}
 				int count;
 				// write the files to the disk
 				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(entry.getName()));
