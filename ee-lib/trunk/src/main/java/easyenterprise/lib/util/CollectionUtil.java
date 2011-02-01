@@ -67,4 +67,17 @@ public class CollectionUtil {
 		Collections.sort(list, comparator);
 		return list;
 	}
+	
+	public static <T> int indexOfRef(Collection<T> collection, T ref) {
+		int index = 0;
+		for (T obj : collection) {
+			if (obj == ref) return index;
+			index++;
+		}
+		return -1;
+	}
+	
+	public static <T> boolean containsRef(Collection<T> collection, T ref) {
+		return indexOfRef(collection, ref) != -1;
+	}
 }

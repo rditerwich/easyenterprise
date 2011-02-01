@@ -12,9 +12,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Text;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -126,7 +123,9 @@ public class SExprEditor extends Composite implements HasValueChangeHandlers<Str
 	private void setEditorHeight() {
 		String html = richText.getHTML();
 		hiddenDiv.setHTML(html.isEmpty() ? "A" : html);
-		richText.setHeight((4 + hiddenDiv.getOffsetHeight()) + "px");
+		int height = 4 + hiddenDiv.getOffsetHeight();
+		if (height < 27) height = 27;
+		richText.setHeight(height + "px");
 	}
 	
 	private void onChanged() {
