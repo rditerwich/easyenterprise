@@ -61,7 +61,7 @@ public abstract class MoneyWidget extends Composite {
 						CurrencyData currency = getSelectedCurrency();
 						
 						if (value != null) {
-							Money newValue = new Money(value.value, currency.getCurrencyCode());
+							Money newValue = new Money(value.value, currency != null ? currency.getCurrencyCode() : null);
 							if (!newValue.equals(value)) {
 								MoneyWidget.this.setValue(newValue);
 								valueChanged(value);
@@ -100,7 +100,7 @@ public abstract class MoneyWidget extends Composite {
 	}
 
 	private void setSelectedCurrency(CurrencyData currency) {
-		currencySymbol.setText(currency.getCurrencySymbol());
+		currencySymbol.setText(currency != null? currency.getCurrencySymbol() : null);
 		moneyListbox.setSelectedIndex(currencies.indexOf(currency));
 	}
 
