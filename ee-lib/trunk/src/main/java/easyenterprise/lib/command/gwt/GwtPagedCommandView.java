@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class GwtPagedCommandView<T> implements Iterable<T> {
+import easyenterprise.lib.command.PagedCommand;
 
+public abstract class GwtPagedCommandView<T> implements Iterable<T> {
+
+	private final PagedCommand<T> command;
 	private final int viewSize;
 	private final int defaultFetchSize;
 	private final int expandLimit;
 	private int startIndex;
 	private List<T> results = new ArrayList<T>();
 	
-	public GwtPagedCommandView(int viewSize) {
+	public GwtPagedCommandView(PagedCommand<T> command, int viewSize) {
+		this.command = command;
 		this.viewSize = viewSize;
 		this.defaultFetchSize = viewSize * 2;
 		this.expandLimit = viewSize / 3;
@@ -30,7 +34,6 @@ public class GwtPagedCommandView<T> implements Iterable<T> {
 		} else if (startIndex - (index + fetchSize) <= expandLimit) {
 			fetchSize = startIndex - index;
 		}
-		startIndex = index;
 		
 		return null;
 	}
@@ -40,4 +43,11 @@ public class GwtPagedCommandView<T> implements Iterable<T> {
 		return null;
 	}
 
+	protected void resultRetrieved(PagedCommand.Result<T> result, int startIndex) {
+		this.startIndex = startIndex;
+		results.clear();
+		results.addAll(result.getResult());
+	}
+	
+	protected abstract void fetch(PagedCommand<T> command);
 }
