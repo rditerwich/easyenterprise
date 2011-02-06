@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import easyenterprise.lib.util.CollectionUtil;
+
 public class TableWithObjects<T> extends Table {
 
 	public TableWithObjects() {
@@ -56,6 +58,8 @@ public class TableWithObjects<T> extends Table {
 	}
 	
 	public int findObject(T object) {
+		int index = CollectionUtil.indexOfRef(objects, object);
+		if (index != -1) return index;
 		return objects.indexOf(object);
 	}
 }
