@@ -1,60 +1,141 @@
 package easyenterprise.lib.gwt.client.widgets;
 
+import static easyenterprise.lib.gwt.client.StyleUtil.addStyle;
+import static easyenterprise.lib.gwt.client.StyleUtil.setStyle;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.HTMLTable.Cell;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 import easyenterprise.lib.gwt.client.Style;
-import easyenterprise.lib.gwt.client.StyleUtil;
 
 public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
 
 	public enum Styles implements Style {
-		MasterDetail, MasterDetailHeader, MasterDetailMaster, MasterDetailTable, MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailSelectionPanelContent, MasterDetailDetailPanel, MasterDetailFillPanel, MasterDetailErasePanel;
-		
+		MasterDetail, 
+		MasterDetailHeaderContainer, MasterDetailHeaderWrapper, MasterDetailHeader, 
+		MasterDetailFooterContainer, MasterDetailFooterWrapper, MasterDetailFooter, 
+		MasterDetailMasterContainer, MasterDetailMasterWrapper, MasterDetailMaster, MasterDetailTable, 
+		MasterDetailDetailContainer, MasterDetailDetailWrapper, MasterDetailDetail,
+		MasterDetailSelection, MasterDetailSelectionPanel, MasterDetailSelectionPanelContent,  MasterDetailFillPanel, MasterDetailErasePanel;
+	
 		public String toString() {
 			return "ee-" + super.toString();
 		};
 	}
 	
-	
 	private final LayoutPanel mainPanel;
-	private LayoutPanel headerPanel;
-	private LayoutPanel footerPanel;
+	private DockLayoutPanel dockPanel;
+	private LayoutPanel headerContainer;
+	private HasWidgets headerParent;
+	private Widget header;
 	
-	private Table masterTable;
-	private LayoutPanel detailPanel;
+	private LayoutPanel footerContainer;
+	private HasWidgets footerParent;
+	private Widget footer;
 	
-	private boolean initialized;
-	private boolean detailInitialized;
-
+	private LayoutPanel masterContainer;
+	private HasWidgets masterParent;
+	private Widget master;
+	private HTMLTable masterTable;
+	private int currentRow;
+	
+	private LayoutPanel detailContainer;
+	private HasWidgets detailParent;
+	private Widget detail;
 	private boolean detailOpen;
 
 	private LayoutPanel erasePanel;
 	private LayoutPanel selectionLine;
+	
+	private ValueChangeHandler<Integer> rowChangedHandler;;
+	private ClickHandler tableClickHandler = new ClickHandler() {
+		public void onClick(ClickEvent event) {
+			Cell cell = masterTable.getCellForEvent(event);
+			if (cell != null) {
+				openDetail(cell.getRowIndex());
+				event.stopPropagation();
+				if (rowChangedHandler != null) {
+					rowChangedHandler.onValueChange(new ValueChangeEvent<Integer>(currentRow){});
+				}
+			}
+		}
+	};
 
-	private int currentRow;
-
-	private final int headerSize;
-
-	private final int footerSize;
-	private DockLayoutPanel masterPanel;
-	private Widget tableContainer;
-
-	public MasterDetail(int headerSize, int footerSize) {
-		this.headerSize = headerSize;
-		this.footerSize = footerSize;
+	public MasterDetail(final int headerSize, final int footerSize, final int borderSize) {
 		initWidget(mainPanel = new LayoutPanel() {{
-			StyleUtil.add(this, Styles.MasterDetail);
+			setStyle(this, Styles.MasterDetail);
+			
+			add(dockPanel = new DockLayoutPanel(Unit.PX) {{
+				
+				if (headerSize > 0) {
+					headerContainer = new LayoutPanel();
+					addNorth(headerContainer, headerSize);
+					setStyle(headerContainer, Styles.MasterDetailHeaderContainer);
+//					setWidgetTopBottom(headerContainer, 0, Unit.PX, 0, Unit.PX);
+//					setWidgetLeftRight(headerContainer, 0, Unit.PX, 0, Unit.PX);
+					headerParent = createHeaderWrapper(headerContainer);
+					if (headerParent == null) {
+						headerParent = headerContainer;
+					} else {
+						setStyle((UIObject) headerParent, Styles.MasterDetailHeaderWrapper);
+					}
+				}
+				if (footerSize > 0) {
+					footerContainer = new LayoutPanel();
+					addNorth(footerContainer, footerSize);
+					setStyle(footerContainer, Styles.MasterDetailFooterContainer);
+//					setWidgetTopBottom(footerContainer, 0, Unit.PX, 0, Unit.PX);
+//					setWidgetLeftRight(footerContainer, 0, Unit.PX, 0, Unit.PX);
+					footerParent = createFooterWrapper(footerContainer);
+					if (footerParent == null) {
+						footerParent = footerContainer;
+					} else {
+						setStyle((UIObject) footerParent, Styles.MasterDetailFooterWrapper);
+					}
+				}
+			
+				masterContainer = new LayoutPanel();
+				add(masterContainer);
+				setStyle(masterContainer, Styles.MasterDetailMasterContainer);
+//				setWidgetTopBottom(masterContainer, 0, Unit.PX, 0, Unit.PX);
+//				setWidgetLeftRight(masterContainer, 0, Unit.PX, 0, Unit.PX);
+				masterParent = createMasterWrapper(masterContainer);
+				if (masterParent == null) {
+					masterParent = masterContainer;
+				} else {
+					setStyle((UIObject) masterParent, Styles.MasterDetailMasterWrapper);
+				}
+			}});
+
+			setWidgetTopBottom(dockPanel, borderSize, Unit.PX, 0, Unit.PX);
+			setWidgetLeftRight(dockPanel, borderSize, Unit.PX, borderSize, Unit.PX);
+
+			add(selectionLine = new LayoutPanel() {{
+				addStyle(this, Styles.MasterDetailSelectionPanel);
+				add(new FlowPanel() {{
+					addStyle(this, Styles.MasterDetailSelectionPanelContent);
+				}});
+			}});
+
+			// Make sure the selection panel does not overlap the master
+			setWidgetLeftWidth(selectionLine, 100, Unit.PCT, 0, Unit.PX);
 			
 			// auto-close detail when clicked on background
 			addDomHandler(new ClickHandler() {
@@ -62,115 +143,222 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 					closeDetail(true);
 				}
 			}, ClickEvent.getType());
+	
+			// detail panel
+			detailContainer = new LayoutPanel();
+			add(detailContainer);
+			setStyle(detailContainer, Styles.MasterDetailDetailContainer);
+			setWidgetTopBottom(detailContainer, 0, Unit.PX, 0, Unit.PX);
+			setWidgetLeftRight(detailContainer, 0, Unit.PX, 0, Unit.PX);
+			detailParent = createDetailWrapper(detailContainer);
+			if (detailParent == null) {
+				detailParent = detailContainer;
+			} else {
+				setStyle((UIObject) detailParent, Styles.MasterDetailDetailWrapper);
+			}
+			setWidgetTopHeight(detailContainer, 0, Unit.PX, 0, Unit.PX);
+				
+			// make sure clicks on detail panel aren't causing the detail panel to close
+			detailContainer.addDomHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					event.stopPropagation();
+				}
+			}, ClickEvent.getType());
+
+			add(erasePanel = new LayoutPanel() {{
+				setStyle(this, Styles.MasterDetailErasePanel);
+			}});
+	
+			// make sure erase panel does not overlap the detail panel
+			setWidgetLeftWidth(erasePanel, 100, Unit.PCT, 0, Unit.PX);
 		}});
 	}
+
+	public Widget getHeader() {
+		return header;
+	}
 	
-	public int getHeight() {
-		return this.headerSize + this.footerSize + masterTable.getRowFormatter().getElement(masterTable.getRowCount()).getOffsetHeight();
+	public void setHeader(Widget header) {
+		if (this.header != null) {
+			headerParent.remove(this.header);
+		}
+		this.header = header;
+		if (header != null) {
+			headerParent.add(header);
+			setStyle(header, Styles.MasterDetailHeader);
+		}	
+	}
+	
+	public Widget getFooter() {
+		return footer;
+	}
+	
+	public void setFooter(Widget footer) {
+		if (this.footer != null) {
+			footerParent.remove(this.footer);
+		}
+		this.footer = footer;
+		if (footer != null) {
+			footerParent.add(footer);
+			setStyle(footer, Styles.MasterDetailFooter);
+		}	
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends HTMLTable> T getMasterTable() {
+		return (T) masterTable;
+	}
+		
+	public Widget getMaster() {
+		return master;
+	}
+	
+	public <T extends IsWidget & IsHTMLTable> void setMaster(T master) {
+		doSetMaster(master.asWidget(), master.asHTMLTable());
 	}
 
-	protected LayoutPanel getMasterHeader() {
-		initializeMainPanel();
-		
-		return headerPanel;
+	public <T extends HTMLTable> void setMaster(T masterTable) {
+		doSetMaster(masterTable, masterTable);
 	}
-	
-	protected LayoutPanel getMasterFooter() {
-		initializeMainPanel();
 
-		return footerPanel; 
+	private void doSetMaster(Widget mainWidget, HTMLTable masterTable) {
+		setMainWidget(mainWidget);
+		this.masterTable = masterTable;
+		if (this.masterTable != null) {
+			setStyle(this.masterTable, Styles.MasterDetailTable);
+			this.masterTable.addClickHandler(tableClickHandler);
+		}
 	}
 	
-	protected Table getMasterTable() {
-		initializeMainPanel();
-		
-		return masterTable;
+	public Widget getMainWidget() {
+		return master;
 	}
 	
-	protected LayoutPanel getDetail() {
-		initializeDetailPanel();
-		
-		return detailPanel;
+	public void setMainWidget(Widget master) {
+		if (this.master != null) {
+			masterParent.remove(this.master);
+		}
+		this.master = master;
+		this.masterTable = null;
+		if (master != null) {
+			masterParent.add(this.master);
+			setStyle(this.master, Styles.MasterDetailMaster);
+		}
 	}
 	
-	public boolean getDetailOpen() {
+	public Widget getDetail() {
+		return detail;
+	}
+	
+	public void setDetail(Widget detail) {
+		if (this.detail != null) {
+			detailParent.remove(this.detail);
+		}
+		this.detail = detail;
+		if (detail != null) {
+			detailParent.add(detail);
+			setStyle(detail, Styles.MasterDetailDetail);
+		}
+	}
+
+	public boolean isDetailOpen() {
 		return detailOpen;
 	}
-	
+
 	public int getCurrentRow() {
 		return currentRow;
 	}
 	
+	public void setCurrentRow(int row) {
+		if (currentRow != row) {
+			currentRow = row;
+			if (row < 0) {
+				closeDetail(false);
+			} else if (isDetailOpen()) {
+				openDetail(row);
+			}
+		}
+	}
+	
+	public void setRowChangedHandler(ValueChangeHandler<Integer> handler) {
+		this.rowChangedHandler = handler;
+	}
+
 	@Override
 	public void onResize() {
 		mainPanel.onResize();
 	}
 	
-	protected void openDetail(final int row) {
-		
-		initializeDetailPanel();
-		
-		// Determine size/offset of selected table row.
-		final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
-		final int offsetLeft = tableContainer.getAbsoluteLeft();
-		final int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
-		
-		// Set selection 
-		
-		// If the details is not open, position to get a nice starting position
-		if (!detailOpen) {
-
-			mainPanel.setWidgetTopHeight(detailPanel, offsetTop -1, Unit.PX, offsetHeight + 2, Unit.PX);
-			mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 0, Unit.PX);
-			
-			int detailPanelOffset = mainPanel.getElement().getOffsetWidth() / 5;
-			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
-			mainPanel.setWidgetLeftWidth(selectionLine, detailPanelOffset, Unit.PX, 0, Unit.PX);
-			
-//			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-//			mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 3, Unit.PX);
-			
-			mainPanel.forceLayout();
+	public void openDetail() {
+		if (currentRow >= 0) {
+			openDetail(currentRow);
 		}
-		detailOpen = true;
-
-		// Update selection
-		int w = getDetail().getAbsoluteLeft() - (offsetLeft - 1) + 9;
-		mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
-		mainPanel.setWidgetLeftRight(selectionLine, offsetLeft - 1, Unit.PX, getDetail().getAbsoluteLeft() + 24, Unit.PX);
-
-		// erase a bit of the detail panel:
-//		int left = getMasterTable().getAbsoluteLeft() + getMasterTable().getOffsetWidth() - 1;
-		int left = tableContainer.getAbsoluteLeft() + 1;
-		int width = getMasterTable().getAbsoluteLeft() - left ;
-		mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-		mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
+	}
+	
+	public void openDetail(final int row) {
 		
-		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, 100, Unit.PCT);
-		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 80, Unit.PCT);
-		
-
-		final int oldRow = currentRow;
-		mainPanel.animate(150, new AnimationCallback() {
-			public void onLayout(Layer layer, double progress) {
+		if (masterTable != null) {
+			// Determine size/offset of selected table row.
+			final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+			final int offsetLeft = masterContainer.getAbsoluteLeft();
+			final int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
+			
+			// Set selection 
+			
+			// If the details is not open, position to get a nice starting position
+			if (!detailOpen) {
+	
+				mainPanel.setWidgetTopHeight(detailContainer, offsetTop -1, Unit.PX, offsetHeight + 2, Unit.PX);
+				mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 0, Unit.PX);
+				
+				int detailPanelOffset = mainPanel.getElement().getOffsetWidth() / 5;
+				mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
+				mainPanel.setWidgetLeftWidth(selectionLine, detailPanelOffset, Unit.PX, 0, Unit.PX);
+				
+	//			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+	//			mainPanel.setWidgetLeftWidth(eraseLine, 20, Unit.PCT, 3, Unit.PX);
+				
+				mainPanel.forceLayout();
 			}
-			public void onAnimationComplete() {
-				// move style to new master row
-				if (oldRow != -1) {
-					masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
+			detailOpen = true;
+	
+			// Update selection
+//			int w = getDetail().getAbsoluteLeft() - (offsetLeft - 1) + 9;
+			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
+			mainPanel.setWidgetLeftRight(selectionLine, offsetLeft - 1, Unit.PX, getDetail().getAbsoluteLeft() + 24, Unit.PX);
+	
+			// erase a bit of the detail panel:
+	//		int left = getMasterTable().getAbsoluteLeft() + getMasterTable().getOffsetWidth() - 1;
+//			int left = masterContainer.getAbsoluteLeft() + 1;
+//			int width = masterTable.getAbsoluteLeft() - left ;
+			mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+			mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
+			
+			mainPanel.setWidgetTopHeight(detailContainer, 0, Unit.PX, 100, Unit.PCT);
+			mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 80, Unit.PCT);
+			
+	
+			final int oldRow = currentRow;
+			mainPanel.animate(150, new AnimationCallback() {
+				public void onLayout(Layer layer, double progress) {
 				}
-				masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
-
-				mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-
-				mainPanel.animate(10);
-			}
-		});
-		
+				public void onAnimationComplete() {
+					// move style to new master row
+					if (oldRow != -1) {
+						masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
+					}
+					masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
+	
+					mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
+	
+					mainPanel.animate(10);
+				}
+			});
+		}
 		currentRow = row;
 	}
 	
-	protected void closeDetail(boolean animated) {
+	public void closeDetail(boolean animated) {
 		if (!detailOpen) {
 			return;
 		}
@@ -181,7 +369,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		// animate
 		// Determine size/offset of selected table row.
 		final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
-		int offsetLeft = tableContainer.getAbsoluteLeft();
+		int offsetLeft = masterContainer.getAbsoluteLeft();
 
 //		final int offsetTop = masterTable.getRowFormatter().getElement(currentRow).getOffsetTop() + headerSize;
 		final int offsetHeight = masterTable.getRowFormatter().getElement(currentRow).getOffsetHeight();
@@ -194,12 +382,12 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.setWidgetLeftWidth(selectionLine, offsetLeft - 1, Unit.PX, 25, Unit.PCT);
 		mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 1, Unit.PX, offsetHeight - 2, Unit.PX);
 		mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
-		mainPanel.setWidgetTopHeight(detailPanel, 0, Unit.PX, mainPanelHeight, Unit.PX);
-		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 80, Unit.PCT);
+		mainPanel.setWidgetTopHeight(detailContainer, 0, Unit.PX, mainPanelHeight, Unit.PX);
+		mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 80, Unit.PCT);
 		mainPanel.forceLayout();
 		
-		mainPanel.setWidgetTopHeight(detailPanel, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
-		mainPanel.setWidgetLeftWidth(detailPanel, 20, Unit.PCT, 0, Unit.PCT);
+		mainPanel.setWidgetTopHeight(detailContainer, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
+		mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 0, Unit.PCT);
 		
 		mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
 		mainPanel.setWidgetLeftWidth(selectionLine, 20, Unit.PCT, 0, Unit.PCT);
@@ -220,75 +408,28 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			}
 		});
 		currentRow = -1;
-
 	}
 	
-	private void initializeMainPanel() {
-		if (initialized) {
-			return;
-		}
-		initialized = true;
-		
-		mainPanel.add(masterPanel = new DockLayoutPanel(Unit.PX) {{
-			addNorth(headerPanel = new LayoutPanel(), headerSize);
-			addSouth(footerPanel = new LayoutPanel(), footerSize);
-			headerPanel.setStylePrimaryName(Styles.MasterDetailHeader.toString());
-			tableContainer = tableCreated(masterTable = new Table());
-			tableContainer.setStylePrimaryName(Styles.MasterDetailMaster.toString());
-			masterTable.addStyleName(Styles.MasterDetailTable.toString());
-			add(tableContainer);
-		}});
-		mainPanel.setWidgetLeftRight(masterPanel, 24, Unit.PX, 24, Unit.PX);
-
-		
-		mainPanel.add(selectionLine = new LayoutPanel() {{
-			StyleUtil.add(this, Styles.MasterDetailSelectionPanel);
-			add(new FlowPanel() {{
-				StyleUtil.add(this, Styles.MasterDetailSelectionPanelContent);
-			}});
-		}});
-
-		// Make sure the selection panel does not overlap the master
-		mainPanel.setWidgetLeftWidth(selectionLine, 100, Unit.PCT, 0, Unit.PX);
-
-		masterPanelCreated(masterPanel);
+	protected HasWidgets createHeaderWrapper(LayoutPanel parent) {
+		return null;
 	}
 	
-	protected Widget tableCreated(Table table) {
-		return table;
+	
+	protected HasWidgets createFooterWrapper(LayoutPanel parent) {
+		return null;
 	}
 	
-	private void initializeDetailPanel() {
-		if (detailInitialized) {
-			return;
-		}
-		detailInitialized = true;
-
-		mainPanel.add(detailPanel = new LayoutPanel() {{
-			StyleUtil.add(this, Styles.MasterDetailDetailPanel);
-			
-			// make sure clicks on detail panel aren't causeing the detail panel to close
-			addDomHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					event.stopPropagation();
-				}
-			}, ClickEvent.getType());
-
-		}});
-		mainPanel.add(erasePanel = new LayoutPanel() {{
-			StyleUtil.add(this, Styles.MasterDetailErasePanel);
-		}});
-
-		// make sure erase panel does not overlap the detail panel
-		mainPanel.setWidgetLeftWidth(erasePanel, 100, Unit.PCT, 0, Unit.PX);
-		
-		// fill in detail panel
-		detailPanelCreated(detailPanel);
+	
+	protected HasWidgets createMasterWrapper(LayoutPanel parent) {
+		return null;
+	}
+	
+	
+	protected HasWidgets createDetailWrapper(LayoutPanel parent) {
+		return null;
 	}
 
-	protected void masterPanelCreated(DockLayoutPanel masterPanel2) {
-	}
-
-	protected void detailPanelCreated(LayoutPanel detailPanel) {
+	public static interface IsHTMLTable {
+		HTMLTable asHTMLTable();
 	}
 }

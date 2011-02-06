@@ -1,5 +1,9 @@
 package easyenterprise.lib.gwt.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCellElement;
@@ -7,7 +11,7 @@ import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Grid;
 
-public class Table extends Grid {
+public class Table extends Grid implements IsTable {
 
 	public class HeaderRowFormatter extends RowFormatter {
 		/**
@@ -77,6 +81,11 @@ public class Table extends Grid {
 		setHeader();
 	}
 
+	@Override
+	public Table asTable() {
+		return this;
+	}
+
 	/**
 	 * Gets the {@link CellFormatter} associated with this table. Use casting to
 	 * get subclass-specific functionality
@@ -89,11 +98,6 @@ public class Table extends Grid {
 
 	public int getHeaderRowCount() {
 		return numHeaderRows;
-	}
-
-	@Override
-	public int insertRow(int beforeRow) {
-		return super.insertRow(beforeRow);
 	}
 
 	@Override
@@ -175,7 +179,7 @@ public class Table extends Grid {
 			resizeHeaderRows(1);
 		}
 	}
-
+	
 	protected void setHeaderRowFormatter(HeaderRowFormatter headerRowFormatter) {
 		this.headerRowFormatter = headerRowFormatter;
 	}
