@@ -26,6 +26,8 @@ import com.google.gwt.user.client.ui.Widget;
 import easyenterprise.lib.gwt.client.Style;
 
 public abstract class MasterDetail extends Composite implements RequiresResize, ProvidesResize {
+	private static final int BLUR_SPREAD = 3;
+	private static int SHADOWSIZE = 2*BLUR_SPREAD;
 
 	public enum Styles implements Style {
 		MasterDetail, 
@@ -287,6 +289,14 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	@Override
 	public void onResize() {
 		mainPanel.onResize();
+		System.out.println("onResize():");
+		System.out.println("  MainPanel size is " + mainPanel.getOffsetWidth() + "x" + mainPanel.getOffsetHeight());
+		System.out.println("  MainPanel client size is " + mainPanel.getElement().getClientWidth() + "x" + mainPanel.getElement().getClientHeight());
+		if (getMasterTable() != null) {
+			System.out.println("  MasterPanel size is " + getMasterTable().getOffsetWidth() + "x" + getMasterTable().getOffsetHeight());
+			System.out.println("  MasterPanel client size is " + getMasterTable().getElement().getClientWidth() + "x" + getMasterTable().getElement().getClientHeight());
+			
+		}
 	}
 	
 	public void openDetail() {
@@ -312,7 +322,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 				mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 0, Unit.PX);
 				
 				int detailPanelOffset = mainPanel.getElement().getOffsetWidth() / 5;
-				mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
+				mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1 - SHADOWSIZE, Unit.PX, offsetHeight + 2+ 2 *SHADOWSIZE, Unit.PX);
 				mainPanel.setWidgetLeftWidth(selectionLine, detailPanelOffset, Unit.PX, 0, Unit.PX);
 				
 	//			mainPanel.setWidgetTopHeight(eraseLine, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
@@ -324,7 +334,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	
 			// Update selection
 //			int w = getDetail().getAbsoluteLeft() - (offsetLeft - 1) + 9;
-			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1, Unit.PX, offsetHeight + 2, Unit.PX);
+			mainPanel.setWidgetTopHeight(selectionLine, offsetTop - 1 - SHADOWSIZE, Unit.PX, offsetHeight + 2+ 2 *SHADOWSIZE, Unit.PX);
 			mainPanel.setWidgetLeftRight(selectionLine, offsetLeft - 1, Unit.PX, getDetail().getAbsoluteLeft() + 24, Unit.PX);
 	
 			// erase a bit of the detail panel:
@@ -332,7 +342,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 //			int left = masterContainer.getAbsoluteLeft() + 1;
 //			int width = masterTable.getAbsoluteLeft() - left ;
 			mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
-			mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3, Unit.PX);
+			mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 3 + SHADOWSIZE, Unit.PX);
 			
 			mainPanel.setWidgetTopHeight(detailContainer, 0, Unit.PX, 100, Unit.PCT);
 			mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 80, Unit.PCT);
