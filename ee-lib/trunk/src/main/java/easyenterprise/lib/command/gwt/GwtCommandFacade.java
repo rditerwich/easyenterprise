@@ -53,7 +53,6 @@ public class GwtCommandFacade {
 				}
 			});
 		}
-		getAsyncCommandService().execute(command, callback);
 	}
 	
 	public static <T extends CommandResult, C extends Command<T>> 
