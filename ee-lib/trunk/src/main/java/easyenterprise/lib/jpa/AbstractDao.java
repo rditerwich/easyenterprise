@@ -59,19 +59,23 @@ public class AbstractDao {
 	
 	public void commitTransaction() {
 		EntityManager em = entityManager.get();
-		if (em.getTransaction().isActive()) {
-			em.getTransaction().commit();
+		if (em != null) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().commit();
+			}
+			em.close();
 		}
-		em.close();
 		entityManager.set(null);
 	}
 	
 	public void rollbackTransaction() {
 		EntityManager em = entityManager.get();
-		if (em.getTransaction().isActive()) {
-			em.getTransaction().rollback();
+		if (em != null) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
 		}
-		em.close();
 		entityManager.set(null);
 	}
 }
