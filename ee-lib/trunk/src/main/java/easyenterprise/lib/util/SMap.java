@@ -2,13 +2,12 @@ package easyenterprise.lib.util;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Maps.immutableEntry;
+import static easyenterprise.lib.util.CollectionUtil.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static easyenterprise.lib.util.CollectionUtil.asList;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
