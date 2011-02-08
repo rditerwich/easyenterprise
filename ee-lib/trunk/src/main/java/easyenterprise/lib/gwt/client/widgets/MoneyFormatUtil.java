@@ -26,7 +26,7 @@ public class MoneyFormatUtil {
 		if (value == null) {
 			return "";
 		}
-		return NumberFormat.getFormat("." + "000000".substring(0, Money.getDecimals(currency.getCurrencyCode())), currency).format(value);
+		return NumberFormat.getFormat("0." + "000000".substring(0, Money.getDecimals(currency.getCurrencyCode())), currency).format(value);
 	}
 	
 	public static String currencySymbol(Money m) {
