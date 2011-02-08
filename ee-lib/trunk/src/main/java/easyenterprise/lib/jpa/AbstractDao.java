@@ -24,6 +24,7 @@ public class AbstractDao {
 		EntityManager em = entityManager.get();
 		if (em == null) {
 			em = factory.createEntityManager();
+			entityManager.set(em);
 		}
 		if (!em.getTransaction().isActive()) {
 			em.getTransaction().begin();
