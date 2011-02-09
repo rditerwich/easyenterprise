@@ -8,14 +8,21 @@ import javax.persistence.Persistence;
 
 public class AbstractDao {
 
+	private final String persistenceUnitName;
+
 	private final EntityManagerFactory factory;
 
 	private final ThreadLocal<EntityManager> entityManager = new ThreadLocal<EntityManager>();
 	
 	protected AbstractDao(String persistenceUnitName, Map<String, String> properties) {
+		this.persistenceUnitName = persistenceUnitName;
 		this.factory = Persistence.createEntityManagerFactory(persistenceUnitName, properties);
 	}
 
+	public String getPersistenceUnitName() {
+		return persistenceUnitName;
+	}
+	
 	public EntityManagerFactory getEntityManagerFactory() {
 		return factory;
 	}
