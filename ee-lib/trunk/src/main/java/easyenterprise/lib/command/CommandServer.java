@@ -57,7 +57,15 @@ public class CommandServer extends CommandWrapper implements CommandExecutor {
 	
 	@Override
 	protected <T extends CommandResult, I extends easyenterprise.lib.command.CommandImpl<T>> T executeImpl(I impl) throws CommandException {
-		return impl.execute();
+		try {
+			return impl.execute();
+		} catch (CommandException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	protected <T extends CommandResult, I extends easyenterprise.lib.command.CommandImpl<T>> T postProcess(I impl, T result, CommandException e) throws CommandException {
