@@ -62,6 +62,23 @@ public class CollectionUtil {
 		else return null;
 	}
 	
+	public static <T> T removeFirst(Iterable<T> iterable) {
+		Iterator<T> it = iterable.iterator();
+		T result = it.next();
+		it.remove();
+		return result;
+	}
+	
+	public static <T> T removeFirstOrNull(Iterable<T> iterable) {
+		Iterator<T> it = iterable.iterator();
+		if (it.hasNext()) {
+			T result = it.next();
+			it.remove();
+			return result;
+		}
+		else return null;
+	}
+	
 	public static <T> List<T> sort(Collection<T> collection, Comparator<T> comparator) {
 		List<T> list = new ArrayList<T>(collection);
 		Collections.sort(list, comparator);
