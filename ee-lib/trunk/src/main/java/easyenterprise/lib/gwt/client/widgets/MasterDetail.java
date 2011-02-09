@@ -289,14 +289,14 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	@Override
 	public void onResize() {
 		mainPanel.onResize();
-		System.out.println("onResize():");
-		System.out.println("  MainPanel size is " + mainPanel.getOffsetWidth() + "x" + mainPanel.getOffsetHeight());
-		System.out.println("  MainPanel client size is " + mainPanel.getElement().getClientWidth() + "x" + mainPanel.getElement().getClientHeight());
-		if (getMasterTable() != null) {
-			System.out.println("  MasterPanel size is " + getMasterTable().getOffsetWidth() + "x" + getMasterTable().getOffsetHeight());
-			System.out.println("  MasterPanel client size is " + getMasterTable().getElement().getClientWidth() + "x" + getMasterTable().getElement().getClientHeight());
-			
-		}
+//		System.out.println("onResize():");
+//		System.out.println("  MainPanel size is " + mainPanel.getOffsetWidth() + "x" + mainPanel.getOffsetHeight());
+//		System.out.println("  MainPanel client size is " + mainPanel.getElement().getClientWidth() + "x" + mainPanel.getElement().getClientHeight());
+//		if (getMasterTable() != null) {
+//			System.out.println("  MasterPanel size is " + getMasterTable().getOffsetWidth() + "x" + getMasterTable().getOffsetHeight());
+//			System.out.println("  MasterPanel client size is " + getMasterTable().getElement().getClientWidth() + "x" + getMasterTable().getElement().getClientHeight());
+//			
+//		}
 	}
 	
 	public void openDetail() {

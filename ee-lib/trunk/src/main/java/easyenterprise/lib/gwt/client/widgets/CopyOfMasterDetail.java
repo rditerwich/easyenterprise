@@ -129,10 +129,10 @@ public abstract class CopyOfMasterDetail extends Composite implements RequiresRe
 	
 	@Override
 	public void onResize() {
-		System.out.println("onResize():");
-		System.out.println("  Scrollpanel size is " + scrollPanel.getOffsetWidth() + "x" + scrollPanel.getOffsetHeight());
-		System.out.println("  MasterDetail size is " + getOffsetWidth() + "x" + getOffsetHeight());
-		System.out.println("  MainPanel size is " + getMainPanel().getOffsetWidth() + "x" + getMainPanel().getOffsetHeight());
+//		System.out.println("onResize():");
+//		System.out.println("  Scrollpanel size is " + scrollPanel.getOffsetWidth() + "x" + scrollPanel.getOffsetHeight());
+//		System.out.println("  MasterDetail size is " + getOffsetWidth() + "x" + getOffsetHeight());
+//		System.out.println("  MainPanel size is " + getMainPanel().getOffsetWidth() + "x" + getMainPanel().getOffsetHeight());
 //		System.out.println("  MasterPanel size is " + getMasterPanel().getOffsetWidth() + "x" + getMasterPanel().getOffsetHeight());
 //		System.out.println("  Container size is " + getTableContainer().getOffsetWidth() + "x" + getTableContainer().getOffsetHeight());
 //		System.out.println("  ContainerElt size is " + getTableContainer().getElement().getOffsetWidth() + "x" + getTableContainer().getElement().getOffsetHeight());
