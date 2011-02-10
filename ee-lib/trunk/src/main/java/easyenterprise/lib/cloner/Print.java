@@ -63,10 +63,10 @@ public final class Print<T> {
 			for (PropertyInfo property : view.getProperties(info)) {
 				out.append(sep);
 				out.append(property.name).append("=");
-				Object value = property.getter.invoke(object);
+				Object value = property.field != null ? property.field.get(object) : property.getter.invoke(object);
 				out.append(toString(value));
 				if (old != null) {
-					Object oldValue = property.getter.invoke(old);
+					Object oldValue = property.field != null ? property.field.get(old) : property.getter.invoke(old);
 					if (!Objects.equal(value, oldValue)) {
 						out.append(" (was ").append(toString(oldValue)).append(")");
 					}
