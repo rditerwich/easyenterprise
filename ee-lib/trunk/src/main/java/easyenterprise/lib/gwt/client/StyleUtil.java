@@ -75,4 +75,8 @@ public class StyleUtil {
 	panel.style.background  = " transparent url(" + imgPath + ") repeat-x 20px 10px";
 	}	
 	}-*/;
+
+	public static void addClass(com.google.gwt.dom.client.Element element, Style style) {
+		element.addClassName(style.toString());
+	}
 }
