@@ -16,7 +16,7 @@ import easyenterprise.lib.util.SMap;
 public class Printer {
 	public static <T> String print(T object, View view) {
 		try {
-			return printValue(object, view, "", new StringBuilder()).toString();
+			return printValue(object, view, "\n", new StringBuilder()).toString();
 		} catch (Exception e) {
 			throw new CloneException("Class " + object.getClass() + " cannot be printed: " + e.getMessage(), e);
 		}
@@ -25,16 +25,16 @@ public class Printer {
 	@SuppressWarnings("unchecked")
 	private static StringBuilder printValue(Object value, View view, String prefix, StringBuilder out) throws Exception {
 		if (value == null) {
-			return out.append(prefix).append("null");
+			return out.append("(null)");
 		}
 		if (value.getClass().isPrimitive()) {
-			return out.append(prefix).append(value.toString());
+			return out.append(value.toString());
 		}
 		if (value.getClass().isEnum()) {
-			return out.append(prefix).append(value.toString());
+			return out.append(value.toString());
 		}
 		if (BasicView.isBasicType(value.getClass())) {
-			return out.append(prefix).append(value.toString());
+			return out.append(value.toString());
 		}
 		if (SMap.class.isAssignableFrom(value.getClass())) {
 			return printMap((SMap<Object, Object>) value, view, prefix, out);
@@ -60,7 +60,7 @@ public class Printer {
 	private static StringBuilder printMap(Iterable<Map.Entry<Object,Object>> entries, View view, String prefix, StringBuilder out) throws Exception {
 		out.append("{");
 		for (Entry<?, ?> entry : entries) {
-			out.append(prefix).append("  ").append(entry.getKey().toString()).append(":");
+			out.append(prefix).append("  ").append(entry.getKey() == null ? "(null)" : entry.getKey().toString()).append(":");
 			printValue(entry.getValue(), view, prefix + "    ", out);
 		}
 		out.append(prefix).append("}");
@@ -69,7 +69,7 @@ public class Printer {
 	
 	private static StringBuilder printObject(Object object, View view, String prefix, StringBuilder out) throws Exception {
 		ClassInfo info = ClassInfo.getInfo(object.getClass());
-		out.append(prefix).append(info.c.getName());
+		out.append(info.c.getName());
 		List<PropertyInfo> properties;
 		properties = view.getProperties(info);
 		for (PropertyInfo p : properties) {
@@ -83,7 +83,7 @@ public class Printer {
 			} else {
 				throw new Exception("No getter or field found for property '" + p.name + "' in class " + info.actualClass);
 			}
-			return printValue(value, subView, prefix + "    ", out);
+			printValue(value, subView, prefix + "    ", out);
 		}
 		return out;
 	}
