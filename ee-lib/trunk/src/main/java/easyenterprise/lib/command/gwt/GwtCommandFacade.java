@@ -17,7 +17,9 @@ public class GwtCommandFacade {
 
     private static GwtCommandServiceAsync asyncCommandService;
     private static Map<Command<?>, CacheResult> cache = new HashMap<Command<?>, CacheResult>(); 
-
+    private static int requestCount = 0;
+		private static BusyListener busyListener;
+    
     public static final GwtCommandServiceAsync getAsyncCommandService() {
         if (asyncCommandService == null) {
         	asyncCommandService = (GwtCommandServiceAsync) GWT.create( GwtCommandService.class );
@@ -30,7 +32,17 @@ public class GwtCommandFacade {
 	public static <T extends CommandResult, C extends Command<T>> 
 	void execute(C command, final AsyncCallback<T> callback) {
 		checkValid(command);
-		getAsyncCommandService().execute(command, callback);
+		setRequestCount(requestCount + 1);
+		getAsyncCommandService().execute(command, new AsyncCallback<T>() {
+			public void onFailure(Throwable caught) {
+				setRequestCount(requestCount - 1);
+				callback.onFailure(caught);
+			}
+			public void onSuccess(T result) {
+				setRequestCount(requestCount - 1);
+				callback.onSuccess(result);
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,12 +77,16 @@ public class GwtCommandFacade {
 	public static <T extends CommandResult, C extends Command<T>> 
 	void executeWithRetry(final C command, final int nrAttempts, final RetryingCallback<T> callback) {
 		checkValid(command);
+		setRequestCount(requestCount + 1);
 		getAsyncCommandService().execute(command, new AsyncCallback<T>() {
 			int attemptNr = 0;
 			public void onSuccess(T result) {
+				setRequestCount(requestCount - 1);
+				requestCount--;
 				callback.onSuccess(result);
 			}
 			public void onFailure(Throwable caught) {
+				setRequestCount(requestCount - 1);
 				if (caught instanceof InvocationException && !(caught instanceof StatusCodeException)) {
 					callback.failedAttempt(++attemptNr, caught);
 					if (attemptNr < nrAttempts) {
@@ -83,6 +99,19 @@ public class GwtCommandFacade {
 		});
 	}
 	
+	public static void setBusyListener(BusyListener listener) {
+		busyListener = listener;
+	}
+	
+	private static void setRequestCount(int count) {
+		requestCount = count;
+		if (busyListener != null) {
+			if (count == 0 || count == 1) {
+				busyListener.busyChanged(requestCount > 0);
+			}
+		}
+	}
+
 	private static <C extends Command<?>> void checkValid(C command) {
 		try {
 			command.checkValid();
@@ -97,5 +126,9 @@ public class GwtCommandFacade {
 		public CacheResult(CommandResult result) {
 			this.result = result;
 		}
+	}
+	
+	public static interface BusyListener {
+		public void busyChanged(boolean busy);
 	}
 }
