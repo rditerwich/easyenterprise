@@ -82,7 +82,6 @@ public class GwtCommandFacade {
 			int attemptNr = 0;
 			public void onSuccess(T result) {
 				setRequestCount(requestCount - 1);
-				requestCount--;
 				callback.onSuccess(result);
 			}
 			public void onFailure(Throwable caught) {
@@ -106,7 +105,7 @@ public class GwtCommandFacade {
 	private static void setRequestCount(int count) {
 		requestCount = count;
 		if (busyListener != null) {
-			if (count == 0 || count == 1) {
+			if (requestCount == 0 || requestCount == 1) {
 				busyListener.busyChanged(requestCount > 0);
 			}
 		}
