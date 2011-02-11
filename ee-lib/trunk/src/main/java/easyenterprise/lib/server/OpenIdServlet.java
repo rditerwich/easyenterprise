@@ -1,4 +1,4 @@
-package easyenterprise.lib.gwt.server;
+package easyenterprise.lib.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.openid4java.OpenIDException;

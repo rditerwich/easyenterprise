@@ -1,4 +1,4 @@
-package easyenterprise.lib.gwt.server;
+package easyenterprise.lib.server;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
