@@ -56,7 +56,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	private HasWidgets masterParent;
 	private Widget master;
 	private HTMLTable masterTable;
-	private int currentRow;
+	private int currentRow = -1;
 	
 	private LayoutPanel detailContainer;
 	private HasWidgets detailParent;
