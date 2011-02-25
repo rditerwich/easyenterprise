@@ -22,6 +22,10 @@ public class CollectionUtil {
 		return map == null? SMap.<K,V>empty() : map;
 	}
 	
+	public static <T> Iterable<T> notNull(Iterable<T> iterable) {
+		return iterable == null ? Collections.<T>emptyList() : iterable;
+	}
+	
 	public static <T> Collection<T> notNull(Collection<T> collection) {
 		return collection == null ? Collections.<T>emptyList() : collection;
 	}
