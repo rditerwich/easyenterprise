@@ -9,6 +9,37 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import easyenterprise.lib.command.PagedCommand;
 import easyenterprise.lib.command.gwt.GwtCommandFacade;
 
+/**
+ * Represents data that is retrieved using a command as pages.  The size of the page can either be static (initialized with <code>defaultPageSize</code>) or more dynamic
+ * where the user sets the page size where appropriate.
+ * 
+ * A usage scenario with varying page sizes.:
+ * <pre>
+ *pagedData = new PagedData(ESTIMATED_PAGESIZE, this);
+ * 	
+ *void dataChanged() {
+ *    for (int i = 0; i < pagedData.getSize(); i++) {
+ *        T data = pagedData.get(i);
+ * 
+ *        // ... use data.
+ *          
+ *        if (pageFull()) {
+ *            pagedData.setCurrentPageSize(i);
+ *            break;
+ *        }
+ *    }
+ * 
+ *    if (!pageFull()) {
+ *        pagedData.requestMore();
+ *    }
+ *}
+ * </pre>
+ * 
+ * All non-getters except {@link #setCurrentPageSize(int)} can cause one or more dataChanged calls on the listener.
+ * @author reinier
+ *
+ * @param <T>
+ */
 public class PagedData<T> {
 	private static final int PREFETCH_FACTOR = 2;
 
@@ -26,10 +57,12 @@ public class PagedData<T> {
 	private final Listener listener;
 	
 	public interface Listener {
-		void dataAvailable();
+		void dataChanged();
 	}
 	
 	public PagedData(int defaultPageSize, Listener listener) {
+		Preconditions.checkNotNull(listener);
+		
 		this.defaultPageSize = defaultPageSize;
 		this.currentPageSize = defaultPageSize;
 		pageOffsets.add(0);  // The first page starts at 0.
@@ -38,13 +71,15 @@ public class PagedData<T> {
 	}
 	
 	public void flush() {
-		currentPageSize = defaultPageSize; // TODO should we reset??
+		currentPageSize = defaultPageSize; // TODO should we do this??
 		pageOffsets.clear();
 		pageOffsets.add(0);
 
 		data.clear();
 		
 		lastSeen = false;
+		
+		listener.dataChanged();
 	}
 	
 	/**
@@ -60,6 +95,8 @@ public class PagedData<T> {
 		if (!isFirstPage()) {
 			currentPageSize = previousPageSize();
 			pageOffsets.remove(pageOffsets.size() - 1); // pop page.
+			
+			listener.dataChanged();
 		}
 	}
 	
@@ -69,6 +106,8 @@ public class PagedData<T> {
 			
 			// Trigger fetch if necessary.
 			getSize();
+			
+			listener.dataChanged();
 		}
 	}
 
@@ -121,30 +160,39 @@ public class PagedData<T> {
 		return data.get(currentPageOffset() + relativeIndex);
 	}
 
-	public void needMore() {
+	/**
+	 * Request more data to be retrieved.  Note that 
+	 */
+	public void requestMore() {
 		fetchMoreData(previousPageSize()); // TODO How much to get now? other option: defaultpagesize?
 	}
 	
 	private void fetchMoreData(int nr) {
 		Preconditions.checkNotNull(command, "A command is required to fetch data");
 		
-		// Invoke command to get more.
-		final PagedCommand<T> usedCommand = command;
-		command.startIndex = data.size();
-		command.pageSize = nr;
-		GwtCommandFacade.execute(command, new AsyncCallback<PagedCommand.Result<T>>() {
-			public void onFailure(Throwable caught) {
-				// TODO ??
-			}
-
-			public void onSuccess(PagedCommand.Result<T> result) {
-				if (usedCommand.equals(command)) {
-					lastSeen = result.getResult().size() < usedCommand.pageSize;
-					data.addAll(result.getResult());
-					listener.dataAvailable();
+		// Only fetch data if we have not seen last yet.
+		if (!lastSeen) {
+			
+			final PagedCommand<T> usedCommand = command;
+			command.startIndex = data.size();
+			command.pageSize = nr;
+			GwtCommandFacade.execute(command, new AsyncCallback<PagedCommand.Result<T>>() {
+				public void onFailure(Throwable caught) {
+					if (usedCommand.equals(command)) {
+						flush();
+						// TODO ??
+					}
 				}
-			}
-		});
+	
+				public void onSuccess(PagedCommand.Result<T> result) {
+					if (usedCommand.equals(command)) {
+						lastSeen = result.getResult().size() < usedCommand.pageSize;
+						data.addAll(result.getResult());
+						listener.dataChanged();
+					}
+				}
+			});
+		}
 	}
 	
 	private int pageSizeHint() {
