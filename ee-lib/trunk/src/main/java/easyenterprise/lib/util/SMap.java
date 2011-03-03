@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
  * If a key is re-inserted, its position will remain the same.
  */
 public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable {
-
+ 
 	private static final long serialVersionUID = 1L;
 	private static final Object  undefined = new Object();
 	private static SMap<?, ?> emptyMap = new SMapEmpty<Object, Object>(); 
@@ -55,16 +55,16 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * When the map is empty there are no keys and no values.
 	 */
 	public boolean isEmpty() {
-		return getKeys().isEmpty();
+		return size() == 0;
 	}
 	
 	/**
-	 * Returns the first key. Note that null is returned either
-	 * when the first key is null or when the map is empty.
+	 * Returns the key with given index. Note that null is returned either
+	 * when the first key is null or when the index is invalid.
 	 * Use {@link #getKeys()} to make the distinction. 
 	 * @return Key or null.
 	 */
-	public abstract K getFirstKey();
+	public abstract K getKey(int index);
 
 	/**
 	 * Returns the keys for which the map has values. There
@@ -75,20 +75,10 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	public abstract List<K> getKeys();
 
 	/**
-	 * Returns the first value of the first key. Note the null is
-	 * returned either when the first value of the first key is null
-	 * or when the map is empty. Use {@link #getAllFirst()} to make
-	 * the distiction.
-	 * @return Value or null.
+	 * Returns the number of keys in this map. 
+	 * @return Number of keys.
 	 */
-	public abstract V getFirst();
-	
-	/**
-	 * Returns the values corresponding to the first key. The empty
-	 * list will be returned only when the map is empty.
-	 * @return Values or the empty list.
-	 */
-	public abstract List<V> getAllFirst();
+	public abstract int size();
 	
 	/**
 	 * Returns the value corresponding to the null key.
@@ -112,14 +102,27 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		return get(key, null);
 	}
 	
+	public V get(int index) {
+		return get(index, null);
+	}
+	
 	/**
-	 * Returns the first value for given key. If the value does
+	 * Returns the first value for given key. If the key does
 	 * not exist, the default value is returned.
 	 * @param key
 	 * @param defaultValue 
 	 * @return Value or null.
 	 */
 	public abstract V get(K key, V defaultValue);
+	
+	/**
+	 * Returns the first value for given key index. If the index is not valid, 
+	 * the default value is returned. 
+	 * @param key
+	 * @param defaultValue 
+	 * @return Value or null.
+	 */
+	public abstract V get(int index, V defaultValue);
 
 	/**
 	 * Warning: only call when V is a nested SMap.
@@ -164,6 +167,14 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	public abstract List<V> getAll(K key);
 	
 	/**
+	 * Returns the values for given key. When the index is invalid, 
+	 * the empty list is returned. 
+	 * @param key
+	 * @return Values or the empty list.
+	 */
+	public abstract List<V> getAll(int index);
+	
+	/**
 	 * Tries every key, returns the first
 	 * values found.
 	 * @param keys
@@ -178,6 +189,16 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		}
 		return Collections.emptyList();
 	}
+	
+	public int indexOf(K key) {
+		for (int i = 0; i < size(); i++) {
+			if (equal(getKey(i), key)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Synonym to add(null, value)
 	 */
@@ -220,6 +241,20 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 			map = map.add(entry.getKey(), entry.getValue());
 		}
 		return map;
+	}
+	
+	public SMap<K, V> removeKey(K key) {
+		return removeKey(indexOf(key));
+	}
+	
+	public SMap<K, V> removeKey(int index) {
+		SMap<K, V> result = SMap.empty();
+		for (int i = 0; i < size(); i++) {
+			if (i != index) {
+				result = result.addAll(getAll(i));
+			}
+		}
+		return result;
 	}
 	
 	@Override
@@ -292,23 +327,25 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 
 class SMapEmpty<K, V> extends SMap<K, V> {
 	private static final long serialVersionUID = 1L;
-	public K getFirstKey() {
+	public int size() {
+		return 0;
+	}
+	public K getKey(int index) {
 	  return null;
 	}
 	public List<K> getKeys() {
 		return emptyList();
 	}
-	public V getFirst() {
-		return null;
-	}
 	public V get(K key, V defaultValue) {
 		return defaultValue;
 	}
-	@Override
-	public List<V> getAllFirst() {
-		return emptyList();
+	public V get(int index, V defaultValue) {
+		return defaultValue;
 	}
 	public List<V> getAll(K key) {
+		return emptyList();
+	}
+	public List<V> getAll(int index) {
 		return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
@@ -340,25 +377,29 @@ class SMapNoKeySingleValue<K, V> extends SMap<K, V> {
 	public SMapNoKeySingleValue(V value) {
 		this.value = value;
 	}
-	public K getFirstKey() {
-	  return null;
+	public int size() {
+		return 1;
+	}
+	public K getKey(int index) {
+		return null;
 	}
 	@SuppressWarnings("unchecked")
   public List<K> getKeys() {
 		return (List<K>) nullList;
 	}
-	public V getFirst() {
-		return value;
-	}
 	public V get(K key, V defaultValue) {
 		return key == null ? value : defaultValue;
 	}
-	public List<V> getAllFirst() {
-	  return singletonList(value);
+	public V get(int index, V defaultValue) {
+		return index == 0 ? value : defaultValue;
 	}
 	public List<V> getAll(K key) {
 		if (key != null) return emptyList();
 		return singletonList(value);
+	}
+	public List<V> getAll(int index) {
+		if (index == 0) return singletonList(value);
+		else return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
 	  return singleton(immutableEntry((K) null, value)).iterator();
@@ -393,24 +434,29 @@ class SMapSingleKeySingleValue<K, V> extends SMap<K, V> {
 		this.key = key;
 		this.value = value;
 	}
-	public K getFirstKey() {
-	  return key;
+	public int size() {
+		return 1;
+	}
+	public K getKey(int index) {
+	  return index == 0 ? this.key : null;
 	}
 	public List<K> getKeys() {
 		return singletonList(key);
-	}
-	public V getFirst() {
-	  return value;
 	}
 	public V get(K key, V defaultValue) {
 		if (equal(this.key, key)) return value;
 		else return defaultValue;
 	}
-	public List<V> getAllFirst() {
-		return singletonList(value);
+	public V get(int index, V defaultValue) {
+		if (index == 0) return value;
+		else return defaultValue;
 	}
 	public List<V> getAll(K key) {
 		if (equal(this.key, key)) return singletonList(value);
+		else return emptyList();
+	}
+	public List<V> getAll(int index) {
+		if (index == 0) return singletonList(value);
 		else return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
@@ -446,17 +492,18 @@ class SMapMultiKeySingleValue<K, V> extends SMap<K, V> {
 		this.keys = keys;
 		this.values = values;
 	}
+	@Override
+	public int size() {
+		return keys.length;
+	}
 	@SuppressWarnings("unchecked")
-	public K getFirstKey() {
-	  return (K) keys[0];
+	public K getKey(int index) {
+		if (index >= 0 && index < keys.length) return (K) keys[index];
+		else return null;
 	}
 	@SuppressWarnings("unchecked")
   public List<K> getKeys() {
 		return (List<K>) asList(keys);
-	}
-	@SuppressWarnings("unchecked")
-  public V getFirst() {
-	  return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
   public V get(K key, V defaultValue) {
@@ -468,8 +515,11 @@ class SMapMultiKeySingleValue<K, V> extends SMap<K, V> {
 		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getAllFirst() {
-		return (List<V>) asList(values[0]);
+  public V get(int index, V defaultValue) {
+		if (index >= 0 && index < keys.length) {
+			return (V) values[index];
+		}
+		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
 	public List<V> getAll(K key) {
@@ -479,6 +529,11 @@ class SMapMultiKeySingleValue<K, V> extends SMap<K, V> {
 			}
 		}
 		return emptyList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<V> getAll(int index) {
+		if (index >= 0 && index < keys.length) return(List<V>) asList(values[index]);
+		else return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
 		return new Iterator<Map.Entry<K,V>>() {
@@ -553,7 +608,11 @@ class SMapNoKeyMultiValue<K, V> extends SMap<K, V> {
 	SMapNoKeyMultiValue(Object... values) {
 		this.values = values;
 	}
-	public K getFirstKey() {
+	@Override
+	public int size() {
+		return 1;
+	}
+	public K getKey(int index) {
 	  return null;
 	}
 	@SuppressWarnings("unchecked")
@@ -561,21 +620,22 @@ class SMapNoKeyMultiValue<K, V> extends SMap<K, V> {
 		return (List<K>) nullList;
 	}
 	@SuppressWarnings("unchecked")
-  public V getFirst() {
-	  return (V) values[0];
-	}
-	@SuppressWarnings("unchecked")
   public V get(K key, V defaultValue) {
 		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
-	public List<V> getAllFirst() {
-		return (List<V>) asList(values);
+  public V get(int index, V defaultValue) {
+		return (V) (index == 0 ? values[0] : defaultValue);
 	}
 	@SuppressWarnings("unchecked")
 	public List<V> getAll(K key) {
 		if (key != null) return emptyList();
 		return (List<V>) asList(values);
+	}
+	@SuppressWarnings("unchecked")
+	public List<V> getAll(int index) {
+		if (index == 0) return (List<V>) asList(values);
+		else return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
 		return new Iterator<Map.Entry<K,V>>() {
@@ -633,27 +693,32 @@ class SMapSingleKeyMultiValue<K, V> extends SMap<K, V> {
 		this.key = key;
 		this.values = values;
 	}
-	public K getFirstKey() {
-		return key;
+	@Override
+	public int size() {
+		return 1;
+	}
+	public K getKey(int index) {
+		return index == 0 ? this.key : null;
 	}
 	public List<K> getKeys() {
 		return singletonList(key);
-	}
-	@SuppressWarnings("unchecked")
-	public V getFirst() {
-		return (V) values[0];
 	}
 	@SuppressWarnings("unchecked")
 	public V get(K key, V defaultValue) {
 		return (V) (key == null ? values[0] : defaultValue);
 	};
 	@SuppressWarnings("unchecked")
-	public List<V> getAllFirst() {
-		return (List<V>) asList(values);
-	}
+	public V get(int index, V defaultValue) {
+		return (V) (index == 0 ? values[0] : defaultValue);
+	};
 	@SuppressWarnings("unchecked")
 	public List<V> getAll(K key) {
 		if (!equal(this.key, key)) return emptyList();
+		return (List<V>) asList(values);
+	}
+	@SuppressWarnings("unchecked")
+	public List<V> getAll(int index) {
+		if (index != 0) return emptyList();
 		return (List<V>) asList(values);
 	}
 	public Iterator<Entry<K, V>> iterator() {
@@ -698,7 +763,6 @@ class SMapSingleKeyMultiValue<K, V> extends SMap<K, V> {
 		result.append("])]");
 		return result.toString();
 	}
-	
 }
 
 class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
@@ -711,17 +775,17 @@ class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 		this.keys = keys;
 		this.values = values;
 	}
+	public int size() {
+		return keys.length;
+	}
 	@SuppressWarnings("unchecked")
-	public K getFirstKey() {
-	  return (K) keys[0];
+	public K getKey(int index) {
+		if (index >= 0 && index < keys.length) return (K) keys[index];
+		else return null;
 	}
 	@SuppressWarnings("unchecked")
 	public List<K> getKeys() {
 		return (List<K>) asList(keys);
-	}
-	@SuppressWarnings("unchecked")
-  public V getFirst() {
-	  return (V) values[0][0];
 	}
 	@SuppressWarnings("unchecked")
   public V get(K key, V defaultValue) {
@@ -732,8 +796,9 @@ class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 		return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
-	public List<V> getAllFirst() {
-		return (List<V>) asList(values[0]);
+	public V get(int index, V defaultValue) {
+		if (index >= 0 && index < keys.length) return (V) values[index][0];
+		else return defaultValue;
 	}
 	@SuppressWarnings("unchecked")
 	public List<V> getAll(K key) {
@@ -742,6 +807,11 @@ class SMapMultiKeyMultiValue<K, V> extends SMap<K, V> {
 				return (List<V>) asList(values[i]);
 		}
 		return emptyList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<V> getAll(int index) {
+		if (index >= 0 && index < keys.length) return (List<V>) asList(values[index]);
+		else return emptyList();
 	}
 	public Iterator<Entry<K, V>> iterator() {
 		return new Iterator<Map.Entry<K,V>>() {

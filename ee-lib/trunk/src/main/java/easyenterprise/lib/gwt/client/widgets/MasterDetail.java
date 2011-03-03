@@ -225,10 +225,12 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 
 	private void doSetMaster(Widget mainWidget, HTMLTable masterTable) {
 		setMainWidget(mainWidget);
-		this.masterTable = masterTable;
-		if (this.masterTable != null) {
-			setStyle(this.masterTable, Styles.MasterDetailTable);
-			this.masterTable.addClickHandler(tableClickHandler);
+		if (this.masterTable != masterTable) {
+			this.masterTable = masterTable;
+			if (this.masterTable != null) {
+				setStyle(this.masterTable, Styles.MasterDetailTable);
+				this.masterTable.addClickHandler(tableClickHandler);
+			}
 		}
 	}
 	
@@ -237,14 +239,16 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	}
 	
 	public void setMainWidget(Widget master) {
-		if (this.master != null) {
-			masterParent.remove(this.master);
-		}
-		this.master = master;
-		this.masterTable = null;
-		if (master != null) {
-			masterParent.add(this.master);
-			setStyle(this.master, Styles.MasterDetailMaster);
+		if (this.master != master) {
+			if (this.master != null) {
+				masterParent.remove(this.master);
+			}
+			this.master = master;
+			this.masterTable = null;
+			if (master != null) {
+				masterParent.add(this.master);
+				setStyle(this.master, Styles.MasterDetailMaster);
+			}
 		}
 	}
 	
@@ -253,13 +257,15 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	}
 	
 	public void setDetail(Widget detail) {
-		if (this.detail != null) {
-			detailParent.remove(this.detail);
-		}
-		this.detail = detail;
-		if (detail != null) {
-			detailParent.add(detail);
-			setStyle(detail, Styles.MasterDetailDetail);
+		if (this.detail != detail) {
+			if (this.detail != null) {
+				detailParent.remove(this.detail);
+			}
+			this.detail = detail;
+			if (detail != null) {
+				detailParent.add(detail);
+				setStyle(detail, Styles.MasterDetailDetail);
+			}
 		}
 	}
 

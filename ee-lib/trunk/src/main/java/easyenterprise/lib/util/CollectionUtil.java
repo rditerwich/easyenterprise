@@ -52,6 +52,15 @@ public class CollectionUtil {
 		return result;
 	}
 	
+	public static <T> List<T> subList(List<T> list, int from, int to) {
+		if (from == 0 && to == list.size()) return list;
+		ArrayList<T> result = new ArrayList<T>();
+		for (int i = from; i < list.size() && i < to; i++) {
+			result.add(list.get(i));
+		}
+		return result;
+	}
+	
 	public static <T> LinkedHashSet<T> unique(Collection<T> collection) {
 		return new LinkedHashSet<T>(collection);
 	}

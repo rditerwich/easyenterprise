@@ -17,12 +17,7 @@ import easyenterprise.lib.gwt.client.Style;
  */
 public class EEButton extends Button {
 
-	enum StylesEnum implements Style { Button, Left, Middle, Right; 
-	
-		public String toString() {
-			return "ee-" + super.toString();
-		}
-	} 
+	enum StylesEnum implements Style { eeButton, eeLeft, eeMiddle, eeRight } 
 
 	protected Panel leftPanel;
 	protected Panel middlePanel;
@@ -32,7 +27,7 @@ public class EEButton extends Button {
 	private final String styleName;
 
 	public EEButton(String text) {
-		this(text, StylesEnum.Button.toString());
+		this(text, StylesEnum.eeButton.toString());
 	}
 
 	public EEButton(final String text, final String styleName) {

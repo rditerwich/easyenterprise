@@ -47,11 +47,12 @@ public class GwtCommandFacade {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends CommandResult, C extends Command<T>> 
-	void executeCached(final C command, long maxAge, final AsyncCallback<T> callback) {
+	boolean executeCached(final C command, long maxAge, final AsyncCallback<T> callback) {
 		checkValid(command);
 		CacheResult cacheResult = cache.get(command);
 		if (cacheResult != null && System.currentTimeMillis() - cacheResult.time < maxAge) {
 			callback.onSuccess((T) cacheResult.result);
+			return false;
 		} else {
 			executeWithRetry(command, 3, new RetryingCallback<T>() {
 				public void onFailure(Throwable caught) {
@@ -64,6 +65,7 @@ public class GwtCommandFacade {
 				public void failedAttempt(int attemptNr, Throwable caught) {
 				}
 			});
+			return true;
 		}
 	}
 	
