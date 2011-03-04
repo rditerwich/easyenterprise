@@ -11,20 +11,33 @@ import easyenterprise.lib.command.gwt.GwtCommandFacade;
 
 /**
  * Represents data that is retrieved using a command as pages.  The size of the page can either be static (initialized with <code>defaultPageSize</code>) or more dynamic
- * where the user sets the page size where appropriate.
+ * where the user sets the page size where appropriate.  
  * 
- * A usage scenario with varying page sizes.:
+ * A usage scenario with contant page sizes:
  * <pre>
- *pagedData = new PagedData(ESTIMATED_PAGESIZE, this);
+ *pagedData = new PagedData(PAGESIZE, this);
  * 	
  *void dataChanged() {
  *    for (int i = 0; i < pagedData.getSize(); i++) {
  *        T data = pagedData.get(i);
  * 
  *        // ... use data.
+ *    }
+ *}
+ * </pre>
+ * 
+ * A usage scenario with varying page sizes:
+ * <pre>
+ *pagedData = new PagedData(ESTIMATED_PAGESIZE, this);
+ * 	
+ *void dataChanged() {
+ *    for (int i = 0; i < pagedData.getBufferSize(); i++) {
+ *        T data = pagedData.get(i);
+ * 
+ *        // ... use data.
  *          
  *        if (pageFull()) {
- *            pagedData.setCurrentPageSize(i);
+ *            pagedData.setSize(i);
  *            break;
  *        }
  *    }
@@ -35,7 +48,7 @@ import easyenterprise.lib.command.gwt.GwtCommandFacade;
  *}
  * </pre>
  * 
- * All non-getters except {@link #setCurrentPageSize(int)} can cause one or more dataChanged calls on the listener.
+ * All non-getters except {@link #setSize(int)} can cause one or more dataChanged calls on the listener.
  * @author reinier
  *
  * @param <T>
@@ -46,7 +59,7 @@ public class PagedData<T> {
 	private final int defaultPageSize;
 
 	private boolean lastSeen;
-	private int currentPageSize;
+	private int size;
 	
 	private List<Integer> pageOffsets = new ArrayList<Integer>();
 
@@ -64,14 +77,14 @@ public class PagedData<T> {
 		Preconditions.checkNotNull(listener);
 		
 		this.defaultPageSize = defaultPageSize;
-		this.currentPageSize = defaultPageSize;
+		this.size = defaultPageSize;
 		pageOffsets.add(0);  // The first page starts at 0.
 		
 		this.listener = listener;
 	}
 	
 	public void flush() {
-		currentPageSize = defaultPageSize; // TODO should we do this??
+		size = defaultPageSize; // TODO should we do this??
 		pageOffsets.clear();
 		pageOffsets.add(0);
 
@@ -79,7 +92,7 @@ public class PagedData<T> {
 		
 		lastSeen = false;
 		
-		listener.dataChanged();
+		listener.dataChanged(); // We could do a getBufferSize() instead.
 	}
 	
 	/**
@@ -93,7 +106,7 @@ public class PagedData<T> {
 	
 	public void previousPage() {
 		if (!isFirstPage()) {
-			currentPageSize = previousPageSize();
+			size = previousPageSize();
 			pageOffsets.remove(pageOffsets.size() - 1); // pop page.
 			
 			listener.dataChanged();
@@ -102,10 +115,10 @@ public class PagedData<T> {
 	
 	public void nextPage() {
 		if (!isLastPage()) {
-			pageOffsets.add(currentPageOffset() + currentPageSize);
+			pageOffsets.add(currentPageOffset() + size);
 			
 			// Trigger fetch if necessary.
-			getSize();
+			getBufferSize();
 			
 			listener.dataChanged();
 		}
@@ -117,22 +130,42 @@ public class PagedData<T> {
 	}
 	
 	public boolean isLastPage() {
-		return !lastSeen || currentPageOffset() + currentPageSize >= data.size();
+		return lastSeen && currentPageOffset() + size >= data.size();
 	}
 	
-	public int getCurrentPageSize() {
-		return currentPageSize;
+	/**
+	 * 
+	 * @return the size of the current page.
+	 */
+	public int getSize() {
+		int result = getBufferSize();
+		if (result < size) {
+			return result;
+		}
+		return size;
 	}
 	
-	public void setCurrentPageSize(int size) {
-		this.currentPageSize = size;
+	
+	/**
+	 * set the size of the current page.
+	 * @param size
+	 */
+	public void setSize(int size) {
+		Preconditions.checkArgument(size < data.size() - currentPageOffset());
+		this.size = size;
+	}
+	
+	public T get(int relativeIndex) {
+		Preconditions.checkElementIndex(relativeIndex, data.size() - currentPageOffset());
+		
+		return data.get(currentPageOffset() + relativeIndex);
 	}
 
 	/**
 	 * 
 	 * @return The number of elements available for the current page.
 	 */
-	public int getSize() {
+	public int getBufferSize() {
 		int available = data.size() - currentPageOffset();
 		assert available >= 0;
 		
@@ -140,10 +173,11 @@ public class PagedData<T> {
 			return available;
 		}
 		
-		// ensure buffersize > 2xlast page size, always keep one in reserve for lastseen.
+		// ensure buffersize > f x last page size, always keep one in reserve for lastseen.
 		int shortage = PREFETCH_FACTOR * pageSizeHint() + 1 - available;
 		if (shortage > 0) {
-			fetchMoreData(shortage);
+			boolean currentPageAvailable = available - 1 > size;
+			fetchMoreData(shortage, currentPageAvailable);
 		}
 		
 		// We always fetch more than necessary to be able to set lastseen.
@@ -154,20 +188,18 @@ public class PagedData<T> {
 		}
 	}
 
-	public T get(int relativeIndex) {
-		Preconditions.checkElementIndex(relativeIndex, data.size() - currentPageOffset());
-		
-		return data.get(currentPageOffset() + relativeIndex);
-	}
-
 	/**
-	 * Request more data to be retrieved.  Note that 
+	 * Request more data to be retrieved.  
+	 * 
+	 * <p>
+	 * Note that it is not guaranteed to obtain more data.  For instance, if we are on the lastpage, no data will be retrieved <b>nor</b>
+	 * will the listener be called!
 	 */
 	public void requestMore() {
-		fetchMoreData(previousPageSize()); // TODO How much to get now? other option: defaultpagesize?
+		fetchMoreData(previousPageSize(), false); // TODO How much to get now? other option: defaultpagesize?
 	}
 	
-	private void fetchMoreData(int nr) {
+	private void fetchMoreData(int nr, final boolean isPrefetch) {
 		Preconditions.checkNotNull(command, "A command is required to fetch data");
 		
 		// Only fetch data if we have not seen last yet.
@@ -188,7 +220,9 @@ public class PagedData<T> {
 					if (usedCommand.equals(command)) {
 						lastSeen = result.getResult().size() < usedCommand.pageSize;
 						data.addAll(result.getResult());
-						listener.dataChanged();
+						if (!isPrefetch) {
+							listener.dataChanged();
+						}
 					}
 				}
 			});
