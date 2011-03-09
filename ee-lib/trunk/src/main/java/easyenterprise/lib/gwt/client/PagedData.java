@@ -61,9 +61,10 @@ public class PagedData<T> {
 	private boolean lastSeen;
 	private int size;
 	
-	private List<Integer> pageOffsets = new ArrayList<Integer>();
+	// PP for tests.
+	List<Integer> pageOffsets = new ArrayList<Integer>();
 
-	List<T> data = new ArrayList<T>();
+	private List<T> data = new ArrayList<T>();
 
 	private PagedCommand<T> command;
 
@@ -112,25 +113,21 @@ public class PagedData<T> {
 			listener.dataChanged();
 		}
 	}
-	
+
 	public void nextPage() {
-		if (!isLastPage()) {
-			pageOffsets.add(currentPageOffset() + size);
-			
-			// Trigger fetch if necessary.
-			getBufferSize();
+		if (!isLastPage() && computeBufferSize() > 0) {
+			pageOffsets.add(currentPageOffset() + getSize());
 			
 			listener.dataChanged();
 		}
 	}
-
 	
 	public boolean isFirstPage() {
 		return currentPageOffset() == 0;
 	}
 	
 	public boolean isLastPage() {
-		return lastSeen && currentPageOffset() + size >= data.size();
+		return lastSeen && currentPageOffset() + getSize() >= data.size();
 	}
 	
 	/**
@@ -151,12 +148,12 @@ public class PagedData<T> {
 	 * @param size
 	 */
 	public void setSize(int size) {
-		Preconditions.checkArgument(size < data.size() - currentPageOffset());
+		Preconditions.checkArgument(size <= computeBufferSize(), "size (" + size + ") must not be greater than buffersize: (" + computeBufferSize() + ")");
 		this.size = size;
 	}
 	
 	public T get(int relativeIndex) {
-		Preconditions.checkElementIndex(relativeIndex, data.size() - currentPageOffset());
+		Preconditions.checkElementIndex(relativeIndex, computeBufferSize());
 		
 		return data.get(currentPageOffset() + relativeIndex);
 	}
@@ -166,28 +163,19 @@ public class PagedData<T> {
 	 * @return The number of elements available for the current page.
 	 */
 	public int getBufferSize() {
-		int available = data.size() - currentPageOffset();
-		assert available >= 0;
-		
 		if (lastSeen) {
-			return available;
+			return computeBufferSize();
 		}
 		
 		// ensure buffersize > f x last page size, always keep one in reserve for lastseen.
-		int shortage = PREFETCH_FACTOR * pageSizeHint() + 1 - available;
+		int shortage = PREFETCH_FACTOR * pageSizeHint() + 1 - getAvailable();
 		if (shortage > 0) {
-			boolean currentPageAvailable = available - 1 > size;
-			fetchMoreData(shortage, currentPageAvailable);
+			fetchMoreData(shortage, false);
 		}
 		
-		// We always fetch more than necessary to be able to set lastseen.
-		if (available > 0) {
-			return available - 1;
-		} else {
-			return available;
-		}
+		return computeBufferSize();
 	}
-
+	
 	/**
 	 * Request more data to be retrieved.  
 	 * 
@@ -196,18 +184,18 @@ public class PagedData<T> {
 	 * will the listener be called!
 	 */
 	public void requestMore() {
-		fetchMoreData(previousPageSize(), false); // TODO How much to get now? other option: defaultpagesize?
+		fetchMoreData(previousPageSize(), true); // TODO How much to get now? other option: defaultpagesize?
 	}
 	
-	private void fetchMoreData(int nr, final boolean isPrefetch) {
+	private void fetchMoreData(int nr, final boolean forceDataChanged) {
 		Preconditions.checkNotNull(command, "A command is required to fetch data");
 		
 		// Only fetch data if we have not seen last yet.
 		if (!lastSeen) {
 			
 			final PagedCommand<T> usedCommand = command;
-			command.startIndex = data.size();
-			command.pageSize = nr;
+			final int startIndex = command.startIndex = data.size();
+			final int pageSize = command.pageSize = nr;
 			GwtCommandFacade.execute(command, new AsyncCallback<PagedCommand.Result<T>>() {
 				public void onFailure(Throwable caught) {
 					if (usedCommand.equals(command)) {
@@ -217,10 +205,13 @@ public class PagedData<T> {
 				}
 	
 				public void onSuccess(PagedCommand.Result<T> result) {
-					if (usedCommand.equals(command)) {
+					if (startIndex == command.startIndex && pageSize == command.pageSize && usedCommand.equals(command)) {
+						boolean pageChanged = computeBufferSize() < size && result.getResult().size() > 0;
+						
 						lastSeen = result.getResult().size() < usedCommand.pageSize;
 						data.addAll(result.getResult());
-						if (!isPrefetch) {
+
+						if (forceDataChanged || pageChanged) {
 							listener.dataChanged();
 						}
 					}
@@ -228,6 +219,16 @@ public class PagedData<T> {
 			});
 		}
 	}
+
+	private int computeBufferSize() {
+		int available = getAvailable();
+		return !lastSeen && available > 0 ? available - 1 : available;
+	}
+	
+	private int getAvailable() {
+		return data.size() - currentPageOffset();
+	}
+
 	
 	private int pageSizeHint() {
 		return previousPageSize() > 0? previousPageSize() : defaultPageSize;

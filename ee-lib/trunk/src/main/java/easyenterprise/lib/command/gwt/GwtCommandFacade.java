@@ -28,6 +28,14 @@ public class GwtCommandFacade {
         }
         return asyncCommandService;
     }
+    
+    /**
+     * This method is for test purposes only.
+     * @param service
+     */
+    public static void setAsyncCommandService(GwtCommandServiceAsync service) {
+    	asyncCommandService = service;
+    }
 
 	public static <T extends CommandResult, C extends Command<T>> 
 	void execute(C command, final AsyncCallback<T> callback) {
@@ -103,6 +111,7 @@ public class GwtCommandFacade {
 	public static void setBusyListener(BusyListener listener) {
 		busyListener = listener;
 	}
+	
 	
 	private static void setRequestCount(int count) {
 		requestCount = count;
