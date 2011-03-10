@@ -65,6 +65,11 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 	 * @return Key or null.
 	 */
 	public abstract K getKey(int index);
+	
+	
+	public Map.Entry<K, V> getEntry(int index) {
+		return immutableEntry(getKey(index), get(index));
+	}
 
 	/**
 	 * Returns the keys for which the map has values. There

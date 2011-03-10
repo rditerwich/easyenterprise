@@ -1,24 +1,15 @@
 package easyenterprise.lib.gwt.client;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import easyenterprise.lib.command.Command;
-import easyenterprise.lib.command.CommandException;
-import easyenterprise.lib.command.CommandImpl;
-import easyenterprise.lib.command.CommandResult;
-import easyenterprise.lib.command.CommandValidationException;
-import easyenterprise.lib.command.PagedCommand;
-import easyenterprise.lib.command.gwt.GwtCommandFacade;
-import easyenterprise.lib.command.gwt.GwtCommandServiceAsync;
+import easyenterprise.lib.gwt.client.PagedData.Callback;
 import easyenterprise.lib.gwt.client.PagedData.Listener;
+import easyenterprise.lib.util.CollectionUtil;
 import easyenterprise.lib.util.LineWriter;
+import easyenterprise.lib.util.Paging;
 import easyenterprise.lib.util.TestUtil;
 
 @SuppressWarnings("serial")
@@ -26,13 +17,13 @@ public class PagedDataTest {
 	private LineWriter output = new LineWriter(System.out);
 	
 	private static final int STATIC_PAGESIZE = 5;
-	private PagedData<Integer> pagedData;
+	private PagedData<Integer, Integer> pagedData;
 	
 	
 	
 	@Test
 	public void basicStatic() {
-		pagedData = new PagedData<Integer>(STATIC_PAGESIZE, new Listener() {
+		pagedData = new PagedData<Integer, Integer>(STATIC_PAGESIZE, defaultDataSource(25), new Listener() {
 			public void dataChanged() {
 				output.writeln("Data Changed");
 				for (int i = 0; i < pagedData.getSize(); i++) {
@@ -41,7 +32,7 @@ public class PagedDataTest {
 				}
 			}
 		});
-		pagedData.setCommand(defaultCommand(25));
+		pagedData.flush();
 		for (int i = 0; i < 5; i++) {
 			output.writeln("nextPage()");
 			pagedData.nextPage();
@@ -101,7 +92,7 @@ public class PagedDataTest {
 		final Integer[] pageSizes = new Integer[] { 5, 8, 7, 3, 10 };
 		final Integer[] pageNr = new Integer[1];
 		pageNr[0] = 0;
-		pagedData = new PagedData<Integer>(STATIC_PAGESIZE, new Listener() {
+		pagedData = new PagedData<Integer, Integer>(STATIC_PAGESIZE, defaultDataSource(25), new Listener() {
 			public void dataChanged() {
 				Integer pageSize = pageSizes[pageNr[0]];
 				int bufferSize = pagedData.getBufferSize();
@@ -118,7 +109,7 @@ public class PagedDataTest {
 			}
 		});
 		output.writeln("setCommand()");
-		pagedData.setCommand(defaultCommand(25));
+		pagedData.flush();
 		for (int i = 0; i < 5; i++) {
 			pageNr[0]++;
 			output.writeln("nextPage()");
@@ -194,7 +185,7 @@ public class PagedDataTest {
 		final Integer[] pageSizes = new Integer[] { 5, 8, 7, 3, 10 };
 		final Integer[] pageNr = new Integer[1];
 		pageNr[0] = 0;
-		pagedData = new PagedData<Integer>(STATIC_PAGESIZE, new Listener() {
+		pagedData = new PagedData<Integer, Integer>(STATIC_PAGESIZE, defaultDataSource(25), new Listener() {
 			public void dataChanged() {
 				Integer pageSize = pageSizes[pageNr[0]];
 				int bufferSize = pagedData.getBufferSize();
@@ -207,7 +198,7 @@ public class PagedDataTest {
 			}
 		});
 		output.writeln("setCommand()");
-		pagedData.setCommand(defaultCommand(25));
+		pagedData.flush();
 		
 		output.writeln("isFirstPage: " + pagedData.isFirstPage());
 		output.writeln("nextPage()");
@@ -234,7 +225,7 @@ public class PagedDataTest {
 		final Integer[] pageSizes = new Integer[] { 5, 8, 7, 3, 10 };
 		final Integer[] pageNr = new Integer[1];
 		pageNr[0] = 0;
-		pagedData = new PagedData<Integer>(STATIC_PAGESIZE, new Listener() {
+		pagedData = new PagedData<Integer, Integer>(STATIC_PAGESIZE, defaultDataSource(25), new Listener() {
 			public void dataChanged() {
 				Integer pageSize = pageSizes[pageNr[0]];
 				int bufferSize = pagedData.getBufferSize();
@@ -247,7 +238,7 @@ public class PagedDataTest {
 			}
 		});
 		output.writeln("setCommand()");
-		pagedData.setCommand(defaultCommand(25));
+		pagedData.flush();
 		
 		output.writeln("isLastPage: " + pagedData.isLastPage());
 		output.writeln("nextPage()");
@@ -299,7 +290,7 @@ public class PagedDataTest {
 		final Integer[] pageSizes = new Integer[] { 5, 8, 20, 3, 10 };
 		final Integer[] pageNr = new Integer[1];
 		pageNr[0] = 0;
-		pagedData = new PagedData<Integer>(STATIC_PAGESIZE, new Listener() {
+		pagedData = new PagedData<Integer, Integer>(STATIC_PAGESIZE, defaultDataSource(40), new Listener() {
 			public void dataChanged() {
 				Integer pageSize = pageSizes[pageNr[0]];
 				int bufferSize = pagedData.getBufferSize();
@@ -321,7 +312,7 @@ public class PagedDataTest {
 			}
 		});
 		output.writeln("setCommand()");
-		pagedData.setCommand(defaultCommand(40));
+		pagedData.flush();
 		for (int i = 0; i < 2; i++) {
 			pageNr[0]++;
 			output.writeln("nextPage()");
@@ -429,52 +420,23 @@ public class PagedDataTest {
 	}
 	
 	@Test
-	public void resetCommand() {
-		// TODO
-	}
-	
-	@Test
 	public void flush() {
 		// TODO
 	}
 	
-	@BeforeClass
-	public static void setupOnce() {
-		GwtCommandFacade.setAsyncCommandService(new GwtCommandServiceAsync() {
-			public <T extends CommandResult> void execute(Command<T> command, AsyncCallback<T> callback) {
-				try {
-					callback.onSuccess(((CommandImpl<T>)command).execute());
-				} catch (CommandException e) {
-					Assert.fail(e.toString());
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	private abstract class PagedCommandImpl<T> extends PagedCommand<T> implements CommandImpl<PagedCommand.Result<T>> {
-		public void checkValid() throws CommandValidationException {
-		}
-		
-	}
-	
+	private PagedData.DataSource<Integer, Integer> defaultDataSource(final int maxIndex) {
+		return new PagedData.DataSource<Integer, Integer>() {
+			public void fetchData(Paging paging, Callback<Integer, Integer> callback) {
+				output.writeln("PagedCommand(" + paging.getPageStart() + "," + paging.getPageSize() + ")");
 
-	private PagedCommandImpl<Integer> defaultCommand(final int maxIndex) {
-		return new PagedCommandImpl<Integer> () {
-			public PagedCommand.Result<Integer> execute() throws CommandException {
-				output.writeln("PagedCommand(" + startIndex + "," + pageSize + ")");
-				return new Result<Integer>() {
-					public List<Integer> getResult() {
-						List<Integer> result = new ArrayList<Integer>();
-						for (int i = startIndex; i < startIndex + pageSize && i < maxIndex; i++) {
-							result.add(i);
-						}
-						return result;
-					}
-				};
+				Map<Integer, Integer> result = new LinkedHashMap<Integer, Integer>();
+				for (int i = paging.getPageStart(); i < paging.getPageStart() + paging.getPageSize() && i < maxIndex; i++) {
+					result.put(i, i);
+				}
+
+				callback.dataFetched(CollectionUtil.asList(result.entrySet()));
 			}
 		};
 	}
-	
 
 }

@@ -40,6 +40,18 @@ public class CollectionUtil {
 		return list;
 	}
 	
+	public static <T> List<T> asList(Iterable<T> values) {
+		List<T> result = new ArrayList<T>();
+		
+		if (values != null) {
+			for (T value : values) {
+				result.add(value);
+			}
+		}
+		
+		return result;
+	}
+
 	public static <T> List<T> asList(T... values) {
 		List<T> result = new ArrayList<T>(values != null? values.length : 0);
 

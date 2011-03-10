@@ -2,12 +2,13 @@ package easyenterprise.lib.gwt.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.base.Preconditions;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import easyenterprise.lib.command.PagedCommand;
-import easyenterprise.lib.command.gwt.GwtCommandFacade;
+import easyenterprise.lib.util.Paging;
+import easyenterprise.lib.util.SMap;
 
 /**
  * Represents data that is retrieved using a command as pages.  The size of the page can either be static (initialized with <code>defaultPageSize</code>) or more dynamic
@@ -15,7 +16,7 @@ import easyenterprise.lib.command.gwt.GwtCommandFacade;
  * 
  * A usage scenario with contant page sizes:
  * <pre>
- *pagedData = new PagedData(PAGESIZE, this);
+ *pagedData = new PagedData(PAGESIZE, this, this);
  * 	
  *void dataChanged() {
  *    for (int i = 0; i < pagedData.getSize(); i++) {
@@ -28,7 +29,7 @@ import easyenterprise.lib.command.gwt.GwtCommandFacade;
  * 
  * A usage scenario with varying page sizes:
  * <pre>
- *pagedData = new PagedData(ESTIMATED_PAGESIZE, this);
+ *pagedData = new PagedData(ESTIMATED_PAGESIZE, this, this);
  * 	
  *void dataChanged() {
  *    for (int i = 0; i < pagedData.getBufferSize(); i++) {
@@ -53,7 +54,7 @@ import easyenterprise.lib.command.gwt.GwtCommandFacade;
  *
  * @param <T>
  */
-public class PagedData<T> {
+public class PagedData<K, V> {
 	private static final int PREFETCH_FACTOR = 2;
 
 	private final int defaultPageSize;
@@ -64,24 +65,40 @@ public class PagedData<T> {
 	// PP for tests.
 	List<Integer> pageOffsets = new ArrayList<Integer>();
 
-	private List<T> data = new ArrayList<T>();
+	private SMap<K, V> data = SMap.empty();
 
-	private PagedCommand<T> command;
+	private final List<Listener> listeners = new ArrayList<Listener>();
 
-	private final Listener listener;
+	private Paging requestedPage;
+
+	private final DataSource<K, V> source;
 	
 	public interface Listener {
 		void dataChanged();
 	}
 	
-	public PagedData(int defaultPageSize, Listener listener) {
+	public interface Callback<K, V> {
+		void dataFetched(List<Map.Entry<K, V>> fetchedData);
+	}
+	
+	public interface DataSource<K, V> {
+		void fetchData(Paging page, Callback<K, V> callback);
+	}
+	
+	public PagedData(int defaultPageSize, DataSource<K, V> source, Listener listener) {
+		Preconditions.checkNotNull(source);
 		Preconditions.checkNotNull(listener);
 		
 		this.defaultPageSize = defaultPageSize;
 		this.size = defaultPageSize;
 		pageOffsets.add(0);  // The first page starts at 0.
 		
-		this.listener = listener;
+		this.source = source;
+		this.listeners.add(listener);
+	}
+	
+	public void addListener(Listener listener) {
+		this.listeners.add(listener);
 	}
 	
 	public void flush() {
@@ -89,20 +106,13 @@ public class PagedData<T> {
 		pageOffsets.clear();
 		pageOffsets.add(0);
 
-		data.clear();
-		
+		data = SMap.empty();
+
 		lastSeen = false;
 		
-		listener.dataChanged(); // We could do a getBufferSize() instead.
-	}
-	
-	/**
-	 * The command used to retrieve more data.
-	 * @param command
-	 */
-	public void setCommand(PagedCommand<T> command) {
-		this.command = command;
-		flush();
+		requestedPage = null;
+		
+		dataChanged(); // We could do a getBufferSize() instead.
 	}
 	
 	public void previousPage() {
@@ -110,7 +120,7 @@ public class PagedData<T> {
 			size = previousPageSize();
 			pageOffsets.remove(pageOffsets.size() - 1); // pop page.
 			
-			listener.dataChanged();
+			dataChanged();
 		}
 	}
 
@@ -118,7 +128,7 @@ public class PagedData<T> {
 		if (!isLastPage() && computeBufferSize() > 0) {
 			pageOffsets.add(currentPageOffset() + getSize());
 			
-			listener.dataChanged();
+			dataChanged();
 		}
 	}
 	
@@ -152,10 +162,44 @@ public class PagedData<T> {
 		this.size = size;
 	}
 	
-	public T get(int relativeIndex) {
+	public V get(int relativeIndex) {
 		Preconditions.checkElementIndex(relativeIndex, computeBufferSize());
 		
 		return data.get(currentPageOffset() + relativeIndex);
+	}
+	public K getKey(int relativeIndex) {
+		Preconditions.checkElementIndex(relativeIndex, computeBufferSize());
+		
+		return data.getKey(currentPageOffset() + relativeIndex);
+	}
+	public Map.Entry<K, V> getEntry(int relativeIndex) {
+		Preconditions.checkElementIndex(relativeIndex, computeBufferSize());
+		
+		return data.getEntry(currentPageOffset() + relativeIndex);
+	}
+	
+	/**
+	 * Only sets if key is contained in the buffer.
+	 * @param key
+	 * @param value
+	 */
+	public void set(K key, V value) {
+		if (data.get(key, SMap.<V>undefined()) != SMap.<V>undefined()) {
+			data = data.set(key, value);
+			
+			dataChanged();
+		}
+	}
+	
+	public void remove(K key) {
+		int keyIndex = data.indexOf(key);
+		if (keyIndex >= 0) {
+			data = data.removeKey(keyIndex);
+			
+			if (keyIndex < currentPageOffset() + getSize()) {
+				dataChanged(); // TODO is this enough??
+			}
+		}
 	}
 
 	/**
@@ -184,39 +228,49 @@ public class PagedData<T> {
 	 * will the listener be called!
 	 */
 	public void requestMore() {
-		fetchMoreData(previousPageSize(), true); // TODO How much to get now? other option: defaultpagesize?
+		fetchMoreData(pageSizeHint(), true); // TODO How much to get now? other option: defaultpagesize?
 	}
 	
+	
 	private void fetchMoreData(int nr, final boolean forceDataChanged) {
-		Preconditions.checkNotNull(command, "A command is required to fetch data");
-		
+
 		// Only fetch data if we have not seen last yet.
 		if (!lastSeen) {
 			
-			final PagedCommand<T> usedCommand = command;
-			final int startIndex = command.startIndex = data.size();
-			final int pageSize = command.pageSize = nr;
-			GwtCommandFacade.execute(command, new AsyncCallback<PagedCommand.Result<T>>() {
-				public void onFailure(Throwable caught) {
-					if (usedCommand.equals(command)) {
-						flush();
-						// TODO ??
-					}
-				}
+			final Paging page = Paging.get(data.size(), nr);
+			
+			// Only fetch if we did not just retrieve this page
+			if (!alreadyRequested(page)) {
+				requestedPage = Paging.get(data.size(), nr);
+				assert requestedPage.equals(page);
 	
-				public void onSuccess(PagedCommand.Result<T> result) {
-					if (startIndex == command.startIndex && pageSize == command.pageSize && usedCommand.equals(command)) {
-						boolean pageChanged = computeBufferSize() < size && result.getResult().size() > 0;
-						
-						lastSeen = result.getResult().size() < usedCommand.pageSize;
-						data.addAll(result.getResult());
-
-						if (forceDataChanged || pageChanged) {
-							listener.dataChanged();
+				source.fetchData(page, new Callback<K, V>() {
+					public void dataFetched(List<Entry<K, V>> fetchedData) {
+						if (page.equals(requestedPage)) {
+							boolean pageChanged = computeBufferSize() < size && fetchedData.size() > 0;
+							
+							lastSeen = fetchedData.size() < page.getPageSize();
+							for (Entry<K, V> entry : fetchedData) {
+								data = data.add(entry.getKey(), entry.getValue());
+							}
+		
+							if (forceDataChanged || pageChanged) {
+								dataChanged();
+							}
 						}
 					}
-				}
-			});
+				});
+			}
+		}
+	}
+	
+	private boolean alreadyRequested(Paging page) {
+		return requestedPage != null && requestedPage.getPageStart() <= page.getPageStart() && requestedPage.getPageStart() + requestedPage.getPageSize() >= page.getPageStart() + page.getPageSize();
+	}
+	
+	private void dataChanged() {
+		for (Listener listener : listeners) {
+			listener.dataChanged();
 		}
 	}
 

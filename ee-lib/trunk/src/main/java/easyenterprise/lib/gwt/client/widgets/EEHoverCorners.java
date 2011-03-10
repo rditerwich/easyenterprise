@@ -34,7 +34,7 @@ public class EEHoverCorners extends FlowPanel {
 			getElement().getStyle().setLeft(0, Unit.PX);
 			getElement().getStyle().setWidth(20, Unit.PCT);
 			getElement().getStyle().setHeight(height, Unit.PX);
-			getElement().getStyle().setBackgroundColor("yellow");
+//			getElement().getStyle().setBackgroundColor("yellow");
 			add(left = new FlowPanel());
 			addDomHandler(new MouseMoveHandler() {
 				public void onMouseMove(MouseMoveEvent event) {
@@ -55,7 +55,7 @@ public class EEHoverCorners extends FlowPanel {
 			getElement().getStyle().setWidth(20, Unit.PCT);
 			getElement().getStyle().setHeight(height, Unit.PX);
 			getElement().getStyle().setProperty("textAlign", "right");
-			getElement().getStyle().setBackgroundColor("yellow");
+//			getElement().getStyle().setBackgroundColor("yellow");
 			add(right = new FlowPanel());
 			addDomHandler(new MouseMoveHandler() {
 				public void onMouseMove(MouseMoveEvent event) {

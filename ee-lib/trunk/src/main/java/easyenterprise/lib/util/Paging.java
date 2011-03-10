@@ -54,4 +54,9 @@ public class Paging implements Serializable {
 			&& ((Paging) obj).pageStart == pageStart
 			&& ((Paging) obj).pageSize == pageSize;
 	}
+	
+	@Override
+	public String toString() {
+		return "Page(" + pageStart + ", " + pageSize +")";
+	}
 }

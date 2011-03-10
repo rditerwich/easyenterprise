@@ -4,12 +4,14 @@ import java.util.List;
 
 import com.google.common.base.Objects;
 
+import easyenterprise.lib.util.Paging;
+
 public abstract class PagedCommand<T> implements Command<PagedCommand.Result<T>> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public int startIndex;
-	public int pageSize;
+	
+	public Paging paging = Paging.NO_PAGING;
 	
 	public static interface Result<T> extends CommandResult {
 		List<T> getResult();
@@ -20,7 +22,7 @@ public abstract class PagedCommand<T> implements Command<PagedCommand.Result<T>>
 		if (obj instanceof PagedCommand) {
 			PagedCommand<?> other = (PagedCommand<?>) obj;
 
-			return startIndex == other.startIndex && pageSize == other.pageSize;
+			return Objects.equal(this.paging, other.paging);
 		}
 		
 		return super.equals(obj);
@@ -28,6 +30,6 @@ public abstract class PagedCommand<T> implements Command<PagedCommand.Result<T>>
 	
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(startIndex, pageSize);
+		return Objects.hashCode(paging);
 	}
 }
