@@ -3,7 +3,7 @@ package easyenterprise.lib.gwt.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.thirdparty.guava.common.base.Preconditions;
+import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import easyenterprise.lib.command.PagedCommand;

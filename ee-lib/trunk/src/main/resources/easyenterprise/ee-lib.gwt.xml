@@ -18,11 +18,16 @@
   <source path='lib/sexpr'>
   	<exclude name='**Test**'/>
   </source>
+  <source path='lib/gwt/client'>
+  	<exclude name='**Test**'/>
+  </source>
   <source path='lib/util'>
   	<exclude name='TestSMap**'/>
   	<exclude name='DBScript**'/>
   	<exclude name='FileUtil.*'/>
   	<exclude name='ZipUtil.*'/>
+  	<exclude name='LineWriter.*'/>
+  	<exclude name='**Test**'/>
   </source>
   <source path='lib/command'>
   	<exclude name='CommandImpl**' />
