@@ -68,8 +68,10 @@ public class AbstractDao {
 		EntityManager em = entityManager.get();
 		if (em != null) {
 			if (em.getTransaction().isActive()) {
+				em.flush();
 				em.getTransaction().commit();
 			}
+			em.clear();
 			em.close();
 		}
 		entityManager.set(null);
@@ -81,6 +83,7 @@ public class AbstractDao {
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			em.clear();
 			em.close();
 		}
 		entityManager.set(null);

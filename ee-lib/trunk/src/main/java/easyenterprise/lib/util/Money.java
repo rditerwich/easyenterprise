@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Objects;
+
 public class Money implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,6 +49,22 @@ public class Money implements Serializable {
 	public Money(Double value, String currency) {
 		this.value = value;
 		this.currency = currency;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(value, currency);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj instanceof Money) {
+			Money other = (Money) obj;
+			return Objects.equal(value, other.value)
+					&& Objects.equal(currency, other.currency);
+		}
+		return false;
 	}
 	
 	@Override
