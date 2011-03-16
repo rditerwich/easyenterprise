@@ -240,6 +240,22 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		return doAddAll(key, values);
 	}
 	
+	public SMap<K, V> addAll(SMap<K, V> values) {
+		SMap<K, V> map = this;
+		for (Entry<K, V> entry : values) {
+			map = map.add(entry.getKey(), entry.getValue());
+		}
+		return map;
+	}
+	
+	public SMap<K, V> setAll(SMap<K, V> values) {
+		SMap<K, V> map = this;
+		for (Entry<K, V> entry : values) {
+			map = map.set(entry.getKey(), entry.getValue());
+		}
+		return map;
+	}
+	
 	public SMap<K, V> addAll(Map<K, V> values) {
 		SMap<K, V> map = this;
 		for (Entry<K, V> entry : values.entrySet()) {
