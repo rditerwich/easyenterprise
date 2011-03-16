@@ -112,7 +112,7 @@ public class PagedData<K, V> {
 		
 		requestedPage = null;
 		
-		dataChanged(); // We could do a getBufferSize() instead.
+		getBufferSize();
 	}
 	
 	public void previousPage() {
@@ -184,8 +184,11 @@ public class PagedData<K, V> {
 	 * @param value
 	 */
 	public void set(K key, V value) {
-		if (data.get(key, SMap.<V>undefined()) != SMap.<V>undefined()) {
+		int index = data.indexOf(key);
+		if (index != -1) {
 			data = data.set(key, value);
+			
+			flushPages(index);
 			
 			dataChanged();
 		}
@@ -196,10 +199,21 @@ public class PagedData<K, V> {
 		if (keyIndex >= 0) {
 			data = data.removeKey(keyIndex);
 			
+			// Flush all page offsets from keyIndex.
+			flushPages(keyIndex);
+			
 			if (keyIndex <= currentPageOffset() + getSize()) {
 				dataChanged(); // TODO is this enough??
 			}
 		}
+	}
+
+	private void flushPages(int keyIndex) {
+		// Flush pages until keyindex is contained within the current page, except for the first page.
+		for (int i = pageOffsets.size() - 1; i > 0 && currentPageOffset() >= keyIndex; i++) {
+			pageOffsets.remove(i);
+		}
+		size = defaultPageSize;
 	}
 
 	/**
