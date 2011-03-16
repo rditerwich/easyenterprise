@@ -272,7 +272,7 @@ public abstract class SMap<K, V> implements Iterable<Entry<K, V>>, Serializable 
 		SMap<K, V> result = SMap.empty();
 		for (int i = 0; i < size(); i++) {
 			if (i != index) {
-				result = result.addAll(getAll(i));
+				result = result.addAll(getKey(i), getAll(i));
 			}
 		}
 		return result;
