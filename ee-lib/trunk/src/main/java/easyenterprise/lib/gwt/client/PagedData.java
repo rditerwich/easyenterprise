@@ -261,7 +261,8 @@ public class PagedData<K, V> {
 				source.fetchData(page, new Callback<K, V>() {
 					public void dataFetched(List<Entry<K, V>> fetchedData) {
 						if (page.equals(requestedPage)) {
-							boolean pageChanged = computeBufferSize() < size && fetchedData.size() > 0;
+							// getAvailable() == 0 && fetched == 0 is a special case that I'm not sure how to more naturally express...
+							boolean pageChanged = computeBufferSize() < size && fetchedData.size() > 0 || getAvailable() == 0 && fetchedData.size() == 0; 
 							
 							lastSeen = fetchedData.size() < page.getPageSize();
 							for (Entry<K, V> entry : fetchedData) {
