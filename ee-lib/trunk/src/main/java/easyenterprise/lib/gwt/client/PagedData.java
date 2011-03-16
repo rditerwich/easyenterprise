@@ -178,6 +178,18 @@ public class PagedData<K, V> {
 		return data.getEntry(currentPageOffset() + relativeIndex);
 	}
 	
+	public void create(K key, V value) {
+		flushPages(0);
+		
+		// Prepend data with new key/value.
+		SMap<K, V> oldData = data;
+		data = SMap.empty();
+		data = data.add(key, value);
+		data = data.addAll(oldData);
+		
+		dataChanged();
+	}
+	
 	/**
 	 * Only sets if key is contained in the buffer.
 	 * @param key
@@ -206,6 +218,15 @@ public class PagedData<K, V> {
 				dataChanged(); // TODO is this enough??
 			}
 		}
+	}
+	
+	public int indexOnPage(K key) {
+		int keyIndex = data.indexOf(key);
+		if (keyIndex < currentPageOffset() || keyIndex > currentPageOffset() + size) {
+			return -1;
+		}
+		
+		return keyIndex - currentPageOffset();
 	}
 
 	private void flushPages(int keyIndex) {
