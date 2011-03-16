@@ -360,10 +360,12 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 				}
 				public void onAnimationComplete() {
 					// move style to new master row
-					if (oldRow != -1) {
+					if (oldRow != -1 && oldRow < masterTable.getRowCount()) {
 						masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
 					}
-					masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
+					if (row < masterTable.getRowCount()) {
+						masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
+					}
 	
 					mainPanel.setWidgetTopHeight(erasePanel, offsetTop + 2, Unit.PX, offsetHeight - 4, Unit.PX);
 	

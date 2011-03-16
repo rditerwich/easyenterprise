@@ -196,7 +196,7 @@ public class PagedData<K, V> {
 		if (keyIndex >= 0) {
 			data = data.removeKey(keyIndex);
 			
-			if (keyIndex < currentPageOffset() + getSize()) {
+			if (keyIndex <= currentPageOffset() + getSize()) {
 				dataChanged(); // TODO is this enough??
 			}
 		}
