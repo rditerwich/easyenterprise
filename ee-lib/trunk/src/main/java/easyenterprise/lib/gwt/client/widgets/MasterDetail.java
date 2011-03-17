@@ -278,14 +278,14 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 	}
 	
 	public void setCurrentRow(int row) {
-		if (currentRow != row) {
-			currentRow = row;
-			if (row < 0) {
+//		if (currentRow != row) {
+			if (row < 0 || masterTable != null && row >= masterTable.getRowCount()) {
 				closeDetail(false);
 			} else if (isDetailOpen()) {
 				openDetail(row);
 			}
-		}
+			currentRow = row;
+//		}
 	}
 	
 	public void setRowChangedHandler(ValueChangeHandler<Integer> handler) {
@@ -315,9 +315,9 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		
 		if (masterTable != null) {
 			// Determine size/offset of selected table row.
-			final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+			final int offsetTop = rowTopOffset(row);
 			final int offsetLeft = masterContainer.getAbsoluteLeft();
-			final int offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
+			final int offsetHeight = rowHeight(row);
 			
 			// Set selection 
 			
@@ -354,15 +354,15 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 			mainPanel.setWidgetLeftWidth(detailContainer, 20, Unit.PCT, 80, Unit.PCT);
 			
 	
-			final int oldRow = currentRow;
 			mainPanel.animate(150, new AnimationCallback() {
 				public void onLayout(Layer layer, double progress) {
 				}
 				public void onAnimationComplete() {
 					// move style to new master row
-					if (oldRow != -1 && oldRow < masterTable.getRowCount()) {
-						masterTable.getRowFormatter().removeStyleName(oldRow, Styles.MasterDetailSelection.toString());
+					for (int i = 0; i < masterTable.getRowCount(); i++) {
+						masterTable.getRowFormatter().removeStyleName(i, Styles.MasterDetailSelection.toString());
 					}
+					
 					if (row < masterTable.getRowCount()) {
 						masterTable.getRowFormatter().addStyleName(row, Styles.MasterDetailSelection.toString());
 					}
@@ -383,15 +383,12 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		
 		detailOpen = false;
 		
-		final int row = currentRow;
 		// animate
 		// Determine size/offset of selected table row.
-		final int offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+		int offsetTop = rowTopOffset(currentRow);
 		int offsetLeft = masterContainer.getAbsoluteLeft();
 
-//		final int offsetTop = masterTable.getRowFormatter().getElement(currentRow).getOffsetTop() + headerSize;
-		final int offsetHeight = masterTable.getRowFormatter().getElement(currentRow).getOffsetHeight();
-//		int offsetLeft = masterTable.getRowFormatter().getElement(currentRow).getOffsetLeft();
+		int offsetHeight = rowHeight(currentRow);
 		int mainPanelHeight = mainPanel.getOffsetHeight();
 		
 		// This forcelayout should not have to be necessary.
@@ -411,6 +408,7 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 		mainPanel.setWidgetLeftWidth(selectionLine, 20, Unit.PCT, 0, Unit.PCT);
 			
 
+		final int row = currentRow;
 		mainPanel.animate(animated ? 150 : 0, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {
 			}
@@ -420,12 +418,34 @@ public abstract class MasterDetail extends Composite implements RequiresResize, 
 				mainPanel.setWidgetLeftWidth(erasePanel, 20, Unit.PCT, 0, Unit.PX);
 
 				// Remove style on current master.
-				if (masterTable.getRowCount() > row && row >= 0) {
-					masterTable.getRowFormatter().removeStyleName(row, Styles.MasterDetailSelection.toString());
+				for (int i = 0; i < masterTable.getRowCount(); i++) {
+					masterTable.getRowFormatter().removeStyleName(i, Styles.MasterDetailSelection.toString());
 				}
 			}
 		});
 		currentRow = -1;
+	}
+
+	private int rowHeight(final int row) {
+		int offsetHeight;
+		if (row < 0 || row >= masterTable.getRowCount()) {
+			offsetHeight = 0;
+		} else {
+			offsetHeight = masterTable.getRowFormatter().getElement(row).getOffsetHeight();
+		}
+		return offsetHeight;
+	}
+
+	private int rowTopOffset(final int row) {
+		int offsetTop;
+		if (row < 0) {
+			offsetTop = masterTable.getAbsoluteTop();
+		} else if (row >= masterTable.getRowCount()) {
+			offsetTop = masterTable.getAbsoluteTop() + masterTable.getOffsetHeight();
+		} else {
+			offsetTop = masterTable.getAbsoluteTop() - mainPanel.getAbsoluteTop() + masterTable.getRowFormatter().getElement(row).getOffsetTop();
+		}
+		return offsetTop;
 	}
 	
 	protected HasWidgets createHeaderWrapper(LayoutPanel parent) {

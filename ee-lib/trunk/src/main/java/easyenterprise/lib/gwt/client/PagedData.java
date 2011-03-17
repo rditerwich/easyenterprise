@@ -222,7 +222,7 @@ public class PagedData<K, V> {
 	
 	public int indexOnPage(K key) {
 		int keyIndex = data.indexOf(key);
-		if (keyIndex < currentPageOffset() || keyIndex > currentPageOffset() + size) {
+		if (keyIndex < currentPageOffset() || keyIndex > currentPageOffset() + getSize()) {
 			return -1;
 		}
 		
